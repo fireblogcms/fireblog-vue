@@ -64,10 +64,6 @@ export default {
   max-width: 750px;
 }
 
-.writeForm input#title {
-  font-family: serif;
-}
-
 .writeForm textarea#title {
   font-family: serif;
   text-align: left;
