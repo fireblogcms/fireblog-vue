@@ -2,14 +2,15 @@
   <div class="writeForm">
     <div class="container">
       <form @submit.prevent>
-        <input
-          @keyup.enter="onEnter"
+        <textarea-autosize
+          @keydown.enter.native.prevent="onEnter"
           autofocus
+          rows="1"
           placeholder="Title"
           type="text"
           id="title"
           v-model="title"
-        >
+        ></textarea-autosize>
         <ckeditor ref="ckeditor" :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
       </form>
     </div>
@@ -33,6 +34,7 @@ export default {
       editor: Editor,
       editorData: "",
       editorConfig: {
+        toolbar: ["bold"],
         blockToolbar: [
           "paragraph",
           "heading1",
@@ -60,6 +62,20 @@ export default {
 <style>
 .writeForm .form {
   max-width: 750px;
+}
+
+.writeForm input#title {
+  font-family: serif;
+}
+
+.writeForm textarea#title {
+  font-family: serif;
+  text-align: left;
+  font-size: 40px;
+  width: 100%;
+  border: none !important;
+  border-color: none;
+  outline: none !important;
 }
 
 .writeForm .ck-editor__editable {
