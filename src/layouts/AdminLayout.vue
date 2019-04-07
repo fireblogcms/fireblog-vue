@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <BulmaNavigation/>
-    <slot/>
+    <BulmaNavigation />
+    <slot />
   </div>
 </template>
 
@@ -14,4 +14,3 @@ export default {
   }
 };
 </script>
-

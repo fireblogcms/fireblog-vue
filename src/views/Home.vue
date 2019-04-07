@@ -8,10 +8,12 @@
         <h2 class="subtitle">
           <em>Ultra-fast headless blog</em>
         </h2>
-        <br>
-        <br>
-        <br>
-        <router-link class="button is-large" to="/write">JUST WRITE</router-link>
+        <br />
+        <br />
+        <br />
+        <router-link class="button is-large" to="/write"
+          >JUST WRITE</router-link
+        >
       </div>
     </div>
   </div>

@@ -5,7 +5,9 @@
         <div class="navbar-brand">
           <span class="navbar-item">
             <strong>
-              <router-link class="has-text-dark is-size-4" to="/">POD</router-link>
+              <router-link class="has-text-dark is-size-4" to="/"
+                >POD</router-link
+              >
             </strong>
           </span>
           <div
@@ -22,33 +24,76 @@
 
         <!-- This "nav-menu" is hidden on mobile -->
         <!-- Add the modifier "is-active" to display it on mobile -->
-        <div id="app-menu" class="navbar-menu" :class="{ 'is-active': showOnMobile }">
+        <div
+          id="app-menu"
+          class="navbar-menu"
+          :class="{ 'is-active': showOnMobile }"
+        >
           <div class="navbar-end">
             <span class="navbar-item">
               <router-link
                 @click.native="showPublishModal = true"
                 to="/write"
                 class="button is-info is-outlined"
-              >PUBLISH</router-link>
+                >PUBLISH</router-link
+              >
             </span>
           </div>
         </div>
       </div>
     </nav>
 
-    <div :class="{'is-active': showPublishModal }" class="modal">
+    <div :class="{ 'is-active': showAccountModal }" class="modal">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <div class="modal-card-body has-text-centered">
+          <h1 class="title is-4">Create your blog</h1>
+          <div class="buttons are-medium is-centered">
+            <form>
+              <div class="field">
+                <div class="control">
+                  <input class="input is-large" type="title" />
+                </div>
+              </div>
+            </form>
+            <button class="button is-outline" @click="showAccountModal = false">
+              CANCEL
+            </button>
+            <button class="button is-info" @click="showAccountModal = false">
+              PUBLISH
+            </button>
+          </div>
+        </div>
+        <!-- Any other Bulma elements you want -->
+      </div>
+      <button
+        @click="showPublishModal = false"
+        class="modal-close is-large"
+        aria-label="close"
+      ></button>
+    </div>
+
+    <div :class="{ 'is-active': showPublishModal }" class="modal">
       <div class="modal-background"></div>
       <div class="modal-card">
         <div class="modal-card-body has-text-centered">
           <h1 class="title is-4">Are you sure you want to publish ?</h1>
           <div class="buttons are-medium is-centered">
-            <button class="button is-outline" @click="showPublishModal = false">CANCEL</button>
-            <button class="button is-info" @click="showPublishModal = false">PUBLISH</button>
+            <button class="button is-outline" @click="showPublishModal = false">
+              CANCEL
+            </button>
+            <button class="button is-info" @click="showPublishModal = false">
+              PUBLISH
+            </button>
           </div>
         </div>
         <!-- Any other Bulma elements you want -->
       </div>
-      <button @click="showPublishModal = false" class="modal-close is-large" aria-label="close"></button>
+      <button
+        @click="showAccountModal = false"
+        class="modal-close is-large"
+        aria-label="close"
+      ></button>
     </div>
   </header>
 </template>
@@ -58,7 +103,8 @@ export default {
   data() {
     return {
       showOnMobile: false,
-      showPublishModal: false
+      showPublishModal: false,
+      showAccountModal: false
     };
   }
 };

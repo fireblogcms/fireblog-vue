@@ -12,7 +12,12 @@
             id="title"
             v-model="title"
           ></textarea-autosize>
-          <ckeditor ref="ckeditor" :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
+          <ckeditor
+            ref="ckeditor"
+            :editor="editor"
+            v-model="editorData"
+            :config="editorConfig"
+          ></ckeditor>
         </form>
       </div>
     </div>
