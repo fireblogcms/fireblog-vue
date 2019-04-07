@@ -3,8 +3,14 @@ body {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
+  padding: 0;
+  margin: 0;
+}
+
+.home-view {
+  background: url("https://images.unsplash.com/photo-1518655048521-f130df041f66?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2850&q=80") center center;
+  background-size : cover;
 }
 
 .container {
@@ -38,18 +44,17 @@ body {
 
 .button#write-now {
   text-decoration: none;
-  border: solid #03a87c 1px;
-  color: #03a87c;
-  border-radius: 10px;
+  background-color:rgba(255, 255, 255, 0.5);
+  border: solid black 1px;
+  color:black;
+  border-radius: 5px;
   text-transform: uppercase;
   padding: 1rem;
-  font-size: 2rem;
 }
 
 .button#write-now:hover {
-  background-color: #03a87c;
   cursor:pointer;
-  color:white;
+
 }
 
 /* HOME VIEW */

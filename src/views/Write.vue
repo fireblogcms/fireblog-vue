@@ -13,7 +13,7 @@
       </div>
     </div>
     -->
-    <WriteForm/>
+    <WriteForm />
   </div>
 </template>
 
@@ -28,4 +28,3 @@ export default {
   }
 };
 </script>
-
