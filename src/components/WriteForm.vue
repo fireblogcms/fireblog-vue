@@ -42,18 +42,7 @@ export default {
     this.editor = Editor;
     this.editorConfig = {
       toolbar: ["bold", "italic", "link"],
-      blockToolbar: [
-        "paragraph",
-        "heading1",
-        "heading2",
-        "heading3",
-        "|",
-        "bulletedList",
-        "numberedList",
-        "|",
-        "blockQuote",
-        "imageUpload"
-      ]
+      blockToolbar: ["bulletedList", "numberedList", "|", "imageUpload"]
       // The configuration of the editor.
     };
   },
@@ -69,7 +58,7 @@ export default {
 .writeForm form {
   background-color: rgba(255, 255, 255, 0.9);
   padding: 2rem;
-  max-width: 730px;
+  max-width: 800px;
   margin: auto;
 }
 

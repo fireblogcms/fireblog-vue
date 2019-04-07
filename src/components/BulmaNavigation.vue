@@ -26,15 +26,30 @@
           <div class="navbar-end">
             <span class="navbar-item">
               <router-link
-                @click.native="showOnMobile = false"
+                @click.native="showPublishModal = true"
                 to="/write"
-                class="button is-medium"
+                class="button is-info is-outlined"
               >PUBLISH</router-link>
             </span>
           </div>
         </div>
       </div>
     </nav>
+
+    <div :class="{'is-active': showPublishModal }" class="modal">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <div class="modal-card-body has-text-centered">
+          <h1 class="title is-4">Are you sure you want to publish ?</h1>
+          <div class="buttons are-medium is-centered">
+            <button class="button is-outline" @click="showPublishModal = false">CANCEL</button>
+            <button class="button is-info" @click="showPublishModal = false">PUBLISH</button>
+          </div>
+        </div>
+        <!-- Any other Bulma elements you want -->
+      </div>
+      <button @click="showPublishModal = false" class="modal-close is-large" aria-label="close"></button>
+    </div>
   </header>
 </template>
 
@@ -42,7 +57,8 @@
 export default {
   data() {
     return {
-      showOnMobile: false
+      showOnMobile: false,
+      showPublishModal: false
     };
   }
 };
