@@ -2,24 +2,31 @@
   <AdminLayout>
     <div class="writeForm">
       <div class="container">
-        <form @submit.prevent>
-          <textarea-autosize
-            @keydown.enter.native.prevent="onEnter"
-            autofocus
-            rows="1"
-            placeholder="Title"
-            type="text"
-            id="title"
-            v-model="title"
-          ></textarea-autosize>
-          <ckeditor
-            class="content"
-            ref="ckeditor"
-            :editor="editor"
-            v-model="editorData"
-            :config="editorConfig"
-          ></ckeditor>
-        </form>
+        <div class="columns">
+          <div class="column is-2 is-hidden-mobile"></div>
+          <div class="column is-8">
+            <form @submit.prevent>
+              <textarea-autosize
+                @keydown.enter.native.prevent="onEnter"
+                autofocus
+                rows="1"
+                placeholder="Title"
+                type="text"
+                id="title"
+                v-model="title"
+              ></textarea-autosize>
+              <ckeditor
+                ref="ckeditor"
+                :editor="editor"
+                v-model="editorData"
+                :config="editorConfig"
+              ></ckeditor>
+            </form>
+          </div>
+          <div class="column is-2">
+            <div></div>
+          </div>
+        </div>
       </div>
     </div>
   </AdminLayout>
@@ -32,7 +39,7 @@ import AdminLayout from "@/layouts/AdminLayout";
 import Editor from "@ckeditor/ckeditor5-build-balloon-block";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 
-/* plugins :
+/*
 0: "heading"
 1: "|"
 2: "bulletedList"
@@ -43,6 +50,7 @@ import CKEditor from "@ckeditor/ckeditor5-vue";
 7: "mediaEmbed"
 items: (5) ["bold", "italic", "link", "undo", "redo"]
 */
+
 export default {
   components: {
     // Use the <ckeditor> component in this view.
@@ -55,12 +63,14 @@ export default {
       editorData: ""
     };
   },
+  // "heading"
+  // "mediaEmbed"
   created() {
     this.editor = Editor;
-    console.log(new Editor());
     this.editorConfig = {
       toolbar: ["bold", "italic", "link", "heading"],
       blockToolbar: ["imageUpload", "mediaEmbed"]
+      // The configuration of the editor.
     };
   },
   methods: {
@@ -75,15 +85,16 @@ export default {
 .writeForm form {
   font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-color: rgba(255, 255, 255, 0.9);
-  padding: 2rem;
-  max-width: 800px;
+  padding: 0 2rem;
   margin: auto;
 }
 
 .writeForm textarea#title {
   background: transparent;
+  /*font-family: serif;*/
+
   text-align: left;
-  font-size: 40px;
+  font-size: 50px;
   width: 100%;
   border: none !important;
   border-color: none;
@@ -112,33 +123,21 @@ export default {
   background: white;
   border: none;
 }
-/*
+
 .writeForm .ck-editor__editable p {
   font-size: 21px;
-}
-
-.writeForm .ck-editor__editable h1 {
-  font-size: 41px;
-}
-
-.writeForm .ck-editor__editable h2 {
-  font-size: 30px;
-}
-
-.writeForm .ck-editor__editable h3 {
-  font-size: 21px;
+  padding: 0.7rem 0;
 }
 
 .writeForm .ck-editor__editable h4 {
-  font-size: 21px;
+  font-size: 28px;
 }
 
-.writeForm .ck-editor__editable h5 {
-  font-size: 21px;
+.writeForm .ck-editor__editable h3 {
+  font-size: 34px;
 }
 
-.writeForm .ck-editor__editable h6 {
-  font-size: 21px;
+.writeForm .ck-editor__editable h2 {
+  font-size: 40px;
 }
-*/
 </style>

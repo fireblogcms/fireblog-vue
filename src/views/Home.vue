@@ -8,7 +8,7 @@
         <h2 class="subtitle is-3">ultra-fast headless blog</h2>
         <br />
         <br />
-        <router-link class="button is-large" to="/write"
+        <router-link class="button is-large" to="/pod/new/post/create"
           >JUST WRITE</router-link
         >
       </div>

@@ -31,28 +31,55 @@
         >
           <div class="navbar-end">
             <span class="navbar-item">
-              <router-link
-                @click.native="showPublishModal = true"
-                to="/write"
+              <button
+                @click="showPublishBlogModal = true"
                 class="button is-info is-outlined"
-                >PUBLISH MY BLOG</router-link
               >
+                PUBLISH MY BLOG
+              </button>
             </span>
           </div>
         </div>
       </div>
     </nav>
 
-    <div :class="{ 'is-active': showPublishModal }" class="modal">
+    <div :class="{ 'is-active': showPublishBlogModal }" class="modal">
       <div class="modal-background"></div>
       <div class="modal-card">
         <div class="modal-card-body has-text-centered">
-          <h1 class="title is-4 is-uppercase">Publish this post now ?</h1>
+          <h1 class="title is-uppercase">Publish this post now</h1>
+          <div class="field">
+            <div class="label">What's your blog title ?</div>
+            <div class="control">
+              <input
+                class="input is-info is-large"
+                type="text"
+                placeholder="Blog's name"
+              />
+            </div>
+          </div>
+          <div class="field">
+            <div class="label">What's your email ?</div>
+            <div class="control">
+              <input
+                class="input is-info is-large"
+                type="text"
+                placeholder="Email"
+              />
+            </div>
+          </div>
+          <br />
           <div class="buttons are-medium is-centered">
-            <button class="button is-outline" @click="showPublishModal = false">
+            <button
+              class="button is-outline"
+              @click="showPublishBlogModal = false"
+            >
               CANCEL
             </button>
-            <button class="button is-info" @click="showPublishModal = false">
+            <button
+              class="button is-info"
+              @click="showPublishBlogModal = false"
+            >
               PUBLISH
             </button>
           </div>
@@ -60,7 +87,7 @@
         <!-- Any other Bulma elements you want -->
       </div>
       <button
-        @click="showPublishModal = false"
+        @click="showPublishBlogModal = false"
         class="modal-close is-large"
         aria-label="close"
       ></button>
@@ -73,7 +100,7 @@ export default {
   data() {
     return {
       showOnMobile: false,
-      showPublishModal: false,
+      showPublishBlogModal: false,
       showCreateBlogModal: false
     };
   }

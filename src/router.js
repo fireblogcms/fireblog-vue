@@ -15,7 +15,7 @@ export default new Router({
       component: Home
     },
     {
-      path: "/write",
+      path: "/pod/:podId/post/:operation",
       name: "write",
       component: Write
     }
