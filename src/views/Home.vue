@@ -5,10 +5,7 @@
         <h1 class="title is-1">
           <strong>POD</strong>
         </h1>
-        <h2 class="subtitle">
-          <em>Ultra-fast headless blog</em>
-        </h2>
-        <br />
+        <h2 class="subtitle is-3">ultra-fast headless blog</h2>
         <br />
         <br />
         <router-link class="button is-large" to="/write"
