@@ -1,12 +1,13 @@
 <template>
   <div class="pod-view">
-    <div class="content container child-is-vertical-centered">
-      <div class="has-text-centered">
+    <div class="container child-is-vertical-centered">
+      <div class="content has-text-centered">
         <h2>
-          Glad to see you there {{ user.name }} 🤗
+          It's good to see you here, {{ user.name }} 🤗
           <br>
-          <br>First let's create a new Pod. Give it a name or let me
+          <br>First let's create your first Pod. Give it a name or let me
           <a
+            ref="randomNameLink"
             @click.prevent="onGenerateCLick"
           >suggest you one</a>
         </h2>
@@ -46,6 +47,11 @@ export default {
   },
   methods: {
     onGenerateCLick() {
+      this.$refs.randomNameLink.addEventListener("mousedown", function(e) {
+        if (e.detail > 1) {
+          e.preventDefault();
+        }
+      });
       this.name = generate();
     }
   }
