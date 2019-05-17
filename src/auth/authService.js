@@ -24,7 +24,6 @@ class AuthService extends EventEmitter {
   }
 
   getUser() {
-    console.log(JSON.parse(localStorage.getItem("podUser")));
     return JSON.parse(localStorage.getItem("podUser"));
   }
 

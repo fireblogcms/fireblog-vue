@@ -28,7 +28,7 @@
               <button
                 @click="showPublishBlogModal = true"
                 class="button is-info is-outlined"
-              >PUBLISH MY BLOG</button>
+              >PUBLISH</button>
             </span>
           </div>
         </div>
@@ -41,7 +41,7 @@
         <div class="modal-card-body has-text-centered">
           <h1 class="title is-uppercase">Publish this post now</h1>
           <div class="field">
-            <div class="label">What's your blog title ?</div>
+            <div class="label">Give a title Pod title ?</div>
             <div class="control">
               <input class="input is-info is-large" type="text" placeholder="Blog's name">
             </div>
