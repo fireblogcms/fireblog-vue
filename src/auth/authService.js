@@ -4,7 +4,7 @@ import { EventEmitter } from "events";
 const webAuth = new auth0.WebAuth({
   domain: process.env.VUE_APP_AUTH0_DOMAIN,
   redirectUri: `${window.location.origin}/callback`,
-  clientID: process.env.VUE_APP_CLIENT_ID,
+  clientID: process.env.VUE_APP_AUTH0_CLIENTID,
   responseType: "id_token",
   scope: "openid profile email"
 });
