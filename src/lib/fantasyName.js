@@ -1,7 +1,7 @@
 // @see https://jsfiddle.net/katowulf/3gtDf/
 
 export function generate() {
-  let firstWord = randomEl(adjectives);
+  let firstWord = randomEl(beautifulAdjectives);
   firstWord = firstWord[0].toUpperCase() + firstWord.substring(1);
   return firstWord + " " + randomEl(nouns);
 }
@@ -10,6 +10,40 @@ function randomEl(list) {
   var i = Math.floor(Math.random() * list.length);
   return list[i];
 }
+
+const beautifulAdjectives = [
+  "sonder",
+  "eloquence",
+  "Vertigo",
+  "serendipity",
+  "redamancy",
+  "tsundonky",
+  "onism",
+  "eunoia",
+  "orenda",
+  "mudita",
+  "komorebi",
+  "meraki",
+  "jayus",
+  "vellichor",
+  "yin",
+  "laotong",
+  "tidsoptimist",
+  "Goya",
+  "Wu Wei",
+  "Serein",
+  "Quintessential",
+  "Ephemerial",
+  "Hiraeth",
+  "Ubuntu",
+  "Mangata",
+  "Felicity",
+  "Effervescent",
+  "Loquacious",
+  "Sodade",
+  "Esperance",
+  "Firgun"
+];
 
 const adjectives = [
   "admirable",
@@ -174,6 +208,9 @@ const adjectives = [
   "zealous"
 ];
 const nouns = [
+  "typewriter",
+  "pen",
+  "notebook",
   "ninja",
   "chair",
   "pancake",
