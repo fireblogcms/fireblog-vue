@@ -1,11 +1,12 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Home from "./views/Home.vue";
-import Write from "./views/Write.vue";
-import Profile from "./views/Profile.vue";
-import Logout from "./components/Logout.vue";
+import HomeView from "./views/HomeView";
+import WriteView from "./views/WriteView";
+import ProfileView from "./views/ProfileView";
+import PodCreateView from "./views/PodCreateView";
 import Callback from "./components/Callback.vue";
-import auth from "./auth/authService";
+import Logout from "./components/Logout";
+import auth from "./lib/authService";
 
 Vue.use(Router);
 
@@ -16,17 +17,22 @@ const router = new Router({
     {
       path: "/",
       name: "home",
-      component: Home
+      component: HomeView
     },
     {
       path: "/pod/:podId/post/:operation",
       name: "write",
-      component: Write
+      component: WriteView
+    },
+    {
+      path: "/pod/new",
+      name: "pod",
+      component: PodCreateView
     },
     {
       path: "/profile",
       name: "profile",
-      component: Profile
+      component: ProfileView
     },
     {
       path: "/callback",
@@ -36,7 +42,7 @@ const router = new Router({
     {
       path: "/login",
       name: "login",
-      component: Home
+      component: HomeView
     },
     {
       path: "/logout",

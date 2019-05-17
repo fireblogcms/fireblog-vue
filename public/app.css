@@ -1,4 +1,3 @@
-
 body {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -9,21 +8,22 @@ body {
 }
 
 .home-view {
-  background: url("https://images.unsplash.com/photo-1518655048521-f130df041f66?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2850&q=80") center center;
-  background-size : cover;
+  background: url("https://images.unsplash.com/photo-1518655048521-f130df041f66?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2850&q=80")
+    center center;
+  background-size: cover;
 }
 
-.container {
+.home-view .header {
   max-width: 900px;
-  margin:auto;
+  margin: auto;
 }
 
 .button {
-  border:none;
+  border: none;
   padding: 0.5rem;
   font-size: 1.5rem;
   border: solid #03a87c 1px;
-  color:  #03a87c;
+  color: #03a87c;
   border-radius: 10px;
   outline: none;
 }
@@ -34,7 +34,7 @@ body {
   height: 100vh;
 }
 
-.home-view .container {
+.home-view .header {
   height: 100vh;
   text-align: center;
   display: flex;
@@ -42,19 +42,26 @@ body {
   justify-content: center;
 }
 
-.button#write-now {
+.home-view .button#write-now {
   text-decoration: none;
-  background-color:rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.5);
   border: solid black 1px;
-  color:black;
+  color: black;
   border-radius: 5px;
   text-transform: uppercase;
   padding: 1rem;
 }
 
-.button#write-now:hover {
-  cursor:pointer;
+.home-view .button#write-now:hover {
+  cursor: pointer;
+}
 
+.child-is-vertical-centered {
+  height: 100vh;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* HOME VIEW */
@@ -75,20 +82,20 @@ body {
   display: block;
   outline: none;
   width: 100%;
-  height:90vh;
-  border:none;
+  height: 90vh;
+  border: none;
   font-size: 2rem;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
-       box-sizing: border-box;
-} 
+  box-sizing: border-box;
+}
 
 .write-menu .item {
   margin: 1rem;
 }
 
 .write-menu {
-  display:flex;
+  display: flex;
   justify-content: center;
   align-content: space-between;
 }

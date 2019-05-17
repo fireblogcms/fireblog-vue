@@ -5,7 +5,9 @@
         <div class="navbar-brand">
           <span class="navbar-item">
             <strong>
-              <router-link class="has-text-dark is-size-4" to="/">POD</router-link>
+              <router-link class="has-text-dark button is-outlined" to="/"
+                >MENU</router-link
+              >
             </strong>
           </span>
           <div
@@ -22,13 +24,27 @@
 
         <!-- This "nav-menu" is hidden on mobile -->
         <!-- Add the modifier "is-active" to display it on mobile -->
-        <div id="app-menu" class="navbar-menu" :class="{ 'is-active': showOnMobile }">
+        <div
+          id="app-menu"
+          class="navbar-menu"
+          :class="{ 'is-active': showOnMobile }"
+        >
           <div class="navbar-end">
             <span class="navbar-item">
               <button
                 @click="showPublishBlogModal = true"
+                class="button is-outlined"
+              >
+                SAVE
+              </button>
+            </span>
+            <span class="navbar-item">
+              <button
+                @click="showPublishBlogModal = true"
                 class="button is-info is-outlined"
-              >PUBLISH</button>
+              >
+                PUBLISH
+              </button>
             </span>
           </div>
         </div>
@@ -43,24 +59,46 @@
           <div class="field">
             <div class="label">Give a title Pod title ?</div>
             <div class="control">
-              <input class="input is-info is-large" type="text" placeholder="Blog's name">
+              <input
+                class="input is-info is-large"
+                type="text"
+                placeholder="Blog's name"
+              />
             </div>
           </div>
           <div class="field">
             <div class="label">What's your email ?</div>
             <div class="control">
-              <input class="input is-info is-large" type="text" placeholder="Email">
+              <input
+                class="input is-info is-large"
+                type="text"
+                placeholder="Email"
+              />
             </div>
           </div>
-          <br>
+          <br />
           <div class="buttons are-medium is-centered">
-            <button class="button is-outline" @click="showPublishBlogModal = false">CANCEL</button>
-            <button class="button is-info" @click="showPublishBlogModal = false">PUBLISH</button>
+            <button
+              class="button is-outline"
+              @click="showPublishBlogModal = false"
+            >
+              CANCEL
+            </button>
+            <button
+              class="button is-info"
+              @click="showPublishBlogModal = false"
+            >
+              PUBLISH
+            </button>
           </div>
         </div>
         <!-- Any other Bulma elements you want -->
       </div>
-      <button @click="showPublishBlogModal = false" class="modal-close is-large" aria-label="close"></button>
+      <button
+        @click="showPublishBlogModal = false"
+        class="modal-close is-large"
+        aria-label="close"
+      ></button>
     </div>
   </header>
 </template>

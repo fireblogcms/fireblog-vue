@@ -6,7 +6,7 @@
           :src="profile.picture"
           alt="User's profile picture"
           class="rounded-circle img-fluid profile-picture"
-        >
+        />
       </div>
       <div class="col-md">
         <h2>{{ profile.name }}</h2>
@@ -15,7 +15,9 @@
     </div>
 
     <div class="row">
-      <pre class="rounded"><code class="json">{{ JSON.stringify(profile, null, 2) }}</code></pre>
+      <pre
+        class="rounded"
+      ><code class="json">{{ JSON.stringify(profile, null, 2) }}</code></pre>
     </div>
   </div>
 </template>
