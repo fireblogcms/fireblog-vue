@@ -3,6 +3,7 @@ import Router from "vue-router";
 import Home from "./views/Home.vue";
 import Write from "./views/Write.vue";
 import Profile from "./views/Profile.vue";
+import Logout from "./components/Logout.vue";
 import Callback from "./components/Callback.vue";
 import auth from "./auth/authService";
 
@@ -31,12 +32,27 @@ const router = new Router({
       path: "/callback",
       name: "callback",
       component: Callback
+    },
+    {
+      path: "/login",
+      name: "login",
+      component: Home
+    },
+    {
+      path: "/logout",
+      name: "logout",
+      component: Logout
     }
   ]
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.path === "/" || to.path === "/callback" || auth.isAuthenticated()) {
+  if (
+    to.path === "/login" ||
+    to.path === "/" ||
+    to.path === "/callback" ||
+    auth.isAuthenticated()
+  ) {
     return next();
   }
 

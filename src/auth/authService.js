@@ -9,7 +9,7 @@ const webAuth = new auth0.WebAuth({
   scope: "openid profile email"
 });
 
-const localStorageKey = "loggedIn";
+const localStorageKey = "tokenExpiry";
 const loginEvent = "loginEvent";
 
 class AuthService extends EventEmitter {
@@ -25,6 +25,7 @@ class AuthService extends EventEmitter {
 
   logOut() {
     localStorage.removeItem(localStorageKey);
+    localStorage.removeItem("podUser");
 
     this.idToken = null;
     this.tokenExpiry = null;
@@ -56,10 +57,7 @@ class AuthService extends EventEmitter {
   }
 
   isAuthenticated() {
-    return (
-      Date.now() < this.tokenExpiry &&
-      localStorage.getItem(localStorageKey) === "true"
-    );
+    return Date.now() < new Date(localStorage.getItem("tokenExpiry"));
   }
 
   isIdTokenValid() {
@@ -83,12 +81,13 @@ class AuthService extends EventEmitter {
   localLogin(authResult) {
     this.idToken = authResult.idToken;
     this.profile = authResult.idTokenPayload;
+    localStorage.setItem("podUser", JSON.stringify(this.profile));
 
     // Convert the expiry time from seconds to milliseconds,
     // required by the Date constructor
     this.tokenExpiry = new Date(this.profile.exp * 1000);
 
-    localStorage.setItem(localStorageKey, "true");
+    localStorage.setItem(localStorageKey, this.tokenExpiry);
 
     this.emit(loginEvent, {
       loggedIn: true,
@@ -99,7 +98,7 @@ class AuthService extends EventEmitter {
 
   renewTokens() {
     return new Promise((resolve, reject) => {
-      if (localStorage.getItem(localStorageKey) !== "true") {
+      if (!this.isAuthenticated()) {
         return reject("Not logged in");
       }
 
