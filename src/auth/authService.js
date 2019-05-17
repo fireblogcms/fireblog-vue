@@ -23,6 +23,11 @@ class AuthService extends EventEmitter {
     });
   }
 
+  getUser() {
+    console.log(JSON.parse(localStorage.getItem("podUser")));
+    return JSON.parse(localStorage.getItem("podUser"));
+  }
+
   logOut() {
     localStorage.removeItem(localStorageKey);
     localStorage.removeItem("podUser");
@@ -81,6 +86,7 @@ class AuthService extends EventEmitter {
   localLogin(authResult) {
     this.idToken = authResult.idToken;
     this.profile = authResult.idTokenPayload;
+
     localStorage.setItem("podUser", JSON.stringify(this.profile));
 
     // Convert the expiry time from seconds to milliseconds,

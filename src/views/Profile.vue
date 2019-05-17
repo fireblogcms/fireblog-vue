@@ -15,22 +15,16 @@
     </div>
 
     <div class="row">
-      <pre v-highlightjs class="rounded"><code class="json">{{ JSON.stringify(profile, null, 2) }}</code></pre>
+      <pre class="rounded"><code class="json">{{ JSON.stringify(profile, null, 2) }}</code></pre>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      profile: this.$auth.profile
-    };
-  },
-  methods: {
-    handleLoginEvent(data) {
-      this.profile = data.profile;
-    }
+  created() {
+    console.log("this.$auth", this.$auth);
+    this.profile = this.$auth.getUser();
   }
 };
 </script>
