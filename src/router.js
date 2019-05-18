@@ -20,7 +20,7 @@ const router = new Router({
       component: HomeView
     },
     {
-      path: "/pod/:podId/post/:operation",
+      path: "/pod/:podId/write",
       name: "write",
       component: WriteView
     },
