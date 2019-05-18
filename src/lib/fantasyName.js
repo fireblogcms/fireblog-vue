@@ -45,6 +45,7 @@ const nouns = [
   "noise",
   "notebook",
   "opera",
+  "orchestra",
   "orenda",
   "pancake",
   "pattern",
@@ -123,6 +124,7 @@ const adjectives = [
   "radiant",
   "ravishing",
   "refined",
+  "red",
   "resplendent",
   "shapely",
   "slightly",
@@ -130,7 +132,9 @@ const adjectives = [
   "statuesque",
   "stunning",
   "sublime",
+  "super",
   "superb",
+  "symfonic",
   "symmetrical",
   "taking",
   "tantalizing",
@@ -138,9 +142,12 @@ const adjectives = [
   "tempting",
   "well-formed",
   "winning",
+  "white",
   "wonderful",
   "yellow"
 ];
+
+/* ================= */
 
 const otherAdjectives = [
   "adamant",
