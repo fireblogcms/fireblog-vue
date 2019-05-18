@@ -70,7 +70,6 @@ const nouns = [
   "write",
   "yang",
   "yin",
-  "window",
   "wu wei"
 ];
 
@@ -140,7 +139,10 @@ const adjectives = [
   "well-formed",
   "winning",
   "wonderful",
-  "yellow",
+  "yellow"
+];
+
+const otherAdjectives = [
   "adamant",
   "adroit",
   "amatory",
@@ -151,7 +153,6 @@ const adjectives = [
   "bellicose",
   "bilious",
   "boorish",
-  "calamitous",
   "caustic",
   "cerulean",
   "comely",
