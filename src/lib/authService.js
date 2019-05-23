@@ -1,5 +1,6 @@
 import auth0 from "auth0-js";
 import { EventEmitter } from "events";
+import graphqlClient from "../lib/graphqlClient";
 
 const webAuth = new auth0.WebAuth({
   domain: process.env.VUE_APP_AUTH0_DOMAIN,
@@ -82,11 +83,33 @@ class AuthService extends EventEmitter {
     });
   }
 
+  syncUserWithServer({ auth0_user_id, email, name, picture }) {
+    graphqlClient.request(
+      `
+      mutation($user: UserInput) {
+        upsertUser(user: $user ) {
+          email
+          name
+        }
+      }
+    `,
+      {
+        user: { auth0_user_id, email, name, picture }
+      }
+    );
+  }
+
   localLogin(authResult) {
     this.idToken = authResult.idToken;
     this.profile = authResult.idTokenPayload;
-
     localStorage.setItem("podUser", JSON.stringify(this.profile));
+    console.log("profile", authResult);
+    this.syncUserWithServer({
+      auth0_user_id: this.profile.sub,
+      email: this.profile.email,
+      name: this.profile.name,
+      picture: this.profile.picture
+    });
 
     // Convert the expiry time from seconds to milliseconds,
     // required by the Date constructor
