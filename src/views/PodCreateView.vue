@@ -5,11 +5,12 @@
         <h2>
           It's good to see you here, {{ user.name }} 🤗
           <br>
-          <br>First let's create your first Pod. Give it a name or let me
+          <br>First let's create your first Pod. A pod is like a notebook to hold your articles.
+          Give it a name to your pod or let
           <a
             ref="randomNameLink"
             @click.prevent="onGenerateCLick"
-          >suggest you one</a>
+          >me suggest one for you</a>
         </h2>
         <br>
 
