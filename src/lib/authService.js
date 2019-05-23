@@ -30,7 +30,6 @@ class AuthService extends EventEmitter {
 
   logOut() {
     localStorage.removeItem(localStorageKey);
-    localStorage.removeItem("podUser");
 
     this.idToken = null;
     this.tokenExpiry = null;
@@ -84,10 +83,11 @@ class AuthService extends EventEmitter {
   }
 
   syncUserWithServer({ auth0_user_id, email, name, picture }) {
-    graphqlClient.request(
+    return graphqlClient.request(
       `
       mutation($user: UserInput) {
         upsertUser(user: $user ) {
+          _id
           email
           name
         }
@@ -102,20 +102,18 @@ class AuthService extends EventEmitter {
   localLogin(authResult) {
     this.idToken = authResult.idToken;
     this.profile = authResult.idTokenPayload;
-    localStorage.setItem("podUser", JSON.stringify(this.profile));
-    console.log("profile", authResult);
     this.syncUserWithServer({
       auth0_user_id: this.profile.sub,
       email: this.profile.email,
       name: this.profile.name,
       picture: this.profile.picture
     });
-
     // Convert the expiry time from seconds to milliseconds,
     // required by the Date constructor
     this.tokenExpiry = new Date(this.profile.exp * 1000);
 
     localStorage.setItem(localStorageKey, this.tokenExpiry);
+    localStorage.setItem("podUser", JSON.stringify(this.profile));
 
     this.emit(loginEvent, {
       loggedIn: true,

@@ -24,7 +24,7 @@
 
         <div class="buttons are-medium is-centered">
           <button class="button is-outline" @click="$router.push('/')">CANCEL</button>
-          <button class="button is-info" @click="showPublishBlogModal = false">CREATE MY POD</button>
+          <button class="button is-info" @click="onCreateClick">CREATE MY POD</button>
         </div>
 
         <!-- Any other Bulma elements you want -->
@@ -36,6 +36,7 @@
 
 <script>
 import { generate } from "../lib/fantasyName.js";
+import graphqlClient from "../lib/graphqlClient";
 
 export default {
   data() {
@@ -47,6 +48,23 @@ export default {
     this.user = this.$auth.getUser();
   },
   methods: {
+    onCreateClick() {
+      /*
+      console.log(this.user);
+
+      graphqlClient.request(
+        `
+      mutation($pod: PodInput!) {
+        createPod(pod: $pod) {
+          name
+          description
+        }
+      }
+    `,
+        { pod: { name: "test 4", owner: "5ce6b04498dcbe362e06b552" } }
+      );
+      */
+    },
     onGenerateCLick() {
       this.$refs.randomNameLink.addEventListener("mousedown", function(e) {
         if (e.detail > 1) {
