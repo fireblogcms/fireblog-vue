@@ -90,6 +90,7 @@ class AuthService extends EventEmitter {
           email
           name
           picture
+          _id
         }
       }
     `,
@@ -102,18 +103,20 @@ class AuthService extends EventEmitter {
   localLogin(authResult) {
     this.idToken = authResult.idToken;
     this.profile = authResult.idTokenPayload;
-    this.syncUserWithServer({
-      auth0_user_id: this.profile.sub,
-      email: this.profile.email,
-      name: this.profile.name,
-      picture: this.profile.picture ? this.profile.picture : null
-    });
+
     // Convert the expiry time from seconds to milliseconds,
     // required by the Date constructor
     this.tokenExpiry = new Date(this.profile.exp * 1000);
 
     localStorage.setItem(localStorageKey, this.tokenExpiry);
     localStorage.setItem("podUser", JSON.stringify(this.profile));
+
+    this.syncUserWithServer({
+      auth0_user_id: this.profile.sub,
+      email: this.profile.email,
+      name: this.profile.name,
+      picture: this.profile.picture ? this.profile.picture : null
+    });
 
     this.emit(loginEvent, {
       loggedIn: true,

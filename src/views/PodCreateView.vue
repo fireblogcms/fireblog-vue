@@ -5,12 +5,11 @@
         <h2>
           It's good to see you here, {{ user.name }} 🤗
           <br>
-          <br>First let's create your first Pod. A pod is like a notebook to hold your articles.
-          Give it a name to your pod or let
+          <br>First let's create your first blog. Give it a name to your pod or let
           <a
             ref="randomNameLink"
             @click.prevent="onGenerateCLick"
-          >me suggest one for you</a>
+          >use suggest one for you</a>
         </h2>
         <br>
 
@@ -49,21 +48,17 @@ export default {
   },
   methods: {
     onCreateClick() {
-      /*
-      console.log(this.user);
-
       graphqlClient.request(
         `
-      mutation($pod: PodInput!) {
-        createPod(pod: $pod) {
+      mutation($podInput: PodInput!) {
+        createPod(podInput: $podInput) {
           name
           description
         }
       }
     `,
-        { pod: { name: "test 4", owner: "5ce6b04498dcbe362e06b552" } }
+        { podInput: { auth0_user_id: this.user.sub, name: this.name } }
       );
-      */
     },
     onGenerateCLick() {
       this.$refs.randomNameLink.addEventListener("mousedown", function(e) {
