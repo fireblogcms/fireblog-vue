@@ -13,14 +13,15 @@
                 placeholder="Title"
                 type="text"
                 id="title"
-                v-model="title"
+                v-model="inputs.title"
               ></textarea-autosize>
               <ckeditor
                 ref="ckeditor"
                 :editor="editor"
-                v-model="editorData"
+                v-model="inputs.content"
                 :config="editorConfig"
               ></ckeditor>
+              <input @click="onCreateClick" class="button is-primary" type="submit" value="save">
             </form>
           </div>
           <div class="column is-2">
@@ -34,6 +35,7 @@
 
 <script>
 import AdminLayout from "@/layouts/AdminLayout";
+import graphqlClient from "../lib/graphqlClient";
 // import Editor from "@ckeditor/ckeditor5-build-classic";
 // import Editor from "@ckeditor/ckeditor5-build-balloon";
 import Editor from "@ckeditor/ckeditor5-build-balloon-block";
@@ -59,8 +61,10 @@ export default {
   },
   data() {
     return {
-      title: "",
-      editorData: ""
+      inputs: {
+        title: "",
+        content: ""
+      }
     };
   },
   // "heading"
@@ -70,12 +74,43 @@ export default {
     this.editorConfig = {
       toolbar: ["bold", "italic", "link", "heading"],
       blockToolbar: ["imageUpload", "mediaEmbed"]
-      // The configuration of the editor.
     };
   },
   methods: {
     onEnter() {
       this.$refs.ckeditor.$el.focus();
+    },
+
+    onCreateClick() {
+      alert("ok");
+      const auth0_user_id = this.$auth.getUser().sub;
+      const pod_id = this.$route.params.podId;
+
+      graphqlClient
+        .request(
+          `
+            mutation($postInput: PostInput!) {
+              createPost(postInput: $postInput) {
+                _id
+                user_id
+                pod_id
+                title
+                content
+              }
+            }
+         `,
+          {
+            postInput: {
+              pod_id: pod_id,
+              auth0_user_id: auth0_user_id,
+              title: this.inputs.title,
+              content: this.inputs.content
+            }
+          }
+        )
+        .then(r => {
+          console.log("r", r);
+        });
     }
   }
 };
@@ -105,7 +140,7 @@ export default {
   padding: 0rem 2rem;
   background: transparent;
   text-align: left;
-  min-height: 100vh;
+  min-height: 70vh;
   border: none !important;
   border-color: none;
   outline: none !important;

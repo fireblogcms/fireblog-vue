@@ -25,21 +25,23 @@
         <div id="app-menu" class="navbar-menu" :class="{ 'is-active': showOnMobile }">
           <div class="navbar-end">
             <span class="navbar-item">
+              <!--
               <button
                 @click="showPublishBlogModal = true"
                 class="button is-outlined is-info"
               >SAVE CHANGES</button>
+              -->
             </span>
             <span class="navbar-item">
               <div class="buttons has-addons">
                 <span
                   @click="onStatusClick('draft')"
-                  :class="{'is-light':selectedStatus === 'draft'}"
+                  :class="{'is-outlined is-info':selectedStatus === 'draft'}"
                   class="button"
                 >Draft</span>
                 <span
                   @click="onStatusClick('published')"
-                  :class="{'is-success':selectedStatus === 'published'}"
+                  :class="{'is-outlined is-info':selectedStatus === 'published'}"
                   class="button"
                 >Published</span>
               </div>
