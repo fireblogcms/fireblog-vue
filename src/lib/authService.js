@@ -85,16 +85,16 @@ class AuthService extends EventEmitter {
   syncUserWithServer({ auth0_user_id, email, name, picture }) {
     return graphqlClient.request(
       `
-      mutation($user: UserInput) {
-        upsertUser(user: $user ) {
-          _id
+      mutation($userInput: UserInput) {
+        upsertUser(userInput: $userInput ) {
           email
           name
+          picture
         }
       }
     `,
       {
-        user: { auth0_user_id, email, name, picture }
+        userInput: { auth0_user_id, email, name, picture }
       }
     );
   }
@@ -106,7 +106,7 @@ class AuthService extends EventEmitter {
       auth0_user_id: this.profile.sub,
       email: this.profile.email,
       name: this.profile.name,
-      picture: this.profile.picture
+      picture: this.profile.picture ? this.profile.picture : null
     });
     // Convert the expiry time from seconds to milliseconds,
     // required by the Date constructor
