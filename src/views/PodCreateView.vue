@@ -48,17 +48,22 @@ export default {
   },
   methods: {
     onCreateClick() {
-      graphqlClient.request(
-        `
+      graphqlClient
+        .request(
+          `
       mutation($podInput: PodInput!) {
         createPod(podInput: $podInput) {
           name
           description
+          _id
         }
       }
     `,
-        { podInput: { auth0_user_id: this.user.sub, name: this.name } }
-      );
+          { podInput: { auth0_user_id: this.user.sub, name: this.name } }
+        )
+        .then(r => {
+          this.$router.push("/pod/5ce94ee60d4b309dc36e2d5b/write");
+        });
     },
     onGenerateCLick() {
       this.$refs.randomNameLink.addEventListener("mousedown", function(e) {
