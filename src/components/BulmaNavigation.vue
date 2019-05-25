@@ -5,7 +5,7 @@
         <div class="navbar-brand">
           <span class="navbar-item">
             <strong>
-              <router-link class="has-text-dark button is-outlined" to="/">MENU</router-link>
+              <router-link class="has-text-dark button is-outlined" to="/pods">PODS</router-link>
             </strong>
           </span>
           <div

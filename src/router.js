@@ -4,6 +4,8 @@ import HomeView from "./views/HomeView";
 import WriteView from "./views/WriteView";
 import ProfileView from "./views/ProfileView";
 import PodCreateView from "./views/PodCreateView";
+import PodListView from "./views/PodListView";
+import PodView from "./views/PodView";
 import Callback from "./components/Callback.vue";
 import Logout from "./components/Logout";
 import auth from "./lib/authService";
@@ -20,29 +22,33 @@ const router = new Router({
       component: HomeView
     },
     {
-      path: "/pod/:podId/write",
-      name: "write",
-      component: WriteView
-    },
-    {
-      path: "/pod/new",
-      name: "pod",
-      component: PodCreateView
-    },
-    {
-      path: "/profile",
-      name: "profile",
-      component: ProfileView
-    },
-    {
       path: "/callback",
       name: "callback",
       component: Callback
     },
     {
-      path: "/login",
-      name: "login",
-      component: HomeView
+      path: "/pod/create",
+      name: "pod",
+      component: PodCreateView
+    },
+    {
+      path: "/pod/:podId",
+      component: PodView
+    },
+    {
+      path: "/pod/:podId/write",
+      name: "write",
+      component: WriteView
+    },
+    {
+      path: "/pods",
+      name: "podList",
+      component: PodListView
+    },
+    {
+      path: "/profile",
+      name: "profile",
+      component: ProfileView
     },
     {
       path: "/logout",

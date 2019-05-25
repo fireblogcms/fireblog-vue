@@ -1,6 +1,6 @@
 import auth0 from "auth0-js";
 import { EventEmitter } from "events";
-import graphqlClient from "../lib/graphqlClient";
+import podClient from "../lib/podClient";
 
 const webAuth = new auth0.WebAuth({
   domain: process.env.VUE_APP_AUTH0_DOMAIN,
@@ -83,9 +83,9 @@ class AuthService extends EventEmitter {
   }
 
   syncUserWithServer({ auth0_user_id, email, name, picture }) {
-    return graphqlClient.request(
+    return podClient.request(
       `
-      mutation($userInput: UserInput) {
+      mutation($userInput: UserInput!) {
         upsertUser(userInput: $userInput ) {
           email
           name

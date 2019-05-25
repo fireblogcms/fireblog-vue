@@ -2,15 +2,26 @@
   <div class="pod-view">
     <div class="container child-is-vertical-centered">
       <div class="content has-text-centered">
-        <h2>
-          It's good to see you here, {{ user.name }} 🤗
-          <br>
-          <br>First let's create your first blog. Give it a name to your pod or let
-          <a
-            ref="randomNameLink"
-            @click.prevent="onGenerateCLick"
-          >use suggest one for you</a>
-        </h2>
+        <template v-if="$route.query.first">
+          <h2>
+            It's good to see you here, {{ user.name }} 🤗
+            <br>
+            <br>First let's create together your first Pod. Give it a name or let
+            <a
+              ref="randomNameLink"
+              @click.prevent="onGenerateCLick"
+            >us suggest a nice one for you</a>
+          </h2>
+        </template>
+        <template v-if="!$route.query.first">
+          <h2>
+            <br>Create a new Pod. Give it a name or let
+            <a
+              ref="randomNameLink"
+              @click.prevent="onGenerateCLick"
+            >us suggest a nice one for you</a>
+          </h2>
+        </template>
         <br>
 
         <div class="field">
@@ -35,7 +46,7 @@
 
 <script>
 import { generate } from "../lib/fantasyName.js";
-import graphqlClient from "../lib/graphqlClient";
+import podClient from "../lib/podClient";
 
 export default {
   data() {
@@ -44,11 +55,12 @@ export default {
     };
   },
   created() {
+    console.log(this.$route);
     this.user = this.$auth.getUser();
   },
   methods: {
     onCreateClick() {
-      graphqlClient
+      podClient
         .request(
           `
       mutation($podInput: PodInput!) {

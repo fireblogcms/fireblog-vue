@@ -35,7 +35,7 @@
 
 <script>
 import AdminLayout from "@/layouts/AdminLayout";
-import graphqlClient from "../lib/graphqlClient";
+import podClient from "../lib/podClient";
 // import Editor from "@ckeditor/ckeditor5-build-classic";
 // import Editor from "@ckeditor/ckeditor5-build-balloon";
 import Editor from "@ckeditor/ckeditor5-build-balloon-block";
@@ -82,11 +82,10 @@ export default {
     },
 
     onCreateClick() {
-      alert("ok");
       const auth0_user_id = this.$auth.getUser().sub;
       const pod_id = this.$route.params.podId;
 
-      graphqlClient
+      podClient
         .request(
           `
             mutation($postInput: PostInput!) {

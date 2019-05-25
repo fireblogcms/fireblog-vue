@@ -1,15 +1,47 @@
 <template>
   <div class="spinner">
-    <img src="../assets/loading.svg" alt="Loading" />
+    <img src="../assets/loading.svg" alt="Loading">
   </div>
 </template>
 
 <script>
+import podClient from "../lib/podClient";
+
 export default {
   methods: {
     handleLoginEvent(data) {
+      console.log("data", data);
       if (!data.error) {
         this.$router.push(data.state.target || "/");
+        // if user has no pod, redirect him to pod creation page.
+        // if he already has pods, ask him in which one he wants to write
+        podClient
+          .request(
+            `
+            query($filter: PodsFilter){
+              pods(filter: $filter) {
+                name, 
+                description, 
+                _id
+              }
+            }
+          `,
+            {
+              filter: {
+                auth0_user_id: data.profile.sub
+              }
+            }
+          )
+          .then(r => {
+            if (r.pods.length === 0) {
+              this.$router.push({
+                path: "/pod/create",
+                query: { first: true }
+              });
+            } else {
+              this.$router.push("/pods");
+            }
+          });
       }
     }
   },
