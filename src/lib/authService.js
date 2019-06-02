@@ -6,7 +6,7 @@ const webAuth = new auth0.WebAuth({
   domain: process.env.VUE_APP_AUTH0_DOMAIN,
   redirectUri: `${window.location.origin}/callback`,
   clientID: process.env.VUE_APP_AUTH0_CLIENTID,
-  responseType: "id_token",
+  responseType: "id_token token",
   scope: "openid profile email"
 });
 
@@ -45,6 +45,7 @@ class AuthService extends EventEmitter {
   handleAuthentication() {
     return new Promise((resolve, reject) => {
       webAuth.parseHash((err, authResult) => {
+        console.log("authResult", authResult);
         if (err) {
           this.emit(loginEvent, {
             loggedIn: false,
