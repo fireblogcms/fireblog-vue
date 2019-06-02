@@ -85,7 +85,7 @@ export default {
       const auth0_user_id = this.$auth.getUser().sub;
       const pod_id = this.$route.params.podId;
 
-      podClient
+      podClient()
         .request(
           `
             mutation($postInput: PostInput!) {

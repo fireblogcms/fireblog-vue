@@ -15,7 +15,7 @@ export default {
         this.$router.push(data.state.target || "/");
         // if user has no pod, redirect him to pod creation page.
         // if he already has pods, ask him in which one he wants to write
-        podClient
+        podClient()
           .request(
             `
             query($filter: PodsFilter){

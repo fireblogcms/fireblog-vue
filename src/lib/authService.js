@@ -3,11 +3,12 @@ import { EventEmitter } from "events";
 import podClient from "../lib/podClient";
 
 const webAuth = new auth0.WebAuth({
+  audience: "https://mypod.cloud/graphql",
   domain: process.env.VUE_APP_AUTH0_DOMAIN,
   redirectUri: `${window.location.origin}/callback`,
   clientID: process.env.VUE_APP_AUTH0_CLIENTID,
   responseType: "id_token token",
-  scope: "openid profile email"
+  scope: "openid email profile"
 });
 
 const localStorageKey = "tokenExpiry";
@@ -18,6 +19,10 @@ class AuthService extends EventEmitter {
   profile = null;
   tokenExpiry = null;
 
+  getAccessToken() {
+    return localStorage.getItem("accessToken");
+  }
+
   login(customState) {
     webAuth.authorize({
       appState: customState
@@ -25,7 +30,7 @@ class AuthService extends EventEmitter {
   }
 
   getUser() {
-    return JSON.parse(localStorage.getItem("podUser"));
+    return JSON.parse(localStorage.getItem("user"));
   }
 
   logOut() {
@@ -84,7 +89,7 @@ class AuthService extends EventEmitter {
   }
 
   syncUserWithServer({ auth0_user_id, email, name, picture }) {
-    return podClient.request(
+    return podClient().request(
       `
       mutation($userInput: UserInput!) {
         upsertUser(userInput: $userInput ) {
@@ -108,9 +113,10 @@ class AuthService extends EventEmitter {
     // Convert the expiry time from seconds to milliseconds,
     // required by the Date constructor
     this.tokenExpiry = new Date(this.profile.exp * 1000);
-
     localStorage.setItem(localStorageKey, this.tokenExpiry);
-    localStorage.setItem("podUser", JSON.stringify(this.profile));
+    // @FIXME : this not safe.
+    localStorage.setItem("user", JSON.stringify(this.profile));
+    localStorage.setItem("accessToken", authResult.accessToken);
 
     this.syncUserWithServer({
       auth0_user_id: this.profile.sub,

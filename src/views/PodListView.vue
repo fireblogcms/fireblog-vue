@@ -46,7 +46,7 @@ export default {
   },
   created() {
     this.loadingState = "PENDING";
-    podClient
+    podClient()
       .request(
         `
     {

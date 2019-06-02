@@ -25,7 +25,7 @@ export default {
       } else {
         const user = this.$auth.getUser();
         console.log("user", user);
-        podClient
+        podClient()
           .request(
             `
             query($filter: PodsFilter){

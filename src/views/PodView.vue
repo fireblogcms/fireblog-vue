@@ -51,7 +51,7 @@ export default {
   methods: {
     loadPod() {
       this.loadingPodState = "PENDING";
-      podClient
+      podClient()
         .request(
           `
     query($id: ID!){
@@ -75,7 +75,7 @@ export default {
     },
     loadPosts() {
       this.loadingPostsState = "PENDING";
-      podClient
+      podClient()
         .request(
           `
           query($filter: PostsFilter){

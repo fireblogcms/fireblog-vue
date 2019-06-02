@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     onCreateClick() {
-      podClient
+      podClient()
         .request(
           `
       mutation($podInput: PodInput!) {
