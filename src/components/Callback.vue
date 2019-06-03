@@ -1,14 +1,25 @@
 <template>
   <div class="spinner">
-    <img src="../assets/loading.svg" alt="Loading">
+    <img v-if="!error" src="../assets/loading.svg" alt="Loading">
+    <div v-if="error" class="section">
+      <h1 class="title is-1">Login error</h1>
+      <pre>{{error}}</pre>
+    </div>
   </div>
 </template>
 
 <script>
 import podClient from "../lib/podClient";
+import { auth0client, localLogin } from "../lib/auth";
 
 export default {
+  data() {
+    return {
+      error: null
+    };
+  },
   methods: {
+    /*
     handleLoginEvent(data) {
       console.log("data", data);
       if (!data.error) {
@@ -44,14 +55,17 @@ export default {
           });
       }
     }
+    */
   },
   async created() {
-    try {
-      await this.$auth.handleAuthentication();
-    } catch (e) {
-      this.$router.push("/");
-      console.error(e);
-    }
+    auth0client.parseHash((error, result) => {
+      // @FIXME handle error gracefully
+      if (error) {
+        this.error = error;
+      } else {
+        localLogin(result);
+      }
+    });
   }
 };
 </script>

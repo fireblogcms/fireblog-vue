@@ -8,7 +8,7 @@ import PodListView from "./views/PodListView";
 import PodView from "./views/PodView";
 import Callback from "./components/Callback.vue";
 import Logout from "./components/Logout";
-import auth from "./lib/authService";
+import { auth0RouterMiddleware } from "./lib/auth";
 
 Vue.use(Router);
 
@@ -59,16 +59,8 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-  if (
-    to.path === "/login" ||
-    to.path === "/" ||
-    to.path === "/callback" ||
-    auth.isAuthenticated()
-  ) {
-    return next();
-  }
-
-  auth.login({ target: to.path });
+  auth0RouterMiddleware(to, from, next);
+  next();
 });
 
 export default router;
