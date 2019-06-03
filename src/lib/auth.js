@@ -13,13 +13,14 @@ export const auth0client = new auth0.WebAuth({
   scope: "openid email profile"
 });
 
-// @FIXME : we should not store accessToken.
+// @FIXME : we should not store accessTokenin local storage for security reason.
+// Good enough for the proto.
 export function localLogin(authResult) {
   console.log("debug authResult", authResult);
   const user = authResult.idTokenPayload;
   localStorage.setItem("accessToken", authResult.accessToken);
-  localStorage.setItem("user", user);
-  syncUserWithServer({
+  localStorage.setItem("user", JSON.stringify(user));
+  return syncUserWithServer({
     _id: user.sub,
     email: user.email,
     name: user.name,
@@ -32,15 +33,16 @@ export function getAccessToken() {
 }
 
 export function isAuthenticated() {
-  return false;
+  const user = getUser();
+  if (!user) {
+    return false;
+  }
+  const tokenExpiry = new Date(user.exp * 1000);
+  return user && tokenExpiry > Date.now();
 }
 
 export function getUser() {
   return JSON.parse(localStorage.getItem("user"));
-}
-
-export function isIdTokenValid() {
-  return this.idToken && this.tokenExpiry && Date.now() < this.tokenExpiry;
 }
 
 function syncUserWithServer({ _id, email, name, picture }) {
@@ -62,6 +64,7 @@ function syncUserWithServer({ _id, email, name, picture }) {
 }
 
 export function auth0RouterMiddleware(to, from, next) {
+  console.log("isAuthenticated", isAuthenticated());
   if (
     to.path === "/login" ||
     to.path === "/" ||

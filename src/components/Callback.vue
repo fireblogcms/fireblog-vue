@@ -63,7 +63,18 @@ export default {
       if (error) {
         this.error = error;
       } else {
-        localLogin(result);
+        localLogin(result)
+          .then(r => {
+            this.$router.push({
+              path: "/pod/create",
+              query: { first: true }
+            });
+          })
+          .catch(error => {
+            throw new Error(
+              "Failed to sync auth0 user with the server with error: " + error
+            );
+          });
       }
     });
   }
