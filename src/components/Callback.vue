@@ -66,7 +66,7 @@ export default {
         localLogin(result)
           .then(r => {
             this.$router.push({
-              path: "/pod/create",
+              path: "/pods",
               query: { first: true }
             });
           })

@@ -54,10 +54,6 @@ export default {
       name: ""
     };
   },
-  created() {
-    console.log(this.$route);
-    this.user = this.$auth.getUser();
-  },
   methods: {
     onCreateClick() {
       podClient()

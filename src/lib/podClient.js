@@ -1,9 +1,9 @@
 import { GraphQLClient } from "graphql-request";
-import authService from "./authService";
+import { getAccessToken } from "./auth";
 
 export default function podClient() {
   let headers = {};
-  let token = authService.getAccessToken();
+  let token = getAccessToken();
   if (token) {
     headers.authorization = `Bearer ${token}`;
   }

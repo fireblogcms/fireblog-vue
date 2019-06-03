@@ -15,19 +15,20 @@
 </template>
 
 <script>
-import auth from "../lib/authService";
+import { isAuthenticated, getUser, auth0client } from "../lib/auth";
 import podClient from "../lib/podClient";
 export default {
   methods: {
     onWriteClick() {
-      if (!auth.isAuthenticated()) {
-        auth.login({ target: "/callback" });
-      } else {
-        const user = this.$auth.getUser();
-        console.log("user", user);
-        podClient()
-          .request(
-            `
+      //const user = getUser();
+      this.$router.push({
+        path: "/pods"
+      });
+
+      /*
+      podClient()
+        .request(
+          `
             query($filter: PodsFilter){
               pods(filter: $filter) {
                 name, 
@@ -36,23 +37,23 @@ export default {
               }
             }
           `,
-            {
-              filter: {
-                auth0_user_id: user.sub
-              }
+          {
+            filter: {
+              auth0_user_id: user.sub
             }
-          )
-          .then(r => {
-            if (r.pods.length === 0) {
-              this.$router.push({
-                path: "/pod/create",
-                query: { first: true }
-              });
-            } else {
-              this.$router.push("/pods");
-            }
-          });
-      }
+          }
+        )
+        .then(r => {
+          if (r.pods.length === 0) {
+            this.$router.push({
+              path: "/pod/create",
+              query: { first: true }
+            });
+          } else {
+            this.$router.push("/pods");
+          }
+        });
+        */
     }
   }
 };

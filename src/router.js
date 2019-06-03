@@ -6,6 +6,7 @@ import ProfileView from "./views/ProfileView";
 import PodCreateView from "./views/PodCreateView";
 import PodListView from "./views/PodListView";
 import PodView from "./views/PodView";
+import NotFoundView from "./views/NotFoundView";
 import Callback from "./components/Callback.vue";
 import Logout from "./components/Logout";
 import { auth0RouterMiddleware } from "./lib/auth";
@@ -19,12 +20,18 @@ const router = new Router({
     {
       path: "/",
       name: "home",
-      component: HomeView
+      component: HomeView,
+      meta: {
+        public: true
+      }
     },
     {
       path: "/callback",
       name: "callback",
-      component: Callback
+      component: Callback,
+      meta: {
+        public: true
+      }
     },
     {
       path: "/pod/create",

@@ -64,16 +64,19 @@ function syncUserWithServer({ _id, email, name, picture }) {
 }
 
 export function auth0RouterMiddleware(to, from, next) {
-  console.log("isAuthenticated", isAuthenticated());
-  if (
+  // if route is public, authorized access without checking authentication
+  if (to.matched.some(record => record.meta.public === true)) {
+    next();
+  }
+  // do not require
+  else if (
     to.path === "/login" ||
     to.path === "/" ||
     to.path === "/callback" ||
     isAuthenticated()
   ) {
-    return next();
+    next();
+  } else {
+    auth0client.authorize({ target: to.path });
   }
-
-  auth0client.authorize({ target: to.path });
-  next(false);
 }
