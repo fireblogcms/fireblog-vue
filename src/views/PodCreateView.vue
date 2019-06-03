@@ -47,6 +47,9 @@
 <script>
 import { generate } from "../lib/fantasyName.js";
 import podClient from "../lib/podClient";
+import { getUser } from "../lib/auth";
+
+const user = getUser();
 
 export default {
   data() {
@@ -67,7 +70,7 @@ export default {
         }
       }
     `,
-          { podInput: { auth0_user_id: this.user.sub, name: this.name } }
+          { podInput: { owner_id: user.sub, name: this.name } }
         )
         .then(r => {
           this.$router.push("/pod/5ce94ee60d4b309dc36e2d5b/write");
