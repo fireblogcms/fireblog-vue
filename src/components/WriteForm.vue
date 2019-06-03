@@ -40,6 +40,7 @@ import podClient from "../lib/podClient";
 // import Editor from "@ckeditor/ckeditor5-build-balloon";
 import Editor from "@ckeditor/ckeditor5-build-balloon-block";
 import CKEditor from "@ckeditor/ckeditor5-vue";
+import { getUser } from "@/lib/auth";
 
 /*
 0: "heading"
@@ -82,7 +83,7 @@ export default {
     },
 
     onCreateClick() {
-      const auth0_user_id = this.$auth.getUser().sub;
+      const user_id = getUser().sub;
       const pod_id = this.$route.params.podId;
 
       podClient()
@@ -90,8 +91,7 @@ export default {
           `
             mutation($postInput: PostInput!) {
               createPost(postInput: $postInput) {
-                _id
-                user_id
+                author_id
                 pod_id
                 title
                 content
@@ -101,7 +101,7 @@ export default {
           {
             postInput: {
               pod_id: pod_id,
-              auth0_user_id: auth0_user_id,
+              author_id: user_id,
               title: this.inputs.title,
               content: this.inputs.content
             }
