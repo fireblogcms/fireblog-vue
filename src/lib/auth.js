@@ -78,5 +78,6 @@ export function auth0RouterMiddleware(to, from, next) {
     next();
   } else {
     auth0client.authorize({ target: to.path });
+    next(false);
   }
 }

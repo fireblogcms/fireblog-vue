@@ -72,7 +72,7 @@ export default {
           })
           .catch(error => {
             throw new Error(
-              "Failed to sync auth0 user with the server with error: " + error
+              "Failed to sync auth0 user with the server. Error: " + error
             );
           });
       }

@@ -91,8 +91,15 @@ export default {
           `
             mutation($postInput: PostInput!) {
               createPost(postInput: $postInput) {
-                author_id
-                pod_id
+                authors {
+                  name
+                  email
+                }
+                pod {
+                  _id
+                  name
+                  description
+                }
                 title
                 content
               }
@@ -100,16 +107,14 @@ export default {
          `,
           {
             postInput: {
-              pod_id: pod_id,
-              author_id: user_id,
+              pod: pod_id,
+              authors: [user_id],
               title: this.inputs.title,
               content: this.inputs.content
             }
           }
         )
-        .then(r => {
-          console.log("r", r);
-        });
+        .then(r => {});
     }
   }
 };

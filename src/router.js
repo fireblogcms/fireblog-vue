@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
 import HomeView from "./views/HomeView";
-import WriteView from "./views/WriteView";
+import PostWriteView from "./views/WriteView";
 import ProfileView from "./views/ProfileView";
 import PodCreateView from "./views/PodCreateView";
 import PodListView from "./views/PodListView";
@@ -43,9 +43,9 @@ const router = new Router({
       component: PodView
     },
     {
-      path: "/pod/:podId/write",
-      name: "write",
-      component: WriteView
+      path: "/pod/:podId/write/post",
+      name: "postWrite",
+      component: PostWriteView
     },
     {
       path: "/pods",
@@ -61,6 +61,10 @@ const router = new Router({
       path: "/logout",
       name: "logout",
       component: Logout
+    },
+    {
+      path: "*",
+      component: NotFoundView
     }
   ]
 });
