@@ -48,6 +48,11 @@ const router = new Router({
       component: PostWriteView
     },
     {
+      path: "/pod/:podId/write/post/:postId",
+      name: "postWrite",
+      component: PostWriteView
+    },
+    {
       path: "/pods",
       name: "podList",
       component: PodListView

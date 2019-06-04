@@ -23,7 +23,7 @@
           <h2 style="color:#444">
             <div class="columns">
               <div class="column">
-                <router-link :to="`/pod/${pod._id}/post/${post._id}`">{{post.title}}</router-link>
+                <router-link :to="`/pod/${pod._id}/write/post/${post._id}`">{{post.title}}</router-link>
               </div>
             </div>
           </h2>
@@ -81,6 +81,7 @@ export default {
           query($filter: PostsFilter){
             posts(filter: $filter) {
               title
+              _id
             }
           }
           `,

@@ -62,6 +62,7 @@ export default {
   },
   data() {
     return {
+      post: null,
       inputs: {
         title: "",
         content: ""
@@ -71,22 +72,72 @@ export default {
   // "heading"
   // "mediaEmbed"
   created() {
+    this.operation = "NEW";
     this.editor = Editor;
     this.editorConfig = {
       toolbar: ["bold", "italic", "link", "heading"],
       blockToolbar: ["imageUpload", "mediaEmbed"]
     };
+    if (this.$route.params.postId) {
+      this.getExistingPost().then(result => {
+        this.post = result.post;
+        this.inputs.title = result.post.title;
+        this.inputs.content = result.post.content ? result.post.content : "";
+      });
+    }
   },
   methods: {
     onEnter() {
       this.$refs.ckeditor.$el.focus();
     },
-
+    getExistingPost() {
+      return podClient().request(
+        `
+        query ($_id: ID!) {
+          post(_id: $_id) {
+            _id
+            title
+            content
+          }
+        }
+      `,
+        { _id: this.$route.params.postId }
+      );
+    },
     onCreateClick() {
-      const user_id = getUser().sub;
+      if (!this.post) {
+        this.createPost();
+      }
+      if (this.post._id) {
+        this.updatePost();
+      }
+    },
+    updatePost() {
+      return podClient().request(
+        `
+        mutation($updatePostInput: updatePostInput!) {
+          updatePost(
+            updatePostInput: $updatePostInput
+          ) {
+            title
+            pod {name}
+            content
+          }
+        }
+      `,
+        {
+          updatePostInput: {
+            _id: this.post._id,
+            title: this.inputs.title,
+            content: this.inputs.content
+          }
+        }
+      );
+    },
+    createPost() {
       const pod_id = this.$route.params.podId;
-
-      podClient()
+      const user_id = getUser().sub;
+      return podClient()
         .request(
           `
             mutation($postInput: PostInput!) {
