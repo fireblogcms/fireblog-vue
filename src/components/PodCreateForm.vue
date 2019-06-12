@@ -50,8 +50,6 @@ import { generate } from "../lib/fantasyName.js";
 import podClient from "../lib/podClient";
 import { getUser } from "../lib/auth";
 
-const user = getUser();
-
 export default {
   props: {
     first: {
@@ -64,7 +62,7 @@ export default {
     };
   },
   created() {
-    this.user = user;
+    this.user = getUser();
   },
   methods: {
     onCreateClick() {
@@ -79,11 +77,11 @@ export default {
               }
             }
           `,
-          { podInput: { owner: user.sub, name: this.name } }
+          { podInput: { owner: this.user.sub, name: this.name } }
         )
-        .then(r => {
-          console.log("r", r);
-          this.$router.push("/pod/5d01117bb228b762d6f3effe");
+        .then(result => {
+          console.log("result", result);
+          this.$router.push(`/pod/${result._id}`);
         });
     },
     onGenerateCLick() {

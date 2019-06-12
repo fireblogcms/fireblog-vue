@@ -57,7 +57,7 @@ export default {
     }
     */
   },
-  async created() {
+  created() {
     auth0client.parseHash((error, result) => {
       // @FIXME handle error gracefully
       if (error) {
@@ -65,9 +65,9 @@ export default {
       } else {
         localLogin(result)
           .then(r => {
+            console.log("r", r);
             this.$router.push({
-              path: "/pods",
-              query: { first: true }
+              path: "/pods"
             });
           })
           .catch(error => {

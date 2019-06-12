@@ -10,7 +10,6 @@ export default {
   async created() {
     logout();
     this.$router.push("/");
-    console.error(e);
   }
 };
 </script>

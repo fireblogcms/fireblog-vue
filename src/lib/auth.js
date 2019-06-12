@@ -16,7 +16,6 @@ export const auth0client = new auth0.WebAuth({
 // @FIXME : we should not store accessTokenin local storage for security reason.
 // Good enough for the proto.
 export function localLogin(authResult) {
-  console.log("debug authResult", authResult);
   const user = authResult.idTokenPayload;
   localStorage.setItem("accessToken", authResult.accessToken);
   localStorage.setItem("user", JSON.stringify(user));
