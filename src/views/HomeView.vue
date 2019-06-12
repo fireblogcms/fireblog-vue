@@ -5,10 +5,10 @@
         <h1 class="title is-1">
           <strong>POD</strong>
         </h1>
-        <h2 class="subtitle is-3">Fast headless blog engine</h2>
+        <h2 class="subtitle is-3">Fast headless blogging</h2>
         <br>
         <br>
-        <button @click="onWriteClick" class="button">WRITE</button>
+        <button @click="onWriteClick" class="button is-large">WRITE</button>
       </div>
     </div>
   </div>

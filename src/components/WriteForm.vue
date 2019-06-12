@@ -165,7 +165,9 @@ export default {
             }
           }
         )
-        .then(r => {});
+        .then(r => {
+          console.log("r", r);
+        });
     }
   }
 };

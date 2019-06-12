@@ -13,7 +13,7 @@
       </div>
     </div>
     -->
-    <WriteForm />
+    <WriteForm/>
   </div>
 </template>
 
