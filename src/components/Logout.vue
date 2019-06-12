@@ -5,14 +5,12 @@
 </template>
 
 <script>
+import { logout } from "../lib/auth";
 export default {
   async created() {
-    try {
-      await this.$auth.logOut();
-    } catch (e) {
-      this.$router.push("/");
-      console.error(e);
-    }
+    logout();
+    this.$router.push("/");
+    console.error(e);
   }
 };
 </script>

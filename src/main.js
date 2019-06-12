@@ -6,6 +6,7 @@ import VueTextareaAutosize from "vue-textarea-autosize";
 import "bulma/css/bulma.css";
 
 Vue.use(VueTextareaAutosize);
+Vue.use(require("vue-moment"));
 
 Vue.config.productionTip = false;
 

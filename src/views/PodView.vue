@@ -66,7 +66,6 @@ export default {
         )
         .then(r => {
           this.loadingPodState = "FINISHED_OK";
-          console.log(r);
           this.pod = r.pod;
         })
         .catch(e => {

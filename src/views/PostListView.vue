@@ -13,6 +13,7 @@
 
 <script>
 import podClient from "../lib/podClient";
+impot;
 
 export default {
   data() {
@@ -24,17 +25,16 @@ export default {
     podClient()
       .request(
         `
-    {
-      posts {
-        title, 
-        content, 
-        _id
-      }
-    }
-    `
+        {
+          posts {
+            title, 
+            content, 
+            _id
+          }
+        }
+      `
       )
       .then(r => {
-        console.log(r);
         this.posts = r.posts;
       });
   }

@@ -28,6 +28,11 @@ export function localLogin(authResult) {
   });
 }
 
+export function logout() {
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("user");
+}
+
 export function getAccessToken() {
   return localStorage.getItem("accessToken");
 }
