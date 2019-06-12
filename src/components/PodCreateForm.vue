@@ -81,7 +81,7 @@ export default {
         )
         .then(result => {
           console.log("result", result);
-          this.$router.push(`/pod/${result._id}`);
+          this.$router.push(`/pod/${result.createPod._id}`);
         });
     },
     onGenerateCLick() {
