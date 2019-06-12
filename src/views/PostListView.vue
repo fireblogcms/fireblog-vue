@@ -4,7 +4,7 @@
     <hr>
     <div v-for="post in posts" :key="post._id">
       <h2 style="color:#444">
-        <router-link :to="`pod/${pod._id}`">{{pod.name}}</router-link>
+        <router-link :to="`pod/${pod._id}`">COUCOU</router-link>
       </h2>
       <hr>
     </div>

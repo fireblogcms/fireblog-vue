@@ -1,6 +1,6 @@
 <template>
   <div class="pod-list-view content container section">
-    <h1 v-if="pods.length > 0" class="title is-1">MY PODS</h1>
+    <h1 v-if="pods.length > 0" class="title is-1">MY BLOGS</h1>
 
     <template v-if="loadingState === 'PENDING'">loading</template>
     <template v-if="loadingState === 'FINISHED_OK'">
