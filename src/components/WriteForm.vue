@@ -30,6 +30,13 @@
                   value="SAVE CHANGES"
                 >
               </span>
+              <span class="navbar-item">
+                <button @click="onApiClick" class="button is-outlined is-info">
+                  &nbsp;&nbsp;&nbsp;
+                  <img src="/logo-graphql.svg">
+                  API&nbsp;&nbsp;&nbsp;
+                </button>
+              </span>
             </portal>
           </form>
         </div>
@@ -97,6 +104,9 @@ export default {
   methods: {
     onEnter() {
       this.$refs.ckeditor.$el.focus();
+    },
+    onApiClick() {
+      this.$router.push(`/pod/${this.$route.params.podId}/write/post/api`);
     },
     getExistingPost() {
       return podClient().request(

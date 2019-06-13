@@ -6,6 +6,7 @@ import ProfileView from "./views/ProfileView";
 import PodCreateView from "./views/PodCreateView";
 import PodListView from "./views/PodListView";
 import PodView from "./views/PodView";
+import PostApiView from "./views/PostApiView";
 import NotFoundView from "./views/NotFoundView";
 import Callback from "./components/Callback.vue";
 import Logout from "./components/Logout";
@@ -46,6 +47,11 @@ const router = new Router({
       path: "/pod/:podId/write/post",
       name: "postWrite",
       component: PostWriteView
+    },
+    {
+      path: "/pod/:podId/write/post/api",
+      name: "postApi",
+      component: PostApiView
     },
     {
       path: "/pod/:podId/write/post/:postId",
