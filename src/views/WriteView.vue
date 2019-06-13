@@ -1,6 +1,7 @@
 <template>
-  <div class="write-view">
-    <!--
+  <AdminLayout>
+    <div class="write-view">
+      <!--
     <div class="write-menu">
       <div class="item">
         <button class="button">Publish</button>
@@ -12,19 +13,22 @@
         <button class="button">API</button>
       </div>
     </div>
-    -->
-    <WriteForm/>
-  </div>
+      -->
+      <WriteForm/>
+    </div>
+  </AdminLayout>
 </template>
 
 <script>
 // @ is an alias to /src
-import WriteForm from "@/components/WriteForm.vue";
+import WriteForm from "@/components/WriteForm";
+import AdminLayout from "@/layouts/AdminLayout";
 
 export default {
   name: "home",
   components: {
-    WriteForm
+    WriteForm,
+    AdminLayout
   }
 };
 </script>

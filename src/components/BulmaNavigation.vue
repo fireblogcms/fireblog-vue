@@ -1,13 +1,8 @@
 <template>
   <header>
-    <nav class="navbar">
+    <nav class="navbar is-white">
       <div class="container">
         <div class="navbar-brand">
-          <span class="navbar-item">
-            <strong>
-              <router-link class="has-text-dark button is-outlined" to="/pods">PODS</router-link>
-            </strong>
-          </span>
           <div
             @click="showOnMobile = !showOnMobile"
             :class="{ 'is-active': showOnMobile }"
@@ -23,6 +18,11 @@
         <!-- This "nav-menu" is hidden on mobile -->
         <!-- Add the modifier "is-active" to display it on mobile -->
         <div id="app-menu" class="navbar-menu" :class="{ 'is-active': showOnMobile }">
+          <div class="navbar-start">
+            <router-link class="navbar-item" to="/pods">MY PODS</router-link>
+            <router-link class="navbar-item" to="/profile">My account</router-link>
+          </div>
+
           <div class="navbar-end">
             <span class="navbar-item">
               <!--
@@ -32,20 +32,12 @@
               >SAVE CHANGES</button>
               -->
             </span>
-            <span class="navbar-item">
-              <div class="buttons has-addons">
-                <span
-                  @click="onStatusClick('draft')"
-                  :class="{'is-outlined is-info':selectedStatus === 'draft'}"
-                  class="button"
-                >Draft</span>
-                <span
-                  @click="onStatusClick('published')"
-                  :class="{'is-outlined is-info':selectedStatus === 'published'}"
-                  class="button"
-                >Published</span>
-              </div>
-            </span>
+            <portal-target name="navbar-end">
+              <!--
+            This component can be located anywhere in your App.
+            The slot content of the above portal component will be rendered here.
+              -->
+            </portal-target>
           </div>
         </div>
       </div>
@@ -87,14 +79,8 @@ export default {
     return {
       showOnMobile: false,
       showPublishBlogModal: false,
-      showCreateBlogModal: false,
-      selectedStatus: "draft"
+      showCreateBlogModal: false
     };
-  },
-  methods: {
-    onStatusClick(status) {
-      this.selectedStatus = status;
-    }
   }
 };
 </script>

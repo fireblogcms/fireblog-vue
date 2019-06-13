@@ -1,42 +1,46 @@
 <template>
-  <div class="pod-list-view content container section">
-    <h1 v-if="pods.length > 0" class="title is-1">MY BLOGS</h1>
+  <AdminLayout>
+    <div class="pod-list-view content container section">
+      <h1 v-if="pods.length > 0" class="title is-1">MY BLOGS</h1>
 
-    <template v-if="loadingState === 'PENDING'">loading</template>
-    <template v-if="loadingState === 'FINISHED_OK'">
-      <template v-if="pods.length === 0">
-        <PodCreateForm :first="true"/>
-      </template>
-      <template v-if="pods.length > 0">
-        <BulmaGrid :items="pods" :itemsByRow="3" :itemKey="(item, index) => item._id">
-          <template slot-scope="{item}">
-            <router-link :to="`/pod/${item._id}`">
-              <div class="card">
-                <div class="card-content">
-                  <div class="content">
-                    <h2>{{item.name}}</h2>
-                    <br>
-                    <p>Crée il y a {{Number(item.createdAt) | moment("from")}}</p>
+      <template v-if="loadingState === 'PENDING'">loading</template>
+      <template v-if="loadingState === 'FINISHED_OK'">
+        <template v-if="pods.length === 0">
+          <PodCreateForm :first="true"/>
+        </template>
+        <template v-if="pods.length > 0">
+          <BulmaGrid :items="pods" :itemsByRow="3" :itemKey="(item, index) => item._id">
+            <template slot-scope="{item}">
+              <router-link :to="`/pod/${item._id}`">
+                <div class="card">
+                  <div class="card-content">
+                    <div class="content">
+                      <h2>{{item.name}}</h2>
+                      <br>
+                      <p>Crée il y a {{Number(item.createdAt) | moment("from")}}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </router-link>
-          </template>
-        </BulmaGrid>
+              </router-link>
+            </template>
+          </BulmaGrid>
+        </template>
       </template>
-    </template>
-  </div>
+    </div>
+  </AdminLayout>
 </template>
 
 <script>
 import podClient from "../lib/podClient";
 import PodCreateForm from "../components/PodCreateForm";
 import BulmaGrid from "../components/BulmaGrid";
+import AdminLayout from "../layouts/AdminLayout";
 
 export default {
   components: {
     PodCreateForm,
-    BulmaGrid
+    BulmaGrid,
+    AdminLayout
   },
   data() {
     return {

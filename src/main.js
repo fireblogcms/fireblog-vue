@@ -4,7 +4,9 @@ import router from "./router";
 import store from "./store";
 import VueTextareaAutosize from "vue-textarea-autosize";
 import "bulma/css/bulma.css";
+import PortalVue from "portal-vue";
 
+Vue.use(PortalVue);
 Vue.use(VueTextareaAutosize);
 Vue.use(require("vue-moment"));
 

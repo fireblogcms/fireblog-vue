@@ -49,7 +49,7 @@ const router = new Router({
     },
     {
       path: "/pod/:podId/write/post/:postId",
-      name: "postWrite",
+      name: "postEdit",
       component: PostWriteView
     },
     {

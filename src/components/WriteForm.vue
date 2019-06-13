@@ -1,36 +1,44 @@
 <template>
-  <AdminLayout>
-    <div class="writeForm">
-      <div class="container">
-        <div class="columns">
-          <div class="column is-2 is-hidden-mobile"></div>
-          <div class="column is-8">
-            <form @submit.prevent>
-              <textarea-autosize
-                @keydown.enter.native.prevent="onEnter"
-                autofocus
-                rows="1"
-                placeholder="Title"
-                type="text"
-                id="title"
-                v-model="inputs.title"
-              ></textarea-autosize>
-              <ckeditor
-                ref="ckeditor"
-                :editor="editor"
-                v-model="inputs.content"
-                :config="editorConfig"
-              ></ckeditor>
-              <input @click="onCreateClick" class="button is-primary" type="submit" value="save">
-            </form>
-          </div>
-          <div class="column is-2">
-            <div></div>
-          </div>
+  <div class="writeForm">
+    <div class="container">
+      <div class="columns">
+        <div class="column is-2 is-hidden-mobile"></div>
+        <div class="column is-8">
+          <form @submit.prevent>
+            <textarea-autosize
+              @keydown.enter.native.prevent="onEnter"
+              autofocus
+              rows="1"
+              placeholder="Title"
+              type="text"
+              id="title"
+              v-model="inputs.title"
+            ></textarea-autosize>
+            <ckeditor
+              ref="ckeditor"
+              :editor="editor"
+              v-model="inputs.content"
+              :config="editorConfig"
+            ></ckeditor>
+
+            <portal to="navbar-end">
+              <span class="navbar-item">
+                <input
+                  @click="onCreateClick(post)"
+                  class="button is-outlined is-info"
+                  type="submit"
+                  value="SAVE CHANGES"
+                >
+              </span>
+            </portal>
+          </form>
+        </div>
+        <div class="column is-2">
+          <div></div>
         </div>
       </div>
     </div>
-  </AdminLayout>
+  </div>
 </template>
 
 <script>
@@ -104,11 +112,11 @@ export default {
         { _id: this.$route.params.postId }
       );
     },
-    onCreateClick() {
-      if (!this.post) {
+    onCreateClick(post) {
+      if (post === null) {
         this.createPost();
       }
-      if (this.post._id) {
+      if (post && post._id) {
         this.updatePost();
       }
     },
