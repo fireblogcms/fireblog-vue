@@ -52,8 +52,8 @@ export function getUser() {
 function syncUserWithServer({ _id, email, name, picture }) {
   return podClient().request(
     `
-    mutation($userInput: UserInput!) {
-      upsertUser(userInput: $userInput ) {
+    mutation($user: UserUpsertInput!) {
+      upsertUser(user: $user ) {
         email
         name
         picture
@@ -62,7 +62,7 @@ function syncUserWithServer({ _id, email, name, picture }) {
     }
   `,
     {
-      userInput: { _id, email, name, picture }
+      user: { _id, email, name, picture }
     }
   );
 }

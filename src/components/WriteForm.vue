@@ -17,7 +17,7 @@
             <ckeditor
               ref="ckeditor"
               :editor="editor"
-              v-model="inputs.content"
+              v-model="inputs.content_rendered"
               :config="editorConfig"
             ></ckeditor>
 
@@ -80,7 +80,7 @@ export default {
       post: null,
       inputs: {
         title: "",
-        content: ""
+        content_rendered: ""
       }
     };
   },
@@ -97,7 +97,9 @@ export default {
       this.getExistingPost().then(result => {
         this.post = result.post;
         this.inputs.title = result.post.title;
-        this.inputs.content = result.post.content ? result.post.content : "";
+        this.inputs.content_rendered = result.post.content_rendered
+          ? result.post.content_rendered
+          : "";
       });
     }
   },
@@ -115,7 +117,7 @@ export default {
           post(_id: $_id) {
             _id
             title
-            content
+            content_rendered
           }
         }
       `,
@@ -139,7 +141,7 @@ export default {
           ) {
             title
             pod {name}
-            content
+            content_rendered
           }
         }
       `,
@@ -147,7 +149,7 @@ export default {
           updatePostInput: {
             _id: this.post._id,
             title: this.inputs.title,
-            content: this.inputs.content
+            content_rendered: this.inputs.content_rendered
           }
         }
       );
@@ -170,7 +172,7 @@ export default {
                   description
                 }
                 title
-                content
+                content_rendered
               }
             }
          `,
@@ -179,7 +181,7 @@ export default {
               pod: pod_id,
               authors: [user_id],
               title: this.inputs.title,
-              content: this.inputs.content
+              content_rendered: this.inputs.content_rendered
             }
           }
         )

@@ -16,8 +16,8 @@
 
       <template v-if="loadingPostsState === 'FINISHED_OK'">
         <div class="has-text-centered">
-          <br>
-          <br>
+          <br />
+          <br />
         </div>
 
         <template v-if="posts.length > 0">
@@ -26,9 +26,9 @@
               <div class="columns">
                 <div class="column">
                   <router-link :to="`/pod/${pod._id}/write/post/${post._id}`">{{post.title}}</router-link>
-                  <br>
+                  <br />
                   <span class="subtitle">{{Number(post.createdAt) | moment('from')}}</span>
-                  <hr>
+                  <hr />
                 </div>
               </div>
             </h2>
@@ -90,13 +90,17 @@ export default {
           `
           query($filter: PostsFilter){
             posts(filter: $filter) {
-              title
-              createdAt
-              _id
+              edges {
+                node {
+                  title
+                  createdAt
+                  _id
+                }
+              }
             }
           }
           `,
-          { filter: { pod_id: this.$route.params.podId } }
+          { filter: { pod: this.$route.params.podId } }
         )
         .then(r => {
           this.loadingPostsState = "FINISHED_OK";
