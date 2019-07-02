@@ -88,7 +88,6 @@ export default {
     };
   },
   created() {
-    console.log("getUser", getUser);
     this.me = getUser();
   }
 };
