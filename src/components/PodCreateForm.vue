@@ -46,8 +46,19 @@
 
 <script>
 import { generate } from "../lib/fantasyName.js";
-import podClient from "../lib/podClient";
+import apolloClient from "../lib/apolloClient";
 import { getUser } from "../lib/auth";
+import gql from "graphql-tag";
+
+const createPostMutation = gql`
+  mutation createPod($pod: CreatePodInput!) {
+    createPod(pod: $pod) {
+      name
+      description
+      _id
+    }
+  }
+`;
 
 export default {
   props: {
@@ -65,22 +76,13 @@ export default {
   },
   methods: {
     onCreateClick() {
-      podClient()
-        .request(
-          `
-            mutation($podInput: PodInput!) {
-              createPod(podInput: $podInput) {
-                name
-                description
-                _id
-              }
-            }
-          `,
-          { podInput: { owner: this.user.sub, name: this.name } }
-        )
+      apolloClient
+        .mutate({
+          mutation: createPostMutation,
+          variables: { pod: { owner: this.user.sub, name: this.name } }
+        })
         .then(result => {
-          console.log("result", result);
-          this.$router.push(`/pod/${result.createPod._id}`);
+          this.$router.push(`/pod/${result.data.createPod._id}`);
         });
     },
     onGenerateCLick() {
