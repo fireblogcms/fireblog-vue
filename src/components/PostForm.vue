@@ -17,23 +17,24 @@
             <ckeditor
               ref="ckeditor"
               :editor="editor"
-              v-model="inputs.content_rendered"
+              v-model="inputs.content"
               :config="editorConfig"
             ></ckeditor>
 
             <portal to="navbar-end">
               <span class="navbar-item">
                 <input
-                  @click="onCreateClick(post)"
+                  @click="onSaveClick(post)"
+                  :class="{'is-loading': savingPostState === 'PENDING'}"
                   class="button is-outlined is-info"
                   type="submit"
                   value="SAVE CHANGES"
-                >
+                />
               </span>
               <span class="navbar-item">
                 <button @click="onApiClick" class="button is-outlined is-info">
                   &nbsp;&nbsp;&nbsp;
-                  <img src="/logo-graphql.svg">
+                  <img src="/logo-graphql.svg" />
                   API&nbsp;&nbsp;&nbsp;
                 </button>
               </span>
@@ -77,10 +78,11 @@ export default {
   },
   data() {
     return {
+      savingPostState: "NOT_STARTED",
       post: null,
       inputs: {
         title: "",
-        content_rendered: ""
+        content: ""
       }
     };
   },
@@ -95,11 +97,10 @@ export default {
     };
     if (this.$route.params.postId) {
       this.getExistingPost().then(result => {
+        console.log("result existing", result);
         this.post = result.post;
         this.inputs.title = result.post.title;
-        this.inputs.content_rendered = result.post.content_rendered
-          ? result.post.content_rendered
-          : "";
+        this.inputs.content = result.post.content ? result.post.content : "";
       });
     }
   },
@@ -117,39 +118,54 @@ export default {
           post(_id: $_id) {
             _id
             title
-            content_rendered
+            content
           }
         }
       `,
         { _id: this.$route.params.postId }
       );
     },
-    onCreateClick(post) {
+    onSaveClick(post) {
+      this.savingPostState = "PENDING";
       if (post === null) {
-        this.createPost();
+        this.createPost()
+          .then(r => {
+            this.savingPostState = "FINISHED_OK";
+          })
+          .catch(e => {
+            this.savingPostState = "FINISHED_ERROR";
+          });
       }
       if (post && post._id) {
-        this.updatePost();
+        this.updatePost()
+          .then(r => {
+            this.savingPostState = "FINISHED_OK";
+          })
+          .catch(e => {
+            this.savingPostState = "FINISHED_ERROR";
+          });
       }
     },
     updatePost() {
       return podClient().request(
         `
-        mutation($updatePostInput: updatePostInput!) {
+        mutation($post: UpdatePostInput!) {
           updatePost(
-            updatePostInput: $updatePostInput
+            post: $post
           ) {
             title
-            pod {name}
-            content_rendered
+            pod {
+              name
+            }
+            content
           }
         }
       `,
         {
-          updatePostInput: {
+          post: {
             _id: this.post._id,
             title: this.inputs.title,
-            content_rendered: this.inputs.content_rendered
+            content: this.inputs.content
           }
         }
       );
@@ -160,9 +176,9 @@ export default {
       return podClient()
         .request(
           `
-            mutation($postInput: PostInput!) {
-              createPost(postInput: $postInput) {
-                authors {
+            mutation($post: CreatePostInput!) {
+              createPost(post: $post) {
+                author {
                   name
                   email
                 }
@@ -172,16 +188,16 @@ export default {
                   description
                 }
                 title
-                content_rendered
+                content
               }
             }
          `,
           {
-            postInput: {
+            post: {
               pod: pod_id,
-              authors: [user_id],
+              author: user_id,
               title: this.inputs.title,
-              content_rendered: this.inputs.content_rendered
+              content: this.inputs.content
             }
           }
         )

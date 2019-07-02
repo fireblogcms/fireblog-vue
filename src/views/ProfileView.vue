@@ -5,33 +5,55 @@
         <div class="col-md-2">
           <img
             width="200"
-            :src="profile.picture"
+            :src="me.picture"
             alt="User's profile picture"
             class="rounded-circle img-fluid profile-picture"
-          >
+          />
         </div>
         <div class="col-md">
-          <h2>{{ profile.name }}</h2>
-          <p class="lead text-muted">{{ profile.email }}</p>
+          <h2>{{ me.name }}</h2>
+          <p class="lead text-muted">{{ me.email }}</p>
         </div>
       </div>
 
       <div class="row">
-        <pre class="rounded"><code class="json">{{ JSON.stringify(profile, null, 2) }}</code></pre>
+        <pre class="rounded"><code class="json">{{ JSON.stringify(me, null, 2) }}</code></pre>
       </div>
     </div>
   </AdminLayout>
 </template>
 
 <script>
-import { getUser } from "../lib/auth";
 import AdminLayout from "@/layouts/AdminLayout";
+import podClient from "../lib/podClient";
+
 export default {
+  data() {
+    return {
+      me: {}
+    };
+  },
   components: {
     AdminLayout
   },
   created() {
-    this.profile = getUser();
+    podClient()
+      .request(
+        `query {
+        me {
+          _id
+          name
+          email
+          createdAt
+          updatedAt
+          picture
+        }
+      }
+      `
+      )
+      .then(result => {
+        this.me = result.me;
+      });
   }
 };
 </script>

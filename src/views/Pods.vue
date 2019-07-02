@@ -1,23 +1,25 @@
 <template>
   <AdminLayout>
     <div class="pod-list-view content container section">
-      <h1 v-if="pods.length > 0" class="title is-1">MY BLOGS</h1>
+      <h1 v-if="pods && pods.edges.length > 0" class="title is-1">MY BLOGS</h1>
 
       <template v-if="loadingState === 'PENDING'">loading</template>
       <template v-if="loadingState === 'FINISHED_OK'">
-        <template v-if="pods.length === 0">
-          <PodCreateForm :first="true"/>
+        <template v-if="pods.edges.length === 0">
+          <div class="pod-container">
+            <PodCreateForm :first="true" />
+          </div>
         </template>
-        <template v-if="pods.length > 0">
-          <BulmaGrid :items="pods" :itemsByRow="3" :itemKey="(item, index) => item._id">
+        <template v-if="pods && pods.edges.length > 0">
+          <BulmaGrid :items="pods.edges" :itemsByRow="3" :itemKey="(item, index) => item._id">
             <template slot-scope="{item}">
-              <router-link :to="`/pod/${item._id}`">
+              <router-link :to="`/pod/${item.node._id}`">
                 <div class="card">
                   <div class="card-content">
                     <div class="content">
-                      <h2>{{item.name}}</h2>
-                      <br>
-                      <p>Crée il y a {{Number(item.createdAt) | moment("from")}}</p>
+                      <h2>{{item.node.name}}</h2>
+                      <br />
+                      <p>Crée il y a {{Number(item.node.createdAt) | moment("from")}}</p>
                     </div>
                   </div>
                 </div>
@@ -44,7 +46,7 @@ export default {
   },
   data() {
     return {
-      pods: "",
+      pods: null,
       loadingState: "NOT_STARTED"
     };
   },
@@ -54,12 +56,16 @@ export default {
       .request(
         `
           {
-            pods {
-              name
-              description
-              createdAt
-              updatedAt
-              _id
+            pods(first:100) {
+              edges {
+                node {
+                  name
+                  description
+                  createdAt
+                  updatedAt
+                  _id
+                }
+              }
             }
           }
         `

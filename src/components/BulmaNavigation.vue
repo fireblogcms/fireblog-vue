@@ -1,6 +1,6 @@
 <template>
   <header>
-    <nav class="navbar is-white">
+    <nav class="navbar">
       <div class="container">
         <div class="navbar-brand">
           <div
@@ -19,8 +19,8 @@
         <!-- Add the modifier "is-active" to display it on mobile -->
         <div id="app-menu" class="navbar-menu" :class="{ 'is-active': showOnMobile }">
           <div class="navbar-start">
+            <router-link class="navbar-item" to="/">Accueil</router-link>
             <router-link class="navbar-item" to="/pods">MY PODS</router-link>
-            <router-link class="navbar-item" to="/profile">My account</router-link>
           </div>
 
           <div class="navbar-end">
@@ -32,6 +32,7 @@
               >SAVE CHANGES</button>
               -->
             </span>
+            <router-link class="navbar-item" to="/profile">{{me.name}}</router-link>
             <portal-target name="navbar-end">
               <!--
             This component can be located anywhere in your App.
@@ -51,16 +52,16 @@
           <div class="field">
             <div class="label">Give a title Pod title ?</div>
             <div class="control">
-              <input class="input is-info is-large" type="text" placeholder="Blog's name">
+              <input class="input is-info is-large" type="text" placeholder="Blog's name" />
             </div>
           </div>
           <div class="field">
             <div class="label">What's your email ?</div>
             <div class="control">
-              <input class="input is-info is-large" type="text" placeholder="Email">
+              <input class="input is-info is-large" type="text" placeholder="Email" />
             </div>
           </div>
-          <br>
+          <br />
           <div class="buttons are-medium is-centered">
             <button class="button is-outline" @click="showPublishBlogModal = false">CANCEL</button>
             <button class="button is-info" @click="showPublishBlogModal = false">PUBLISH</button>
@@ -74,6 +75,7 @@
 </template>
 
 <script>
+import { getUser } from "../lib/auth";
 export default {
   data() {
     return {
@@ -81,28 +83,47 @@ export default {
       showPublishBlogModal: false,
       showCreateBlogModal: false
     };
+  },
+  created() {
+    console.log("getUser", getUser);
+    this.me = getUser();
   }
 };
 </script>
 
 <style scoped>
+.navbar {
+  background: #21314d;
+}
+
 .navbar-brand {
   margin-left: 1rem;
 }
 .navbar-brand a {
   position: relative;
+  color: rgba(255, 255, 255, 0.4);
 }
+
+.navbar-item.router-link-exact-active {
+  color: #21314d;
+  background: #f2f4f7;
+}
+
 .navbar-brand .navbar-item {
   padding-top: 0;
+}
+
+.navbar-item {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .navbar-item:hover {
   color: #363636;
 }
 
-.navbar-end .navbar-item:last-child,
-.navbar-end .navbar-item:nth-last-child(2) {
-  padding-right: 0;
+.navbar-end .navbar-item:last-child {
+  padding-right: auto;
 }
 
 /* Create slide animation on mobile */

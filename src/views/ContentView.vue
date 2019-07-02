@@ -13,18 +13,18 @@
       </div>
     </div>
     -->
-    <WriteForm/>
+    <PostForm />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import WriteForm from "@/components/WriteForm.vue";
+import PostForm from "@/components  PostForm.vue";
 
 export default {
   name: "home",
   components: {
-    WriteForm
+    PostForm
   }
 };
 </script>

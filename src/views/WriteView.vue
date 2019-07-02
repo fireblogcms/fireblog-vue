@@ -14,20 +14,19 @@
       </div>
     </div>
       -->
-      <WriteForm/>
+      <PostForm />
     </div>
   </AdminLayout>
 </template>
 
 <script>
-// @ is an alias to /src
-import WriteForm from "@/components/WriteForm";
+import PostForm from "@/components/PostForm";
 import AdminLayout from "@/layouts/AdminLayout";
 
 export default {
   name: "home",
   components: {
-    WriteForm,
+    PostForm,
     AdminLayout
   }
 };

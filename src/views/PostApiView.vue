@@ -31,14 +31,11 @@
 </template>
 
 <script>
-// @ is an alias to /src
-import WriteForm from "@/components/WriteForm.vue";
 import AdminLayout from "@/layouts/AdminLayout";
 
 export default {
   name: "home",
   components: {
-    WriteForm,
     AdminLayout
   }
 };

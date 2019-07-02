@@ -13,21 +13,23 @@
           >Create a new Post</router-link>
         </div>
       </div>
-
+      <template v-if="loadingPostError === 'FINISHED_ERROR'">{{loadingPostError}}</template>
       <template v-if="loadingPostsState === 'FINISHED_OK'">
         <div class="has-text-centered">
           <br />
           <br />
         </div>
 
-        <template v-if="posts.length > 0">
-          <div v-for="post in posts" :key="post._id">
+        <template v-if="posts">
+          <div v-for="edge in posts.edges" :key="edge.node._id">
             <h2 style="color:#444">
               <div class="columns">
                 <div class="column">
-                  <router-link :to="`/pod/${pod._id}/write/post/${post._id}`">{{post.title}}</router-link>
+                  <router-link
+                    :to="`/pod/${edge.node._id}/write/post/${edge.node._id}`"
+                  >{{edge.node.title}}</router-link>
                   <br />
-                  <span class="subtitle">{{Number(post.createdAt) | moment('from')}}</span>
+                  <span class="subtitle">{{Number(edge.node.createdAt) | moment('from')}}</span>
                   <hr />
                 </div>
               </div>
@@ -50,8 +52,10 @@ export default {
   data() {
     return {
       pod: "",
+      posts: null,
       loadingPodState: "NOT_STARTED",
-      loadingPostsState: "NOT_STARTED"
+      loadingPostsState: "NOT_STARTED",
+      loadingPostError: null
     };
   },
   created() {
@@ -60,6 +64,7 @@ export default {
   },
   methods: {
     loadPod() {
+      this.loadingPostError = null;
       this.loadingPodState = "PENDING";
       podClient()
         .request(
@@ -85,11 +90,11 @@ export default {
     },
     loadPosts() {
       this.loadingPostsState = "PENDING";
-      podClient()
+      return podClient()
         .request(
           `
           query($filter: PostsFilter){
-            posts(filter: $filter) {
+            posts(last:100, filter: $filter) {
               edges {
                 node {
                   title
@@ -102,11 +107,13 @@ export default {
           `,
           { filter: { pod: this.$route.params.podId } }
         )
-        .then(r => {
+        .then(result => {
           this.loadingPostsState = "FINISHED_OK";
-          this.posts = r.posts;
+          this.posts = result.posts;
         })
         .catch(e => {
+          console.error("An error occured loading posts: ", e);
+          this.loadingPostError = e;
           this.loadingPostsState = "FINISHED_ERROR";
         });
     }
