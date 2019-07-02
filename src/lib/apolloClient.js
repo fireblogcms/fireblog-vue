@@ -4,7 +4,7 @@ import { ApolloClient } from "apollo-client";
 import { createHttpLink } from "apollo-link-http";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { setContext } from "apollo-link-context";
-import { getAccessToken } from "@/app/lib/auth";
+import { getAccessToken } from "./auth";
 
 const httpLink = createHttpLink({
   uri: process.env.VUE_APP_GRAPHQL_URL

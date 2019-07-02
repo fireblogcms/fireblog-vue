@@ -3,7 +3,9 @@
     <div class="pod-list-view content container section">
       <h1 v-if="pods && pods.edges.length > 0" class="title is-1">MY BLOGS</h1>
 
-      <template v-if="loadingState === 'PENDING'">loading</template>
+      <template v-if="loadingState === 'PENDING'">
+        <PodLoader />
+      </template>
       <template v-if="loadingState === 'FINISHED_OK'">
         <template v-if="pods.edges.length === 0">
           <div class="pod-container">
@@ -33,16 +35,19 @@
 </template>
 
 <script>
-import podClient from "../lib/podClient";
+import apolloClient from "../lib/apolloClient";
 import PodCreateForm from "../components/PodCreateForm";
 import BulmaGrid from "../components/BulmaGrid";
 import AdminLayout from "../layouts/AdminLayout";
+import PodLoader from "../components/PodLoader";
+import gql from "graphql-tag";
 
 export default {
   components: {
     PodCreateForm,
     BulmaGrid,
-    AdminLayout
+    AdminLayout,
+    PodLoader
   },
   data() {
     return {
@@ -52,11 +57,11 @@ export default {
   },
   created() {
     this.loadingState = "PENDING";
-    podClient()
-      .request(
-        `
-          {
-            pods(first:100) {
+    apolloClient
+      .query({
+        query: gql`
+          query getPods {
+            pods(first: 100) {
               edges {
                 node {
                   name
@@ -69,10 +74,10 @@ export default {
             }
           }
         `
-      )
-      .then(r => {
+      })
+      .then(result => {
         this.loadingState = "FINISHED_OK";
-        this.pods = r.pods;
+        this.pods = result.data.pods;
       })
       .catch(e => {
         this.loadingState = "FINISHED_ERROR";

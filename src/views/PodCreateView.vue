@@ -1,7 +1,7 @@
 <template>
   <AdminLayout>
     <div class="pod-view">
-      <PodCreateForm/>
+      <PodCreateForm />
     </div>
   </AdminLayout>
 </template>
