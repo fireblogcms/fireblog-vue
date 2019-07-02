@@ -118,3 +118,7 @@ body {
 .content a {
   color: #01c3a7;
 }
+
+.card {
+  border-radius: 5px;
+}
