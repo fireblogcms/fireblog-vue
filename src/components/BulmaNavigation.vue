@@ -32,7 +32,10 @@
               >SAVE CHANGES</button>
               -->
             </span>
-            <router-link class="navbar-item" to="/profile">{{me.name}}</router-link>
+            <router-link class="navbar-item" to="/profile">
+              <img :src="me.picture" style="border-radius:3px; margin-right:1rem" />
+              {{me.name}}
+            </router-link>
             <portal-target name="navbar-end">
               <!--
             This component can be located anywhere in your App.
