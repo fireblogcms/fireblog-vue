@@ -1,6 +1,16 @@
 <template>
   <div class="writeForm">
-    <div class="container">
+    <template v-if="loadingPostState === 'PENDING'">
+      <PodLoader />
+    </template>
+
+    <div v-show="showNotifications" class="notification is-warning">
+      <button class="delete" @click="showNotifications = false"></button>
+      <template v-if="savingPostState === 'FINISHED_ERROR'">{{savingPostMessage}}</template>
+      <template v-if="loadingPostState === 'FINISHED_ERROR'">{{loadingPostMessage}}</template>
+    </div>
+
+    <div class="pod-container">
       <div class="columns">
         <div class="column is-2 is-hidden-mobile"></div>
         <div class="column is-8">
@@ -31,6 +41,7 @@
                   value="SAVE CHANGES"
                 />
               </span>
+              <!--
               <span class="navbar-item">
                 <button @click="onApiClick" class="button is-outlined is-info">
                   &nbsp;&nbsp;&nbsp;
@@ -38,6 +49,7 @@
                   API&nbsp;&nbsp;&nbsp;
                 </button>
               </span>
+              -->
             </portal>
           </form>
         </div>
@@ -51,12 +63,14 @@
 
 <script>
 import AdminLayout from "@/layouts/AdminLayout";
-import podClient from "../lib/podClient";
+import apolloClient from "../lib/apolloClient";
+import PodLoader from "../components/PodLoader";
 // import Editor from "@ckeditor/ckeditor5-build-classic";
 // import Editor from "@ckeditor/ckeditor5-build-balloon";
 import Editor from "@ckeditor/ckeditor5-build-balloon-block";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import { getUser } from "@/lib/auth";
+import gql from "graphql-tag";
 
 /*
 0: "heading"
@@ -70,16 +84,57 @@ import { getUser } from "@/lib/auth";
 items: (5) ["bold", "italic", "link", "undo", "redo"]
 */
 
+const createPostQuery = gql`
+  mutation createPostQuery($post: CreatePostInput!) {
+    createPost(post: $post) {
+      author {
+        name
+        email
+      }
+      pod {
+        _id
+        name
+        description
+      }
+      title
+      content
+    }
+  }
+`;
+
+const updatePostQuery = gql`
+  mutation updatePostQuery($post: UpdatePostInput!) {
+    updatePost(post: $post) {
+      title
+    }
+  }
+`;
+
+const getExistingPostQuery = gql`
+  query getExistingPostQuery($_id: ID!) {
+    post(_id: $_id) {
+      _id
+      title
+      content
+    }
+  }
+`;
+
 export default {
   components: {
     // Use the <ckeditor> component in this view.
     ckeditor: CKEditor.component,
-    AdminLayout
+    AdminLayout,
+    PodLoader
   },
   data() {
     return {
       savingPostState: "NOT_STARTED",
+      savingPostMessage: null,
+      loadingPostState: "NOT_STARTED",
+      loadingPostMessage: null,
       post: null,
+      showNotifications: false,
       inputs: {
         title: "",
         content: ""
@@ -88,22 +143,32 @@ export default {
   },
   // "heading"
   // "mediaEmbed"
+
   created() {
-    this.operation = "NEW";
     this.editor = Editor;
     this.editorConfig = {
       toolbar: ["bold", "italic", "link", "heading"],
       blockToolbar: ["imageUpload", "mediaEmbed"]
     };
     if (this.$route.params.postId) {
-      this.getExistingPost().then(result => {
-        console.log("result existing", result);
-        this.post = result.post;
-        this.inputs.title = result.post.title;
-        this.inputs.content = result.post.content ? result.post.content : "";
-      });
+      this.loadingPostMessage = null;
+      this.loadingPostState = "PENDING";
+      this.getExistingPost()
+        .then(result => {
+          this.post = result.data.post;
+          this.inputs.title = this.post.title;
+          this.inputs.content = this.post.content ? this.post.content : "";
+          this.loadingPostState = "FINISHED_OK";
+        })
+        .catch(e => {
+          this.loadingPostMessage =
+            "😞Sorry, loading post failed with this error message: " + e;
+          this.loadingPostState = "FINISHED_ERROR";
+          this.showNotifications = true;
+        });
     }
   },
+
   methods: {
     onEnter() {
       this.$refs.ckeditor.$el.focus();
@@ -112,18 +177,10 @@ export default {
       this.$router.push(`/pod/${this.$route.params.podId}/write/post/api`);
     },
     getExistingPost() {
-      return podClient().request(
-        `
-        query ($_id: ID!) {
-          post(_id: $_id) {
-            _id
-            title
-            content
-          }
-        }
-      `,
-        { _id: this.$route.params.postId }
-      );
+      return apolloClient.query({
+        query: getExistingPostQuery,
+        variables: { _id: this.$route.params.postId }
+      });
     },
     onSaveClick(post) {
       this.savingPostState = "PENDING";
@@ -134,6 +191,9 @@ export default {
           })
           .catch(e => {
             this.savingPostState = "FINISHED_ERROR";
+            this.savingPostMessage =
+              "Sorry, post saving failed with th following message: " + e;
+            this.showNotifications = true;
           });
       }
       if (post && post._id) {
@@ -143,56 +203,32 @@ export default {
           })
           .catch(e => {
             this.savingPostState = "FINISHED_ERROR";
+            this.savingPostMessage =
+              "Sorry, post saving failed with th following message: " + e;
+            this.showNotifications = true;
           });
       }
     },
     updatePost() {
-      return podClient().request(
-        `
-        mutation($post: UpdatePostInput!) {
-          updatePost(
-            post: $post
-          ) {
-            title
-            pod {
-              name
-            }
-            content
-          }
+      const variables = {
+        post: {
+          _id: this.post._id,
+          title: this.inputs.title,
+          content: this.inputs.content
         }
-      `,
-        {
-          post: {
-            _id: this.post._id,
-            title: this.inputs.title,
-            content: this.inputs.content
-          }
-        }
-      );
+      };
+      return apolloClient.mutate({
+        mutation: updatePostQuery,
+        variables
+      });
     },
     createPost() {
       const pod_id = this.$route.params.podId;
       const user_id = getUser().sub;
-      return podClient()
-        .request(
-          `
-            mutation($post: CreatePostInput!) {
-              createPost(post: $post) {
-                author {
-                  name
-                  email
-                }
-                pod {
-                  _id
-                  name
-                  description
-                }
-                title
-                content
-              }
-            }
-         `,
-          {
+      return apolloClient
+        .mutate({
+          mutation: createPostQuery,
+          variables: {
             post: {
               pod: pod_id,
               author: user_id,
@@ -200,7 +236,7 @@ export default {
               content: this.inputs.content
             }
           }
-        )
+        })
         .then(r => {
           console.log("r", r);
         });

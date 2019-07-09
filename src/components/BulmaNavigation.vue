@@ -21,6 +21,12 @@
           <div class="navbar-start">
             <router-link class="navbar-item" to="/">Accueil</router-link>
             <router-link class="navbar-item" to="/pods">MY PODS</router-link>
+            <portal-target name="navbar-start">
+              <!--
+            This component can be located anywhere in your App.
+            The slot content of the above portal component will be rendered here.
+              -->
+            </portal-target>
           </div>
 
           <div class="navbar-end">

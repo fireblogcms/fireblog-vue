@@ -1,5 +1,9 @@
 <template>
   <AdminLayout>
+    <portal to="navbar-start">
+      <router-link class="navbar-item" :to="`/pod/${$route.params.podId}`">MY POSTS</router-link>
+    </portal>
+
     <PodLoader v-if="requestState === 'PENDING'" />
     <div v-if="requestError">{{requestError}}</div>
 
@@ -47,7 +51,7 @@
               <div class="columns">
                 <div class="column">
                   <router-link
-                    :to="`/pod/${edge.node._id}/write/post/${edge.node._id}`"
+                    :to="`/pod/${$route.params.podId}/write/post/${edge.node._id}`"
                   >{{edge.node.title}}</router-link>
                   <br />
                   <span class="subtitle">{{Number(edge.node.createdAt) | moment('from')}}</span>
@@ -72,9 +76,10 @@ const podAndPostsQuery = gql`
   query podAndPosts($id: ID!) {
     pod(_id: $id) {
       name
-      posts {
+      posts(last: 100) {
         edges {
           node {
+            _id
             title
             updatedAt
             createdAt

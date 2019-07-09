@@ -12,19 +12,21 @@
         </div>
       </template>
       <template v-if="pods && pods.edges.length > 0">
-        <div v-for="edge in pods.edges" :key="edge.node._id">
-          <router-link :to="`/pod/${edge.node._id}`">
-            <div class="card">
-              <div class="card-content">
-                <div class="content">
-                  <h2>{{edge.node.name}}</h2>
-                  <br />
-                  <p>Crée il y a {{Number(edge.node.createdAt) | moment("from")}}</p>
+        <BulmaGrid :items="pods.edges" :itemsByRow="3" :itemKey="(item, index) => item._id">
+          <template slot-scope="{item}">
+            <router-link :to="`/pod/${item.node._id}`">
+              <div class="card">
+                <div class="card-content">
+                  <div class="content">
+                    <h2>{{item.node.name}}</h2>
+                    <br />
+                    <p>Crée il y a {{Number(item.node.createdAt) | moment("from")}}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          </router-link>
-        </div>
+            </router-link>
+          </template>
+        </BulmaGrid>
       </template>
     </template>
   </div>
@@ -37,22 +39,6 @@ import BulmaGrid from "../components/BulmaGrid";
 import AdminLayout from "../layouts/AdminLayout";
 import PodLoader from "../components/PodLoader";
 import gql from "graphql-tag";
-
-const getPodsQuery = gql`
-  query getPods {
-    pods(last: 100) {
-      edges {
-        node {
-          name
-          description
-          createdAt
-          updatedAt
-          _id
-        }
-      }
-    }
-  }
-`;
 
 export default {
   components: {
@@ -70,7 +56,23 @@ export default {
   created() {
     this.loadingState = "PENDING";
     apolloClient
-      .query({ query: getPodsQuery })
+      .query({
+        query: gql`
+          query getPods {
+            pods(first: 100) {
+              edges {
+                node {
+                  name
+                  description
+                  createdAt
+                  updatedAt
+                  _id
+                }
+              }
+            }
+          }
+        `
+      })
       .then(result => {
         this.loadingState = "FINISHED_OK";
         this.pods = result.data.pods;

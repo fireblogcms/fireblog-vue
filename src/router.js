@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
 import HomeView from "./views/HomeView";
-import PostWriteView from "./views/WriteView";
+import PostFormView from "./views/PostFormView";
 import ProfileView from "./views/ProfileView";
 import PodCreateView from "./views/PodCreateView";
 import Pods from "./views/Pods";
@@ -45,8 +45,8 @@ const router = new Router({
     },
     {
       path: "/pod/:podId/write/post",
-      name: "postWrite",
-      component: PostWriteView
+      name: "PostFormView",
+      component: PostFormView
     },
     {
       path: "/pod/:podId/write/post/api",
@@ -56,7 +56,7 @@ const router = new Router({
     {
       path: "/pod/:podId/write/post/:postId",
       name: "postEdit",
-      component: PostWriteView
+      component: PostFormView
     },
     {
       path: "/pods",
