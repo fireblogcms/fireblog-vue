@@ -76,7 +76,7 @@ const podAndPostsQuery = gql`
   query podAndPosts($id: ID!) {
     pod(_id: $id) {
       name
-      posts(last: 100) {
+      posts {
         edges {
           node {
             _id
