@@ -67,9 +67,6 @@ body {
 }
 
 /* HOME VIEW */
-.writeForm {
-  padding: 1rem;
-}
 
 .writeForm input#title {
   display: block;

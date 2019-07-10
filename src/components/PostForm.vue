@@ -10,38 +10,30 @@
       <template v-if="loadingPostState === 'FINISHED_ERROR'">{{loadingPostMessage}}</template>
     </div>
 
-    <div class="pod-container">
-      <div class="columns">
-        <div class="column is-2 is-hidden-mobile"></div>
-        <div class="column is-8">
-          <form @submit.prevent>
-            <textarea-autosize
-              @keydown.enter.native.prevent="onEnter"
-              autofocus
-              rows="1"
-              placeholder="Title"
-              type="text"
-              id="title"
-              v-model="inputs.title"
-            ></textarea-autosize>
-            <ckeditor
-              ref="ckeditor"
-              :editor="editor"
-              v-model="inputs.content"
-              :config="editorConfig"
-            ></ckeditor>
+    <div>
+      <form @submit.prevent>
+        <textarea-autosize
+          @keydown.enter.native.prevent="onEnter"
+          autofocus
+          rows="1"
+          placeholder="Title"
+          type="text"
+          id="title"
+          v-model="inputs.title"
+        ></textarea-autosize>
+        <ckeditor ref="ckeditor" :editor="editor" v-model="inputs.content" :config="editorConfig"></ckeditor>
 
-            <portal to="navbar-end">
-              <span class="navbar-item">
-                <input
-                  @click="onSaveClick(post)"
-                  :class="{'is-loading': savingPostState === 'PENDING'}"
-                  class="button is-outlined is-info"
-                  type="submit"
-                  value="SAVE CHANGES"
-                />
-              </span>
-              <!--
+        <portal to="navbar-end">
+          <span class="navbar-item">
+            <input
+              @click="onSaveClick(post)"
+              :class="{'is-loading': savingPostState === 'PENDING'}"
+              class="button is-outlined is-info"
+              type="submit"
+              value="SAVE CHANGES"
+            />
+          </span>
+          <!--
               <span class="navbar-item">
                 <button @click="onApiClick" class="button is-outlined is-info">
                   &nbsp;&nbsp;&nbsp;
@@ -49,14 +41,9 @@
                   API&nbsp;&nbsp;&nbsp;
                 </button>
               </span>
-              -->
-            </portal>
-          </form>
-        </div>
-        <div class="column is-2">
-          <div></div>
-        </div>
-      </div>
+          -->
+        </portal>
+      </form>
     </div>
   </div>
 </template>

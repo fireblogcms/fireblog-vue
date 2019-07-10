@@ -1,37 +1,48 @@
 <template>
-  <AdminLayout>
-    <div class="pod-list-view content container section">
-      <h1 v-if="pods && pods.edges.length > 0" class="title is-1">MY PODS</h1>
+  <div class="pod-list-view content container section">
+    <h1 v-if="pods && pods.edges.length > 0" class="title is-1">
+      <img
+        style="position:relative;top:10px;padding-right:20px"
+        width="100"
+        src="/images/books.webp"
+      />
+      MY PODS
+    </h1>
 
-      <template v-if="loadingState === 'PENDING'">
-        <PodLoader />
+    <template v-if="loadingState === 'PENDING'">
+      <PodLoader />
+    </template>
+    <template v-if="loadingState === 'FINISHED_OK'">
+      <template v-if="pods.edges.length === 0">
+        <div class="pod-container">
+          <PodCreateForm :first="true" />
+        </div>
       </template>
-      <template v-if="loadingState === 'FINISHED_OK'">
-        <template v-if="pods.edges.length === 0">
-          <div class="pod-container">
-            <PodCreateForm :first="true" />
-          </div>
-        </template>
-        <template v-if="pods && pods.edges.length > 0">
-          <BulmaGrid :items="pods.edges" :itemsByRow="3" :itemKey="(item, index) => item._id">
-            <template slot-scope="{item}">
-              <router-link :to="`/pod/${item.node._id}`">
-                <div class="card">
-                  <div class="card-content">
+      <template v-if="pods && pods.edges.length > 0">
+        <div v-for="edge in pods.edges" :key="edge.node._id">
+          <router-link :to="`/pod/${edge.node._id}`">
+            <div class="card">
+              <div class="card-content">
+                <div class="columns">
+                  <div class="column">
                     <div class="content">
-                      <h2>{{item.node.name}}</h2>
+                      <h2>{{edge.node.name}}</h2>
+                      <em>{{edge.node.description}}</em>
                       <br />
-                      <p>Crée il y a {{Number(item.node.createdAt) | moment("from")}}</p>
+                      <!--<p>Crée il y a {{Number(edge.node.createdAt) | moment("from")}}</p>-->
                     </div>
                   </div>
+                  <div class="column is-one-quarter">
+                    <img style="height:100px !important;" src="/images/book-closed-3.png" />
+                  </div>
                 </div>
-              </router-link>
-            </template>
-          </BulmaGrid>
-        </template>
+              </div>
+            </div>
+          </router-link>
+        </div>
       </template>
-    </div>
-  </AdminLayout>
+    </template>
+  </div>
 </template>
 
 <script>
@@ -41,6 +52,24 @@ import BulmaGrid from "../components/BulmaGrid";
 import AdminLayout from "../layouts/AdminLayout";
 import PodLoader from "../components/PodLoader";
 import gql from "graphql-tag";
+
+const myPodsQuery = gql`
+  query myPods {
+    me {
+      pods(last: 100) {
+        edges {
+          node {
+            name
+            description
+            createdAt
+            updatedAt
+            _id
+          }
+        }
+      }
+    }
+  }
+`;
 
 export default {
   components: {
@@ -58,26 +87,10 @@ export default {
   created() {
     this.loadingState = "PENDING";
     apolloClient
-      .query({
-        query: gql`
-          query getPods {
-            pods(first: 100) {
-              edges {
-                node {
-                  name
-                  description
-                  createdAt
-                  updatedAt
-                  _id
-                }
-              }
-            }
-          }
-        `
-      })
+      .query({ query: myPodsQuery })
       .then(result => {
         this.loadingState = "FINISHED_OK";
-        this.pods = result.data.pods;
+        this.pods = result.data.me.pods;
       })
       .catch(e => {
         this.loadingState = "FINISHED_ERROR";

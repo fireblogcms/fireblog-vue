@@ -4,7 +4,7 @@ import HomeView from "./views/HomeView";
 import PostFormView from "./views/PostFormView";
 import ProfileView from "./views/ProfileView";
 import PodCreateView from "./views/PodCreateView";
-import Pods from "./views/Pods";
+import PodsView from "./views/PodsView";
 import PodView from "./views/PodView";
 import PostApiView from "./views/PostApiView";
 import NotFoundView from "./views/NotFoundView";
@@ -61,7 +61,7 @@ const router = new Router({
     {
       path: "/pods",
       name: "pods",
-      component: Pods
+      component: PodsView
     },
     {
       path: "/profile",

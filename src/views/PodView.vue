@@ -1,22 +1,24 @@
 <template>
   <AdminLayout>
-    <portal to="navbar-start">
-      <router-link class="navbar-item" :to="`/pod/${$route.params.podId}`">MY POSTS</router-link>
-    </portal>
-
     <PodLoader v-if="requestState === 'PENDING'" />
     <div v-if="requestError">{{requestError}}</div>
 
     <template v-if="requestState === 'FINISHED_OK'">
-      <div class="container section">
+      <div class="container" style="padding:0 0px 30px">
         <div class="columns">
-          <div class="column">
-            <h1 class="title is-1 is-uppercase">{{pod.name}}</h1>
+          <div class="column is-two-thirds">
+            <h1 class="title is-1 is-uppercase">
+              <img
+                style="height:80px !important;position:relative;top:25px;padding-right:1rem"
+                src="/images/book.png"
+              />
+              {{pod.name}}
+            </h1>
           </div>
           <div class="column">
             <router-link
               v-if="pod.posts.edges.length > 0"
-              style="position: relative; top:3px;text-transform: uppercase"
+              style="position: relative; top:30px;text-transform: uppercase"
               class="button is-large is-info is-pulled-right"
               :to="`/pod/${$route.params.podId}/write/post`"
             >✏️ Write</router-link>
@@ -50,10 +52,12 @@
             <h2 style="color:#444">
               <div class="columns">
                 <div class="column">
-                  <router-link
-                    :to="`/pod/${$route.params.podId}/write/post/${edge.node._id}`"
-                  >{{edge.node.title}}</router-link>
+                  <router-link :to="`/pod/${$route.params.podId}/write/post/${edge.node._id}`">
+                    {{edge.node.title}}
+                    <span class="subtitle">{{edge.node.status}}</span>
+                  </router-link>
                   <br />
+
                   <span class="subtitle">{{Number(edge.node.createdAt) | moment('from')}}</span>
                 </div>
               </div>
@@ -76,13 +80,14 @@ const podAndPostsQuery = gql`
   query podAndPosts($id: ID!) {
     pod(_id: $id) {
       name
-      posts {
+      posts(last: 50) {
         edges {
           node {
             _id
             title
             updatedAt
             createdAt
+            status
           }
         }
       }

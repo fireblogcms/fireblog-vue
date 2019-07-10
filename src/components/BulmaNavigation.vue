@@ -20,7 +20,11 @@
         <div id="app-menu" class="navbar-menu" :class="{ 'is-active': showOnMobile }">
           <div class="navbar-start">
             <router-link class="navbar-item" to="/">Accueil</router-link>
-            <router-link class="navbar-item" to="/pods">MY PODS</router-link>
+            <router-link
+              v-if="$route.params.podId"
+              class="navbar-item"
+              :to="`/pod/${$route.params.podId}`"
+            >MY POSTS</router-link>
             <portal-target name="navbar-start">
               <!--
             This component can be located anywhere in your App.
@@ -101,7 +105,7 @@ export default {
 
 <style scoped>
 .navbar {
-  background: #21314d;
+  /*background: #21314d;*/
 }
 
 .navbar-brand {
@@ -109,12 +113,12 @@ export default {
 }
 .navbar-brand a {
   position: relative;
-  color: rgba(255, 255, 255, 0.4);
+  /*color: rgba(255, 255, 255, 0.4);*/
 }
 
 .navbar-item.router-link-exact-active {
   color: #21314d;
-  background: #f2f4f7;
+  /*background: #f2f4f7;*/
 }
 
 .navbar-brand .navbar-item {
@@ -123,7 +127,7 @@ export default {
 
 .navbar-item {
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.4);
+  /*color: rgba(255, 255, 255, 0.4);*/
 }
 
 .navbar-item:hover {
