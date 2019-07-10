@@ -119,3 +119,9 @@ body {
 .card {
   border-radius: 5px;
 }
+
+/*WRITE VIEW*/
+
+.write-view {
+  background: white;
+}
