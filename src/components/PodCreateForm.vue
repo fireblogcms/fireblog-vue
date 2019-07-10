@@ -1,7 +1,7 @@
 <template>
-  <div class="pod-create-form">
+  <div class="pod-create-form section">
     <div class="content has-text-centered">
-      <!-- special text if this is the very first POD :) -->
+      <!-- special text if this is the very first Ppod :) -->
       <template v-if="first">
         <h2>Glad to see you here, {{ user.name }} 🤗</h2>
         <h2 style="font-weight:200;">
@@ -13,6 +13,7 @@
           >us suggest a nice one for you</a>
         </h2>
       </template>
+
       <!-- text is this is not the first pod -->
       <template v-if="!first">
         <h2>
@@ -34,8 +35,8 @@
       <br />
 
       <div class="buttons are-medium is-centered">
-        <a style="border:0" class="button" @click="$router.push('/')">CANCEL</a>
-        <button class="button is-info" @click="onCreateClick">CREATE MY POD</button>
+        <a class="button is-outlined is-primary" @click="$router.push('/')">CANCEL</a>
+        <button class="button is-primary" @click="onCreateClick">CREATE MY POD</button>
       </div>
 
       <!-- Any other Bulma elements you want -->
