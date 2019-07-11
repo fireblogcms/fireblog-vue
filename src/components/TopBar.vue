@@ -25,6 +25,9 @@
             The slot content of the above portal component will be rendered here.
             -->
           </portal-target>
+          <span @click="getApiDoc" class="item button is-outlined">
+            <img style="height:20px !important;padding:0 1rem" src="/images/graphql.svg" />GRAPHQL CONSOLE
+          </span>
 
           <div v-if="meQueryState === 'FINISHED_OK'" id="profile-dropdown" class="item">
             <div
@@ -61,6 +64,7 @@
                   <hr class="dropdown-divider" />
 
                   <router-link to="/profile" class="dropdown-item">My account</router-link>
+                  <router-link to="/logout" class="dropdown-item">Logout</router-link>
                 </div>
               </div>
             </div>
@@ -68,12 +72,26 @@
         </div>
       </div>
     </div>
+
+    <div :class="{ 'is-active': showApiDocModal }" class="modal">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <div class="modal-card-body">
+          <h1 class="title is-uppercase">GRAPHQL API</h1>
+          <pre>{{apiDocContent}}</pre>
+        </div>
+        <!-- Any other Bulma elements you want -->
+      </div>
+      <button @click="showApiDocModal = false" class="modal-close is-large" aria-label="close"></button>
+    </div>
   </div>
 </template>
 
 <script>
 import gql from "graphql-tag";
 import apolloClient from "../lib/apolloClient";
+import apiDocPods from "../apiDocs/pods";
+import { print } from "graphql/language/printer";
 
 const meQuery = gql`
   query meQuery {
@@ -112,7 +130,9 @@ export default {
       meQueryState: "NOT_STARTED",
       pod: null,
       me: null,
-      error: null
+      error: null,
+      showApiDocModal: false,
+      apiDocContent: null
     };
   },
   created() {
@@ -164,6 +184,12 @@ export default {
       if (this.dropdownMenuActive === true) {
         this.dropdownMenuActive = false;
       }
+    },
+    getApiDoc() {
+      this.showApiDocModal = true;
+      //if (this.$route.name === "pods") {
+      this.apiDocContent = print(apiDocPods);
+      //}
     }
   }
 };

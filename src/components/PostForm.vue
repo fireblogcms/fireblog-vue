@@ -12,7 +12,6 @@
 
     <div>
       <form @submit.prevent>
-        {{inputs}}
         <textarea-autosize
           @keydown.enter.native.prevent="onEnter"
           autofocus
