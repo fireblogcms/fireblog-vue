@@ -1,16 +1,18 @@
 <template>
   <div id="app">
-    <BulmaNavigation />
+    <TopBar />
     <slot />
   </div>
 </template>
 
 <script>
 import BulmaNavigation from "@/components/BulmaNavigation";
+import TopBar from "@/components/TopBar";
 
 export default {
   components: {
-    BulmaNavigation
+    BulmaNavigation,
+    TopBar
   }
 };
 </script>

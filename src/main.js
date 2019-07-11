@@ -5,7 +5,9 @@ import store from "./store";
 import VueTextareaAutosize from "vue-textarea-autosize";
 import "bulma/css/bulma.css";
 import PortalVue from "portal-vue";
+import vClickOutside from "v-click-outside";
 
+Vue.use(vClickOutside);
 Vue.use(PortalVue);
 Vue.use(VueTextareaAutosize);
 Vue.use(require("vue-moment"));

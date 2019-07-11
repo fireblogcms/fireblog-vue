@@ -23,16 +23,24 @@
         ></textarea-autosize>
         <ckeditor ref="ckeditor" :editor="editor" v-model="inputs.content" :config="editorConfig"></ckeditor>
 
-        <portal to="navbar-end">
-          <span class="navbar-item">
-            <input
-              @click="onSaveClick(post)"
-              :class="{'is-loading': savingPostState === 'PENDING'}"
-              class="button is-outlined is-info"
-              type="submit"
-              value="SAVE CHANGES"
-            />
-          </span>
+        <portal to="topbar-right">
+          <!-- status -->
+          <div class="select item">
+            <select>
+              <option value="PUBLISHED">Published</option>
+              <option value="DRAFT">Draft</option>
+              <option value="BIN">Bin</option>
+            </select>
+          </div>
+
+          <input
+            @click="onSaveClick(post)"
+            class="button is-outlined item"
+            :class="{'is-loading': savingPostState === 'PENDING'}"
+            type="submit"
+            value="SAVE"
+          />
+
           <!--
               <span class="navbar-item">
                 <button @click="onApiClick" class="button is-outlined is-info">
@@ -58,6 +66,7 @@ import Editor from "@ckeditor/ckeditor5-build-balloon-block";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import { getUser } from "@/lib/auth";
 import gql from "graphql-tag";
+import BulmaButton from "./BulmaButton";
 
 /*
 0: "heading"
@@ -112,7 +121,8 @@ export default {
     // Use the <ckeditor> component in this view.
     ckeditor: CKEditor.component,
     AdminLayout,
-    PodLoader
+    PodLoader,
+    BulmaButton
   },
   data() {
     return {
@@ -187,6 +197,7 @@ export default {
         this.updatePost()
           .then(r => {
             this.savingPostState = "FINISHED_OK";
+            apolloClient.clearStore();
           })
           .catch(e => {
             this.savingPostState = "FINISHED_ERROR";
@@ -225,6 +236,7 @@ export default {
           }
         })
         .then(r => {
+          apolloClient.clearStore();
           console.log("r", r);
         });
     }

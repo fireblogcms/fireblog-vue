@@ -5,7 +5,7 @@ import PostFormView from "./views/PostFormView";
 import ProfileView from "./views/ProfileView";
 import PodCreateView from "./views/PodCreateView";
 import PodsView from "./views/PodsView";
-import PodView from "./views/PodView";
+import PostsView from "./views/PostsView";
 import PostApiView from "./views/PostApiView";
 import NotFoundView from "./views/NotFoundView";
 import Callback from "./components/Callback.vue";
@@ -41,7 +41,8 @@ const router = new Router({
     },
     {
       path: "/pod/:podId",
-      component: PodView
+      name: "PostsView",
+      component: PostsView
     },
     {
       path: "/pod/:podId/write/post",

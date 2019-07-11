@@ -1,0 +1,194 @@
+<template>
+  <div class="topbar">
+    <div class="container">
+      <div class="columns">
+        <div class="column">
+          <span v-if="podQueryState ==='FINISHED_OK'" class="pod-name item">
+            <strong>{{pod.name}}</strong>
+          </span>
+          <router-link
+            class="item"
+            v-if="$route.params.podId"
+            :to="`/pod/${$route.params.podId}`"
+          >Posts</router-link>
+          <portal-target name="topbar-left">
+            <!--
+            This component can be located anywhere in your App.
+            The slot content of the above portal component will be rendered here.
+            -->
+          </portal-target>
+        </div>
+        <div class="column column-right">
+          <portal-target name="topbar-right">
+            <!--
+            This component can be located anywhere in your App.
+            The slot content of the above portal component will be rendered here.
+            -->
+          </portal-target>
+
+          <div v-if="meQueryState === 'FINISHED_OK'" id="profile-dropdown" class="item">
+            <div
+              v-click-outside="onProfileDropdownOutsideClick"
+              class="dropdown is-right"
+              :class="{'is-active': dropdownMenuActive}"
+            >
+              <div class="dropdown-trigger">
+                <div class aria-haspopup="true" aria-controls="dropdown-menu6">
+                  <span @click="dropdownMenuActive = !dropdownMenuActive">
+                    <img
+                      :src="me.picture"
+                      style="height: 40px;border-radius:5px; margin-right:1rem"
+                    />
+                    {{me.name}}
+                  </span>
+                  <span class="icon is-small">
+                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="dropdown-menu" role="menu">
+                <div class="dropdown-content">
+                  <router-link to="/pods" class="dropdown-item">
+                    <strong>My pods</strong>
+                  </router-link>
+                  <router-link
+                    v-for="edge in me.pods.edges"
+                    :key="edge.node._id"
+                    :to="`/pod/${edge.node._id}`"
+                    class="dropdown-item"
+                  >{{edge.node.name}}</router-link>
+                  <hr class="dropdown-divider" />
+
+                  <router-link to="/profile" class="dropdown-item">My account</router-link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import gql from "graphql-tag";
+import apolloClient from "../lib/apolloClient";
+
+const meQuery = gql`
+  query meQuery {
+    me {
+      name
+      email
+      picture
+      pods(last: 100) {
+        edges {
+          node {
+            name
+            description
+            createdAt
+            updatedAt
+            _id
+          }
+        }
+      }
+    }
+  }
+`;
+
+const podQuery = gql`
+  query podQuery($_id: ID!) {
+    pod(_id: $_id) {
+      name
+    }
+  }
+`;
+
+export default {
+  data() {
+    return {
+      dropdownMenuActive: false,
+      podQueryState: "NOT_STARTED",
+      meQueryState: "NOT_STARTED",
+      pod: null,
+      me: null,
+      error: null
+    };
+  },
+  created() {
+    // get account infos
+    this.meQueryState = "PENDING";
+    apolloClient
+      .query({
+        query: meQuery,
+        variables: {
+          id: this.$route.params.podId
+        }
+      })
+      .then(result => {
+        this.me = result.data.me;
+        this.meQueryState = "FINISHED_OK";
+      })
+      .catch(error => {
+        this.error = error;
+        this.meQueryState = "FINISHED_ERROR";
+      });
+    // get currend pod data
+    console.log("route", this.$route);
+    if (
+      this.$route.name === "PostsView" ||
+      this.$route.name === "PostFormView" ||
+      this.$route.name === "postEdit"
+    ) {
+      this.podQueryState = "PENDING";
+
+      apolloClient
+        .query({
+          query: podQuery,
+          variables: {
+            _id: this.$route.params.podId
+          }
+        })
+        .then(result => {
+          this.pod = result.data.pod;
+          this.podQueryState = "FINISHED_OK";
+        })
+        .catch(error => {
+          this.error = error;
+          this.podQueryState = "FINISHED_ERROR";
+        });
+    }
+  },
+  methods: {
+    onProfileDropdownOutsideClick() {
+      if (this.dropdownMenuActive === true) {
+        this.dropdownMenuActive = false;
+      }
+    }
+  }
+};
+</script>
+
+
+<style>
+.topbar {
+  background: white;
+  padding: 1rem;
+}
+.topbar .vue-portal-target {
+  display: inline;
+}
+.topbar .item {
+  margin-left: 1rem;
+}
+.topbar .column-right {
+  text-align: right;
+}
+.topbar #profile-dropdown:hover {
+  cursor: pointer;
+}
+.topbar #profile-dropdown {
+  display: inline;
+}
+</style>
+
+
