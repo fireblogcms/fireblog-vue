@@ -19,9 +19,12 @@
             <router-link
               v-if="pod.posts.edges.length > 0"
               style="position: relative; top:30px;text-transform: uppercase"
-              class="button is-large is-info is-pulled-right"
+              class="button is-large is-pulled-right is-outlined"
               :to="`/pod/${$route.params.podId}/write/post`"
-            >✏️ Write</router-link>
+            >
+              Write
+              <img style="height:70px" src="/images/feather.webp" />
+            </router-link>
           </div>
         </div>
 
@@ -47,16 +50,17 @@
       </div>
 
       <template v-if="pod.posts.edges.length > 0">
-        <div
-          class="tabs is-medium is-boxed is-centered"
-          style="position:relative;margin-bottom:0;top:1px"
-        >
+        <div class="tabs is-medium is-centered" style="position:relative;margin-bottom:0;top:1px">
           <ul style="border-bottom:0">
-            <li class="is-active">
-              <a>Published ( 18 )</a>
+            <li @click="onStatusClick('PUBLISHED')" class="is-active">
+              <a>
+                <img style="height:30px;padding-right:5px" src="/images/published.png" /> Published ( 18 )
+              </a>
             </li>
-            <li>
-              <a>Draft ( 4 )</a>
+            <li @click="onStatusClick('DRAFT')">
+              <a>
+                <img style="height:30px;padding-right:5px" src="/images/draft.png" /> Draft ( 4 )
+              </a>
             </li>
           </ul>
         </div>
@@ -90,10 +94,10 @@ import gql from "graphql-tag";
 import PodLoader from "../components/PodLoader";
 
 const podAndPostsQuery = gql`
-  query podAndPosts($id: ID!) {
+  query podAndPosts($id: ID!, $status: PostPublicationStatus) {
     pod(_id: $id) {
       name
-      posts(last: 50) {
+      posts(last: 50, filter: { status: $status }) {
         edges {
           node {
             _id
@@ -124,7 +128,7 @@ export default {
     apolloClient
       .query({
         query: podAndPostsQuery,
-        variables: { id: this.$route.params.podId }
+        variables: { id: this.$route.params.podId, status: "PUBLISHED" }
       })
       .then(result => {
         console.log("result", result);
@@ -135,6 +139,23 @@ export default {
         this.requestState = "FINISHED_ERROR";
         this.requestError = error;
       });
+  },
+  methods: {
+    onStatusClick(status) {
+      apolloClient
+        .query({
+          query: podAndPostsQuery,
+          variables: { id: this.$route.params.podId, status: status }
+        })
+        .then(result => {
+          this.requestState = "FINISHED_OK";
+          this.pod = result.data.pod;
+        })
+        .catch(error => {
+          this.requestState = "FINISHED_ERROR";
+          this.requestError = error;
+        });
+    }
   }
 };
 </script>
