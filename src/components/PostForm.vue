@@ -12,6 +12,7 @@
 
     <div>
       <form @submit.prevent>
+        {{inputs}}
         <textarea-autosize
           @keydown.enter.native.prevent="onEnter"
           autofocus
@@ -25,8 +26,15 @@
 
         <portal to="topbar-right">
           <!-- status -->
-          <div class="select item">
-            <select>
+          <div
+            :class="{
+              'is-primary': inputs.status === 'PUBLISHED', 
+              'is-warning': inputs.status === 'DRAFT',
+              'is-danger': inputs.status === 'BIN',
+              }"
+            class="select item"
+          >
+            <select v-model="inputs.status">
               <option value="PUBLISHED">Published</option>
               <option value="DRAFT">Draft</option>
               <option value="BIN">Bin</option>
@@ -112,6 +120,7 @@ const getExistingPostQuery = gql`
       _id
       title
       content
+      status
     }
   }
 `;
@@ -134,7 +143,8 @@ export default {
       showNotifications: false,
       inputs: {
         title: "",
-        content: ""
+        content: "",
+        status: "DRAFT"
       }
     };
   },
@@ -153,8 +163,12 @@ export default {
       this.getExistingPost()
         .then(result => {
           this.post = result.data.post;
+          console.log("post", this.post);
           this.inputs.title = this.post.title;
           this.inputs.content = this.post.content ? this.post.content : "";
+          this.inputs.status = this.post.status
+            ? this.post.status
+            : this.inputs.status;
           this.loadingPostState = "FINISHED_OK";
         })
         .catch(e => {
@@ -212,7 +226,8 @@ export default {
         post: {
           _id: this.post._id,
           title: this.inputs.title,
-          content: this.inputs.content
+          content: this.inputs.content,
+          status: this.inputs.status
         }
       };
       return apolloClient.mutate({
@@ -231,7 +246,8 @@ export default {
               pod: pod_id,
               author: user_id,
               title: this.inputs.title,
-              content: this.inputs.content
+              content: this.inputs.content,
+              status: this.inputs.status
             }
           }
         })

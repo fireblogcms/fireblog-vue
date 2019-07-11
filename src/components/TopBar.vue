@@ -32,14 +32,15 @@
               class="dropdown is-right"
               :class="{'is-active': dropdownMenuActive}"
             >
-              <div class="dropdown-trigger">
-                <div class aria-haspopup="true" aria-controls="dropdown-menu6">
-                  <span @click="dropdownMenuActive = !dropdownMenuActive">
+              <div class="dropdown-trigger" @click="dropdownMenuActive = !dropdownMenuActive">
+                <div class aria-haspopup="true">
+                  <span>
                     <img
+                      v-if="me.picture"
                       :src="me.picture"
-                      style="height: 40px;border-radius:5px; margin-right:1rem"
+                      style="height: 40px;border-radius:20px; margin-right:1rem"
                     />
-                    {{me.name}}
+                    <span v-if="!me.picture">{{me.name}}</span>
                   </span>
                   <span class="icon is-small">
                     <i class="fas fa-angle-down" aria-hidden="true"></i>
