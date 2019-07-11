@@ -47,6 +47,19 @@
       </div>
 
       <template v-if="pod.posts.edges.length > 0">
+        <div
+          class="tabs is-medium is-boxed is-centered"
+          style="position:relative;margin-bottom:0;top:1px"
+        >
+          <ul style="border-bottom:0">
+            <li class="is-active">
+              <a>Published ( 18 )</a>
+            </li>
+            <li>
+              <a>Draft ( 4 )</a>
+            </li>
+          </ul>
+        </div>
         <div class="container content pod-container">
           <div v-for="edge in pod.posts.edges" :key="edge.node._id">
             <h2 style="color:#444">

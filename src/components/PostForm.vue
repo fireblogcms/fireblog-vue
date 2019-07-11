@@ -238,7 +238,7 @@ export default {
   background-color: rgba(255, 255, 255, 0.9);
   padding: 0 2rem;
   margin: auto;
-  max-width: 840px;
+  max-width: 940px;
   padding: 2rem 4rem;
 }
 
