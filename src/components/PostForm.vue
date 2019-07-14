@@ -5,7 +5,6 @@
         <i class="fas fa-chevron-left"></i> Posts
       </router-link>
     </portal>
-
     <portal to="topbar-right">
       <!-- status 
           <div
@@ -94,32 +93,18 @@ import { getUser } from "@/lib/auth";
 import gql from "graphql-tag";
 import BulmaButton from "./BulmaButton";
 
-/*
-0: "heading"
-1: "|"
-2: "bulletedList"
-3: "numberedList"
-4: "imageUpload"
-5: "blockQuote"
-6: "insertTable"
-7: "mediaEmbed"
-items: (5) ["bold", "italic", "link", "undo", "redo"]
-*/
-
 const createPostQuery = gql`
   mutation createPostQuery($post: CreatePostInput!) {
     createPost(post: $post) {
+      _id
       author {
+        _id
         name
         email
       }
-      pod {
-        _id
-        name
-        description
-      }
       title
       content
+      status
     }
   }
 `;
@@ -127,7 +112,15 @@ const createPostQuery = gql`
 const updatePostQuery = gql`
   mutation updatePostQuery($post: UpdatePostInput!) {
     updatePost(post: $post) {
+      _id
       title
+      content
+      status
+      author {
+        _id
+        name
+        email
+      }
     }
   }
 `;
@@ -139,6 +132,11 @@ const getExistingPostQuery = gql`
       title
       content
       status
+      author {
+        _id
+        name
+        email
+      }
     }
   }
 `;
@@ -153,6 +151,7 @@ export default {
   },
   data() {
     return {
+      operation: "CREATE",
       publishPostState: "NOT_STARTED",
       savingPostState: "NOT_STARTED",
       savingPostMessage: null,
@@ -173,12 +172,29 @@ export default {
   // "mediaEmbed"
 
   created() {
+    // if there is a postId in the url, we are updating an existing post.
+    if (this.$route.params.postId) {
+      this.operation = "UPDATE";
+    }
     this.editor = Editor;
+    /*
+    0: "heading"
+    1: "|"
+    2: "bulletedList"
+    3: "numberedList"
+    4: "imageUpload"
+    5: "blockQuote"
+    6: "insertTable"
+    7: "mediaEmbed"
+    items: (5) ["bold", "italic", "link", "undo", "redo"]
+    */
     this.editorConfig = {
       toolbar: ["bold", "italic", "link", "heading"],
       blockToolbar: ["imageUpload", "mediaEmbed"]
     };
-    if (this.$route.params.postId) {
+
+    // if we are editing a post, the route
+    if (this.operation === "UPDATE") {
       this.loadingPostMessage = null;
       this.loadingPostState = "PENDING";
       this.getExistingPost()
@@ -215,12 +231,39 @@ export default {
     },
     onSaveClick(post) {
       this.savingPostState = "PENDING";
-      if (post === null) {
-        this.createPost()
-          .then(r => {
+      //
+      // CREATE
+      //
+      if (this.operation === "CREATE") {
+        const pod_id = this.$route.params.podId;
+        const user_id = getUser().sub;
+        const newPost = {
+          pod: pod_id,
+          author: user_id,
+          title: this.inputs.title,
+          content: this.inputs.content,
+          status: this.inputs.status
+        };
+        apolloClient
+          .mutate({
+            mutation: createPostQuery,
+            variables: { post: newPost }
+          })
+          .then(result => {
+            apolloClient.clearStore();
             this.savingPostState = "FINISHED_OK";
             this.lastTimeSaved = Date.now();
-            console.log("this.time", this.lastTimeSaved);
+            // post is created, we are now in UPDATE mode for the form.
+            this.operation = "UPDATE";
+            this.post = {
+              ...newPost,
+              _id: result.data.createPost._id
+            };
+            this.$router.replace(
+              `/pod/${this.$route.params.podId}/write/post/${
+                result.data.createPost._id
+              }`
+            );
           })
           .catch(e => {
             this.savingPostState = "FINISHED_ERROR";
@@ -229,7 +272,10 @@ export default {
             this.showNotifications = true;
           });
       }
-      if (post && post._id) {
+      //
+      // UPDATE
+      //
+      if (this.operation === "UPDATE") {
         this.updatePost()
           .then(r => {
             this.savingPostState = "FINISHED_OK";
@@ -245,41 +291,32 @@ export default {
       }
     },
     onPublishPostClick() {
-      alert("publishing");
+      alert(" published");
+      /*
+      return apolloClient.mutate({
+        mutation: updatePostQuery,
+        variables: {
+          post: {
+            status: "PUBSLIHED"
+          }
+        }
+      }).then(result => {
+
+      })
+      */
     },
     updatePost() {
       const variables = {
         post: {
-          _id: this.post._id,
+          ...this.post,
           title: this.inputs.title,
-          content: this.inputs.content,
-          status: this.inputs.status
+          content: this.inputs.content
         }
       };
       return apolloClient.mutate({
         mutation: updatePostQuery,
         variables
       });
-    },
-    createPost() {
-      const pod_id = this.$route.params.podId;
-      const user_id = getUser().sub;
-      return apolloClient
-        .mutate({
-          mutation: createPostQuery,
-          variables: {
-            post: {
-              pod: pod_id,
-              author: user_id,
-              title: this.inputs.title,
-              content: this.inputs.content,
-              status: this.inputs.status
-            }
-          }
-        })
-        .then(r => {
-          apolloClient.clearStore();
-        });
     }
   }
 };
