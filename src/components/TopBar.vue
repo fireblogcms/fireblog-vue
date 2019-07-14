@@ -6,11 +6,6 @@
           <span v-if="podQueryState ==='FINISHED_OK'" class="pod-name item">
             <strong>{{pod.name}}</strong>
           </span>
-          <router-link
-            class="item"
-            v-if="$route.params.podId"
-            :to="`/pod/${$route.params.podId}`"
-          >Posts</router-link>
           <portal-target name="topbar-left">
             <!--
             This component can be located anywhere in your App.
@@ -26,7 +21,7 @@
             -->
           </portal-target>
           <span @click="getApiDoc" class="item button is-outlined">
-            <img style="height:20px !important;padding:0 1rem" src="/images/graphql.svg" />GRAPHQL CONSOLE
+            <img style="height:20px !important;padding-right:10px" src="/images/graphql.svg" />API
           </span>
 
           <div v-if="meQueryState === 'FINISHED_OK'" id="profile-dropdown" class="item">
@@ -45,9 +40,11 @@
                     />
                     <span v-if="!me.picture">{{me.name}}</span>
                   </span>
+                  <!--
                   <span class="icon is-small">
                     <i class="fas fa-angle-down" aria-hidden="true"></i>
                   </span>
+                  -->
                 </div>
               </div>
               <div class="dropdown-menu" role="menu">
@@ -154,7 +151,7 @@ export default {
         this.meQueryState = "FINISHED_ERROR";
       });
     // get currend pod data
-    console.log("route", this.$route);
+
     if (
       this.$route.name === "PostsView" ||
       this.$route.name === "PostFormView" ||

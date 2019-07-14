@@ -1,5 +1,60 @@
 <template>
   <div class="writeForm">
+    <portal to="topbar-left">
+      <router-link class="item" v-if="$route.params.podId" :to="`/pod/${$route.params.podId}`">
+        <i class="fas fa-chevron-left"></i> Posts
+      </router-link>
+    </portal>
+
+    <portal to="topbar-right">
+      <!-- status 
+          <div
+            :class="{
+              'is-primary': inputs.status === 'PUBLISHED', 
+              'is-warning': inputs.status === 'DRAFT',
+              'is-danger': inputs.status === 'BIN',
+              }"
+            class="select item"
+          >
+            <select v-model="inputs.status">
+              <option value="PUBLISHED">Published</option>
+              <option value="DRAFT">Draft</option>
+              <option value="BIN">Bin</option>
+            </select>
+          </div>
+      -->
+
+      <span class="item button" style="border:0" v-if="lastTimeSaved">
+        <em>saved at {{lastTimeSaved | moment('HH:mm:ss')}}</em>
+      </span>
+
+      <input
+        @click="onSaveClick(post)"
+        class="button is-outlined item"
+        :class="{'is-loading': savingPostState === 'PENDING'}"
+        type="submit"
+        value="SAVE"
+      />
+
+      <input
+        @click="onPublishPostClick(post)"
+        class="button is-outlined item"
+        :class="{'is-loading': publishPostState === 'PENDING'}"
+        type="submit"
+        value="PUBLISH"
+      />
+
+      <!--
+              <span class="navbar-item">
+                <button @click="onApiClick" class="button is-outlined is-info">
+                  &nbsp;&nbsp;&nbsp;
+                  <img src="/logo-graphql.svg" />
+                  API&nbsp;&nbsp;&nbsp;
+                </button>
+              </span>
+      -->
+    </portal>
+
     <template v-if="loadingPostState === 'PENDING'">
       <PodLoader />
     </template>
@@ -22,42 +77,6 @@
           v-model="inputs.title"
         ></textarea-autosize>
         <ckeditor ref="ckeditor" :editor="editor" v-model="inputs.content" :config="editorConfig"></ckeditor>
-
-        <portal to="topbar-right">
-          <!-- status -->
-          <div
-            :class="{
-              'is-primary': inputs.status === 'PUBLISHED', 
-              'is-warning': inputs.status === 'DRAFT',
-              'is-danger': inputs.status === 'BIN',
-              }"
-            class="select item"
-          >
-            <select v-model="inputs.status">
-              <option value="PUBLISHED">Published</option>
-              <option value="DRAFT">Draft</option>
-              <option value="BIN">Bin</option>
-            </select>
-          </div>
-
-          <input
-            @click="onSaveClick(post)"
-            class="button is-outlined item"
-            :class="{'is-loading': savingPostState === 'PENDING'}"
-            type="submit"
-            value="SAVE"
-          />
-
-          <!--
-              <span class="navbar-item">
-                <button @click="onApiClick" class="button is-outlined is-info">
-                  &nbsp;&nbsp;&nbsp;
-                  <img src="/logo-graphql.svg" />
-                  API&nbsp;&nbsp;&nbsp;
-                </button>
-              </span>
-          -->
-        </portal>
       </form>
     </div>
   </div>
@@ -134,17 +153,20 @@ export default {
   },
   data() {
     return {
+      publishPostState: "NOT_STARTED",
       savingPostState: "NOT_STARTED",
       savingPostMessage: null,
       loadingPostState: "NOT_STARTED",
       loadingPostMessage: null,
+      lastTimeSaved: null,
       post: null,
       showNotifications: false,
       inputs: {
         title: "",
         content: "",
         status: "DRAFT"
-      }
+      },
+      publishDropdownIsActive: false
     };
   },
   // "heading"
@@ -162,7 +184,6 @@ export default {
       this.getExistingPost()
         .then(result => {
           this.post = result.data.post;
-          console.log("post", this.post);
           this.inputs.title = this.post.title;
           this.inputs.content = this.post.content ? this.post.content : "";
           this.inputs.status = this.post.status
@@ -198,6 +219,8 @@ export default {
         this.createPost()
           .then(r => {
             this.savingPostState = "FINISHED_OK";
+            this.lastTimeSaved = Date.now();
+            console.log("this.time", this.lastTimeSaved);
           })
           .catch(e => {
             this.savingPostState = "FINISHED_ERROR";
@@ -210,6 +233,7 @@ export default {
         this.updatePost()
           .then(r => {
             this.savingPostState = "FINISHED_OK";
+            this.lastTimeSaved = Date.now();
             apolloClient.clearStore();
           })
           .catch(e => {
@@ -219,6 +243,9 @@ export default {
             this.showNotifications = true;
           });
       }
+    },
+    onPublishPostClick() {
+      alert("publishing");
     },
     updatePost() {
       const variables = {
@@ -252,7 +279,6 @@ export default {
         })
         .then(r => {
           apolloClient.clearStore();
-          console.log("r", r);
         });
     }
   }
@@ -265,7 +291,7 @@ export default {
   background-color: rgba(255, 255, 255, 0.9);
   padding: 0 2rem;
   margin: auto;
-  max-width: 940px;
+  max-width: 840px;
   padding: 2rem 4rem;
 }
 
