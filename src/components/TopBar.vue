@@ -64,6 +64,9 @@
                     :to="`/pod/${edge.node._id}`"
                     class="dropdown-item"
                   >{{ edge.node.name }}</router-link>
+                  <router-link to="/pod/create" style class="dropdown-item">
+                    <button class="button is-outlined is-primary is-small">Create new Pod</button>
+                  </router-link>
                   <hr class="dropdown-divider" />
 
                   <router-link to="/profile" class="dropdown-item">My account</router-link>
