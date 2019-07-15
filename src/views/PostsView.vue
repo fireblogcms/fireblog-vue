@@ -1,67 +1,53 @@
 <template>
   <AdminLayout>
-    <PodLoader v-if="podAndPostsQueryState === 'PENDING'" />
-    <div v-if="requestError">{{requestError}}</div>
+    <Notify :errors="notifications.errors" :infos="notifications.infos" />
 
-    <template
-      v-if="podAndPostsQueryState === 'FINISHED_OK' && allPostsQueryState === 'FINISHED_OK'"
-    >
-      <div class="container" style="padding:0 0px 30px">
-        <div class="columns">
-          <div class="column is-two-thirds">
-            <h1 class="title is-1 is-uppercase">
-              <img
-                style="height:80px !important;position:relative;top:25px;padding-right:1rem"
-                src="/images/book.png"
-              />
-              POSTS
-            </h1>
-          </div>
-          <div class="column">
+    <header class="container" style="padding:0 0px 30px">
+      <div class="columns">
+        <div class="column is-two-thirds">
+          <h1 class="title is-1 is-uppercase">
+            <img
+              style="height:80px !important;position:relative;top:25px;padding-right:1rem"
+              src="/images/book.png"
+            />
+            POSTS
+          </h1>
+        </div>
+        <div class="column">
+          <router-link
+            style="position: relative; top:30px;text-transform: uppercase"
+            class="button is-large is-pulled-right is-outlined"
+            :to="`/pod/${$route.params.podId}/write/post`"
+          >
+            Write
+            <img style="height:70px" src="/images/feather.webp" />
+          </router-link>
+        </div>
+      </div>
+    </header>
+    <template v-if="isFirstPost === true">
+      <div class="container pod-container">
+        <h2
+          style="font-weight:200"
+          class="title has-text-centered"
+        >Write your first post in this pod !</h2>
+        <div class="has-text-centered">
+          <div style="margin:2rem">
             <router-link
-              v-if="allPosts.edges.length > 0"
-              style="position: relative; top:30px;text-transform: uppercase"
-              class="button is-large is-pulled-right is-outlined"
+              style="box-shadow: 0px 4px 5px rgba(229, 229, 229, 1);position: relative; top:30px;text-transform: uppercase"
+              class="button is-large is-outlined"
               :to="`/pod/${$route.params.podId}/write/post`"
             >
               Write
               <img style="height:70px" src="/images/feather.webp" />
             </router-link>
           </div>
+          <img style="padding-top:3rem" width="100px" src="@/assets/pod-mascot.png" />
         </div>
-
-        <!-- if this is the FIRST post for this pod -->
-        <template v-if="allPosts.edges.length === 0">
-          <div class="pod-container">
-            <h2
-              style="font-weight:200"
-              class="title has-text-centered"
-            >Write your first post in this pod !</h2>
-            <div class="has-text-centered">
-              <div style="margin:2rem">
-                <!--
-                <router-link
-                  style="position: relative; top:3px;text-transform: uppercase"
-                  class="button is-large is-info"
-                  :to="`/pod/${$route.params.podId}/write/post`"
-                >Write</router-link>
-                -->
-                <router-link
-                  style="box-shadow: 0px 4px 5px rgba(229, 229, 229, 1);position: relative; top:30px;text-transform: uppercase"
-                  class="button is-large is-outlined"
-                  :to="`/pod/${$route.params.podId}/write/post`"
-                >
-                  Write
-                  <img style="height:70px" src="/images/feather.webp" />
-                </router-link>
-              </div>
-              <img style="padding-top:3rem" width="100px" src="@/assets/pod-mascot.png" />
-            </div>
-          </div>
-        </template>
       </div>
-
-      <template v-if="allPosts.edges.length > 0">
+    </template>
+    <template v-if="isFirstPost === false">
+      <section class="pod-container">
         <div class="container tabs is-boxed is-medium" style="position:relative;margin-bottom:0;">
           <ul style="border-bottom:0">
             <li
@@ -85,30 +71,32 @@
           </ul>
         </div>
         <div class="container content pod-container" style="border-top-left-radius:0;">
-          <template v-if="pod.posts.edges.length === 0">
-            No post are in {{activeStatus}} status for now. Check your
-            <a
-              @click.prevent="onStatusClick('DRAFT')"
-            >draft</a> posts ?
+          <template v-if="postsRequestState === 'PENDING'">
+            <PodLoader />
           </template>
-          <template v-if="pod.posts.edges.length > 0">
-            <div v-for="edge in pod.posts.edges" :key="edge.node._id">
-              <h2 style="color:#444">
-                <div class="columns">
-                  <div class="column">
-                    <router-link
-                      :to="`/pod/${$route.params.podId}/write/post/${edge.node._id}`"
-                    >{{edge.node.title}}</router-link>
-                    <br />
+          <template v-if="postsRequestState ==='FINISHED_OK'">
+            <template
+              v-if="posts.edges.length === 0"
+            >No post are in {{activeStatus}} status for now.</template>
+            <template v-if="posts.edges.length > 0">
+              <div v-for="edge in posts.edges" :key="edge.node._id">
+                <h2 style="color:#444">
+                  <div class="columns">
+                    <div class="column">
+                      <router-link
+                        :to="`/pod/${$route.params.podId}/write/post/${edge.node._id}`"
+                      >{{edge.node.title}}</router-link>
+                      <br />
 
-                    <span class="subtitle">{{Number(edge.node.createdAt) | moment('from')}}</span>
+                      <span class="subtitle">{{Number(edge.node.createdAt) | moment('from')}}</span>
+                    </div>
                   </div>
-                </div>
-              </h2>
-            </div>
+                </h2>
+              </div>
+            </template>
           </template>
         </div>
-      </template>
+      </section>
     </template>
   </AdminLayout>
 </template>
@@ -119,11 +107,13 @@ import AdminLayout from "../layouts/AdminLayout";
 import apolloClient from "../lib/apolloClient";
 import gql from "graphql-tag";
 import PodLoader from "../components/PodLoader";
+import { REQUEST_STATE } from "../lib/helpers";
+import Notify from "../components/Notify";
+import { isIP } from "net";
 
-// get allPosts, with any publication status
-const allPostsQuery = gql`
-  query allPostsQuery($pod: ID!) {
-    posts(filter: { pod: $pod }, last: 1) {
+const postsQuery = gql`
+  query postsQuery($pod: ID!, $status: PostPublicationStatus!) {
+    posts(filter: { pod: $pod, status: $status }, last: 100) {
       edges {
         node {
           _id
@@ -137,19 +127,16 @@ const allPostsQuery = gql`
   }
 `;
 
-const podAndPostsQuery = gql`
-  query podAndPosts($id: ID!, $status: PostPublicationStatus) {
-    pod(_id: $id) {
-      name
-      posts(last: 100, filter: { status: $status }) {
-        edges {
-          node {
-            _id
-            title
-            updatedAt
-            createdAt
-            status
-          }
+/**
+ * We need to know if this is the first post for this pod.
+ */
+const allPostsQuery = gql`
+  query allPostsQuery($pod: ID!) {
+    posts(filter: { pod: $pod }, last: 1) {
+      edges {
+        node {
+          _id
+          title
         }
       }
     }
@@ -159,77 +146,82 @@ const podAndPostsQuery = gql`
 export default {
   components: {
     AdminLayout,
-    PodLoader
+    PodLoader,
+    Notify
   },
   data() {
     return {
-      allPosts: null,
-      activeStatus: "PUBLISHED",
+      notifications: {
+        errors: [],
+        info: []
+      },
+      allPostsRequestState: REQUEST_STATE.NOT_STARTED,
+      postsRequestState: REQUEST_STATE.NOT_STARTED,
       pod: null,
-      podAndPostsQueryState: "NOT_STARTED",
-      allPostsQueryState: "NOT_STARTED",
-      requestError: null
+      posts: null,
+      activeStatus: "PUBLISHED",
+      // will be true or false, once we have counted all existing posts
+      isFirstPost: null
     };
   },
   created() {
-    this.getAllPosts();
-    this.getPodAndPosts();
+    this.init();
   },
   methods: {
+    init() {
+      this.getPosts();
+      this.getAllPosts();
+    },
     async getAllPosts() {
-      this.allPostsQueryState = "PENDING";
-      const result = await apolloClient
+      this.allPostsRequestState === REQUEST_STATE.PENDING;
+      const result = apolloClient
         .query({
           query: allPostsQuery,
           variables: { pod: this.$route.params.podId }
         })
         .then(result => {
-          this.allPostsQueryState = "FINISHED_OK";
-          this.allPosts = result.data.posts;
+          this.allPostsRequestState = REQUEST_STATE.FINISHED_OK;
+          this.isFirstPost =
+            result.data.posts.edges.length === 0 ? true : false;
         })
         .catch(error => {
-          this.allPostsQueryState = "FINISHED_ERROR";
-          this.allPostsQueryError = error;
+          this.allPostsRequestState = REQUEST_STATE.FINISHED_ERROR;
+          this.notifications.errors.push(error.toString());
         });
     },
-    getPodAndPosts() {
-      return apolloClient
+    getPosts() {
+      this.postsRequestState = REQUEST_STATE.PENDING;
+      this.notifications = {
+        errors: [],
+        info: []
+      };
+      const result = apolloClient
         .query({
-          query: podAndPostsQuery,
-          variables: { id: this.$route.params.podId, status: this.activeStatus }
+          query: postsQuery,
+          variables: {
+            pod: this.$route.params.podId,
+            status: this.activeStatus
+          }
         })
         .then(result => {
-          console.log("result", result);
-          this.podAndPostsQueryState = "FINISHED_OK";
-          this.pod = result.data.pod;
+          this.postsRequestState = REQUEST_STATE.FINISHED_OK;
+          this.posts = result.data.posts;
+          return this.posts;
         })
         .catch(error => {
-          this.podAndPostsQueryState = "FINISHED_ERROR";
-          this.requestError = error;
+          this.postsRequestState = REQUEST_STATE.FINISHED_ERROR;
+          this.notifications.errors.push(error.toString());
         });
     },
     onStatusClick(status) {
       this.activeStatus = status;
-      apolloClient
-        .query({
-          query: podAndPostsQuery,
-          variables: { id: this.$route.params.podId, status: status }
-        })
-        .then(result => {
-          this.podAndPostsQueryState = "FINISHED_OK";
-          this.pod = result.data.pod;
-        })
-        .catch(error => {
-          this.podAndPostsQueryState = "FINISHED_ERROR";
-          this.requestError = error;
-        });
+      this.getPosts();
     }
   },
   // trigger again graphql request when podId change in url.
   watch: {
     $route(to, from) {
-      this.getAllPosts();
-      this.getPodAndPosts();
+      this.init();
     }
   }
 };
