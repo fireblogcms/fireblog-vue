@@ -3,8 +3,14 @@
     <div class="container">
       <div class="columns">
         <div class="column">
-          <span v-if="podQueryState ==='FINISHED_OK'" class="pod-name item">
-            <strong>{{pod.name}}</strong>
+          <span class="pod-name item tag is-medium" v-if="podQueryState ==='FINISHED_OK'">
+            <em>
+              <img
+                style="position:relative;height:20px !important;top:4px;"
+                src="/images/book-closed.png"
+              />
+              {{pod.name}}
+            </em>
           </span>
           <portal-target name="topbar-left">
             <!--

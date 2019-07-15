@@ -1,21 +1,18 @@
 <template>
   <AdminLayout>
+    <portal to="topbar-left">
+      <router-link class="item" :to="`/pods`">All pods</router-link>
+    </portal>
     <Notify :errors="notifications.errors" :infos="notifications.infos" />
 
-    <header class="container" style="padding:0 0px 30px">
+    <header class="container" style="padding: 2rem 0">
       <div class="columns">
         <div class="column is-two-thirds">
-          <h1 class="title is-1 is-uppercase">
-            <img
-              style="height:80px !important;position:relative;top:25px;padding-right:1rem"
-              src="/images/book.png"
-            />
-            POSTS
-          </h1>
+          <h1 class="title is-1 is-uppercase">POSTS</h1>
         </div>
         <div class="column">
           <router-link
-            style="position: relative; top:30px;text-transform: uppercase"
+            v-if="isFirstPost === false"
             class="button is-large is-pulled-right is-outlined"
             :to="`/pod/${$route.params.podId}/write/post`"
           >
@@ -25,6 +22,10 @@
         </div>
       </div>
     </header>
+
+    <template v-if="initRequestsState === 'PENDING'">
+      <PodLoader />
+    </template>
     <template v-if="isFirstPost === true">
       <div class="container pod-container">
         <h2
@@ -47,8 +48,8 @@
       </div>
     </template>
     <template v-if="isFirstPost === false">
-      <section class="pod-container">
-        <div class="container tabs is-boxed is-medium" style="position:relative;margin-bottom:0;">
+      <section class="container">
+        <div class="tabs is-boxed is-medium" style="position:relative;margin-bottom:0;">
           <ul style="border-bottom:0">
             <li
               @click="onStatusClick('PUBLISHED')"
@@ -110,6 +111,7 @@ import PodLoader from "../components/PodLoader";
 import { REQUEST_STATE } from "../lib/helpers";
 import Notify from "../components/Notify";
 import { isIP } from "net";
+import { error } from "util";
 
 const postsQuery = gql`
   query postsQuery($pod: ID!, $status: PostPublicationStatus!) {
@@ -155,6 +157,7 @@ export default {
         errors: [],
         info: []
       },
+      initRequestsState: REQUEST_STATE.NOT_STARTED,
       allPostsRequestState: REQUEST_STATE.NOT_STARTED,
       postsRequestState: REQUEST_STATE.NOT_STARTED,
       pod: null,
@@ -168,9 +171,22 @@ export default {
     this.init();
   },
   methods: {
+    /**
+     * We need to run two requests, to know what user has to see;
+     * - All existing post (is this user first post ?)
+     * - All published post (displayed in the "published" tab)
+     * We will display a loader until this two requests are finished
+     */
     init() {
-      this.getPosts();
-      this.getAllPosts();
+      this.initRequestsState = REQUEST_STATE.PENDING;
+      Promise.all([this.getPosts(), this.getAllPosts()])
+        .then(() => {
+          this.initRequestsState = REQUEST_STATE.FINISHED_OK;
+        })
+        .catch(error => {
+          this.initRequestsState = REQUEST_STATE.FINISHED_ERROR;
+          this.notifications.errors.push("init(): " + error.message);
+        });
     },
     async getAllPosts() {
       this.allPostsRequestState === REQUEST_STATE.PENDING;
@@ -183,10 +199,11 @@ export default {
           this.allPostsRequestState = REQUEST_STATE.FINISHED_OK;
           this.isFirstPost =
             result.data.posts.edges.length === 0 ? true : false;
+          return result;
         })
         .catch(error => {
           this.allPostsRequestState = REQUEST_STATE.FINISHED_ERROR;
-          this.notifications.errors.push(error.toString());
+          this.notifications.errors.push("getAllPosts() " + error.message);
         });
     },
     getPosts() {
@@ -206,22 +223,16 @@ export default {
         .then(result => {
           this.postsRequestState = REQUEST_STATE.FINISHED_OK;
           this.posts = result.data.posts;
-          return this.posts;
+          return result;
         })
         .catch(error => {
           this.postsRequestState = REQUEST_STATE.FINISHED_ERROR;
-          this.notifications.errors.push(error.toString());
+          this.notifications.errors.push("getPosts() " + error.message);
         });
     },
     onStatusClick(status) {
       this.activeStatus = status;
       this.getPosts();
-    }
-  },
-  // trigger again graphql request when podId change in url.
-  watch: {
-    $route(to, from) {
-      this.init();
     }
   }
 };
