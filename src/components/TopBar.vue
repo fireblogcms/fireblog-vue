@@ -3,13 +3,13 @@
     <div class="container">
       <div class="columns">
         <div class="column">
-          <span class="pod-name item tag is-medium" v-if="podQueryState ==='FINISHED_OK'">
+          <span class="pod-name item tag is-medium" v-if="podQueryState === 'FINISHED_OK'">
             <em>
               <img
                 style="position:relative;height:20px !important;top:4px;"
                 src="/images/book-closed.png"
               />
-              {{pod.name}}
+              {{ pod.name }}
             </em>
           </span>
           <portal-target name="topbar-left">
@@ -34,7 +34,7 @@
             <div
               v-click-outside="onProfileDropdownOutsideClick"
               class="dropdown is-right"
-              :class="{'is-active': dropdownMenuActive}"
+              :class="{ 'is-active': dropdownMenuActive }"
             >
               <div class="dropdown-trigger" @click="dropdownMenuActive = !dropdownMenuActive">
                 <div class aria-haspopup="true">
@@ -44,7 +44,7 @@
                       :src="me.picture"
                       style="height: 40px;border-radius:20px; margin-right:1rem"
                     />
-                    <span v-if="!me.picture">{{me.name}}</span>
+                    <span v-if="!me.picture">{{ me.name }}</span>
                   </span>
                   <!--
                   <span class="icon is-small">
@@ -63,7 +63,7 @@
                     :key="edge.node._id"
                     :to="`/pod/${edge.node._id}`"
                     class="dropdown-item"
-                  >{{edge.node.name}}</router-link>
+                  >{{ edge.node.name }}</router-link>
                   <hr class="dropdown-divider" />
 
                   <router-link to="/profile" class="dropdown-item">My account</router-link>
@@ -81,7 +81,7 @@
       <div class="modal-card">
         <div class="modal-card-body">
           <h1 class="title is-uppercase">GRAPHQL API</h1>
-          <pre>{{apiDocContent}}</pre>
+          <pre>{{ apiDocContent }}</pre>
         </div>
         <!-- Any other Bulma elements you want -->
       </div>
@@ -199,7 +199,6 @@ export default {
 };
 </script>
 
-
 <style>
 .topbar {
   background: white;
@@ -221,5 +220,3 @@ export default {
   display: inline;
 }
 </style>
-
-

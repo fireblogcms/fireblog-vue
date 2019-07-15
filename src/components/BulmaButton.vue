@@ -6,7 +6,3 @@
     <slot />
   </button>
 </template>
-
-
-
-

@@ -1,9 +1,9 @@
 <template>
   <div class="spinner">
-    <img v-if="!error" src="../assets/loading.svg" alt="Loading">
+    <img v-if="!error" src="../assets/loading.svg" alt="Loading" />
     <div v-if="error" class="section">
       <h1 class="title is-1">Login error</h1>
-      <pre>{{error}}</pre>
+      <pre>{{ error }}</pre>
     </div>
   </div>
 </template>

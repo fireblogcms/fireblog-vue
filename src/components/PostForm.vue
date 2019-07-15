@@ -7,14 +7,17 @@
     </portal>
     <portal to="topbar-right">
       <span class="item button" style="border:0" v-if="lastTimeSaved">
-        <em>saved at {{lastTimeSaved | moment('HH:mm:ss')}}</em>
+        <em>saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
       </span>
 
       <input
         @click="onSaveClick()"
-        v-if="operation === 'CREATE' || (existingPost && existingPost.status === 'DRAFT')"
+        v-if="
+          operation === 'CREATE' ||
+            (existingPost && existingPost.status === 'DRAFT')
+        "
         class="button is-outlined item"
-        :class="{'is-loading': savingPostState === 'PENDING'}"
+        :class="{ 'is-loading': savingPostState === 'PENDING' }"
         type="submit"
         value="SAVE"
       />
@@ -22,7 +25,7 @@
       <input
         @click="onPublishPostClick()"
         class="button is-outlined item"
-        :class="{'is-loading': publishPostState === 'PENDING'}"
+        :class="{ 'is-loading': publishPostState === 'PENDING' }"
         type="submit"
         value="PUBLISH"
       />
@@ -34,8 +37,16 @@
 
     <div v-show="showNotifications" class="container notification is-warning has-text-centered">
       <button class="delete" @click="showNotifications = false"></button>
-      <template v-if="savingPostState === 'FINISHED_ERROR'">{{savingPostMessage}}</template>
-      <template v-if="loadingPostState === 'FINISHED_ERROR'">{{loadingPostMessage}}</template>
+      <template v-if="savingPostState === 'FINISHED_ERROR'">
+        {{
+        savingPostMessage
+        }}
+      </template>
+      <template v-if="loadingPostState === 'FINISHED_ERROR'">
+        {{
+        loadingPostMessage
+        }}
+      </template>
     </div>
 
     <form @submit.prevent>

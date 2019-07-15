@@ -53,20 +53,23 @@
           <ul style="border-bottom:0">
             <li
               @click="onStatusClick('PUBLISHED')"
-              :class="{'is-active': activeStatus == 'PUBLISHED' }"
+              :class="{ 'is-active': activeStatus == 'PUBLISHED' }"
             >
               <a>
-                <img style="height:30px;padding-right:5px" src="/images/published.png" /> Published
+                <img style="height:30px;padding-right:5px" src="/images/published.png" />
+                Published
               </a>
             </li>
-            <li @click="onStatusClick('DRAFT')" :class="{'is-active': activeStatus == 'DRAFT' }">
+            <li @click="onStatusClick('DRAFT')" :class="{ 'is-active': activeStatus == 'DRAFT' }">
               <a>
-                <img style="height:30px;padding-right:5px" src="/images/draft.png" /> Draft
+                <img style="height:30px;padding-right:5px" src="/images/draft.png" />
+                Draft
               </a>
             </li>
-            <li @click="onStatusClick('BIN')" :class="{'is-active': activeStatus == 'BIN' }">
+            <li @click="onStatusClick('BIN')" :class="{ 'is-active': activeStatus == 'BIN' }">
               <a>
-                <img style="height:30px;padding-right:5px" src="/images/bin.png" /> Bin
+                <img style="height:30px;padding-right:5px" src="/images/bin.png" />
+                Bin
               </a>
             </li>
           </ul>
@@ -75,21 +78,25 @@
           <template v-if="postsRequestState === 'PENDING'">
             <PodLoader />
           </template>
-          <template v-if="postsRequestState ==='FINISHED_OK'">
+          <template v-if="postsRequestState === 'FINISHED_OK'">
             <template
               v-if="posts.edges.length === 0"
-            >No post are in {{activeStatus}} status for now.</template>
+            >No post are in {{ activeStatus }} status for now.</template>
             <template v-if="posts.edges.length > 0">
               <div v-for="edge in posts.edges" :key="edge.node._id">
                 <h2 style="color:#444">
                   <div class="columns">
                     <div class="column">
                       <router-link
-                        :to="`/pod/${$route.params.podId}/write/post/${edge.node._id}`"
-                      >{{edge.node.title}}</router-link>
+                        :to="
+                          `/pod/${$route.params.podId}/write/post/${
+                            edge.node._id
+                          }`
+                        "
+                      >{{ edge.node.title }}</router-link>
                       <br />
 
-                      <span class="subtitle">{{Number(edge.node.createdAt) | moment('from')}}</span>
+                      <span class="subtitle">{{ Number(edge.node.createdAt) | moment("from") }}</span>
                     </div>
                   </div>
                 </h2>
@@ -110,7 +117,7 @@ import gql from "graphql-tag";
 import PodLoader from "../components/PodLoader";
 import { REQUEST_STATE } from "../lib/helpers";
 import Notify from "../components/Notify";
-import { isIP } from "net";
+
 import { error } from "util";
 
 const postsQuery = gql`

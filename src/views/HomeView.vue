@@ -6,8 +6,8 @@
           <strong>POD</strong>
         </h1>
         <h2 class="subtitle is-3">Fast headless blogging</h2>
-        <br>
-        <br>
+        <br />
+        <br />
         <button @click="onWriteClick" class="button is-large">WRITE</button>
       </div>
     </div>

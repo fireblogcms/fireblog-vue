@@ -1,7 +1,7 @@
 <template>
   <AdminLayout>
     <Notify :errors="notifications.errors" :info="notifications.info" />
-    <div class="pod-list-view content container section">
+    <div class="pod-list-view container">
       <template v-if="myPodsRequestState === 'PENDING'">
         <PodLoader />
       </template>
@@ -29,29 +29,30 @@
               </BulmaButtonLink>
             </div>
           </div>
-          <div v-for="edge in pods.edges" :key="edge.node._id">
-            <router-link :to="`/pod/${edge.node._id}`">
-              <div class="card">
-                <div class="card-content">
-                  <div class="columns">
-                    <div class="column">
-                      <div class="content">
-                        <h2>{{edge.node.name}}</h2>
-                        <em>{{edge.node.description}}</em>
-                        <br />
-                        <p>created {{Number(edge.node.createdAt) | moment("from")}}</p>
-                      </div>
-                    </div>
-                    <div class="column is-one-quarter">
-                      <BulmaButtonLink
-                        class="is-pulled-right"
-                        :to="`pod/${edge.node._id}/write/post`"
-                      >Write</BulmaButtonLink>
+          <div class="pod-container">
+            <div v-for="edge in pods.edges" :key="edge.node._id">
+              <router-link :to="`/pod/${edge.node._id}`">
+                <div class="columns">
+                  <div class="column">
+                    <div class="content">
+                      <h2>{{ edge.node.name }}</h2>
+                      <em>{{ edge.node.description }}</em>
+                      <p>
+                        created
+                        {{ Number(edge.node.createdAt) | moment("from") }}
+                      </p>
                     </div>
                   </div>
+                  <div class="column is-one-quarter">
+                    <BulmaButtonLink
+                      class="is-pulled-right"
+                      :to="`pod/${edge.node._id}/write/post`"
+                    >Write</BulmaButtonLink>
+                  </div>
                 </div>
-              </div>
-            </router-link>
+              </router-link>
+              <hr />
+            </div>
           </div>
         </template>
       </template>

@@ -44,7 +44,7 @@
             </span>
             <router-link class="navbar-item" to="/profile">
               <img :src="me.picture" style="border-radius:3px; margin-right:1rem" />
-              {{me.name}}
+              {{ me.name }}
             </router-link>
             <portal-target name="navbar-end">
               <!--
