@@ -1,15 +1,22 @@
 <template>
-  <div class="has-text-centered">
-    <Circle9 style="margin:auto" />
+  <div class="has-text-centered section">
+    <Circle2 style="margin:auto" />
   </div>
 </template>
 
 <script>
 // https://nguyenvanduocit.github.io/vue-loading-spinner/
-import { Circle9 } from "vue-loading-spinner";
+import {
+  Mikepad,
+  Pencil,
+  Circle2,
+  Circle9,
+  LetterCube
+} from "vue-loading-spinner";
+
 export default {
   components: {
-    Circle9
+    Circle2
   }
 };
 </script>

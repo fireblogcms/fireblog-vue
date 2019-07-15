@@ -29,6 +29,7 @@ const authLink = setContext((_, { headers }) => {
 const client = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
+  connectToDevTools: process.env.NODE_ENV === "development" ? true : false,
   defaultOptions: {
     watchQuery: {
       fetchPolicy: "network-only",

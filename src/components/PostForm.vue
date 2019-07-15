@@ -6,29 +6,13 @@
       </router-link>
     </portal>
     <portal to="topbar-right">
-      <!-- status 
-          <div
-            :class="{
-              'is-primary': inputs.status === 'PUBLISHED', 
-              'is-warning': inputs.status === 'DRAFT',
-              'is-danger': inputs.status === 'BIN',
-              }"
-            class="select item"
-          >
-            <select v-model="inputs.status">
-              <option value="PUBLISHED">Published</option>
-              <option value="DRAFT">Draft</option>
-              <option value="BIN">Bin</option>
-            </select>
-          </div>
-      -->
-
       <span class="item button" style="border:0" v-if="lastTimeSaved">
         <em>saved at {{lastTimeSaved | moment('HH:mm:ss')}}</em>
       </span>
 
       <input
-        @click="onSaveClick(post)"
+        @click="onSaveClick()"
+        v-if="operation === 'CREATE' || (existingPost && existingPost.status === 'DRAFT')"
         class="button is-outlined item"
         :class="{'is-loading': savingPostState === 'PENDING'}"
         type="submit"
@@ -36,48 +20,36 @@
       />
 
       <input
-        @click="onPublishPostClick(post)"
+        @click="onPublishPostClick()"
         class="button is-outlined item"
         :class="{'is-loading': publishPostState === 'PENDING'}"
         type="submit"
         value="PUBLISH"
       />
-
-      <!--
-              <span class="navbar-item">
-                <button @click="onApiClick" class="button is-outlined is-info">
-                  &nbsp;&nbsp;&nbsp;
-                  <img src="/logo-graphql.svg" />
-                  API&nbsp;&nbsp;&nbsp;
-                </button>
-              </span>
-      -->
     </portal>
 
     <template v-if="loadingPostState === 'PENDING'">
       <PodLoader />
     </template>
 
-    <div v-show="showNotifications" class="notification is-warning">
+    <div v-show="showNotifications" class="container notification is-warning has-text-centered">
       <button class="delete" @click="showNotifications = false"></button>
       <template v-if="savingPostState === 'FINISHED_ERROR'">{{savingPostMessage}}</template>
       <template v-if="loadingPostState === 'FINISHED_ERROR'">{{loadingPostMessage}}</template>
     </div>
 
-    <div>
-      <form @submit.prevent>
-        <textarea-autosize
-          @keydown.enter.native.prevent="onEnter"
-          autofocus
-          rows="1"
-          placeholder="Title"
-          type="text"
-          id="title"
-          v-model="inputs.title"
-        ></textarea-autosize>
-        <ckeditor ref="ckeditor" :editor="editor" v-model="inputs.content" :config="editorConfig"></ckeditor>
-      </form>
-    </div>
+    <form @submit.prevent>
+      <textarea-autosize
+        @keydown.enter.native.prevent="onEnter"
+        autofocus
+        rows="1"
+        placeholder="Title"
+        type="text"
+        id="title"
+        v-model="inputs.title"
+      ></textarea-autosize>
+      <ckeditor ref="ckeditor" :editor="editor" v-model="inputs.content" :config="editorConfig"></ckeditor>
+    </form>
   </div>
 </template>
 
@@ -132,11 +104,6 @@ const getExistingPostQuery = gql`
       title
       content
       status
-      author {
-        _id
-        name
-        email
-      }
     }
   }
 `;
@@ -158,7 +125,7 @@ export default {
       loadingPostState: "NOT_STARTED",
       loadingPostMessage: null,
       lastTimeSaved: null,
-      post: null,
+      existingPost: null,
       showNotifications: false,
       inputs: {
         title: "",
@@ -199,11 +166,13 @@ export default {
       this.loadingPostState = "PENDING";
       this.getExistingPost()
         .then(result => {
-          this.post = result.data.post;
-          this.inputs.title = this.post.title;
-          this.inputs.content = this.post.content ? this.post.content : "";
-          this.inputs.status = this.post.status
-            ? this.post.status
+          this.existingPost = result.data.post;
+          this.inputs.title = this.existingPost.title;
+          this.inputs.content = this.existingPost.content
+            ? this.existingPost.content
+            : "";
+          this.inputs.status = this.existingPost.status
+            ? this.existingPost.status
             : this.inputs.status;
           this.loadingPostState = "FINISHED_OK";
         })
@@ -255,10 +224,7 @@ export default {
             this.lastTimeSaved = Date.now();
             // post is created, we are now in UPDATE mode for the form.
             this.operation = "UPDATE";
-            this.post = {
-              ...newPost,
-              _id: result.data.createPost._id
-            };
+            this.existingPost = result.data.createPost;
             this.$router.replace(
               `/pod/${this.$route.params.podId}/write/post/${
                 result.data.createPost._id
@@ -276,7 +242,18 @@ export default {
       // UPDATE
       //
       if (this.operation === "UPDATE") {
-        this.updatePost()
+        const variables = {
+          post: {
+            _id: this.existingPost._id,
+            title: this.inputs.title,
+            content: this.inputs.content
+          }
+        };
+        apolloClient
+          .mutate({
+            mutation: updatePostQuery,
+            variables
+          })
           .then(r => {
             this.savingPostState = "FINISHED_OK";
             this.lastTimeSaved = Date.now();
@@ -291,32 +268,8 @@ export default {
       }
     },
     onPublishPostClick() {
-      alert(" published");
-      /*
-      return apolloClient.mutate({
-        mutation: updatePostQuery,
-        variables: {
-          post: {
-            status: "PUBSLIHED"
-          }
-        }
-      }).then(result => {
-
-      })
-      */
-    },
-    updatePost() {
-      const variables = {
-        post: {
-          ...this.post,
-          title: this.inputs.title,
-          content: this.inputs.content
-        }
-      };
-      return apolloClient.mutate({
-        mutation: updatePostQuery,
-        variables
-      });
+      this.savingPostState = "PENDING";
+      alert("publish now ?");
     }
   }
 };

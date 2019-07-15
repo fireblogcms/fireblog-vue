@@ -14,7 +14,7 @@
                 style="height:80px !important;position:relative;top:25px;padding-right:1rem"
                 src="/images/book.png"
               />
-              {{pod.name}}
+              POSTS
             </h1>
           </div>
           <div class="column">
@@ -62,7 +62,7 @@
       </div>
 
       <template v-if="allPosts.edges.length > 0">
-        <div class="container tabs is-medium" style="position:relative;margin-bottom:0;top:1px">
+        <div class="container tabs is-boxed is-medium" style="position:relative;margin-bottom:0;">
           <ul style="border-bottom:0">
             <li
               @click="onStatusClick('PUBLISHED')"
@@ -84,7 +84,7 @@
             </li>
           </ul>
         </div>
-        <div class="container content pod-container">
+        <div class="container content pod-container" style="border-top-left-radius:0;">
           <template v-if="pod.posts.edges.length === 0">
             No post are in {{activeStatus}} status for now. Check your
             <a

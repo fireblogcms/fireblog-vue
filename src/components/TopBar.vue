@@ -20,9 +20,9 @@
             The slot content of the above portal component will be rendered here.
             -->
           </portal-target>
-          <span @click="getApiDoc" class="item button is-outlined">
+          <a :href="VUE_APP_GRAPHQL_URL" target="_blank" class="item button is-outlined">
             <img style="height:20px !important;padding-right:10px" src="/images/graphql.svg" />API
-          </span>
+          </a>
 
           <div v-if="meQueryState === 'FINISHED_OK'" id="profile-dropdown" class="item">
             <div
@@ -134,6 +134,7 @@ export default {
   },
   created() {
     // get account infos
+    this.VUE_APP_GRAPHQL_URL = process.env.VUE_APP_GRAPHQL_URL;
     this.meQueryState = "PENDING";
     apolloClient
       .query({
