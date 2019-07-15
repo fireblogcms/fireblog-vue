@@ -1,10 +1,11 @@
 <template>
   <AdminLayout>
+    <Notify :errors="notifications.errors" :info="notifications.info" />
     <div class="pod-list-view content container section">
-      <template v-if="loadingState === 'PENDING'">
+      <template v-if="myPodsRequestState === 'PENDING'">
         <PodLoader />
       </template>
-      <template v-if="loadingState === 'FINISHED_OK'">
+      <template v-if="myPodsRequestState === 'FINISHED_OK'">
         <template v-if="pods.edges.length === 0">
           <div class="pod-container">
             <PodCreateForm :first="true" />
@@ -66,9 +67,11 @@ import AdminLayout from "../layouts/AdminLayout";
 import PodLoader from "../components/PodLoader";
 import gql from "graphql-tag";
 import BulmaButtonLink from "../components/BulmaButtonLink";
+import { REQUEST_STATE } from "../lib/helpers";
+import Notify from "../components/Notify";
 
 const myPodsQuery = gql`
-  query myPods {
+  query myPodsQuery {
     me {
       pods(last: 100) {
         edges {
@@ -91,25 +94,31 @@ export default {
     PodCreateForm,
     BulmaGrid,
     AdminLayout,
-    PodLoader
+    PodLoader,
+    Notify
   },
   data() {
     return {
       pods: null,
-      loadingState: "NOT_STARTED"
+      myPodsRequestState: REQUEST_STATE.NOT_STARTED,
+      notifications: {
+        errors: [],
+        info: []
+      }
     };
   },
   methods: {
     getPods() {
-      this.loadingState = "PENDING";
+      this.myPodsRequestState = REQUEST_STATE.PENDING;
       return apolloClient
         .query({ query: myPodsQuery })
         .then(result => {
-          this.loadingState = "FINISHED_OK";
+          this.myPodsRequestState = REQUEST_STATE.FINISHED_OK;
           this.pods = result.data.me.pods;
         })
         .catch(e => {
-          this.loadingState = "FINISHED_ERROR";
+          this.myPodsRequestState = REQUEST_STATE.FINISHED_ERROR;
+          this.notifications.errors.push("getPods() " + e.message);
         });
     }
   },

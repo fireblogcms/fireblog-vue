@@ -190,7 +190,7 @@ export default {
     },
     async getAllPosts() {
       this.allPostsRequestState === REQUEST_STATE.PENDING;
-      const result = apolloClient
+      return apolloClient
         .query({
           query: allPostsQuery,
           variables: { pod: this.$route.params.podId }
@@ -212,7 +212,7 @@ export default {
         errors: [],
         info: []
       };
-      const result = apolloClient
+      return apolloClient
         .query({
           query: postsQuery,
           variables: {
