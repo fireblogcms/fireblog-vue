@@ -65,7 +65,6 @@ export default {
       } else {
         localLogin(result)
           .then(r => {
-            console.log("r", r);
             this.$router.push({
               path: "/pods"
             });

@@ -5,6 +5,7 @@
         <i class="fas fa-chevron-left"></i> Posts
       </router-link>
     </portal>
+    <Notify :errors="notifications.errors" :info="notifications.info" />
     <portal to="topbar-right">
       <span class="item button" style="border:0" v-if="lastTimeSaved">
         <em>saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
@@ -35,20 +36,6 @@
       <PodLoader />
     </template>
 
-    <div v-show="showNotifications" class="container notification is-warning has-text-centered">
-      <button class="delete" @click="showNotifications = false"></button>
-      <template v-if="savingPostState === 'FINISHED_ERROR'">
-        {{
-        savingPostMessage
-        }}
-      </template>
-      <template v-if="loadingPostState === 'FINISHED_ERROR'">
-        {{
-        loadingPostMessage
-        }}
-      </template>
-    </div>
-
     <form @submit.prevent>
       <textarea-autosize
         @keydown.enter.native.prevent="onEnter"
@@ -75,6 +62,8 @@ import CKEditor from "@ckeditor/ckeditor5-vue";
 import { getUser } from "@/lib/auth";
 import gql from "graphql-tag";
 import BulmaButton from "./BulmaButton";
+import Notify from "./Notify";
+import { REQUEST_STATE } from "../lib/helpers";
 
 const createPostQuery = gql`
   mutation createPostQuery($post: CreatePostInput!) {
@@ -125,19 +114,23 @@ export default {
     ckeditor: CKEditor.component,
     AdminLayout,
     PodLoader,
-    BulmaButton
+    BulmaButton,
+    Notify
   },
   data() {
     return {
       operation: "CREATE",
-      publishPostState: "NOT_STARTED",
-      savingPostState: "NOT_STARTED",
+      publishPostState: REQUEST_STATE.NOT_STARTED,
+      savingPostState: REQUEST_STATE.NOT_STARTED,
       savingPostMessage: null,
-      loadingPostState: "NOT_STARTED",
+      loadingPostState: REQUEST_STATE.NOT_STARTED,
       loadingPostMessage: null,
       lastTimeSaved: null,
       existingPost: null,
-      showNotifications: false,
+      notifications: {
+        errors: [],
+        info: []
+      },
       inputs: {
         title: "",
         content: "",
@@ -174,7 +167,7 @@ export default {
     // if we are editing a post, the route
     if (this.operation === "UPDATE") {
       this.loadingPostMessage = null;
-      this.loadingPostState = "PENDING";
+      this.loadingPostState = REQUEST_STATE.PENDING;
       this.getExistingPost()
         .then(result => {
           this.existingPost = result.data.post;
@@ -185,13 +178,13 @@ export default {
           this.inputs.status = this.existingPost.status
             ? this.existingPost.status
             : this.inputs.status;
-          this.loadingPostState = "FINISHED_OK";
+          this.loadingPostState = REQUEST_STATE.FINISHED_OK;
         })
         .catch(e => {
-          this.loadingPostMessage =
-            "😞Sorry, loading post failed with this error message: " + e;
-          this.loadingPostState = "FINISHED_ERROR";
-          this.showNotifications = true;
+          this.notifications.errors.push(
+            "😞Sorry, loading post failed with this error message: " + e
+          );
+          this.loadingPostState = REQUEST_STATE.FINISHED_ERROR;
         });
     }
   },
@@ -210,7 +203,7 @@ export default {
       });
     },
     onSaveClick(post) {
-      this.savingPostState = "PENDING";
+      this.savingPostState = REQUEST_STATE.PENDING;
       //
       // CREATE
       //
@@ -231,7 +224,7 @@ export default {
           })
           .then(result => {
             apolloClient.clearStore();
-            this.savingPostState = "FINISHED_OK";
+            this.savingPostState = REQUEST_STATE.FINISHED_OK;
             this.lastTimeSaved = Date.now();
             // post is created, we are now in UPDATE mode for the form.
             this.operation = "UPDATE";
@@ -243,10 +236,10 @@ export default {
             );
           })
           .catch(e => {
-            this.savingPostState = "FINISHED_ERROR";
-            this.savingPostMessage =
-              "Sorry, post saving failed with th following message: " + e;
-            this.showNotifications = true;
+            this.notifications.errors.push(
+              "😞Sorry, saving post failed with this error message: " + e
+            );
+            this.savingPostState = REQUEST_STATE.FINISHED_ERROR;
           });
       }
       //
@@ -266,20 +259,19 @@ export default {
             variables
           })
           .then(r => {
-            this.savingPostState = "FINISHED_OK";
+            this.savingPostState = REQUEST_STATE.FINISHED_OK;
             this.lastTimeSaved = Date.now();
             apolloClient.clearStore();
           })
           .catch(e => {
-            this.savingPostState = "FINISHED_ERROR";
+            this.savingPostState = REQUEST_STATE.FINISHED_ERROR;
             this.savingPostMessage =
               "Sorry, post saving failed with th following message: " + e;
-            this.showNotifications = true;
           });
       }
     },
     onPublishPostClick() {
-      this.savingPostState = "PENDING";
+      this.savingPostState = REQUEST_STATE.FINISHED_OK;
       alert("publish now ?");
     }
   }
