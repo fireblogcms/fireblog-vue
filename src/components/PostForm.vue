@@ -14,7 +14,7 @@
       <input
         @click="onSaveClick()"
         v-if="
-          operation === 'CREATE' ||
+          operation() === 'CREATE' ||
             (existingPost && existingPost.status === 'DRAFT')
         "
         class="button is-outlined item"
@@ -38,7 +38,7 @@
 
     <form @submit.prevent>
       <textarea-autosize
-        @keydown.enter.native.prevent="onEnter"
+        @keydown.enter.native.prevent="onTitleEnter"
         autofocus
         rows="1"
         placeholder="Title"
@@ -108,6 +108,11 @@ const getExistingPostQuery = gql`
   }
 `;
 
+const OPERATION = {
+  CREATE: "CREATE",
+  UPDATE: "UPDATE"
+};
+
 export default {
   components: {
     // Use the <ckeditor> component in this view.
@@ -119,7 +124,6 @@ export default {
   },
   data() {
     return {
-      operation: "CREATE",
       publishPostState: REQUEST_STATE.NOT_STARTED,
       savingPostState: REQUEST_STATE.NOT_STARTED,
       savingPostMessage: null,
@@ -143,10 +147,6 @@ export default {
   // "mediaEmbed"
 
   created() {
-    // if there is a postId in the url, we are updating an existing post.
-    if (this.$route.params.postId) {
-      this.operation = "UPDATE";
-    }
     this.editor = Editor;
     /*
     0: "heading"
@@ -165,7 +165,7 @@ export default {
     };
 
     // if we are editing a post, the route
-    if (this.operation === "UPDATE") {
+    if (this.operation() === OPERATION.UPDATE) {
       this.loadingPostMessage = null;
       this.loadingPostState = REQUEST_STATE.PENDING;
       this.getExistingPost()
@@ -188,13 +188,13 @@ export default {
         });
     }
   },
-
   methods: {
-    onEnter() {
+    onTitleEnter() {
       this.$refs.ckeditor.$el.focus();
     },
-    onApiClick() {
-      this.$router.push(`/pod/${this.$route.params.podId}/write/post/api`);
+    operation() {
+      // if there is a postId in the url, we are updating an existing post.
+      return this.$route.params.postId ? OPERATION.UPDATE : OPERATION.CREATE;
     },
     getExistingPost() {
       return apolloClient.query({
@@ -202,72 +202,76 @@ export default {
         variables: { _id: this.$route.params.postId }
       });
     },
+    createPost(post) {
+      apolloClient
+        .mutate({
+          mutation: createPostQuery,
+          variables: { post }
+        })
+        .then(result => {
+          apolloClient.clearStore();
+          this.savingPostState = REQUEST_STATE.FINISHED_OK;
+          this.lastTimeSaved = Date.now();
+          // post is created, we are now in UPDATE mode for the form.
+          this.existingPost = result.data.createPost;
+          this.$router.replace(
+            `/pod/${this.$route.params.podId}/write/post/${
+              result.data.createPost._id
+            }`
+          );
+        })
+        .catch(e => {
+          this.notifications.errors.push(
+            "😞Sorry, saving post failed with this error message: " + e
+          );
+          this.savingPostState = REQUEST_STATE.FINISHED_ERROR;
+        });
+    },
+    updatePost(post) {
+      apolloClient
+        .mutate({
+          mutation: updatePostQuery,
+          variables: {
+            post
+          }
+        })
+        .then(r => {
+          this.savingPostState = REQUEST_STATE.FINISHED_OK;
+          this.lastTimeSaved = Date.now();
+          apolloClient.clearStore();
+        })
+        .catch(e => {
+          this.savingPostState = REQUEST_STATE.FINISHED_ERROR;
+          this.savingPostMessage =
+            "Sorry, post saving failed with th following message: " + e;
+        });
+    },
     onSaveClick(post) {
       this.savingPostState = REQUEST_STATE.PENDING;
       //
       // CREATE
       //
-      if (this.operation === "CREATE") {
+      if (this.operation() === OPERATION.CREATE) {
         const pod_id = this.$route.params.podId;
         const user_id = getUser().sub;
         const newPost = {
           pod: pod_id,
           author: user_id,
           title: this.inputs.title,
-          content: this.inputs.content,
-          status: this.inputs.status
+          content: this.inputs.content
         };
-        apolloClient
-          .mutate({
-            mutation: createPostQuery,
-            variables: { post: newPost }
-          })
-          .then(result => {
-            apolloClient.clearStore();
-            this.savingPostState = REQUEST_STATE.FINISHED_OK;
-            this.lastTimeSaved = Date.now();
-            // post is created, we are now in UPDATE mode for the form.
-            this.operation = "UPDATE";
-            this.existingPost = result.data.createPost;
-            this.$router.replace(
-              `/pod/${this.$route.params.podId}/write/post/${
-                result.data.createPost._id
-              }`
-            );
-          })
-          .catch(e => {
-            this.notifications.errors.push(
-              "😞Sorry, saving post failed with this error message: " + e
-            );
-            this.savingPostState = REQUEST_STATE.FINISHED_ERROR;
-          });
+        this.createPost(newPost);
       }
       //
       // UPDATE
       //
-      if (this.operation === "UPDATE") {
-        const variables = {
-          post: {
-            _id: this.existingPost._id,
-            title: this.inputs.title,
-            content: this.inputs.content
-          }
+      if (this.operation() === OPERATION.UPDATE) {
+        const post = {
+          _id: this.existingPost._id,
+          title: this.inputs.title,
+          content: this.inputs.content
         };
-        apolloClient
-          .mutate({
-            mutation: updatePostQuery,
-            variables
-          })
-          .then(r => {
-            this.savingPostState = REQUEST_STATE.FINISHED_OK;
-            this.lastTimeSaved = Date.now();
-            apolloClient.clearStore();
-          })
-          .catch(e => {
-            this.savingPostState = REQUEST_STATE.FINISHED_ERROR;
-            this.savingPostMessage =
-              "Sorry, post saving failed with th following message: " + e;
-          });
+        this.updatePost(post);
       }
     },
     onPublishPostClick() {
