@@ -1,38 +1,47 @@
 <template>
   <div class="writeForm">
     <portal to="topbar-left">
+      <!--  back to the posts list for this pod. -->
       <router-link class="item" v-if="$route.params.podId" :to="`/pod/${$route.params.podId}`">
         <i class="fas fa-chevron-left"></i> Posts
       </router-link>
     </portal>
-    <Notify :errors="notifications.errors" :info="notifications.info" />
-    <portal to="topbar-right">
+
+    <Notify :errors="notifications.errors" />
+    <portal to="topbar-right" v-if="operation() === 'CREATE' || this.existingPost">
       <span class="item button" style="border:0" v-if="lastTimeSaved">
         <em>saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
       </span>
 
       <input
         @click="onSaveClick()"
-        v-if="
-          operation() === 'CREATE' ||
-            (existingPost && existingPost.status === 'DRAFT')
-        "
+        v-if="!existingPost || (existingPost && existingPost.status === 'DRAFT')"
         class="button is-outlined item"
-        :class="{ 'is-loading': savingPostState === 'PENDING' }"
+        :class="{ 'is-loading': savingPostState === REQUEST_STATE.PENDING }"
         type="submit"
         value="SAVE"
       />
 
       <input
         @click="onPublishPostClick()"
+        v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
         class="button is-outlined item"
-        :class="{ 'is-loading': publishPostState === 'PENDING' }"
+        :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
         type="submit"
         value="PUBLISH"
       />
+
+      <input
+        @click="onPublishPostClick()"
+        v-if="existingPost && existingPost.status === 'PUBLISHED'"
+        class="button is-outlined item"
+        :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
+        type="submit"
+        value="PUBLISH CHANGES"
+      />
     </portal>
 
-    <template v-if="loadingPostState === 'PENDING'">
+    <template v-if="loadingPostState === REQUEST_STATE.PENDING">
       <PodLoader />
     </template>
 
@@ -63,45 +72,43 @@ import gql from "graphql-tag";
 import Notify from "./Notify";
 import { REQUEST_STATE } from "../lib/helpers";
 
+const PostResponseFragment = gql`
+  fragment PostResponse on Post {
+    _id
+    title
+    content
+    status
+    author {
+      _id
+      name
+      email
+    }
+  }
+`;
+
 const createPostQuery = gql`
+  ${PostResponseFragment}
   mutation createPostQuery($post: CreatePostInput!) {
     createPost(post: $post) {
-      _id
-      author {
-        _id
-        name
-        email
-      }
-      title
-      content
-      status
+      ...PostResponse
     }
   }
 `;
 
 const updatePostQuery = gql`
+  ${PostResponseFragment}
   mutation updatePostQuery($post: UpdatePostInput!) {
     updatePost(post: $post) {
-      _id
-      title
-      content
-      status
-      author {
-        _id
-        name
-        email
-      }
+      ...PostResponse
     }
   }
 `;
 
 const getExistingPostQuery = gql`
+  ${PostResponseFragment}
   query getExistingPostQuery($_id: ID!) {
     post(_id: $_id) {
-      _id
-      title
-      content
-      status
+      ...PostResponse
     }
   }
 `;
@@ -122,9 +129,7 @@ export default {
     return {
       publishPostState: REQUEST_STATE.NOT_STARTED,
       savingPostState: REQUEST_STATE.NOT_STARTED,
-      savingPostMessage: null,
       loadingPostState: REQUEST_STATE.NOT_STARTED,
-      loadingPostMessage: null,
       lastTimeSaved: null,
       existingPost: null,
       notifications: {
@@ -133,17 +138,14 @@ export default {
       },
       inputs: {
         title: "",
-        content: "",
-        status: "DRAFT"
-      },
-      publishDropdownIsActive: false
+        content: ""
+      }
     };
   },
-  // "heading"
-  // "mediaEmbed"
-
   created() {
     this.editor = Editor;
+    this.REQUEST_STATE = REQUEST_STATE;
+    this.OPERATION = OPERATION;
     /*
     0: "heading"
     1: "|"
@@ -162,24 +164,15 @@ export default {
 
     // if we are editing a post, the route
     if (this.operation() === OPERATION.UPDATE) {
-      this.loadingPostMessage = null;
       this.loadingPostState = REQUEST_STATE.PENDING;
       this.getExistingPost()
         .then(result => {
           this.existingPost = result.data.post;
-          this.inputs.title = this.existingPost.title;
-          this.inputs.content = this.existingPost.content
-            ? this.existingPost.content
-            : "";
-          this.inputs.status = this.existingPost.status
-            ? this.existingPost.status
-            : this.inputs.status;
+          this.inputs = this.prepareInputsFromPost(this.existingPost);
           this.loadingPostState = REQUEST_STATE.FINISHED_OK;
         })
         .catch(e => {
-          this.notifications.errors.push(
-            "😞Sorry, loading post failed with this error message: " + e
-          );
+          this.notifications.errors.push("😞Sorry, loading post failed: " + e);
           this.loadingPostState = REQUEST_STATE.FINISHED_ERROR;
         });
     }
@@ -198,8 +191,28 @@ export default {
         variables: { _id: this.$route.params.postId }
       });
     },
+    // prepare form inputs from a post object
+    prepareInputsFromPost(post) {
+      return {
+        title: post.title,
+        content: post.content ? post.content : ""
+      };
+    },
+    // prepare a post object from form inputs
+    preparePostFromInputs(inputs) {
+      return {
+        title: inputs.title,
+        content: inputs.content,
+        status: "DRAFT"
+      };
+    },
     createPost(post) {
-      apolloClient
+      // current user as author by default
+      if (!post.author) {
+        post.author = getUser().sub;
+      }
+      post.pod = this.$route.params.podId;
+      return apolloClient
         .mutate({
           mutation: createPostQuery,
           variables: { post }
@@ -208,8 +221,8 @@ export default {
           apolloClient.clearStore();
           this.savingPostState = REQUEST_STATE.FINISHED_OK;
           this.lastTimeSaved = Date.now();
-          // post is created, we are now in UPDATE mode for the form.
           this.existingPost = result.data.createPost;
+          // post is created, we are now in UPDATE mode for the form.
           this.$router.replace(
             `/pod/${this.$route.params.podId}/write/post/${
               result.data.createPost._id
@@ -224,39 +237,30 @@ export default {
         });
     },
     updatePost(post) {
-      apolloClient
+      if (!post._id) {
+        post._id = this.$route.params.postId;
+      }
+      return apolloClient
         .mutate({
           mutation: updatePostQuery,
           variables: {
             post
           }
         })
-        .then(r => {
+        .then(result => {
           this.savingPostState = REQUEST_STATE.FINISHED_OK;
           this.lastTimeSaved = Date.now();
+          this.existingPost = result.data.updatePost;
           apolloClient.clearStore();
         })
         .catch(e => {
           this.savingPostState = REQUEST_STATE.FINISHED_ERROR;
-          this.savingPostMessage =
-            "Sorry, post saving failed with th following message: " + e;
+          this.notifications.errors.push("Sorry, updatePost failed : " + e);
         });
     },
     onSaveClick() {
-      this.savingPostState = REQUEST_STATE.PENDING;
-      //
-      // CREATE
-      //
       if (this.operation() === OPERATION.CREATE) {
-        const pod_id = this.$route.params.podId;
-        const user_id = getUser().sub;
-        const newPost = {
-          pod: pod_id,
-          author: user_id,
-          title: this.inputs.title,
-          content: this.inputs.content
-        };
-        this.createPost(newPost);
+        this.createPost(this.preparePostFromInputs(this.inputs));
       }
       //
       // UPDATE
@@ -271,8 +275,21 @@ export default {
       }
     },
     onPublishPostClick() {
-      this.savingPostState = REQUEST_STATE.FINISHED_OK;
-      this.updatePost({ status: "PUBLISHED", _id: this.$route.params.postId });
+      const status = "PUBLISHED";
+      if (this.operation() === "CREATE") {
+        const newPost = {
+          ...this.preparePostFromInputs(this.inputs),
+          status
+        };
+        this.createPost(newPost);
+      }
+      if (this.operation() === "UPDATE") {
+        const post = {
+          ...this.preparePostFromInputs(this.inputs),
+          status
+        };
+        this.updatePost(post);
+      }
     }
   }
 };
