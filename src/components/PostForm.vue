@@ -5,7 +5,7 @@
       <router-link class="item" v-if="$route.params.podId" :to="`/pod/${$route.params.podId}`">
         <i class="fas fa-chevron-left"></i> Posts
       </router-link>
-      <span class="item">{{existingPost.status}}</span>
+      <span class="item">{{!existingPost ? "DRAFT" : existingPost.status}}</span>
       <span class="item button" style="border:0" v-if="lastTimeSaved">
         <em>saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
       </span>
