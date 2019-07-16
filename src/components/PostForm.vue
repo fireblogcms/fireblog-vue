@@ -52,7 +52,6 @@
 </template>
 
 <script>
-import AdminLayout from "@/layouts/AdminLayout";
 import apolloClient from "../lib/apolloClient";
 import PodLoader from "../components/PodLoader";
 // import Editor from "@ckeditor/ckeditor5-build-classic";
@@ -61,7 +60,6 @@ import Editor from "@ckeditor/ckeditor5-build-balloon-block";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import { getUser } from "@/lib/auth";
 import gql from "graphql-tag";
-import BulmaButton from "./BulmaButton";
 import Notify from "./Notify";
 import { REQUEST_STATE } from "../lib/helpers";
 
@@ -117,9 +115,7 @@ export default {
   components: {
     // Use the <ckeditor> component in this view.
     ckeditor: CKEditor.component,
-    AdminLayout,
     PodLoader,
-    BulmaButton,
     Notify
   },
   data() {
@@ -246,7 +242,7 @@ export default {
             "Sorry, post saving failed with th following message: " + e;
         });
     },
-    onSaveClick(post) {
+    onSaveClick() {
       this.savingPostState = REQUEST_STATE.PENDING;
       //
       // CREATE
@@ -267,7 +263,7 @@ export default {
       //
       if (this.operation() === OPERATION.UPDATE) {
         const post = {
-          _id: this.existingPost._id,
+          _id: this.$route.params.postId,
           title: this.inputs.title,
           content: this.inputs.content
         };
@@ -276,7 +272,7 @@ export default {
     },
     onPublishPostClick() {
       this.savingPostState = REQUEST_STATE.FINISHED_OK;
-      alert("publish now ?");
+      this.updatePost({ status: "PUBLISHED", _id: this.$route.params.postId });
     }
   }
 };
