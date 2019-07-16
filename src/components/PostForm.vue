@@ -5,27 +5,35 @@
       <router-link class="item" v-if="$route.params.podId" :to="`/pod/${$route.params.podId}`">
         <i class="fas fa-chevron-left"></i> Posts
       </router-link>
+      <span class="item">{{existingPost.status}}</span>
+      <span class="item button" style="border:0" v-if="lastTimeSaved">
+        <em>saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
+      </span>
     </portal>
 
     <Notify :errors="notifications.errors" />
     <portal to="topbar-right" v-if="operation() === 'CREATE' || this.existingPost">
-      <span class="item button" style="border:0" v-if="lastTimeSaved">
-        <em>saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
-      </span>
-
       <input
         @click="onSaveClick()"
         v-if="!existingPost || (existingPost && existingPost.status === 'DRAFT')"
         class="button is-outlined item"
         :class="{ 'is-loading': savingPostState === REQUEST_STATE.PENDING }"
         type="submit"
-        value="SAVE"
+        value="SAVE DRAFT"
+      />
+
+      <input
+        @click="onUnpublishPostClick()"
+        v-if="existingPost && existingPost.status === 'PUBLISHED'"
+        class="button is-outlined item"
+        type="submit"
+        value="UNPUBLISH"
       />
 
       <input
         @click="onPublishPostClick()"
         v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
-        class="button is-outlined item"
+        class="button is-outlined item is-primary"
         :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
         type="submit"
         value="PUBLISH"
@@ -34,7 +42,7 @@
       <input
         @click="onPublishPostClick()"
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
-        class="button is-outlined item"
+        class="button is-outlined item is-primary"
         :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
         type="submit"
         value="PUBLISH CHANGES"
@@ -290,6 +298,13 @@ export default {
         };
         this.updatePost(post);
       }
+    },
+    onUnpublishPostClick() {
+      const post = {
+        ...this.preparePostFromInputs(this.inputs),
+        status: "DRAFT"
+      };
+      this.updatePost(post);
     }
   }
 };
