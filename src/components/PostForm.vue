@@ -73,7 +73,7 @@ import apolloClient from "../lib/apolloClient";
 import PodLoader from "../components/PodLoader";
 // import Editor from "@ckeditor/ckeditor5-build-classic";
 // import Editor from "@ckeditor/ckeditor5-build-balloon";
-import Editor from "@ckeditor/ckeditor5-build-balloon-block";
+import Editor from "@adrienpessume/ckeditor5-build-balloon-block-code";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import { getUser } from "@/lib/auth";
 import gql from "graphql-tag";
@@ -166,7 +166,7 @@ export default {
     items: (5) ["bold", "italic", "link", "undo", "redo"]
     */
     this.editorConfig = {
-      toolbar: ["bold", "italic", "link", "heading"],
+      toolbar: ["bold", "italic", "link", "heading", "code"],
       blockToolbar: ["imageUpload", "mediaEmbed"]
     };
 

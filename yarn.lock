@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@adrienpessume/ckeditor5-build-balloon-block-code@12.3.4":
+  version "12.3.4"
+  resolved "https://registry.yarnpkg.com/@adrienpessume/ckeditor5-build-balloon-block-code/-/ckeditor5-build-balloon-block-code-12.3.4.tgz#e60db8d83cdb5b7528e430ca2f10d104d8cea6bc"
+  integrity sha512-vQ/TyYxGNtZi1YdbknE9WQMirSpqFoVIvoyiQickg+1kmtlS7Q15VnaUZIJ2ntnSmE+7xxr02sTmSf/MmFSm6g==
+
 "@babel/code-frame@^7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.0.0.tgz#06e2ab19bdb535385559aabb5ba59729482800f8"
@@ -666,11 +671,6 @@
     esutils "^2.0.2"
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
-
-"@ckeditor/ckeditor5-build-balloon-block@^12.0.0":
-  version "12.0.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-build-balloon-block/-/ckeditor5-build-balloon-block-12.0.0.tgz#5d4fc7d4f346a4b267afe45899fbe43217c16483"
-  integrity sha512-uz3ifHFSHmRGLw0NAtUXEXOKjn2VqZ2YKN6F9np/MziKGyOJXBVXQCt+cn4oOzufmt1pjwfJsujW6ErEIZ2oCw==
 
 "@ckeditor/ckeditor5-build-balloon@^12.0.0":
   version "12.0.0"
