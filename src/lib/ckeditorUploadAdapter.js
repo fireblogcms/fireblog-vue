@@ -22,13 +22,19 @@ class ckeditorUploadAdapter {
   // Starts the upload process.
   upload() {
     return this.loader.file.then(file => {
-      return apolloClient.mutate({
-        mutation: uploadQuery,
-        variables: {
-          file,
-          podId: "Naoned"
-        }
-      });
+      return apolloClient
+        .mutate({
+          mutation: uploadQuery,
+          variables: {
+            file,
+            podId: "Naoned"
+          }
+        })
+        .then(result => {
+          return {
+            default: result.data.upload.url
+          };
+        });
     });
   }
 
