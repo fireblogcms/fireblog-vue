@@ -361,7 +361,7 @@ export default {
   outline: none !important;
 }
 
-.writeForm .ck-editor__editable {
+.writeForm .ck-content {
   padding: 0rem 2rem;
   background: transparent;
   text-align: left;
