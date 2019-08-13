@@ -1,5 +1,6 @@
 import apolloClient from "./apolloClient";
 import gql from "graphql-tag";
+import Url from "url-parse";
 
 const uploadQuery = gql`
   mutation uploadQuery($file: Upload!, $podId: ID!) {
@@ -21,13 +22,15 @@ class ckeditorUploadAdapter {
 
   // Starts the upload process.
   upload() {
+    const currentUrl = new Url(window.location.href);
     return this.loader.file.then(file => {
       return apolloClient
         .mutate({
           mutation: uploadQuery,
           variables: {
             file,
-            podId: "Naoned"
+            // ["", "pod", "5d35bea50b520bea7953fee6", "write", "post", "5d35bec70b520bea7953fee7"]
+            podId: currentUrl.pathname.split("/")[2]
           }
         })
         .then(result => {
