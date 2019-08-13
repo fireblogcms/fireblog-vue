@@ -1,14 +1,13 @@
 // @see https://www.apollographql.com/docs/react/basics/setup.html
 // @see https://www.apollographql.com/docs/react/api/apollo-client.html
 import { ApolloClient } from "apollo-client";
-import { createHttpLink } from "apollo-link-http";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { setContext } from "apollo-link-context";
 import { getAccessToken } from "./auth";
+import { createUploadLink } from "apollo-upload-client";
 
-const httpLink = createHttpLink({
-  uri: process.env.VUE_APP_GRAPHQL_URL
-});
+// An httpLink than support uploading files.
+const uploadLink = createUploadLink({ uri: process.env.VUE_APP_GRAPHQL_URL });
 
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
@@ -27,7 +26,7 @@ const authLink = setContext((_, { headers }) => {
 });
 
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: authLink.concat(uploadLink),
   cache: new InMemoryCache(),
   connectToDevTools: process.env.NODE_ENV === "development" ? true : false,
   defaultOptions: {
