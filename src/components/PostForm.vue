@@ -79,6 +79,7 @@ import { getUser } from "@/lib/auth";
 import gql from "graphql-tag";
 import Notify from "./Notify";
 import { REQUEST_STATE } from "../lib/helpers";
+import { ckeditorUploadAdapterPlugin } from "../lib/ckeditorUploadAdapter";
 
 const PostResponseFragment = gql`
   fragment PostResponse on Post {
@@ -117,6 +118,17 @@ const getExistingPostQuery = gql`
   query getExistingPostQuery($_id: ID!) {
     post(_id: $_id) {
       ...PostResponse
+    }
+  }
+`;
+
+const uploadQuery = gql`
+  mutation uploadQuery($file: Upload!, $podId: ID!) {
+    upload(file: $file, podId: $podId) {
+      url
+      filename
+      mimetype
+      encoding
     }
   }
 `;
@@ -166,6 +178,7 @@ export default {
     items: (5) ["bold", "italic", "link", "undo", "redo"]
     */
     this.editorConfig = {
+      extraPlugins: [ckeditorUploadAdapterPlugin],
       toolbar: ["bold", "italic", "link", "heading"],
       blockToolbar: ["imageUpload", "mediaEmbed"]
     };
@@ -305,6 +318,22 @@ export default {
         status: "DRAFT"
       };
       this.updatePost(post);
+    },
+    uploadPhoto({ target }) {
+      return apolloClient
+        .mutate({
+          mutation: uploadQuery,
+          variables: {
+            file: target.files[0],
+            podId: this.$route.params.podId
+          }
+        })
+        .then(result => {
+          console.log("result", result);
+        })
+        .catch(error => {
+          console.log("e", error);
+        });
     }
   }
 };
