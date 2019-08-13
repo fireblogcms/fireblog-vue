@@ -22,6 +22,13 @@ class ckeditorUploadAdapter {
 
   // Starts the upload process.
   upload() {
+    // each image is uploaded in a folder name after the pod Id, so
+    // make sure we have a podId param at this point.
+    if (!Router.currentRoute.params.podId) {
+      throw new Error(
+        "ckeditorUploadAdapter : No pod Id detected in the current url, aborting upload !"
+      );
+    }
     return this.loader.file.then(file => {
       return apolloClient
         .mutate({
