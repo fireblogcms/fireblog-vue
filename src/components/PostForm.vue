@@ -362,6 +362,7 @@ export default {
   padding: 1px;
   margin: 0;
   resize: none; /*remove the resize handle on the bottom right*/
+  line-height: 1.8;
 }
 .writeForm .ck-toolbar {
   background: white;
