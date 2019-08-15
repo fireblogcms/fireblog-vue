@@ -318,22 +318,6 @@ export default {
         status: "DRAFT"
       };
       this.updatePost(post);
-    },
-    uploadPhoto({ target }) {
-      return apolloClient
-        .mutate({
-          mutation: uploadQuery,
-          variables: {
-            file: target.files[0],
-            podId: this.$route.params.podId
-          }
-        })
-        .then(result => {
-          console.log("result", result);
-        })
-        .catch(error => {
-          console.log("e", error);
-        });
     }
   }
 };

@@ -22,13 +22,18 @@ class ckeditorUploadAdapter {
 
   // Starts the upload process.
   upload() {
-    // each image is uploaded in a folder name after the pod Id, so
+    // Each image is uploaded in a folder name after the pod Id, so
     // make sure we have a podId param at this point.
     if (!Router.currentRoute.params.podId) {
       throw new Error(
         "ckeditorUploadAdapter : No pod Id detected in the current url, aborting upload !"
       );
     }
+
+    // this.loader.file is a File object : https://developer.mozilla.org/en-US/docs/Web/API/File
+    // apollo-upload-client package allow us to send this File Object directly
+    // as a variable of our mutation and streams the file to our resolver :
+    // @see https://github.com/jaydenseric/graphql-multipart-request-spec
     return this.loader.file.then(file => {
       return apolloClient
         .mutate({
@@ -40,6 +45,8 @@ class ckeditorUploadAdapter {
           }
         })
         .then(result => {
+          // is the default url to use to display our uploaded image.
+          // Here it is possible to return different srcset if needed.
           return {
             default: result.data.upload.url
           };
