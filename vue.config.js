@@ -3,20 +3,47 @@ const glob = require("glob-all");
 const path = require("path");
 const fs = require("fs");
 const dotenv = require("dotenv");
+const difference = require("lodash.difference");
 
-function checkRequiredEnvVars(exampleEnvFilePath) {
-  const envExampleFileContent = fs.readFileSync(exampleEnvFilePath);
-  const requiredVars = dotenv.parse(envExampleFileContent);
-  Object.keys(requiredVars).map(key => {
-    if (!process.env[key]) {
-      throw new Error(
-        `Environnement variable ${key} not found, please add it.`
-      );
-    }
-  });
+/**
+ * Make sure all vars defined in env.example are defined in .env, and vice versa.
+ * @param {string} path of .env
+ * @param {string} path of .env examples
+ */
+function checkRequiredEnvVars(envFile, exampleEnvFile) {
+  const envExampleFileContent = fs.readFileSync(exampleEnvFile);
+  const envExampleVars = dotenv.parse(envExampleFileContent);
+  const envFileContent = fs.readFileSync(envFile);
+  const envVars = dotenv.parse(envFileContent);
+  const diffLeft = difference(
+    Object.keys(envVars),
+    Object.keys(envExampleVars)
+  );
+  const diffRight = difference(
+    Object.keys(envExampleVars),
+    Object.keys(envVars)
+  );
+  let diffDetected = null;
+  if (diffLeft.length > 0) {
+    diffDetected = true;
+    console.log(
+      `Error: Thoses keys are defined in ${envFile} but not in ${exampleEnvFile} : ${diffLeft}`
+    );
+  }
+  if (diffRight.length > 0) {
+    diffDetected = true;
+    console.log(
+      `Error: Thoses keys are defined in ${exampleEnvFile} but not in ${envFile} : ${diffRight}`
+    );
+  }
+  if (diffDetected) {
+    throw new Error(
+      `Environment variables error: differences detected between ${envFile} and ${exampleEnvFile}`
+    );
+  }
 }
 
-checkRequiredEnvVars(".env.example");
+checkRequiredEnvVars(".env.local", ".env.example");
 
 module.exports = {
   configureWebpack: {
