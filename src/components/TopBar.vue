@@ -55,7 +55,7 @@
               </div>
               <div class="dropdown-menu" role="menu">
                 <div class="dropdown-content">
-                  <router-link to="/pods" class="dropdown-item">
+                  <router-link :to="{name:'pods'}" class="dropdown-item">
                     <strong>My pods</strong>
                   </router-link>
                   <router-link
@@ -96,7 +96,6 @@
 <script>
 import gql from "graphql-tag";
 import apolloClient from "../lib/apolloClient";
-import apiDocPods from "../apiDocs/pods";
 import { print } from "graphql/language/printer";
 
 const meQuery = gql`

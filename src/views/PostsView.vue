@@ -1,7 +1,7 @@
 <template>
   <AdminLayout>
     <portal to="topbar-left">
-      <router-link class="item" :to="`/pods`">All pods</router-link>
+      <router-link class="item" :to="{name:'pods'}">All pods</router-link>
     </portal>
     <Notify :errors="notifications.errors" :infos="notifications.infos" />
 

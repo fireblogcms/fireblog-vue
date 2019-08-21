@@ -18,45 +18,6 @@ export default {
       error: null
     };
   },
-  methods: {
-    /*
-    handleLoginEvent(data) {
-      console.log("data", data);
-      if (!data.error) {
-        this.$router.push(data.state.target || "/");
-        // if user has no pod, redirect him to pod creation page.
-        // if he already has pods, ask him in which one he wants to write
-        podClient()
-          .request(
-            `
-            query($filter: PodsFilter){
-              pods(filter: $filter) {
-                name, 
-                description, 
-                _id
-              }
-            }
-          `,
-            {
-              filter: {
-                auth0_user_id: data.profile.sub
-              }
-            }
-          )
-          .then(r => {
-            if (r.pods.length === 0) {
-              this.$router.push({
-                path: "/pod/create",
-                query: { first: true }
-              });
-            } else {
-              this.$router.push("/pods");
-            }
-          });
-      }
-    }
-    */
-  },
   created() {
     auth0client.parseHash((error, result) => {
       // @FIXME handle error gracefully
@@ -65,9 +26,7 @@ export default {
       } else {
         localLogin(result)
           .then(r => {
-            this.$router.push({
-              path: "/pods"
-            });
+            this.$router.push({path: "/"});
           })
           .catch(error => {
             throw new Error(

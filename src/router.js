@@ -1,6 +1,5 @@
 import Vue from "vue";
 import Router from "vue-router";
-import HomeView from "./views/HomeView";
 import PostFormView from "./views/PostFormView";
 import ProfileView from "./views/ProfileView";
 import PodCreateView from "./views/PodCreateView";
@@ -20,11 +19,8 @@ const router = new Router({
   routes: [
     {
       path: "/",
-      name: "home",
-      component: HomeView,
-      meta: {
-        public: true
-      }
+      name: "pods",
+      component: PodsView
     },
     {
       path: "/callback",
@@ -58,11 +54,6 @@ const router = new Router({
       path: "/pod/:podId/write/post/:postId",
       name: "postEdit",
       component: PostFormView
-    },
-    {
-      path: "/pods",
-      name: "pods",
-      component: PodsView
     },
     {
       path: "/profile",
