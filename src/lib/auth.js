@@ -75,7 +75,6 @@ export function auth0RouterMiddleware(to, from, next) {
   // do not require
   else if (
     to.path === "/login" ||
-    to.path === "/" ||
     to.path === "/callback" ||
     isAuthenticated()
   ) {
