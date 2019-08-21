@@ -1,6 +1,6 @@
 # front
 
-First create and fill a `.env.local` file.
+First create and fill a `.env.local` file..
 
 ## Project setup
 
