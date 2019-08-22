@@ -26,7 +26,12 @@
             The slot content of the above portal component will be rendered here.
             -->
           </portal-target>
-          <a :href="VUE_APP_GRAPHQL_URL" target="_blank" class="item button is-outlined">
+          <a
+            v-if="apiHelpIsVisible()"
+            @click="onApiClick"
+            target="_blank"
+            class="item button is-outlined"
+          >
             <img style="height:20px !important;padding-right:10px" src="/images/graphql.svg" />API
           </a>
 
@@ -79,16 +84,41 @@
       </div>
     </div>
 
-    <div :class="{ 'is-active': showApiDocModal }" class="modal">
+    <div :class="{ 'is-active': showApiModal }" class="modal">
       <div class="modal-background"></div>
       <div class="modal-card">
         <div class="modal-card-body">
-          <h1 class="title is-uppercase">GRAPHQL API</h1>
-          <pre>{{ apiDocContent }}</pre>
+          <h1 class="title is-uppercase">
+            GRAPHQL API
+            <a
+              :href="podApiUrl"
+              target="_blank"
+              class="button is-info is-pulled-right"
+            >Open GraphQL API explorer</a>
+          </h1>
+
+          <div class="field">
+            <div class="control">
+              <input readonly="true" class="input" type="text" :value="podApiUrl" />
+            </div>
+          </div>
+          <div class="field" v-if="apiModalExample">
+            <label class="label">{{apiModalExampleTitle}}</label>
+            <div class="control">
+              <pre>
+              <a
+  :href="tryItLink"
+  target="_blank"
+  class="button is-small is-pulled-right"
+>▶️ Play with it</a>
+            {{apiModalExample}}
+          </pre>
+            </div>
+          </div>
         </div>
         <!-- Any other Bulma elements you want -->
       </div>
-      <button @click="showApiDocModal = false" class="modal-close is-large" aria-label="close"></button>
+      <button @click="showApiModal = false" class="modal-close is-large" aria-label="close"></button>
     </div>
   </div>
 </template>
@@ -97,6 +127,8 @@
 import gql from "graphql-tag";
 import apolloClient from "../lib/apolloClient";
 import { print } from "graphql/language/printer";
+import getAllPostsApiExample from "../apiExamples/getAllPosts";
+import getSinglePostApiExample from "../apiExamples/getSinglePostApiExample";
 
 const meQuery = gql`
   query meQuery {
@@ -136,13 +168,24 @@ export default {
       pod: null,
       me: null,
       error: null,
-      showApiDocModal: false,
-      apiDocContent: null
+      showApiModal: false,
+      apiModalExampleTitle: null,
+      apiModalExample: null,
+      tryItLink: null
     };
+  },
+  computed: {
+    podApiUrl() {
+      return `${process.env.VUE_APP_GRAPHQL_POD_BASE_URL}/${
+        this.$route.params.podId
+      }`;
+    }
   },
   created() {
     // get account infos
     this.VUE_APP_GRAPHQL_URL = process.env.VUE_APP_GRAPHQL_URL;
+    this.VUE_APP_GRAPHQL_POD_BASE_URL =
+      process.env.VUE_APP_GRAPHQL_POD_BASE_URL;
     this.meQueryState = "PENDING";
     apolloClient
       .query({
@@ -186,16 +229,35 @@ export default {
     }
   },
   methods: {
+    apiHelpIsVisible() {
+      const authorizedNames = ["PostsView", "PostEdit"];
+      if (authorizedNames.includes(this.$route.name)) {
+        return true;
+      }
+      return false;
+    },
     onProfileDropdownOutsideClick() {
       if (this.dropdownMenuActive === true) {
         this.dropdownMenuActive = false;
       }
     },
-    getApiDoc() {
-      this.showApiDocModal = true;
-      //if (this.$route.name === "pods") {
-      this.apiDocContent = print(apiDocPods);
-      //}
+    onApiClick() {
+      this.showApiModal = true;
+      console.log(this.$route.name);
+      if (this.$route.name === "PostsView") {
+        this.apiModalExampleTitle = "get all posts, with pagination support";
+        this.apiModalExample = getAllPostsApiExample;
+        this.tryItLink = `${this.podApiUrl}?query=${encodeURI(
+          getAllPostsApiExample
+        )}`;
+      }
+      if (this.$route.name === "postEdit") {
+        this.apiModalExampleTitle = "get a single post";
+        this.apiModalExample = getSinglePostApiExample;
+        this.tryItLink = `${this.podApiUrl}?query=${encodeURI(
+          getSinglePostApiExample
+        )}`;
+      }
     }
   }
 };
