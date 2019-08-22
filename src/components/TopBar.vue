@@ -91,10 +91,10 @@
           <h1 class="title is-uppercase">
             GRAPHQL API
             <a
-              :href="podApiUrl"
+              :href="tryItLink"
               target="_blank"
               class="button is-info is-pulled-right"
-            >Open GraphQL API explorer</a>
+            >Open GraphQL Explorer</a>
           </h1>
 
           <div class="field">
@@ -102,18 +102,9 @@
               <input readonly="true" class="input" type="text" :value="podApiUrl" />
             </div>
           </div>
-          <div class="field" v-if="apiModalExample">
+          <div class="field" v-show="apiModalExample">
             <label class="label">{{apiModalExampleTitle}}</label>
-            <div class="control">
-              <pre>
-              <a
-  :href="tryItLink"
-  target="_blank"
-  class="button is-small is-pulled-right"
->▶️ Play with it</a>
-            {{apiModalExample}}
-          </pre>
-            </div>
+            <pre class="language-graphql"><code>{{apiModalExample}}</code></pre>
           </div>
         </div>
         <!-- Any other Bulma elements you want -->
@@ -230,7 +221,7 @@ export default {
   },
   methods: {
     apiHelpIsVisible() {
-      const authorizedNames = ["PostsView", "PostEdit"];
+      const authorizedNames = ["PostsView", "postEdit"];
       if (authorizedNames.includes(this.$route.name)) {
         return true;
       }
