@@ -33,17 +33,21 @@
               :itemUniqueKey="(edge) => edge.node._id"
             >
               <template v-slot="{item}">
-                <div class="content">
-                  <h2>
-                    <router-link :to="buildLinkToPostList(item)">{{ item.node.name }}</router-link>
-                    <em class="subtitle">
-                      - created
-                      {{ Number(item.node.createdAt) | moment("from") }}
-                    </em>
-                  </h2>
-                  <p>
-                    <em>{{ item.node.description }}</em>
-                  </p>
+                <div class="columns">
+                  <div class="column">
+                    <div class="content">
+                      <h2>
+                        <router-link :to="buildLinkToPostList(item)">{{ item.node.name }}</router-link>
+                        <em class="subtitle">
+                          - created
+                          {{ Number(item.node.createdAt) | moment("from") }}
+                        </em>
+                      </h2>
+                      <p>
+                        <em>{{ item.node.description }}</em>
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </template>
             </LayoutList>
@@ -67,6 +71,7 @@ import Notify from "../components/Notify";
 import ButtonLink from "../components/ButtonLink";
 import LayoutBody from "../components/LayoutBody";
 import LayoutList from "../components/LayoutList";
+import ApiButton from "../components/ApiButton";
 
 const myPodsQuery = gql`
   query myPodsQuery {
@@ -96,7 +101,8 @@ export default {
     PodLoader,
     Notify,
     ButtonLink,
-    LayoutList
+    LayoutList,
+    ApiButton
   },
   data() {
     return {

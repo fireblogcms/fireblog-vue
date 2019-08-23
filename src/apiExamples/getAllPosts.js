@@ -1,4 +1,4 @@
-export default `
+export default () => `
   {
     posts(last: 50) {
       PageInfo {

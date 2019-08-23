@@ -3,7 +3,7 @@
     <div class="container">
       <div class="columns">
         <div class="column">
-          <span class="pod-name item tag is-medium" v-if="pod">
+          <span class="pod-name item tag is-medium" v-if="backToPodIsVisible()">
             <em>
               <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
 
@@ -27,14 +27,12 @@
             The slot content of the above portal component will be rendered here.
             -->
           </portal-target>
-          <a
-            v-if="apiHelpIsVisible()"
-            @click="onApiClick"
-            target="_blank"
-            class="item button is-outlined"
-          >
+          <ApiButton v-show="apiHelpIsVisible()" @click="onApiClick" />
+          <!--
+          <a @click="onApiClick" target="_blank" class="item button is-outlined">
             <img style="height:20px !important;padding-right:10px" src="/images/graphql.svg" />API
           </a>
+          -->
 
           <div v-if="meQueryState === 'FINISHED_OK'" id="profile-dropdown" class="item">
             <div
@@ -121,6 +119,7 @@ import apolloClient from "../lib/apolloClient";
 import { print } from "graphql/language/printer";
 import getAllPostsApiExample from "../apiExamples/getAllPosts";
 import getSinglePostApiExample from "../apiExamples/getSinglePostApiExample";
+import ApiButton from "../components/ApiButton";
 
 const meQuery = gql`
   query meQuery {
@@ -152,6 +151,9 @@ const podQuery = gql`
 `;
 
 export default {
+  components: {
+    ApiButton
+  },
   data() {
     return {
       dropdownMenuActive: false,
@@ -197,8 +199,8 @@ export default {
     // get currend pod data
 
     if (
-      this.$route.name === "postListView" ||
-      this.$route.name === "PostFormView" ||
+      this.$route.name === "postList" ||
+      this.$route.name === "PostCreate" ||
       this.$route.name === "postUpdate"
     ) {
       this.podQueryState = "PENDING";
@@ -221,8 +223,14 @@ export default {
     }
   },
   methods: {
+    backToPodIsVisible() {
+      if (["postUpdate", "postCreate"].includes(this.$route.name)) {
+        return true;
+      }
+      return false;
+    },
     apiHelpIsVisible() {
-      const authorizedNames = ["postListView", "postUpdate"];
+      const authorizedNames = ["postList", "postUpdate", "postCreate"];
       if (authorizedNames.includes(this.$route.name)) {
         return true;
       }
@@ -234,22 +242,23 @@ export default {
       }
     },
     onApiClick() {
-      this.showApiModal = true;
-      console.log(this.$route.name);
-      if (this.$route.name === "postListView") {
+      if (this.$route.name === "postList") {
         this.apiModalExampleTitle = "get all posts, with pagination support";
-        this.apiModalExample = getAllPostsApiExample;
+        this.apiModalExample = getAllPostsApiExample();
         this.tryItLink = `${this.podApiUrl}?query=${encodeURI(
-          getAllPostsApiExample
+          getAllPostsApiExample()
         )}`;
       }
       if (this.$route.name === "postUpdate") {
         this.apiModalExampleTitle = "get a single post";
-        this.apiModalExample = getSinglePostApiExample;
+        this.apiModalExample = getSinglePostApiExample({
+          _id: this.$route.params.postId
+        });
         this.tryItLink = `${this.podApiUrl}?query=${encodeURI(
-          getSinglePostApiExample
+          getSinglePostApiExample({ _id: this.$route.params.postId })
         )}`;
       }
+      this.showApiModal = true;
     }
   }
 };

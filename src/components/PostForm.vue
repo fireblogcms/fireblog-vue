@@ -117,17 +117,6 @@ const getExistingPostQuery = gql`
   }
 `;
 
-const uploadQuery = gql`
-  mutation uploadQuery($file: Upload!, $podId: ID!) {
-    upload(file: $file, podId: $podId) {
-      url
-      filename
-      mimetype
-      encoding
-    }
-  }
-`;
-
 const OPERATION = {
   CREATE: "CREATE",
   UPDATE: "UPDATE"
