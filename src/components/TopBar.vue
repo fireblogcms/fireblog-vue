@@ -60,7 +60,7 @@
               </div>
               <div class="dropdown-menu" role="menu">
                 <div class="dropdown-content">
-                  <router-link :to="{name:'pods'}" class="dropdown-item">
+                  <router-link :to="{name:'blogList'}" class="dropdown-item">
                     <strong>My pods</strong>
                   </router-link>
                   <router-link
@@ -69,13 +69,13 @@
                     :to="`/pod/${edge.node._id}`"
                     class="dropdown-item"
                   >{{ edge.node.name }}</router-link>
-                  <router-link to="/pod/create" style class="dropdown-item">
+                  <router-link :to="{name:'blogCreate'}" style class="dropdown-item">
                     <button class="button is-outlined is-primary is-small">Create new Pod</button>
                   </router-link>
                   <hr class="dropdown-divider" />
 
-                  <router-link to="/profile" class="dropdown-item">My account</router-link>
-                  <router-link to="/logout" class="dropdown-item">Logout</router-link>
+                  <router-link :to="{name:'profile'}" class="dropdown-item">My account</router-link>
+                  <router-link :to="{name: 'logout'}" class="dropdown-item">Logout</router-link>
                 </div>
               </div>
             </div>
@@ -168,7 +168,7 @@ export default {
   computed: {
     podApiUrl() {
       return `${process.env.VUE_APP_GRAPHQL_POD_BASE_URL}/${
-        this.$route.params.podId
+        this.$route.params.blogId
       }`;
     }
   },
@@ -182,7 +182,7 @@ export default {
       .query({
         query: meQuery,
         variables: {
-          id: this.$route.params.podId
+          id: this.$route.params.blogId
         }
       })
       .then(result => {
@@ -196,9 +196,9 @@ export default {
     // get currend pod data
 
     if (
-      this.$route.name === "PostsView" ||
+      this.$route.name === "postListView" ||
       this.$route.name === "PostFormView" ||
-      this.$route.name === "postEdit"
+      this.$route.name === "postUpdate"
     ) {
       this.podQueryState = "PENDING";
 
@@ -206,7 +206,7 @@ export default {
         .query({
           query: podQuery,
           variables: {
-            _id: this.$route.params.podId
+            _id: this.$route.params.blogId
           }
         })
         .then(result => {
@@ -221,7 +221,7 @@ export default {
   },
   methods: {
     apiHelpIsVisible() {
-      const authorizedNames = ["PostsView", "postEdit"];
+      const authorizedNames = ["postListView", "postUpdate"];
       if (authorizedNames.includes(this.$route.name)) {
         return true;
       }
@@ -235,14 +235,14 @@ export default {
     onApiClick() {
       this.showApiModal = true;
       console.log(this.$route.name);
-      if (this.$route.name === "PostsView") {
+      if (this.$route.name === "postListView") {
         this.apiModalExampleTitle = "get all posts, with pagination support";
         this.apiModalExample = getAllPostsApiExample;
         this.tryItLink = `${this.podApiUrl}?query=${encodeURI(
           getAllPostsApiExample
         )}`;
       }
-      if (this.$route.name === "postEdit") {
+      if (this.$route.name === "postUpdate") {
         this.apiModalExampleTitle = "get a single post";
         this.apiModalExample = getSinglePostApiExample;
         this.tryItLink = `${this.podApiUrl}?query=${encodeURI(
@@ -263,7 +263,7 @@ export default {
   display: inline;
 }
 .topbar .item {
-  margin-left: 1rem;
+  margin-right: 1rem;
 }
 .topbar .column-right {
   text-align: right;

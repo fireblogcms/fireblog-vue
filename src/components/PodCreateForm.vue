@@ -17,7 +17,7 @@
       <!-- text is this is not the first pod -->
       <template v-if="!first">
         <h2>
-          <br />Create a new Pod. Give it a name or let
+          <br />Create a new Blog. Give it a name or let
           <a
             ref="randomNameLink"
             @click.prevent="onGenerateCLick"
@@ -28,7 +28,7 @@
 
       <div class="field">
         <div class="control">
-          <input v-model="name" class="input is-large" type="text" placeholder="Pod's Name" />
+          <input v-model="name" class="input is-large" type="text" placeholder="Blog's Name" />
         </div>
       </div>
 
@@ -83,7 +83,10 @@ export default {
           variables: { pod: { owner: this.user.sub, name: this.name } }
         })
         .then(result => {
-          this.$router.push(`/pod/${result.data.createPod._id}`);
+          this.$router.push({
+            name: "postList",
+            params: { blogId: result.data.createPod._id }
+          });
         });
     },
     onGenerateCLick() {

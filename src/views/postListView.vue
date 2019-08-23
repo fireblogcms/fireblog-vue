@@ -1,26 +1,33 @@
 <template>
   <AdminLayout>
-    <portal to="topbar-left">
-      <router-link class="item" :to="{name:'pods'}">All pods</router-link>
-    </portal>
     <Notify :errors="notifications.errors" :infos="notifications.infos" />
+    <portal to="topbar-left">
+      <router-link class="item" :to="{name:'blogList'}">
+        <span><</span>
+        Back to my blogs
+      </router-link>
+    </portal>
 
-    <header class="container" style="padding: 2rem 0">
-      <div class="columns">
-        <div class="column is-two-thirds">
-          <h1 class="title is-1 is-uppercase">POSTS</h1>
-        </div>
-        <div class="column">
-          <router-link
-            v-if="isFirstPost === false"
-            class="button is-large is-pulled-right is-outlined"
-            :to="`/pod/${$route.params.podId}/write/post`"
-          >
-            Write
-            <img style="height:70px" src="/images/feather.webp" />
-          </router-link>
-        </div>
-      </div>
+    <header
+      v-if="initRequestsState === 'FINISHED_OK'"
+      class="container"
+      style="padding: 0 0 2rem 0"
+    >
+      <h1 class="title is-uppercase">
+        <img
+          style="height:70px !important;position:relative;top:20px;padding-right:1rem"
+          src="/images/book.png"
+        />
+        {{pod.name}}
+        <ButtonLink
+          style="margin-top:20px"
+          class="is-pulled-right"
+          type="primary"
+          :to="{name: 'postCreate', params:{blogId:$route.params.blogId}}"
+        >
+          <span>WRITE NEW POST</span>
+        </ButtonLink>
+      </h1>
     </header>
 
     <template v-if="initRequestsState === 'PENDING'">
@@ -37,7 +44,7 @@
             <router-link
               style="box-shadow: 0px 4px 5px rgba(229, 229, 229, 1);position: relative; top:30px;text-transform: uppercase"
               class="button is-large is-outlined"
-              :to="`/pod/${$route.params.podId}/write/post`"
+              :to="{name: 'postCreate', params:{blogId:$route.params.blogId}}"
             >
               Write
               <img style="height:70px" src="/images/feather.webp" />
@@ -47,7 +54,7 @@
         </div>
       </div>
     </template>
-    <template v-if="isFirstPost === false">
+    <template v-if="!isFirstPost">
       <section class="container">
         <div class="tabs is-boxed is-medium" style="position:relative;margin-bottom:0;">
           <ul style="border-bottom:0">
@@ -88,14 +95,9 @@
                   <div class="columns">
                     <div class="column">
                       <router-link
-                        :to="
-                          `/pod/${$route.params.podId}/write/post/${
-                            edge.node._id
-                          }`
-                        "
+                        :to="{name: 'postUpdate', params:{ blogId:$route.params.blogId, postId: edge.node._id }}"
                       >{{ edge.node.title }}</router-link>
                       <br />
-
                       <span class="subtitle">{{ Number(edge.node.createdAt) | moment("from") }}</span>
                     </div>
                   </div>
@@ -117,6 +119,7 @@ import gql from "graphql-tag";
 import PodLoader from "../components/PodLoader";
 import { REQUEST_STATE } from "../lib/helpers";
 import Notify from "../components/Notify";
+import ButtonLink from "../components/ButtonLink";
 
 import { error } from "util";
 
@@ -132,6 +135,15 @@ const postsQuery = gql`
           status
         }
       }
+    }
+  }
+`;
+
+const podQuery = gql`
+  query podQuery($_id: ID!) {
+    pod(_id: $_id) {
+      name
+      description
     }
   }
 `;
@@ -156,7 +168,8 @@ export default {
   components: {
     AdminLayout,
     PodLoader,
-    Notify
+    Notify,
+    ButtonLink
   },
   data() {
     return {
@@ -167,6 +180,7 @@ export default {
       initRequestsState: REQUEST_STATE.NOT_STARTED,
       allPostsRequestState: REQUEST_STATE.NOT_STARTED,
       postsRequestState: REQUEST_STATE.NOT_STARTED,
+      blogRequestState: REQUEST_STATE.NOT_STARTED,
       pod: null,
       posts: null,
       activeStatus: "PUBLISHED",
@@ -186,7 +200,7 @@ export default {
      */
     init() {
       this.initRequestsState = REQUEST_STATE.PENDING;
-      Promise.all([this.getPosts(), this.getAllPosts()])
+      Promise.all([this.getPod(), this.getPosts(), this.getAllPosts()])
         .then(() => {
           this.initRequestsState = REQUEST_STATE.FINISHED_OK;
         })
@@ -200,7 +214,7 @@ export default {
       return apolloClient
         .query({
           query: allPostsQuery,
-          variables: { pod: this.$route.params.podId }
+          variables: { pod: this.$route.params.blogId }
         })
         .then(result => {
           this.allPostsRequestState = REQUEST_STATE.FINISHED_OK;
@@ -213,6 +227,25 @@ export default {
           this.notifications.errors.push("getAllPosts() " + error.message);
         });
     },
+    getPod() {
+      return apolloClient
+        .query({
+          query: podQuery,
+          variables: {
+            _id: this.$route.params.blogId
+          }
+        })
+        .then(result => {
+          console.log("result", result);
+          this.blogRequestState = REQUEST_STATE.FINISHED_OK;
+          this.pod = result.data.pod;
+          return result;
+        })
+        .catch(error => {
+          this.blogRequestState = REQUEST_STATE.FINISHED_ERROR;
+          this.notifications.errors.push("getPod() " + error.message);
+        });
+    },
     getPosts() {
       this.postsRequestState = REQUEST_STATE.PENDING;
       this.notifications = {
@@ -223,7 +256,7 @@ export default {
         .query({
           query: postsQuery,
           variables: {
-            pod: this.$route.params.podId,
+            pod: this.$route.params.blogId,
             status: this.activeStatus
           }
         })

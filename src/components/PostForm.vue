@@ -2,7 +2,11 @@
   <div class="writeForm">
     <portal to="topbar-left">
       <!--  back to the posts list for this pod. -->
-      <router-link class="item" v-if="$route.params.podId" :to="`/pod/${$route.params.podId}`">
+      <router-link
+        class="item"
+        v-if="$route.params.blogId"
+        :to="{name:'postList', params:{blogId: $route.params.blogId}}"
+      >
         <i class="fas fa-chevron-left"></i> Posts
       </router-link>
 
@@ -230,9 +234,10 @@ export default {
     createPost(post) {
       // current user as author by default
       if (!post.author) {
+        // @FIXME : utiliser plutôt l'id de la base sur "sub"
         post.author = getUser().sub;
       }
-      post.pod = this.$route.params.podId;
+      post.pod = this.$route.params.blogId;
       return apolloClient
         .mutate({
           mutation: createPostQuery,
@@ -244,11 +249,20 @@ export default {
           this.lastTimeSaved = Date.now();
           this.existingPost = result.data.createPost;
           // post is created, we are now in UPDATE mode for the form.
+          this.$router.replace({
+            name: "postUpdate",
+            params: {
+              blogId: this.$route.params.blogId,
+              postId: result.data.createPost._id
+            }
+          });
+          /*
           this.$router.replace(
-            `/pod/${this.$route.params.podId}/write/post/${
+            `/pod/${this.$route.params.blogId}/write/post/${
               result.data.createPost._id
             }`
           );
+          */
         })
         .catch(e => {
           this.notifications.errors.push(

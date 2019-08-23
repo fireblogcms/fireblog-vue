@@ -4,7 +4,7 @@ import podClient from "./podClient";
 export const auth0client = new auth0.WebAuth({
   audience: process.env.VUE_APP_AUTH0_AUDIENCE,
   domain: process.env.VUE_APP_AUTH0_DOMAIN,
-  redirectUri: `${process.env.VUE_APP_BASE_URL}/callback`,
+  redirectUri: `${process.env.VUE_APP_BASE_URL}/auth0-callback`,
   clientID: process.env.VUE_APP_AUTH0_CLIENTID,
   // id_token:  get user profile
   // access token: access token to request our custom API, containing permissions
@@ -75,7 +75,7 @@ export function auth0RouterMiddleware(to, from, next) {
   // do not require
   else if (
     to.path === "/login" ||
-    to.path === "/callback" ||
+    to.path === "/auth0-callback" ||
     isAuthenticated()
   ) {
     next();

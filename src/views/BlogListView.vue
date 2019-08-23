@@ -12,46 +12,39 @@
           </div>
         </template>
         <template v-if="pods && pods.edges.length > 0">
-          <div class="columns">
-            <div class="column is-two-thirds">
-              <h1 class="title is-1 is-uppercase">
-                <img
-                  style="height:80px !important;position:relative;top:25px;padding-right:1rem"
-                  src="/images/books.webp"
-                />
-                MY PODS
-              </h1>
-            </div>
-            <div class="column">
-              <BulmaButtonLink to="pod/create" class="is-pulled-right">
-                Create a new Pod
-                <img style="height:70px !important" src="/images/book-closed-3.png" />
-              </BulmaButtonLink>
-            </div>
+          <div>
+            <h1 style="padding-bottom:2rem;" class="title is-1 is-uppercase">
+              <img
+                style="height:70px !important;position:relative;top:25px;padding-right:1rem"
+                src="/images/books.webp"
+              />
+              MY BLOGS
+              <ButtonLink
+                style="margin-top:20px"
+                class="is-pulled-right"
+                type="primary"
+                :to="{name:'blogCreate'}"
+              >CREATE A NEW BLOG</ButtonLink>
+            </h1>
           </div>
           <div class="pod-container">
             <div v-for="edge in pods.edges" :key="edge.node._id">
-              <router-link :to="`/pod/${edge.node._id}`">
-                <div class="columns">
+              <router-link :to="{name:'postList', params: {blogId: edge.node._id}}">
+                <div style="padding-bottom:30px" class="columns">
                   <div class="column">
                     <div class="content">
-                      <h2>{{ edge.node.name }}</h2>
+                      <h2>
+                        {{ edge.node.name }}
+                        <em class="subtitle">
+                          - created
+                          {{ Number(edge.node.createdAt) | moment("from") }}
+                        </em>
+                      </h2>
                       <em>{{ edge.node.description }}</em>
-                      <p>
-                        created
-                        {{ Number(edge.node.createdAt) | moment("from") }}
-                      </p>
                     </div>
-                  </div>
-                  <div class="column is-one-quarter">
-                    <BulmaButtonLink
-                      class="is-pulled-right"
-                      :to="`pod/${edge.node._id}/write/post`"
-                    >Write</BulmaButtonLink>
                   </div>
                 </div>
               </router-link>
-              <hr />
             </div>
           </div>
         </template>
@@ -70,6 +63,7 @@ import gql from "graphql-tag";
 import BulmaButtonLink from "../components/BulmaButtonLink";
 import { REQUEST_STATE } from "../lib/helpers";
 import Notify from "../components/Notify";
+import ButtonLink from "../components/ButtonLink";
 
 const myPodsQuery = gql`
   query myPodsQuery {
@@ -96,7 +90,8 @@ export default {
     BulmaGrid,
     AdminLayout,
     PodLoader,
-    Notify
+    Notify,
+    ButtonLink
   },
   data() {
     return {
