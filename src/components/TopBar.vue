@@ -3,13 +3,14 @@
     <div class="container">
       <div class="columns">
         <div class="column">
-          <span class="pod-name item tag is-medium" v-if="podQueryState === 'FINISHED_OK'">
+          <span class="pod-name item tag is-medium" v-if="pod">
             <em>
-              <img
-                style="position:relative;height:20px !important;top:4px;"
-                src="/images/book-closed.png"
-              />
-              {{ pod.name }}
+              <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
+
+              <router-link :to="{name: 'postList', params:{podId:pod._id}}">
+                <i style="margin-left:10px" class="fas fa-chevron-left"></i>
+                {{ pod.name }}
+              </router-link>
             </em>
           </span>
           <portal-target name="topbar-left">

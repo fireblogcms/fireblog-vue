@@ -1,52 +1,53 @@
 <template>
   <AdminLayout>
     <Notify :errors="notifications.errors" :info="notifications.info" />
-    <div class="pod-list-view container">
+    <div class="container">
       <template v-if="myPodsRequestState === 'PENDING'">
         <PodLoader />
       </template>
       <template v-if="myPodsRequestState === 'FINISHED_OK'">
         <template v-if="pods.edges.length === 0">
-          <div class="pod-container">
+          <LayoutBody>
             <PodCreateForm :first="true" />
-          </div>
+          </LayoutBody>
         </template>
         <template v-if="pods && pods.edges.length > 0">
           <div>
-            <h1 style="padding-bottom:2rem;" class="title is-1 is-uppercase">
+            <h1 style="padding-bottom:2rem;" class="title is-1">
               <img
                 style="height:70px !important;position:relative;top:25px;padding-right:1rem"
                 src="/images/books.webp"
               />
-              MY BLOGS
-              <ButtonLink
-                style="margin-top:20px"
-                class="is-pulled-right"
-                type="primary"
+              My blogs
+              <BulmaButtonLink
+                style="margin-top:30px"
+                class="is-primary is-large is-pulled-right"
                 :to="{name:'blogCreate'}"
-              >CREATE A NEW BLOG</ButtonLink>
+              >CREATE A NEW BLOG</BulmaButtonLink>
             </h1>
           </div>
-          <div class="pod-container">
-            <div v-for="edge in pods.edges" :key="edge.node._id">
-              <router-link :to="{name:'postList', params: {blogId: edge.node._id}}">
-                <div style="padding-bottom:30px" class="columns">
-                  <div class="column">
-                    <div class="content">
-                      <h2>
-                        {{ edge.node.name }}
-                        <em class="subtitle">
-                          - created
-                          {{ Number(edge.node.createdAt) | moment("from") }}
-                        </em>
-                      </h2>
-                      <em>{{ edge.node.description }}</em>
-                    </div>
-                  </div>
+          <LayoutBody>
+            <LayoutList
+              :onRowClick="onRowClick"
+              :items="pods.edges"
+              :itemUniqueKey="(edge) => edge.node._id"
+            >
+              <template v-slot="{item}">
+                <div class="content">
+                  <h2>
+                    <router-link :to="buildLinkToPostList(item)">{{ item.node.name }}</router-link>
+                    <em class="subtitle">
+                      - created
+                      {{ Number(item.node.createdAt) | moment("from") }}
+                    </em>
+                  </h2>
+                  <p>
+                    <em>{{ item.node.description }}</em>
+                  </p>
                 </div>
-              </router-link>
-            </div>
-          </div>
+              </template>
+            </LayoutList>
+          </LayoutBody>
         </template>
       </template>
     </div>
@@ -64,6 +65,8 @@ import BulmaButtonLink from "../components/BulmaButtonLink";
 import { REQUEST_STATE } from "../lib/helpers";
 import Notify from "../components/Notify";
 import ButtonLink from "../components/ButtonLink";
+import LayoutBody from "../components/LayoutBody";
+import LayoutList from "../components/LayoutList";
 
 const myPodsQuery = gql`
   query myPodsQuery {
@@ -85,13 +88,15 @@ const myPodsQuery = gql`
 
 export default {
   components: {
+    LayoutBody,
     BulmaButtonLink,
     PodCreateForm,
     BulmaGrid,
     AdminLayout,
     PodLoader,
     Notify,
-    ButtonLink
+    ButtonLink,
+    LayoutList
   },
   data() {
     return {
@@ -104,6 +109,12 @@ export default {
     };
   },
   methods: {
+    buildLinkToPostList(item) {
+      return { name: "postList", params: { blogId: item.node._id } };
+    },
+    onRowClick(item) {
+      this.$router.push(this.buildLinkToPostList(item));
+    },
     getPods() {
       this.myPodsRequestState = REQUEST_STATE.PENDING;
       return apolloClient

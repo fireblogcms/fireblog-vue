@@ -4,8 +4,7 @@ import PostFormView from "./views/PostFormView";
 import ProfileView from "./views/ProfileView";
 import PodCreateView from "./views/PodCreateView";
 import BlogListView from "./views/BlogListView";
-import postListView from "./views/postListView";
-import PostApiView from "./views/PostApiView";
+import PostListView from "./views/PostListView";
 import NotFoundView from "./views/NotFoundView";
 import Callback from "./components/Callback.vue";
 import Logout from "./components/Logout";
@@ -38,7 +37,7 @@ const router = new Router({
     {
       path: "/blog/:blogId",
       name: "postList",
-      component: postListView
+      component: PostListView
     },
     {
       path: "/blog/:blogId/post/create",

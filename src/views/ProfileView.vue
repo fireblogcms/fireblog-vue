@@ -1,7 +1,7 @@
 <template>
   <AdminLayout>
     <div class="container section">
-      <div class="pod-container">
+      <LayoutBody>
         <div class="row align-items-center profile-header">
           <div class="col-md-2">
             <img
@@ -20,7 +20,7 @@
         <div class="row">
           <pre class="rounded"><code class="json">{{ JSON.stringify(me, null, 2) }}</code></pre>
         </div>
-      </div>
+      </LayoutBody>
     </div>
   </AdminLayout>
 </template>
