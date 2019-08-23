@@ -1,9 +1,9 @@
 <template>
   <AdminLayout>
     <div class="container section">
-      <div class="pod-container">
+      <LayoutBody>
         <PodCreateForm />
-      </div>
+      </LayoutBody>
     </div>
   </AdminLayout>
 </template>
@@ -14,13 +14,15 @@ import podClient from "../lib/podClient";
 import { getUser } from "../lib/auth";
 import PodCreateForm from "../components/PodCreateForm";
 import AdminLayout from "@/layouts/AdminLayout";
+import LayoutBody from "../components/LayoutBody";
 
 const user = getUser();
 
 export default {
   components: {
     PodCreateForm,
-    AdminLayout
+    AdminLayout,
+    LayoutBody
   }
 };
 </script>

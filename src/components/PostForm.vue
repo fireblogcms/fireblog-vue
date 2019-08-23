@@ -1,15 +1,6 @@
 <template>
   <div class="writeForm">
     <portal to="topbar-left">
-      <!--  back to the posts list for this pod. -->
-      <router-link
-        class="item"
-        v-if="$route.params.blogId"
-        :to="{name:'postList', params:{blogId: $route.params.blogId}}"
-      >
-        <i class="fas fa-chevron-left"></i> Posts
-      </router-link>
-
       <span class="item button" style="border:0" v-if="lastTimeSaved">
         <em>saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
       </span>

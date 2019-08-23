@@ -3,7 +3,7 @@
     <Notify :errors="notifications.errors" :infos="notifications.infos" />
     <portal to="topbar-left">
       <router-link class="item" :to="{name:'blogList'}">
-        <span><</span>
+        <i class="fas fa-chevron-left"></i>
         Back to my blogs
       </router-link>
     </portal>
@@ -18,15 +18,15 @@
           style="height:70px !important;position:relative;top:20px;padding-right:1rem"
           src="/images/book.png"
         />
-        {{pod.name}}
-        <ButtonLink
+        {{pod.name}} - POSTS
+        <BulmaButtonLink
           style="margin-top:20px"
-          class="is-pulled-right"
-          type="primary"
+          class="is-large is-pulled-right is-primary"
+          v-if="!isFirstPost"
           :to="{name: 'postCreate', params:{blogId:$route.params.blogId}}"
         >
           <span>WRITE NEW POST</span>
-        </ButtonLink>
+        </BulmaButtonLink>
       </h1>
     </header>
 
@@ -34,24 +34,21 @@
       <PodLoader />
     </template>
     <template v-if="isFirstPost === true">
-      <div class="container pod-container">
-        <h2
-          style="font-weight:200"
-          class="title has-text-centered"
-        >Write your first post in this pod !</h2>
-        <div class="has-text-centered">
-          <div style="margin:2rem">
-            <router-link
-              style="box-shadow: 0px 4px 5px rgba(229, 229, 229, 1);position: relative; top:30px;text-transform: uppercase"
-              class="button is-large is-outlined"
-              :to="{name: 'postCreate', params:{blogId:$route.params.blogId}}"
-            >
-              Write
-              <img style="height:70px" src="/images/feather.webp" />
-            </router-link>
+      <div class="container">
+        <LayoutBody>
+          <h2
+            style="font-weight:200"
+            class="title has-text-centered"
+          >Write your first post in this blog !</h2>
+          <div class="has-text-centered">
+            <div style="margin:2rem">
+              <BulmaButtonLink
+                class="is-large is-primary"
+                :to="{name: 'postCreate', params:{blogId:$route.params.blogId}}"
+              >Write</BulmaButtonLink>
+            </div>
           </div>
-          <img style="padding-top:3rem" width="100px" src="@/assets/pod-mascot.png" />
-        </div>
+        </LayoutBody>
       </div>
     </template>
     <template v-if="!isFirstPost">
@@ -68,10 +65,7 @@
               </a>
             </li>
             <li @click="onStatusClick('DRAFT')" :class="{ 'is-active': activeStatus == 'DRAFT' }">
-              <a>
-                <img style="height:30px;padding-right:5px" src="/images/draft.png" />
-                Draft
-              </a>
+              <a>Draft</a>
             </li>
             <li @click="onStatusClick('BIN')" :class="{ 'is-active': activeStatus == 'BIN' }">
               <a>
@@ -81,31 +75,44 @@
             </li>
           </ul>
         </div>
-        <div class="container content pod-container" style="border-top-left-radius:0;">
-          <template v-if="postsRequestState === 'PENDING'">
-            <PodLoader />
-          </template>
-          <template v-if="postsRequestState === 'FINISHED_OK'">
-            <template
-              v-if="posts.edges.length === 0"
-            >No post are in {{ activeStatus }} status for now.</template>
-            <template v-if="posts.edges.length > 0">
-              <div v-for="edge in posts.edges" :key="edge.node._id">
-                <h2 style="color:#444">
-                  <div class="columns">
-                    <div class="column">
-                      <router-link
-                        :to="{name: 'postUpdate', params:{ blogId:$route.params.blogId, postId: edge.node._id }}"
-                      >{{ edge.node.title }}</router-link>
-                      <br />
-                      <span class="subtitle">{{ Number(edge.node.createdAt) | moment("from") }}</span>
-                    </div>
-                  </div>
-                </h2>
+        <LayoutBody style="border-top-left-radius:0">
+          <div class="container" style="border-top-left-radius:0;">
+            <!--POST PENDING-->
+            <template v-if="postsRequestState === 'PENDING'">
+              <PodLoader />
+            </template>
+            <!--NO PUBLISHED POST FOUND-->
+            <template v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length === 0">
+              <div class="content section has-text-centered">
+                <p>No post found with {{ activeStatus }} status for now.</p>
               </div>
             </template>
-          </template>
-        </div>
+            <template v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length > 0">
+              <LayoutList
+                :onRowClick="onRowClick"
+                :items="posts.edges"
+                :itemUniqueKey="(item) => item.node._id"
+              >
+                <template v-slot="{item}">
+                  <div class="content">
+                    <h2>
+                      <div class="columns">
+                        <div class="column">
+                          <router-link
+                            :to="{name: 'postUpdate', params:{ blogId:$route.params.blogId, postId: item.node._id }}"
+                          >{{ item.node.title }}</router-link>
+                          <br />
+                          <span class="subtitle">{{ Number(item.node.createdAt) | moment("from") }}</span>
+                        </div>
+                      </div>
+                    </h2>
+                  </div>
+                </template>
+              </LayoutList>
+            </template>
+            <!---->
+          </div>
+        </LayoutBody>
       </section>
     </template>
   </AdminLayout>
@@ -120,8 +127,9 @@ import PodLoader from "../components/PodLoader";
 import { REQUEST_STATE } from "../lib/helpers";
 import Notify from "../components/Notify";
 import ButtonLink from "../components/ButtonLink";
-
-import { error } from "util";
+import BulmaButtonLink from "../components/BulmaButtonLink";
+import LayoutBody from "../components/LayoutBody";
+import LayoutList from "../components/LayoutList";
 
 const postsQuery = gql`
   query postsQuery($pod: ID!, $status: PostPublicationStatus!) {
@@ -169,7 +177,10 @@ export default {
     AdminLayout,
     PodLoader,
     Notify,
-    ButtonLink
+    ButtonLink,
+    LayoutBody,
+    LayoutList,
+    BulmaButtonLink
   },
   data() {
     return {
@@ -208,6 +219,15 @@ export default {
           this.initRequestsState = REQUEST_STATE.FINISHED_ERROR;
           this.notifications.errors.push("init(): " + error.message);
         });
+    },
+    buildLinkToPost(item) {
+      return {
+        name: "postUpdate",
+        params: { blogId: this.$route.params.blogId, postId: item.node._id }
+      };
+    },
+    onRowClick(item) {
+      this.$router.push(this.buildLinkToPost(item));
     },
     async getAllPosts() {
       this.allPostsRequestState === REQUEST_STATE.PENDING;

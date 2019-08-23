@@ -1,9 +1,9 @@
 <template>
   <AdminLayout>
     <div class="container section">
-      <div class="pod-container">
-        <div class="row align-items-center profile-header">
-          <div class="col-md-2">
+      <LayoutBody style="padding:40px">
+        <div class="columns">
+          <div class="column is-one-quarter">
             <img
               width="200"
               :src="me.picture"
@@ -11,16 +11,20 @@
               class="rounded-circle img-fluid profile-picture"
             />
           </div>
-          <div class="col-md">
-            <h2>{{ me.name }}</h2>
-            <p class="lead text-muted">{{ me.email }}</p>
+          <div class="column">
+            <div class="content">
+              <h2>{{ me.name }}</h2>
+              <p>{{ me.email }}</p>
+            </div>
           </div>
         </div>
 
+        <!--
         <div class="row">
           <pre class="rounded"><code class="json">{{ JSON.stringify(me, null, 2) }}</code></pre>
         </div>
-      </div>
+        -->
+      </LayoutBody>
     </div>
   </AdminLayout>
 </template>
@@ -28,6 +32,7 @@
 <script>
 import AdminLayout from "@/layouts/AdminLayout";
 import podClient from "../lib/podClient";
+import LayoutBody from "../components/LayoutBody";
 
 export default {
   data() {
@@ -36,7 +41,8 @@ export default {
     };
   },
   components: {
-    AdminLayout
+    AdminLayout,
+    LayoutBody
   },
   created() {
     podClient()
