@@ -67,7 +67,7 @@
                   <router-link
                     v-for="edge in me.pods.edges"
                     :key="edge.node._id"
-                    :to="`/pod/${edge.node._id}`"
+                    :to="{name:'postList', params:{blogId:edge.node._id}}"
                     class="dropdown-item"
                   >{{ edge.node.name }}</router-link>
                   <router-link :to="{name:'blogCreate'}" style class="dropdown-item">
