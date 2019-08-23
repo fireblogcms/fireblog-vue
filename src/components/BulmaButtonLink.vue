@@ -1,9 +1,5 @@
 <template>
-  <router-link
-    style="font-weight:200;color:black;box-shadow: 0px 4px 5px rgba(229, 229, 229, 1);position: relative; top:30px; text-transform: uppercase"
-    class="button is-large is-outlined"
-    :to="to"
-  >
+  <router-link class="button" :to="to">
     <slot />
   </router-link>
 </template>
@@ -12,9 +8,17 @@
 export default {
   props: {
     to: {
-      type: String,
+      type: Object,
       required: true
     }
   }
 };
 </script>
+
+<style scoped>
+.button {
+  font-weight: 400;
+  box-shadow: 0px 4px 5px rgba(229, 229, 229, 1);
+  text-transform: uppercase;
+}
+</style>
