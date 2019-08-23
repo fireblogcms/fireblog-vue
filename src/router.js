@@ -3,8 +3,8 @@ import Router from "vue-router";
 import PostFormView from "./views/PostFormView";
 import ProfileView from "./views/ProfileView";
 import PodCreateView from "./views/PodCreateView";
-import PodsView from "./views/PodsView";
-import PostsView from "./views/PostsView";
+import BlogListView from "./views/BlogListView";
+import postListView from "./views/postListView";
 import PostApiView from "./views/PostApiView";
 import NotFoundView from "./views/NotFoundView";
 import Callback from "./components/Callback.vue";
@@ -19,40 +19,35 @@ const router = new Router({
   routes: [
     {
       path: "/",
-      name: "pods",
-      component: PodsView
+      name: "blogList",
+      component: BlogListView
     },
     {
-      path: "/callback",
-      name: "callback",
+      path: "/auth0-callback",
+      name: "auth0Callback",
       component: Callback,
       meta: {
         public: true
       }
     },
     {
-      path: "/pod/create",
-      name: "pod",
+      path: "/blog/create",
+      name: "blogCreate",
       component: PodCreateView
     },
     {
-      path: "/pod/:podId",
-      name: "PostsView",
-      component: PostsView
+      path: "/blog/:blogId",
+      name: "postList",
+      component: postListView
     },
     {
-      path: "/pod/:podId/write/post",
-      name: "PostFormView",
+      path: "/blog/:blogId/post/create",
+      name: "postCreate",
       component: PostFormView
     },
     {
-      path: "/pod/:podId/write/post/api",
-      name: "postApi",
-      component: PostApiView
-    },
-    {
-      path: "/pod/:podId/write/post/:postId",
-      name: "postEdit",
+      path: "/blog/:blogId/post/:postId",
+      name: "postUpdate",
       component: PostFormView
     },
     {

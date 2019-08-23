@@ -23,8 +23,8 @@ class ckeditorUploadAdapter {
   // Starts the upload process.
   upload() {
     // Each image is uploaded in a folder name after the pod Id, so
-    // make sure we have a podId param at this point.
-    if (!Router.currentRoute.params.podId) {
+    // make sure we have a blogId param at this point.
+    if (!Router.currentRoute.params.blogId) {
       throw new Error(
         "ckeditorUploadAdapter : No pod Id detected in the current url, aborting upload !"
       );
@@ -41,7 +41,7 @@ class ckeditorUploadAdapter {
           // put file in a folder named after the pod Id.
           variables: {
             file,
-            podId: Router.currentRoute.params.podId
+            podId: Router.currentRoute.params.blogId
           }
         })
         .then(result => {
