@@ -120,7 +120,7 @@
 </template>
 
 <script>
-import podClient from "../lib/podClient";
+import graphqlClient from "../lib/graphqlClient";
 import AdminLayout from "../layouts/AdminLayout";
 import apolloClient from "../lib/apolloClient";
 import gql from "graphql-tag";

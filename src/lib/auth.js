@@ -1,5 +1,5 @@
 import auth0 from "auth0-js";
-import podClient from "./podClient";
+import graphqlClient from "./graphqlClient";
 
 export const auth0client = new auth0.WebAuth({
   audience: process.env.VUE_APP_AUTH0_AUDIENCE,
@@ -50,7 +50,7 @@ export function getUser() {
 }
 
 function syncUserWithServer({ _id, email, name, picture }) {
-  return podClient().request(
+  return graphqlClient().request(
     `
     mutation($user: UserUpsertInput!) {
       upsertUser(user: $user ) {

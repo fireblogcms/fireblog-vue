@@ -31,7 +31,7 @@
 
 <script>
 import AdminLayout from "@/layouts/AdminLayout";
-import podClient from "../lib/podClient";
+import graphqlClient from "../lib/graphqlClient";
 import LayoutBody from "../components/LayoutBody";
 
 export default {
@@ -45,7 +45,7 @@ export default {
     LayoutBody
   },
   created() {
-    podClient()
+    graphqlClient()
       .request(
         `query {
         me {
