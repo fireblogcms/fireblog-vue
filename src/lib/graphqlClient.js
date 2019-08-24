@@ -1,7 +1,7 @@
 import { GraphQLClient } from "graphql-request";
 import { getAccessToken } from "./auth";
 
-export default function podClient() {
+export default function graphqlClient() {
   let headers = {};
   let token = getAccessToken();
   if (token) {

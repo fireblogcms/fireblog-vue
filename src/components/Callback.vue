@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import podClient from "../lib/podClient";
+import graphqlClient from "../lib/graphqlClient";
 import { auth0client, localLogin } from "../lib/auth";
 
 export default {

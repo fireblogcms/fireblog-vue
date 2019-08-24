@@ -16,7 +16,7 @@
 
 <script>
 import { isAuthenticated, getUser, auth0client } from "../lib/auth";
-import podClient from "../lib/podClient";
+import graphqlClient from "../lib/graphqlClient";
 export default {
   methods: {
     onWriteClick() {
@@ -26,7 +26,7 @@ export default {
       });
 
       /*
-      podClient()
+      graphqlClient()
         .request(
           `
             query($filter: PodsFilter){
