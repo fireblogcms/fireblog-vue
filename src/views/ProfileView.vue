@@ -1,9 +1,9 @@
 <template>
   <AdminLayout>
     <div class="container section">
-      <LayoutBody style="padding:40px">
-        <div class="columns">
-          <div class="column is-one-quarter">
+      <LayoutBody>
+        <div class="row align-items-center profile-header">
+          <div class="col-md-2">
             <img
               width="200"
               :src="me.picture"
