@@ -83,6 +83,7 @@ export default {
           variables: { pod: { owner: this.user.sub, name: this.name } }
         })
         .then(result => {
+          apolloClient.resetStore();
           this.$router.push({
             name: "postList",
             params: { blogId: result.data.createPod._id }

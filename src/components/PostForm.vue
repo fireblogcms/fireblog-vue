@@ -224,7 +224,7 @@ export default {
           variables: { post }
         })
         .then(result => {
-          apolloClient.clearStore();
+          apolloClient.resetStore();
           this.savingPostState = REQUEST_STATE.FINISHED_OK;
           this.lastTimeSaved = Date.now();
           this.existingPost = result.data.createPost;
