@@ -10,7 +10,7 @@
 
 <script>
 import { generate } from "../lib/fantasyName.js";
-import graphqlClient from "../lib/graphqlClient";
+import apolloClient from "../lib/apolloClient";
 import { getUser } from "../lib/auth";
 import PodCreateForm from "../components/PodCreateForm";
 import AdminLayout from "@/layouts/AdminLayout";

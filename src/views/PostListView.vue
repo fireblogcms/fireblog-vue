@@ -120,9 +120,8 @@
 </template>
 
 <script>
-import graphqlClient from "../lib/graphqlClient";
-import AdminLayout from "../layouts/AdminLayout";
 import apolloClient from "../lib/apolloClient";
+import AdminLayout from "../layouts/AdminLayout";
 import gql from "graphql-tag";
 import PodLoader from "../components/PodLoader";
 import { REQUEST_STATE } from "../lib/helpers";
