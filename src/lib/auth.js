@@ -1,5 +1,6 @@
 import auth0 from "auth0-js";
 import apolloClient from "./apolloClient";
+import gql from "graphql-tag";
 
 export const auth0client = new auth0.WebAuth({
   audience: process.env.VUE_APP_AUTH0_AUDIENCE,
@@ -50,21 +51,21 @@ export function getUser() {
 }
 
 function syncUserWithServer({ _id, email, name, picture }) {
-  return apolloClient().request(
-    `
-    mutation($user: UserUpsertInput!) {
-      upsertUser(user: $user ) {
-        email
-        name
-        picture
-        _id
+  return apolloClient.mutate({
+    mutation: gql`
+      mutation($user: UserUpsertInput!) {
+        upsertUser(user: $user) {
+          email
+          name
+          picture
+          _id
+        }
       }
-    }
-  `,
-    {
+    `,
+    variables: {
       user: { _id, email, name, picture }
     }
-  );
+  });
 }
 
 export function auth0RouterMiddleware(to, from, next) {
