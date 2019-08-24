@@ -3,16 +3,19 @@
     <div class="container">
       <div class="columns">
         <div class="column">
-          <span class="pod-name item tag is-medium" v-if="backToPodIsVisible()">
+          <span
+            class="item tag is-medium"
+            v-if="podQueryState === 'FINISHED_OK' && backToPodIsVisible()"
+          >
             <em>
               <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
-
-              <router-link :to="{name: 'postList', params:{podId:pod._id}}">
+              <router-link :to="{name: 'postList', params:{blogId:$route.params.blogId}}">
                 <i style="margin-left:10px" class="fas fa-chevron-left"></i>
                 {{ pod.name }}
               </router-link>
             </em>
           </span>
+
           <portal-target name="topbar-left">
             <!--
             This component can be located anywhere in your App.
@@ -60,7 +63,7 @@
               <div class="dropdown-menu" role="menu">
                 <div class="dropdown-content">
                   <router-link :to="{name:'blogList'}" class="dropdown-item">
-                    <strong>My pods</strong>
+                    <strong>My blogs</strong>
                   </router-link>
                   <router-link
                     v-for="edge in me.pods.edges"
@@ -197,10 +200,9 @@ export default {
         this.meQueryState = "FINISHED_ERROR";
       });
     // get currend pod data
-
     if (
       this.$route.name === "postList" ||
-      this.$route.name === "PostCreate" ||
+      this.$route.name === "postCreate" ||
       this.$route.name === "postUpdate"
     ) {
       this.podQueryState = "PENDING";

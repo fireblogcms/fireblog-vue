@@ -36,7 +36,7 @@
 
       <div class="buttons are-medium is-centered">
         <a class="button is-outlined is-primary" @click="$router.push('/')">CANCEL</a>
-        <button class="button is-primary" @click="onCreateClick">CREATE MY POD</button>
+        <button class="button is-primary" @click="onCreateClick">CREATE MY BLOG</button>
       </div>
 
       <!-- Any other Bulma elements you want -->

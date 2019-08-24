@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import graphqlClient from "../lib/graphqlClient";
+import apolloClient from "../lib/apolloClient";
 import { auth0client, localLogin } from "../lib/auth";
 
 export default {

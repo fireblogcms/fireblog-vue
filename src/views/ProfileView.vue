@@ -31,7 +31,7 @@
 
 <script>
 import AdminLayout from "@/layouts/AdminLayout";
-import graphqlClient from "../lib/graphqlClient";
+import apolloClient from "../lib/apolloClient";
 import LayoutBody from "../components/LayoutBody";
 
 export default {
@@ -45,7 +45,7 @@ export default {
     LayoutBody
   },
   created() {
-    graphqlClient()
+    apolloClient()
       .request(
         `query {
         me {
