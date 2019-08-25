@@ -67,23 +67,3 @@ function syncUserWithServer({ _id, email, name, picture }) {
     }
   });
 }
-
-export function auth0RouterMiddleware(to, from, next) {
-  // if route is public, authorized access without checking authentication
-  if (to.matched.some(record => record.meta.public === true)) {
-    next();
-  }
-  // skip authentication in those cases:
-  else if (
-    to.path === "/login" ||
-    to.path === "/auth0-callback" ||
-    isAuthenticated()
-  ) {
-    next();
-  }
-  // in all other cases, user must be authenticated.
-  else {
-    auth0client.authorize({ target: to.path });
-    next(false);
-  }
-}

@@ -15,7 +15,8 @@
           <div>
             <h1 style="padding-bottom:2rem;" class="title is-1">
               <img
-                style="height:70px !important;position:relative;top:25px;padding-right:1rem"
+                height="70"
+                style="position:relative;top:25px;padding-right:1rem"
                 src="/images/books.webp"
               />
               My blogs

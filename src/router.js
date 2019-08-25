@@ -2,13 +2,13 @@ import Vue from "vue";
 import Router from "vue-router";
 import PostFormView from "./views/PostFormView";
 import ProfileView from "./views/ProfileView";
-import PodCreateView from "./views/PodCreateView";
+import BlogCreateView from "./views/BlogCreateView";
 import BlogListView from "./views/BlogListView";
 import PostListView from "./views/PostListView";
 import NotFoundView from "./views/NotFoundView";
 import Callback from "./components/Callback.vue";
 import Logout from "./components/Logout";
-import { auth0RouterMiddleware } from "./lib/auth";
+import { isAuthenticated, auth0client } from "./lib/auth";
 
 Vue.use(Router);
 
@@ -32,7 +32,7 @@ const router = new Router({
     {
       path: "/blog/create",
       name: "blogCreate",
-      component: PodCreateView
+      component: BlogCreateView
     },
     {
       path: "/blog/:blogId",
@@ -67,7 +67,22 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-  auth0RouterMiddleware(to, from, next);
+  // if route is public,do not check authentication
+  if (to.matched.some(record => record.meta.public === true)) {
+    console.log("auth0: public route");
+    next();
+  }
+  // user is already authenticated
+  else if (isAuthenticated()) {
+    console.log("auth0: user is already authenticated");
+    next();
+  }
+  // in all other cases, user must be authenticated.
+  else {
+    console.log("Auth0 : User authorization control");
+    auth0client.authorize({ target: to.path });
+    next(false);
+  }
 });
 
 export default router;
