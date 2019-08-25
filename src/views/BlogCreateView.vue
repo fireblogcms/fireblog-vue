@@ -2,25 +2,20 @@
   <AdminLayout>
     <div class="container section">
       <LayoutBody>
-        <PodCreateForm />
+        <BlogCreateForm />
       </LayoutBody>
     </div>
   </AdminLayout>
 </template>
 
 <script>
-import { generate } from "../lib/fantasyName.js";
-import apolloClient from "../lib/apolloClient";
-import { getUser } from "../lib/auth";
-import PodCreateForm from "../components/PodCreateForm";
+import BlogCreateForm from "../components/BlogCreateForm";
 import AdminLayout from "@/layouts/AdminLayout";
 import LayoutBody from "../components/LayoutBody";
 
-const user = getUser();
-
 export default {
   components: {
-    PodCreateForm,
+    BlogCreateForm,
     AdminLayout,
     LayoutBody
   }

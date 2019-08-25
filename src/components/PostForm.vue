@@ -6,7 +6,7 @@
       </span>
     </portal>
 
-    <Notify :errors="notifications.errors" />
+    <AppNotify :errors="notifications.errors" />
     <portal to="topbar-right" v-if="operation() === 'CREATE' || this.existingPost">
       <input
         @click="onSaveClick()"
@@ -45,7 +45,7 @@
     </portal>
 
     <template v-if="loadingPostState === REQUEST_STATE.PENDING">
-      <PodLoader />
+      <AppLoader />
     </template>
 
     <form @submit.prevent>
@@ -65,14 +65,14 @@
 
 <script>
 import apolloClient from "../lib/apolloClient";
-import PodLoader from "../components/PodLoader";
+import AppLoader from "../components/AppLoader";
 // import Editor from "@ckeditor/ckeditor5-build-classic";
 // import Editor from "@ckeditor/ckeditor5-build-balloon";
 import Editor from "@ckeditor/ckeditor5-build-balloon-block";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import { getUser } from "@/lib/auth";
 import gql from "graphql-tag";
-import Notify from "./Notify";
+import AppNotify from "./AppNotify";
 import { REQUEST_STATE } from "../lib/helpers";
 import { ckeditorUploadAdapterPlugin } from "../lib/ckeditorUploadAdapter";
 
@@ -126,8 +126,8 @@ export default {
   components: {
     // Use the <ckeditor> component in this view.
     ckeditor: CKEditor.component,
-    PodLoader,
-    Notify
+    AppLoader,
+    AppNotify
   },
   data() {
     return {

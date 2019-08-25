@@ -1,14 +1,14 @@
 <template>
   <AdminLayout>
-    <Notify :errors="notifications.errors" :info="notifications.info" />
+    <AppNotify :errors="notifications.errors" :info="notifications.info" />
     <div class="container">
       <template v-if="myPodsRequestState === 'PENDING'">
-        <PodLoader />
+        <AppLoader />
       </template>
       <template v-if="myPodsRequestState === 'FINISHED_OK'">
         <template v-if="pods.edges.length === 0">
           <LayoutBody>
-            <PodCreateForm :first="true" />
+            <BlogCreateForm :first="true" />
           </LayoutBody>
         </template>
         <template v-if="pods && pods.edges.length > 0">
@@ -61,14 +61,14 @@
 
 <script>
 import apolloClient from "../lib/apolloClient";
-import PodCreateForm from "../components/PodCreateForm";
+import BlogCreateForm from "../components/BlogCreateForm";
 import BulmaGrid from "../components/BulmaGrid";
 import AdminLayout from "../layouts/AdminLayout";
-import PodLoader from "../components/PodLoader";
+import AppLoader from "../components/AppLoader";
 import gql from "graphql-tag";
 import BulmaButtonLink from "../components/BulmaButtonLink";
 import { REQUEST_STATE } from "../lib/helpers";
-import Notify from "../components/Notify";
+import AppNotify from "../components/AppNotify";
 import ButtonLink from "../components/ButtonLink";
 import LayoutBody from "../components/LayoutBody";
 import LayoutList from "../components/LayoutList";
@@ -96,11 +96,11 @@ export default {
   components: {
     LayoutBody,
     BulmaButtonLink,
-    PodCreateForm,
+    BlogCreateForm,
     BulmaGrid,
     AdminLayout,
-    PodLoader,
-    Notify,
+    AppLoader,
+    AppNotify,
     ButtonLink,
     LayoutList,
     ApiButton

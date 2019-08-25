@@ -1,6 +1,6 @@
 <template>
   <AdminLayout>
-    <Notify :errors="notifications.errors" :infos="notifications.infos" />
+    <AppNotify :errors="notifications.errors" :infos="notifications.infos" />
     <portal to="topbar-left">
       <span class="item tag is-medium">
         <router-link class="item" :to="{name:'blogList'}">
@@ -34,7 +34,7 @@
     </header>
 
     <template v-if="initRequestsState === 'PENDING'">
-      <PodLoader />
+      <AppLoader />
     </template>
     <template v-if="isFirstPost === true">
       <div class="container">
@@ -82,7 +82,7 @@
           <div class="container" style="border-top-left-radius:0;">
             <!--POST PENDING-->
             <template v-if="postsRequestState === 'PENDING'">
-              <PodLoader />
+              <AppLoader />
             </template>
             <!--NO PUBLISHED POST FOUND-->
             <template v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length === 0">
@@ -125,9 +125,9 @@
 import apolloClient from "../lib/apolloClient";
 import AdminLayout from "../layouts/AdminLayout";
 import gql from "graphql-tag";
-import PodLoader from "../components/PodLoader";
+import AppLoader from "../components/AppLoader";
 import { REQUEST_STATE } from "../lib/helpers";
-import Notify from "../components/Notify";
+import AppNotify from "../components/AppNotify";
 import ButtonLink from "../components/ButtonLink";
 import BulmaButtonLink from "../components/BulmaButtonLink";
 import LayoutBody from "../components/LayoutBody";
@@ -177,8 +177,8 @@ const allPostsQuery = gql`
 export default {
   components: {
     AdminLayout,
-    PodLoader,
-    Notify,
+    AppLoader,
+    AppNotify,
     ButtonLink,
     LayoutBody,
     LayoutList,

@@ -1,30 +1,21 @@
 <template>
-  <div class="spinner">
-    <img src="../assets/loading.svg" alt="Loading" />
+  <div class="section container">
+    <AppLoader>Logging out ...</AppLoader>
   </div>
 </template>
 
 <script>
 import { logout } from "../lib/auth";
+import AppLoader from "./AppLoader";
+
 export default {
+  components: {
+    AppLoader
+  },
   async created() {
     logout();
-    this.$router.push("/");
+    window.location.replace(process.env.VUE_APP_SITE_BASE_URL);
   }
 };
 </script>
 
-<style scoped>
-.spinner {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  height: 100vh;
-  width: 100vw;
-  background-color: white;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-</style>
