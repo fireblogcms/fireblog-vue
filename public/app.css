@@ -90,7 +90,7 @@ body img {
 /*WRITE VIEW*/
 
 .write-view {
-  background: white;
+  background: rgb(250, 250, 250);
 }
 
 .animated.fadeIn {
