@@ -274,6 +274,11 @@ export default {
         });
     },
     onSaveClick() {
+      console.log("input", this.inputs);
+      if (!this.inputs.title.trim()) {
+        alert("A title is required");
+        return;
+      }
       if (this.operation() === OPERATION.CREATE) {
         this.createPost(this.preparePostFromInputs(this.inputs));
       }
@@ -290,6 +295,10 @@ export default {
       }
     },
     onPublishPostClick() {
+      if (!this.inputs.title.trim()) {
+        alert("A title is required");
+        return;
+      }
       const status = "PUBLISHED";
       if (this.operation() === "CREATE") {
         const newPost = {

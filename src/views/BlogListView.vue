@@ -1,13 +1,13 @@
 <template>
   <AdminLayout>
     <AppNotify :errors="notifications.errors" :info="notifications.info" />
-    <div class="container">
+    <div data-aos="fade-in" class="container">
       <template v-if="myPodsRequestState === 'PENDING'">
         <AppLoader />
       </template>
       <template v-if="myPodsRequestState === 'FINISHED_OK'">
         <template v-if="pods.edges.length === 0">
-          <LayoutBody>
+          <LayoutBody class="container" style="margin-top:60px">
             <BlogCreateForm :first="true" />
           </LayoutBody>
         </template>
@@ -17,14 +17,16 @@
               <img
                 height="70"
                 style="position:relative;top:25px;padding-right:1rem"
-                src="/images/books.webp"
+                src="/images/books-icon.png"
               />
               My blogs
               <BulmaButtonLink
                 style="margin-top:30px"
                 class="is-primary is-large is-pulled-right"
                 :to="{name:'blogCreate'}"
-              >CREATE A NEW BLOG</BulmaButtonLink>
+              >
+                <img width="40" style="margin-right:10px" src="/images/book.png" /> CREATE A NEW BLOG
+              </BulmaButtonLink>
             </h1>
           </div>
           <LayoutBody>
@@ -34,7 +36,7 @@
               :itemUniqueKey="(edge) => edge.node._id"
             >
               <template v-slot="{item}">
-                <div class="columns">
+                <div data-aos="fade-in" class="columns fade-in">
                   <div class="column">
                     <div class="content">
                       <h2>
@@ -72,7 +74,6 @@ import AppNotify from "../components/AppNotify";
 import ButtonLink from "../components/ButtonLink";
 import LayoutBody from "../components/LayoutBody";
 import LayoutList from "../components/LayoutList";
-import ApiButton from "../components/ApiButton";
 
 const myPodsQuery = gql`
   query myPodsQuery {
@@ -102,8 +103,7 @@ export default {
     AppLoader,
     AppNotify,
     ButtonLink,
-    LayoutList,
-    ApiButton
+    LayoutList
   },
   data() {
     return {
@@ -141,3 +141,4 @@ export default {
   }
 };
 </script>
+

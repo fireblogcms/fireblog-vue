@@ -1,7 +1,9 @@
 <template>
-  <div class="has-text-centered section">
-    <Circle2 style="margin:auto" />
-    <slot />
+  <div class="app-loader-wrapper has-text-centered section">
+    <div class="app-loader">
+      <Circle2 />
+      <slot />
+    </div>
   </div>
 </template>
 
@@ -21,3 +23,15 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.app-loader-wrapper {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+.app-loader {
+  margin: auto;
+  width: 200px;
+}
+</style>

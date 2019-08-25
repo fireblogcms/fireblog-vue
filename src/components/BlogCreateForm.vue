@@ -41,7 +41,6 @@
 
       <!-- Any other Bulma elements you want -->
     </div>
-    <button @click="showPublishBlogModal = false" class="modal-close is-large" aria-label="close"></button>
   </div>
 </template>
 

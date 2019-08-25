@@ -37,7 +37,7 @@
       <AppLoader />
     </template>
     <template v-if="isFirstPost === true">
-      <div class="container">
+      <div data-aos="fade-in" class="container">
         <LayoutBody>
           <h2
             style="font-weight:200"
@@ -55,7 +55,7 @@
       </div>
     </template>
     <template v-if="!isFirstPost">
-      <section class="container">
+      <section data-aos="fade-in" class="container">
         <div class="tabs is-boxed is-medium" style="position:relative;margin-bottom:0;">
           <ul style="border-bottom:0">
             <li

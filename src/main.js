@@ -6,6 +6,7 @@ import VueTextareaAutosize from "vue-textarea-autosize";
 import "bulma/css/bulma.css";
 import PortalVue from "portal-vue";
 import vClickOutside from "v-click-outside";
+import "animate.css/animate.min.css";
 
 Vue.use(vClickOutside);
 Vue.use(PortalVue);

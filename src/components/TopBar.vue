@@ -86,7 +86,7 @@
       </div>
     </div>
 
-    <div :class="{ 'is-active': showApiModal }" class="modal">
+    <div :class="{ 'is-active': showApiModal }" class="modal animated fadeIn">
       <div class="modal-background"></div>
       <div class="modal-card">
         <div class="modal-card-body">
@@ -119,7 +119,6 @@
 <script>
 import gql from "graphql-tag";
 import apolloClient from "../lib/apolloClient";
-import { print } from "graphql/language/printer";
 import getAllPostsApiExample from "../apiExamples/getAllPosts";
 import getSinglePostApiExample from "../apiExamples/getSinglePostApiExample";
 import ApiButton from "../components/ApiButton";
@@ -200,13 +199,9 @@ export default {
         this.meQueryState = "FINISHED_ERROR";
       });
     // get currend pod data
-    if (
-      this.$route.name === "postList" ||
-      this.$route.name === "postCreate" ||
-      this.$route.name === "postUpdate"
-    ) {
+    const authorizedNames = ["postList", "postCreate", "postUpdate"];
+    if (authorizedNames.includes(this.$route.name)) {
       this.podQueryState = "PENDING";
-
       apolloClient
         .query({
           query: podQuery,
@@ -270,6 +265,7 @@ export default {
 .topbar {
   background: white;
   padding: 1rem;
+  min-height: 78px;
 }
 .topbar .vue-portal-target {
   display: inline;

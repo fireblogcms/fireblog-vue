@@ -10,6 +10,10 @@ body {
   margin: 0;
 }
 
+body img {
+  height: none;
+}
+
 .button {
   border: none;
   padding: 0.5rem;
@@ -87,4 +91,8 @@ body {
 
 .write-view {
   background: white;
+}
+
+.animated.fadeIn {
+  animation-duration: 0.1s;
 }
