@@ -6,7 +6,7 @@ import BlogCreateView from "./views/BlogCreateView";
 import BlogListView from "./views/BlogListView";
 import PostListView from "./views/PostListView";
 import NotFoundView from "./views/NotFoundView";
-import Callback from "./components/Callback.vue";
+import Auth0CallbackView from "./views/Auth0CallbackView.vue";
 import Logout from "./components/Logout";
 import { isAuthenticated, auth0client } from "./lib/auth";
 
@@ -24,7 +24,7 @@ const router = new Router({
     {
       path: "/auth0-callback",
       name: "auth0Callback",
-      component: Callback,
+      component: Auth0CallbackView,
       meta: {
         public: true
       }

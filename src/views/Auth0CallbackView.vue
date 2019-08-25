@@ -1,6 +1,7 @@
+
 <template>
   <div class="spinner">
-    <img v-if="!error" src="../assets/loading.svg" alt="Loading" />
+    <AppLoader v-if="!error">Signin in ...</AppLoader>
     <div v-if="error" class="section">
       <h1 class="title is-1">Login error</h1>
       <pre>{{ error }}</pre>
@@ -10,9 +11,13 @@
 
 <script>
 import apolloClient from "../lib/apolloClient";
+import AppLoader from "../components/AppLoader";
 import { auth0client, localLogin } from "../lib/auth";
 
 export default {
+  components: {
+    AppLoader
+  },
   data() {
     return {
       error: null
@@ -26,7 +31,7 @@ export default {
       } else {
         localLogin(result)
           .then(r => {
-            this.$router.push({path: "/"});
+            this.$router.push({ path: "/" });
           })
           .catch(error => {
             throw new Error(
@@ -38,18 +43,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.spinner {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  height: 100vh;
-  width: 100vw;
-  background-color: white;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-</style>
