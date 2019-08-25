@@ -1,65 +1,88 @@
 <template>
-  <div class="writeForm">
-    <portal to="topbar-left">
-      <span class="item button" style="border:0" v-if="lastTimeSaved">
-        <em>saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
-      </span>
-    </portal>
+  <div class="container">
+    <div class="columns">
+      <div class="column">
+        <em class="title is-5">
+          <router-link :to="{name: 'blogList'}">
+            <i style="padding-left:10px;margin-top:50px" class="fas fa-chevron-left"></i>
+            Back
+          </router-link>
+        </em>
+      </div>
+      <div class="column">
+        <div class="writeForm">
+          <AppNotify :errors="notifications.errors" />
 
-    <AppNotify :errors="notifications.errors" />
-    <portal to="topbar-right" v-if="operation() === 'CREATE' || this.existingPost">
-      <input
-        @click="onSaveClick()"
-        v-if="!existingPost || (existingPost && existingPost.status === 'DRAFT')"
-        class="button is-outlined item"
-        :class="{ 'is-loading': savingPostState === REQUEST_STATE.PENDING }"
-        type="submit"
-        value="SAVE DRAFT"
-      />
+          <template v-if="loadingPostState === REQUEST_STATE.PENDING">
+            <AppLoader />
+          </template>
 
-      <input
-        @click="onUnpublishPostClick()"
-        v-if="existingPost && existingPost.status === 'PUBLISHED'"
-        class="button is-outlined item"
-        type="submit"
-        value="UNPUBLISH"
-      />
+          <form style="position:relative" @submit.prevent>
+            <div style="position:absolute;right:40px;top:20px">
+              <em v-if="lastTimeSaved">saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
+            </div>
+            <textarea-autosize
+              @keydown.enter.native.prevent="onTitleEnter"
+              autofocus
+              rows="1"
+              placeholder="Title"
+              type="text"
+              id="title"
+              v-model="inputs.title"
+            ></textarea-autosize>
+            <ckeditor
+              ref="ckeditor"
+              :editor="editor"
+              v-model="inputs.content"
+              :config="editorConfig"
+            ></ckeditor>
+          </form>
+        </div>
+      </div>
+      <div style="padding-top:60px;" class="column column-actions">
+        <div style="position:fixed" class="actions">
+          <div v-if="!existingPost || (existingPost && existingPost.status === 'DRAFT')">
+            <input
+              @click="onSaveClick()"
+              class="button is-outlined item"
+              :class="{ 'is-loading': savingPostState === REQUEST_STATE.PENDING }"
+              type="submit"
+              value="SAVE DRAFT"
+            />
+          </div>
 
-      <input
-        @click="onPublishPostClick()"
-        v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
-        class="button is-outlined item is-primary"
-        :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
-        type="submit"
-        value="PUBLISH"
-      />
+          <div v-if="existingPost && existingPost.status === 'PUBLISHED'">
+            <input
+              @click="onUnpublishPostClick()"
+              class="button is-outlined item"
+              type="submit"
+              value="UNPUBLISH"
+            />
+          </div>
 
-      <input
-        @click="onPublishPostClick()"
-        v-if="existingPost && existingPost.status === 'PUBLISHED'"
-        class="button is-outlined item is-primary"
-        :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
-        type="submit"
-        value="PUBLISH CHANGES"
-      />
-    </portal>
+          <input
+            @click="onPublishPostClick()"
+            v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
+            class="button item is-primary"
+            :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
+            type="submit"
+            value="PUBLISH"
+          />
 
-    <template v-if="loadingPostState === REQUEST_STATE.PENDING">
-      <AppLoader />
-    </template>
+          <div v-if="existingPost && existingPost.status === 'PUBLISHED'">
+            <input
+              @click="onPublishPostClick()"
+              class="button is-outlined item is-primary"
+              :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
+              type="submit"
+              value="PUBLISH CHANGES"
+            />
+          </div>
 
-    <form @submit.prevent>
-      <textarea-autosize
-        @keydown.enter.native.prevent="onTitleEnter"
-        autofocus
-        rows="1"
-        placeholder="Title"
-        type="text"
-        id="title"
-        v-model="inputs.title"
-      ></textarea-autosize>
-      <ckeditor ref="ckeditor" :editor="editor" v-model="inputs.content" :config="editorConfig"></ckeditor>
-    </form>
+          <!--<ApiButton />-->
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -75,6 +98,7 @@ import gql from "graphql-tag";
 import AppNotify from "./AppNotify";
 import { REQUEST_STATE } from "../lib/helpers";
 import { ckeditorUploadAdapterPlugin } from "../lib/ckeditorUploadAdapter";
+import ApiButton from "../components/ApiButton";
 
 const PostResponseFragment = gql`
   fragment PostResponse on Post {
@@ -127,7 +151,8 @@ export default {
     // Use the <ckeditor> component in this view.
     ckeditor: CKEditor.component,
     AppLoader,
-    AppNotify
+    AppNotify,
+    ApiButton
   },
   data() {
     return {
@@ -330,10 +355,9 @@ export default {
 .writeForm form {
   font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-color: rgba(255, 255, 255, 0.9);
-  padding: 0 2rem;
-  margin: auto;
-  max-width: 940px;
-  padding: 2rem 4rem;
+  padding: 60px 50px;
+  height: 100vh;
+  width: 840px;
 }
 
 .writeForm textarea#title {
@@ -387,5 +411,9 @@ export default {
 
 .writeForm .ck-editor__editable h2 {
   font-size: 40px;
+}
+
+.column-actions .button {
+  margin-bottom: 10px;
 }
 </style>

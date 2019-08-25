@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <TopBar />
+    <!--<TopBar />-->
     <!-- notification space -->
     <portal-target v-if="this.$slots.default" name="notifications"></portal-target>
     <slot />
