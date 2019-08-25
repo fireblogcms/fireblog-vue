@@ -70,12 +70,14 @@
             <li @click="onStatusClick('DRAFT')" :class="{ 'is-active': activeStatus == 'DRAFT' }">
               <a>Draft</a>
             </li>
+            <!--
             <li @click="onStatusClick('BIN')" :class="{ 'is-active': activeStatus == 'BIN' }">
               <a>
                 <img style="height:30px;padding-right:5px" src="/images/bin.png" />
                 Bin
               </a>
             </li>
+            -->
           </ul>
         </div>
         <LayoutBody style="border-top-left-radius:0">
@@ -97,18 +99,18 @@
                 :itemUniqueKey="(item) => item.node._id"
               >
                 <template v-slot="{item}">
-                  <div class="content">
-                    <h2>
-                      <div class="columns">
-                        <div class="column">
-                          <router-link
-                            :to="{name: 'postUpdate', params:{ blogId:$route.params.blogId, postId: item.node._id }}"
-                          >{{ item.node.title }}</router-link>
-                          <br />
-                          <span class="subtitle">{{ Number(item.node.createdAt) | moment("from") }}</span>
-                        </div>
-                      </div>
+                  <div class>
+                    <h2 class="title">
+                      <router-link
+                        :to="{name: 'postUpdate', params:{ blogId:$route.params.blogId, postId: item.node._id }}"
+                      >{{ item.node.title + " " }}</router-link>
+                      <span
+                        v-if="item.node.status === 'PUBLISHED'"
+                        class="subtitle"
+                      >published {{ Number(item.node.publishedAt) | moment("from") }}</span>
                     </h2>
+
+                    <p>{{striptags(item.node.content.substr(200))}}</p>
                   </div>
                 </template>
               </LayoutList>
@@ -132,6 +134,7 @@ import ButtonLink from "../components/ButtonLink";
 import BulmaButtonLink from "../components/BulmaButtonLink";
 import LayoutBody from "../components/LayoutBody";
 import LayoutList from "../components/LayoutList";
+import striptags from "striptags";
 
 const postsQuery = gql`
   query postsQuery($pod: ID!, $status: PostPublicationStatus!) {
@@ -142,7 +145,9 @@ const postsQuery = gql`
           title
           updatedAt
           createdAt
+          publishedAt
           status
+          content
         }
       }
     }
@@ -202,6 +207,7 @@ export default {
     };
   },
   created() {
+    this.striptags = striptags;
     this.init();
   },
   methods: {

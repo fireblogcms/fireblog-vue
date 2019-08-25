@@ -2,12 +2,15 @@
   <div class="container">
     <div class="columns">
       <div class="column">
-        <em class="title is-5">
-          <router-link :to="{name: 'blogList'}">
-            <i style="padding-left:10px;margin-top:50px" class="fas fa-chevron-left"></i>
-            Back
-          </router-link>
-        </em>
+        <router-link
+          style="margin-top:30px"
+          id="back-button"
+          class="button"
+          :to="{name: 'postList', params:{blogId:$route.params.blogId}}"
+        >
+          <i style="padding-right:10px" class="fas fa-chevron-left"></i>
+          Back
+        </router-link>
       </div>
       <div class="column">
         <div class="writeForm">
@@ -39,7 +42,7 @@
           </form>
         </div>
       </div>
-      <div style="padding-top:60px;" class="column column-actions">
+      <div class="column column-actions">
         <div style="position:fixed" class="actions">
           <div v-if="!existingPost || (existingPost && existingPost.status === 'DRAFT')">
             <input
@@ -51,31 +54,33 @@
             />
           </div>
 
+          <div>
+            <input
+              @click="onPublishPostClick()"
+              v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
+              class="button item is-primary"
+              :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
+              type="submit"
+              value="PUBLISH"
+            />
+          </div>
+
+          <div v-if="existingPost && existingPost.status === 'PUBLISHED'">
+            <input
+              @click="onPublishPostClick()"
+              class="button item is-primary"
+              :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
+              type="submit"
+              value="PUBLISH CHANGES"
+            />
+          </div>
+
           <div v-if="existingPost && existingPost.status === 'PUBLISHED'">
             <input
               @click="onUnpublishPostClick()"
               class="button is-outlined item"
               type="submit"
               value="UNPUBLISH"
-            />
-          </div>
-
-          <input
-            @click="onPublishPostClick()"
-            v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
-            class="button item is-primary"
-            :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
-            type="submit"
-            value="PUBLISH"
-          />
-
-          <div v-if="existingPost && existingPost.status === 'PUBLISHED'">
-            <input
-              @click="onPublishPostClick()"
-              class="button is-outlined item is-primary"
-              :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
-              type="submit"
-              value="PUBLISH CHANGES"
             />
           </div>
 
@@ -106,6 +111,7 @@ const PostResponseFragment = gql`
     title
     content
     status
+    publishedAt
     author {
       _id
       name
@@ -299,7 +305,6 @@ export default {
         });
     },
     onSaveClick() {
-      console.log("input", this.inputs);
       if (!this.inputs.title.trim()) {
         alert("A title is required");
         return;
@@ -328,6 +333,7 @@ export default {
       if (this.operation() === "CREATE") {
         const newPost = {
           ...this.preparePostFromInputs(this.inputs),
+          publishedAt: new Date(),
           status
         };
         this.createPost(newPost);
@@ -335,6 +341,7 @@ export default {
       if (this.operation() === "UPDATE") {
         const post = {
           ...this.preparePostFromInputs(this.inputs),
+          publishedAt: new Date(),
           status
         };
         this.updatePost(post);
@@ -356,7 +363,9 @@ export default {
   font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-color: rgba(255, 255, 255, 0.9);
   padding: 60px 50px;
-  height: 100vh;
+  margin-top: 30px;
+  margin-bottom: 60px;
+  min-height: 100vh;
   width: 840px;
 }
 
@@ -415,5 +424,14 @@ export default {
 
 .column-actions .button {
   margin-bottom: 10px;
+  min-width: 130px;
+}
+
+#back-button {
+  min-width: 130px;
+}
+
+.column-actions .actions {
+  margin-top: 30px;
 }
 </style>
