@@ -3,10 +3,7 @@
     <div class="container">
       <div class="columns">
         <div class="column">
-          <span
-            class="item tag is-medium"
-            v-if="podQueryState === 'FINISHED_OK' && backToPodIsVisible()"
-          >
+          <span class="item tag is-medium" v-if="pod && backToPodIsVisible()">
             <em>
               <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
               <router-link :to="{name: 'postList', params:{blogId:$route.params.blogId}}">
@@ -30,20 +27,24 @@
             The slot content of the above portal component will be rendered here.
             -->
           </portal-target>
-          <ApiButton v-show="apiHelpIsVisible()" @click="onApiClick" />
+          <ApiButton v-if="apiHelpIsVisible()" @click="onApiClick" />
           <!--
           <a @click="onApiClick" target="_blank" class="item button is-outlined">
             <img style="height:20px !important;padding-right:10px" src="/images/graphql.svg" />API
           </a>
           -->
 
-          <div v-if="meQueryState === 'FINISHED_OK'" id="profile-dropdown" class="item">
+          <div class="item" id="profile-dropdown">
             <div
               v-click-outside="onProfileDropdownOutsideClick"
               class="dropdown is-right"
               :class="{ 'is-active': dropdownMenuActive }"
             >
-              <div class="dropdown-trigger" @click="dropdownMenuActive = !dropdownMenuActive">
+              <div
+                v-if="me"
+                class="dropdown-trigger"
+                @click="dropdownMenuActive = !dropdownMenuActive"
+              >
                 <div class aria-haspopup="true">
                   <span>
                     <img
@@ -86,7 +87,7 @@
       </div>
     </div>
 
-    <div :class="{ 'is-active': showApiModal }" class="modal animated fadeIn">
+    <div :class="{ 'is-active': showApiModal }" class="modal">
       <div class="modal-background"></div>
       <div class="modal-card">
         <div class="modal-card-body">
@@ -119,38 +120,10 @@
 <script>
 import gql from "graphql-tag";
 import apolloClient from "../lib/apolloClient";
+import { getUser, REQUEST_STATE } from "../lib/helpers";
 import getAllPostsApiExample from "../apiExamples/getAllPosts";
 import getSinglePostApiExample from "../apiExamples/getSinglePostApiExample";
 import ApiButton from "../components/ApiButton";
-
-const meQuery = gql`
-  query meQuery {
-    me {
-      name
-      email
-      picture
-      pods(last: 100) {
-        edges {
-          node {
-            name
-            description
-            createdAt
-            updatedAt
-            _id
-          }
-        }
-      }
-    }
-  }
-`;
-
-const podQuery = gql`
-  query podQuery($_id: ID!) {
-    pod(_id: $_id) {
-      name
-    }
-  }
-`;
 
 export default {
   components: {
@@ -158,11 +131,10 @@ export default {
   },
   data() {
     return {
-      dropdownMenuActive: false,
-      podQueryState: "NOT_STARTED",
-      meQueryState: "NOT_STARTED",
-      pod: null,
+      initState: "NOT_STARTED",
       me: null,
+      pod: null,
+      dropdownMenuActive: false,
       error: null,
       showApiModal: false,
       apiModalExampleTitle: null,
@@ -178,48 +150,74 @@ export default {
     }
   },
   created() {
-    // get account infos
-    this.VUE_APP_GRAPHQL_URL = process.env.VUE_APP_GRAPHQL_URL;
-    this.VUE_APP_GRAPHQL_POD_BASE_URL =
-      process.env.VUE_APP_GRAPHQL_POD_BASE_URL;
-    this.meQueryState = "PENDING";
-    apolloClient
-      .query({
-        query: meQuery,
-        variables: {
-          id: this.$route.params.blogId
-        }
-      })
-      .then(result => {
-        this.me = result.data.me;
-        this.meQueryState = "FINISHED_OK";
-      })
-      .catch(error => {
-        this.error = error;
-        this.meQueryState = "FINISHED_ERROR";
-      });
-    // get currend pod data
-    const authorizedNames = ["postList", "postCreate", "postUpdate"];
-    if (authorizedNames.includes(this.$route.name)) {
-      this.podQueryState = "PENDING";
-      apolloClient
+    this.init();
+  },
+  methods: {
+    async init() {
+      this.initState = REQUEST_STATE.PENDING;
+      const promises = [];
+      promises.push(this.getMeWithMyPods());
+      // if we are inside a pod, fetch it.
+      if (["postList", "postCreate", "postUpdate"].includes(this.$route.name)) {
+        promises.push(this.getCurrentPod());
+      }
+      Promise.all(promises)
+        .then(r => {
+          this.initState = REQUEST_STATE.FINISHED_OK;
+        })
+        .catch(e => {
+          this.initState = REQUEST_STATE.FINISHED_ERROR;
+        });
+    },
+    getMeWithMyPods() {
+      return apolloClient
         .query({
-          query: podQuery,
+          query: gql`
+            query meWithMyPodsQuery {
+              me {
+                name
+                email
+                picture
+                pods(last: 100) {
+                  edges {
+                    node {
+                      name
+                      description
+                      createdAt
+                      updatedAt
+                      _id
+                    }
+                  }
+                }
+              }
+            }
+          `
+        })
+        .then(result => {
+          this.me = result.data.me;
+        });
+    },
+    getCurrentPod() {
+      return apolloClient
+        .query({
+          query: gql`
+            query TopBarPodQuery($_id: ID!) {
+              pod(_id: $_id) {
+                name
+              }
+            }
+          `,
           variables: {
             _id: this.$route.params.blogId
           }
         })
         .then(result => {
           this.pod = result.data.pod;
-          this.podQueryState = "FINISHED_OK";
         })
         .catch(error => {
           this.error = error;
-          this.podQueryState = "FINISHED_ERROR";
         });
-    }
-  },
-  methods: {
+    },
     backToPodIsVisible() {
       if (["postUpdate", "postCreate"].includes(this.$route.name)) {
         return true;

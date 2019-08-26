@@ -2,6 +2,13 @@ import auth0 from "auth0-js";
 import apolloClient from "./apolloClient";
 import gql from "graphql-tag";
 
+// access Token received by auth0, to request our GraphQL API
+export const localStorageAccessToken = "accessToken";
+// user received by auth0 token
+export const localStorageAuth0User = "auth0User";
+// user received from graphql server
+export const localStorageUser = "user";
+
 export const auth0client = new auth0.WebAuth({
   audience: process.env.VUE_APP_AUTH0_AUDIENCE,
   domain: process.env.VUE_APP_AUTH0_DOMAIN,
@@ -18,8 +25,8 @@ export const auth0client = new auth0.WebAuth({
 // Good enough for the proto.
 export function localLogin(authResult) {
   const user = authResult.idTokenPayload;
-  localStorage.setItem("accessToken", authResult.accessToken);
-  localStorage.setItem("user", JSON.stringify(user));
+  localStorage.setItem(localStorageAccessToken, authResult.accessToken);
+  localStorage.setItem(localStorageAuth0User, JSON.stringify(user));
   return syncUserWithServer({
     _id: user.sub,
     email: user.email,
@@ -29,16 +36,20 @@ export function localLogin(authResult) {
 }
 
 export function logout() {
-  localStorage.removeItem("accessToken");
-  localStorage.removeItem("user");
+  // access Token received by auth0, to request our GraphQL API
+  localStorage.removeItem(localStorageAccessToken);
+  // user received by auth0 token
+  localStorage.removeItem(localStorageAuth0User);
+  // user from Server, set by getUser()
+  localStorage.removeItem(localStorageUser);
 }
 
 export function getAccessToken() {
-  return localStorage.getItem("accessToken");
+  return localStorage.getItem(localStorageAccessToken);
 }
 
 export function isAuthenticated() {
-  const user = getUser();
+  const user = getLocalUser();
   if (!user) {
     return false;
   }
@@ -46,8 +57,8 @@ export function isAuthenticated() {
   return user && tokenExpiry > Date.now();
 }
 
-export function getUser() {
-  return JSON.parse(localStorage.getItem("user"));
+export function getLocalUser() {
+  return JSON.parse(localStorage.getItem(localStorageAuth0User));
 }
 
 function syncUserWithServer({ _id, email, name, picture }) {

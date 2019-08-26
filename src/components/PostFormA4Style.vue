@@ -106,7 +106,7 @@ import AppLoader from "../components/AppLoader";
 // import Editor from "@ckeditor/ckeditor5-build-balloon";
 import Editor from "@ckeditor/ckeditor5-build-balloon-block";
 import CKEditor from "@ckeditor/ckeditor5-vue";
-import { getUser } from "@/lib/auth";
+import { getLocalUser } from "@/lib/auth";
 import gql from "graphql-tag";
 import AppNotify from "./AppNotify";
 import { REQUEST_STATE } from "../lib/helpers";
@@ -254,7 +254,7 @@ export default {
       // current user as author by default
       if (!post.author) {
         // @FIXME : utiliser plutôt l'id de la base sur "sub"
-        post.author = getUser().sub;
+        post.author = getLocalUser().sub;
       }
       post.pod = this.$route.params.blogId;
       return apolloClient

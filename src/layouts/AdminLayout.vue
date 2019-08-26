@@ -1,6 +1,6 @@
 <template>
-  <div id="app">
-    <TopBar />
+  <div>
+    <LayoutTopBar />
     <!-- notifications messages -->
     <portal-target v-if="this.$slots.default" name="notifications"></portal-target>
     <slot />
@@ -8,11 +8,11 @@
 </template>
 
 <script>
-import TopBar from "@/components/TopBar";
+import LayoutTopBar from "@/components/LayoutTopBar";
 
 export default {
   components: {
-    TopBar
+    LayoutTopBar
   }
 };
 </script>

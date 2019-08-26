@@ -67,10 +67,10 @@ import apolloClient from "../lib/apolloClient";
 import AppLoader from "../components/AppLoader";
 import Editor from "@ckeditor/ckeditor5-build-balloon-block";
 import CKEditor from "@ckeditor/ckeditor5-vue";
-import { getUser } from "@/lib/auth";
+import { getLocalUser } from "@/lib/auth";
 import gql from "graphql-tag";
 import AppNotify from "./AppNotify";
-import { REQUEST_STATE } from "../lib/helpers";
+import { REQUEST_STATE, getUser } from "../lib/helpers";
 import { ckeditorUploadAdapterPlugin } from "../lib/ckeditorUploadAdapter";
 
 const PostResponseFragment = gql`
@@ -150,7 +150,7 @@ export default {
     this.OPERATION = OPERATION;
     this.editorConfig = {
       extraPlugins: [ckeditorUploadAdapterPlugin],
-      toolbar: ["bold", "italic", "link", "heading", "blockQuote", "code"],
+      toolbar: ["bold", "italic", "link", "heading", "blockQuote"],
       blockToolbar: ["imageUpload", "mediaEmbed"]
     };
 
@@ -198,11 +198,12 @@ export default {
         status: "DRAFT"
       };
     },
-    createPost(post) {
+    async createPost(post) {
+      const user = await getUser();
       // current user as author by default
       if (!post.author) {
         // @FIXME : utiliser plutôt l'id de la base sur "sub"
-        post.author = getUser().sub;
+        post.author = user._id;
       }
       post.pod = this.$route.params.blogId;
       return apolloClient

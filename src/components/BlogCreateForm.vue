@@ -47,7 +47,7 @@
 <script>
 import { generate } from "../lib/fantasyName.js";
 import apolloClient from "../lib/apolloClient";
-import { getUser } from "../lib/auth";
+import { getLocalUser } from "../lib/auth";
 import gql from "graphql-tag";
 
 const createPostMutation = gql`
@@ -72,7 +72,7 @@ export default {
     };
   },
   created() {
-    this.user = getUser();
+    this.user = getLocalUser();
   },
   methods: {
     onCreateClick() {
