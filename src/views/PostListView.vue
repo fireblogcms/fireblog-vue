@@ -138,7 +138,6 @@ import gql from "graphql-tag";
 import AppLoader from "../components/AppLoader";
 import { REQUEST_STATE } from "../lib/helpers";
 import AppNotify from "../components/AppNotify";
-import ButtonLink from "../components/ButtonLink";
 import BulmaButtonLink from "../components/BulmaButtonLink";
 import LayoutBody from "../components/LayoutBody";
 import LayoutList from "../components/LayoutList";
@@ -192,7 +191,6 @@ export default {
     AdminLayout,
     AppLoader,
     AppNotify,
-    ButtonLink,
     LayoutBody,
     LayoutList,
     BulmaButtonLink

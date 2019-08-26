@@ -1,73 +1,109 @@
 <template>
-  <div class="writeForm">
-    <AppNotify :errors="notifications.errors" />
-    <portal to="topbar-left">
-      <span class="item button" style="border:0" v-if="lastTimeSaved">
-        <em>saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
-      </span>
-    </portal>
-    <portal to="topbar-right" v-if="operation() === 'CREATE' || this.existingPost">
-      <input
-        @click="onSaveClick()"
-        v-if="!existingPost || (existingPost && existingPost.status === 'DRAFT')"
-        class="button is-outlined item"
-        :class="{ 'is-loading': savingPostState === REQUEST_STATE.PENDING }"
-        type="submit"
-        value="SAVE DRAFT"
-      />
-
-      <input
-        @click="onUnpublishPostClick()"
-        v-if="existingPost && existingPost.status === 'PUBLISHED'"
-        class="button is-outlined item"
-        type="submit"
-        value="UNPUBLISH"
-      />
-
-      <input
-        @click="onPublishPostClick()"
-        v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
-        class="button is-outlined item is-primary"
-        :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
-        type="submit"
-        value="PUBLISH"
-      />
-
-      <input
-        @click="onPublishPostClick()"
-        v-if="existingPost && existingPost.status === 'PUBLISHED'"
-        class="button is-outlined item is-primary"
-        :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
-        type="submit"
-        value="PUBLISH CHANGES"
-      />
-    </portal>
-
-    <template v-if="loadingPostState === REQUEST_STATE.PENDING">
-      <AppLoader />
-    </template>
-
-    <form style="position:relative" @submit.prevent>
-      <div style="position:absolute;right:40px;top:20px">
-        <em v-if="lastTimeSaved">saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
+  <div class="container">
+    <div class="columns">
+      <!--COLONNE GAUCHE-->
+      <div class="column">
+        <router-link
+          style="margin-top:30px;border:0"
+          id="back-button"
+          class="button"
+          :to="{name: 'postList', params:{blogId:$route.params.blogId}}"
+        >
+          <i style="padding-right:10px" class="fas fa-chevron-left"></i>
+          Back
+        </router-link>
       </div>
-      <textarea-autosize
-        @keydown.enter.native.prevent="onTitleEnter"
-        autofocus
-        rows="1"
-        placeholder="Title"
-        type="text"
-        id="title"
-        v-model="inputs.title"
-      ></textarea-autosize>
-      <ckeditor ref="ckeditor" :editor="editor" v-model="inputs.content" :config="editorConfig"></ckeditor>
-    </form>
+      <!--END COLONNE GAUCHE-->
+
+      <!--COLONNE MILIEU-->
+      <div class="column">
+        <div class="writeForm">
+          <AppNotify :errors="notifications.errors" />
+
+          <template v-if="loadingPostState === REQUEST_STATE.PENDING">
+            <AppLoader />
+          </template>
+
+          <form style="position:relative" @submit.prevent>
+            <div style="position:absolute;right:40px;top:20px">
+              <em v-if="lastTimeSaved">saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
+            </div>
+            <textarea-autosize
+              @keydown.enter.native.prevent="onTitleEnter"
+              autofocus
+              rows="1"
+              placeholder="Title"
+              type="text"
+              id="title"
+              v-model="inputs.title"
+            ></textarea-autosize>
+            <ckeditor
+              ref="ckeditor"
+              :editor="editor"
+              v-model="inputs.content"
+              :config="editorConfig"
+            ></ckeditor>
+          </form>
+        </div>
+      </div>
+      <!--END COLONNE MILIEU-->
+
+      <!--COLONNE DROITE-->
+      <div class="column column-actions">
+        <div style="position:fixed" class="actions">
+          <div>
+            <input
+              @click="onPublishPostClick()"
+              v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
+              class="button item is-primary"
+              :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
+              type="submit"
+              value="PUBLISH"
+            />
+          </div>
+
+          <div v-if="existingPost && existingPost.status === 'PUBLISHED'">
+            <input
+              @click="onPublishPostClick()"
+              class="button item is-primary"
+              :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
+              type="submit"
+              value="PUBLISH CHANGES"
+            />
+          </div>
+
+          <div v-if="!existingPost || (existingPost && existingPost.status === 'DRAFT')">
+            <input
+              @click="onSaveClick()"
+              class="button is-outlined item"
+              :class="{ 'is-loading': savingPostState === REQUEST_STATE.PENDING }"
+              type="submit"
+              value="SAVE DRAFT"
+            />
+          </div>
+
+          <div v-if="existingPost && existingPost.status === 'PUBLISHED'">
+            <input
+              @click="onUnpublishPostClick()"
+              class="button is-outlined item"
+              type="submit"
+              value="UNPUBLISH"
+            />
+          </div>
+
+          <!--<ApiButton />-->
+        </div>
+      </div>
+      <!--END COLONNE DROITE-->
+    </div>
   </div>
 </template>
 
 <script>
 import apolloClient from "../lib/apolloClient";
 import AppLoader from "../components/AppLoader";
+// import Editor from "@ckeditor/ckeditor5-build-classic";
+// import Editor from "@ckeditor/ckeditor5-build-balloon";
 import Editor from "@ckeditor/ckeditor5-build-balloon-block";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import { getUser } from "@/lib/auth";
@@ -75,7 +111,7 @@ import gql from "graphql-tag";
 import AppNotify from "./AppNotify";
 import { REQUEST_STATE } from "../lib/helpers";
 import { ckeditorUploadAdapterPlugin } from "../lib/ckeditorUploadAdapter";
-import ApiButton from "../components/ApiButton";
+//import ApiButton from "../components/ApiButton";
 
 const PostResponseFragment = gql`
   fragment PostResponse on Post {
@@ -129,8 +165,8 @@ export default {
     // Use the <ckeditor> component in this view.
     ckeditor: CKEditor.component,
     AppLoader,
-    AppNotify,
-    ApiButton
+    AppNotify
+    //ApiButton
   },
   data() {
     return {
@@ -153,6 +189,17 @@ export default {
     this.editor = Editor;
     this.REQUEST_STATE = REQUEST_STATE;
     this.OPERATION = OPERATION;
+    /*
+    0: "heading"
+    1: "|"
+    2: "bulletedList"
+    3: "numberedList"
+    4: "imageUpload"
+    5: "blockQuote"
+    6: "insertTable"
+    7: "mediaEmbed"
+    items: (5) ["bold", "italic", "link", "undo", "redo"]
+    */
     this.editorConfig = {
       extraPlugins: [ckeditorUploadAdapterPlugin],
       toolbar: ["bold", "italic", "link", "heading", "blockQuote", "code"],
@@ -323,14 +370,17 @@ export default {
 .writeForm form {
   font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-color: rgba(255, 255, 255, 0.9);
-  padding: 0 2rem;
-  margin: auto;
-  max-width: 940px;
-  padding: 2rem 4rem;
+  padding: 60px 50px;
+  margin-top: 30px;
+  margin-bottom: 60px;
+  min-height: 100vh;
+  width: 840px;
 }
+
 .writeForm textarea#title {
   background: transparent;
   /*font-family: serif;*/
+
   text-align: left;
   font-size: 50px;
   width: 100%;
@@ -338,6 +388,7 @@ export default {
   border-color: none;
   outline: none !important;
 }
+
 .writeForm .ck-content {
   padding: 0rem 2rem;
   background: transparent;
@@ -355,23 +406,40 @@ export default {
   padding: 1px;
   margin: 0;
   resize: none; /*remove the resize handle on the bottom right*/
-  line-height: 1.8;
+  line-height: 1.7;
 }
 .writeForm .ck-toolbar {
   background: white;
   border: none;
 }
+
 .writeForm .ck-editor__editable p {
   font-size: 21px;
   padding: 0.7rem 0;
 }
+
 .writeForm .ck-editor__editable h4 {
   font-size: 28px;
 }
+
 .writeForm .ck-editor__editable h3 {
   font-size: 34px;
 }
+
 .writeForm .ck-editor__editable h2 {
   font-size: 40px;
+}
+
+.column-actions .button {
+  margin-bottom: 10px;
+  min-width: 130px;
+}
+
+#back-button {
+  min-width: 130px;
+}
+
+.column-actions .actions {
+  margin-top: 30px;
 }
 </style>
