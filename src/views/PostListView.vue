@@ -4,7 +4,11 @@
     <portal to="topbar-left">
       <span class="item tag is-medium">
         <router-link class="item" :to="{name:'blogList'}">
-          <img style="position:relative;height:20px !important;top:4px;" src="/images/books.webp" />
+          <img
+            class="is-hidden-mobile"
+            style="position:relative;height:20px !important;top:4px;"
+            src="/images/books.webp"
+          />
           <i style="margin-left:10px" class="fas fa-chevron-left"></i>
           All blogs
         </router-link>
@@ -16,23 +20,28 @@
     </template>
     <template v-if="initViewState === 'FINISHED_OK'">
       <div class="animated fadeIn">
-        <header class="container" style="padding: 0 0 2rem 0">
-          <h1 class="title is-uppercase">
-            <img
-              style="height:70px !important;position:relative;top:20px;padding-right:1rem"
-              src="/images/book.png"
-            />
-            {{pod.name}} - POSTS
-            <BulmaButtonLink
-              style="margin-top:20px"
-              class="is-large is-pulled-right is-primary"
-              v-if="!isFirstPost"
-              :to="{name: 'postCreate', params:{blogId:$route.params.blogId}}"
-            >
-              <img width="40" style="padding-right:10px" src="/images/typewriter-old.png" />
-              <span>WRITE NEW POST</span>
-            </BulmaButtonLink>
-          </h1>
+        <header class="container" style="padding: 0 1rem 2rem 1rem">
+          <div class="columns">
+            <div class="column">
+              <h1 class="title is-uppercase">
+                <img
+                  class="is-hidden-mobile"
+                  style="height:70px !important;position:relative;top:20px;padding-right:1rem"
+                  src="/images/book.png"
+                />
+                {{pod.name}} - POSTS
+              </h1>
+            </div>
+            <div class="column is-4">
+              <BulmaButtonLink
+                class="is-large is-primary main-call-to-action"
+                v-if="!isFirstPost"
+                :to="{name: 'postCreate', params:{blogId:$route.params.blogId}}"
+              >
+                <span>WRITE NEW POST</span>
+              </BulmaButtonLink>
+            </div>
+          </div>
         </header>
 
         <template v-if="isFirstPost === true">
@@ -72,14 +81,6 @@
                 >
                   <a>Draft</a>
                 </li>
-                <!--
-            <li @click="onStatusClick('BIN')" :class="{ 'is-active': activeStatus == 'BIN' }">
-              <a>
-                <img style="height:30px;padding-right:5px" src="/images/bin.png" />
-                Bin
-              </a>
-            </li>
-                -->
               </ul>
             </div>
             <LayoutBody style="border-top-left-radius:0">
@@ -312,3 +313,18 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.main-call-to-action {
+  float: right;
+  margin-top: 30px;
+}
+@media screen and (max-width: 768px) {
+  .main-call-to-action {
+    margin-top: 0px;
+    float: none;
+  }
+}
+</style>
+
+

@@ -34,17 +34,13 @@
           </a>
           -->
 
-          <div class="item" id="profile-dropdown">
+          <div v-if="me" class="item" id="profile-dropdown">
             <div
               v-click-outside="onProfileDropdownOutsideClick"
               class="dropdown is-right"
               :class="{ 'is-active': dropdownMenuActive }"
             >
-              <div
-                v-if="me"
-                class="dropdown-trigger"
-                @click="dropdownMenuActive = !dropdownMenuActive"
-              >
+              <div class="dropdown-trigger" @click="dropdownMenuActive = !dropdownMenuActive">
                 <div class aria-haspopup="true">
                   <span>
                     <img
@@ -54,11 +50,6 @@
                     />
                     <span v-if="!me.picture">{{ me.name }}</span>
                   </span>
-                  <!--
-                  <span class="icon is-small">
-                    <i class="fas fa-angle-down" aria-hidden="true"></i>
-                  </span>
-                  -->
                 </div>
               </div>
               <div class="dropdown-menu" role="menu">

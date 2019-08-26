@@ -14,23 +14,28 @@
       <template v-if="pods && pods.edges.length > 0">
         <div class="container">
           <div class="animated fadeIn">
-            <div>
-              <h1 style="padding-bottom:2rem;" class="title is-1">
-                <img
-                  height="70"
-                  style="position:relative;top:25px;padding-right:1rem"
-                  src="/images/books-icon.png"
-                />
-                My blogs
-                <BulmaButtonLink
-                  style="margin-top:30px"
-                  class="is-primary is-large is-pulled-right"
-                  :to="{name:'blogCreate'}"
-                >
-                  <img width="40" style="margin-right:10px" src="/images/book.png" /> CREATE A NEW BLOG
-                </BulmaButtonLink>
-              </h1>
-            </div>
+            <header style="padding: 0 1rem 2rem 1rem">
+              <div class="columns">
+                <div class="column">
+                  <h1 style="padding-bottom:2rem;" class="title is-1">
+                    <img
+                      height="70"
+                      style="position:relative;top:25px;padding-right:1rem"
+                      src="/images/books-icon.png"
+                    />
+                    My blogs
+                  </h1>
+                </div>
+                <div class="column">
+                  <BulmaButtonLink
+                    class="is-primary is-large main-call-to-action"
+                    :to="{name:'blogCreate'}"
+                  >
+                    <img width="40" style="margin-right:10px" src="/images/book.png" /> CREATE A NEW BLOG
+                  </BulmaButtonLink>
+                </div>
+              </div>
+            </header>
             <LayoutBody>
               <LayoutList
                 :onRowClick="onRowClick"
@@ -152,4 +157,18 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.main-call-to-action {
+  border: solid red 1px;
+  float: right;
+  margin-top: 30px;
+}
+@media screen and (max-width: 768px) {
+  .main-call-to-action {
+    float: none;
+    margin-top: 0px;
+  }
+}
+</style>
 

@@ -82,7 +82,6 @@ export default {
           return result;
         })
         .catch(error => {
-          console.log("crisp", $crisp);
           this.errors.push(
             "Sorry, an error occured while fetching your profile." + error
           );

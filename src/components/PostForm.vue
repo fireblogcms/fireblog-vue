@@ -373,4 +373,10 @@ export default {
 .writeForm .ck-editor__editable h2 {
   font-size: 40px;
 }
+
+@media screen and (max-width: 768px) {
+  .writeForm form {
+    padding: 1rem;
+  }
+}
 </style>
