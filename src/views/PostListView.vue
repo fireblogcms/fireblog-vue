@@ -29,6 +29,7 @@
               v-if="!isFirstPost"
               :to="{name: 'postCreate', params:{blogId:$route.params.blogId}}"
             >
+              <img width="40" style="padding-right:10px" src="/images/typewriter-old.png" />
               <span>WRITE NEW POST</span>
             </BulmaButtonLink>
           </h1>
