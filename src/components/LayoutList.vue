@@ -37,6 +37,6 @@ export default {
 }
 
 .layout-list .row:hover {
-  background: rgb(250, 250, 250);
+  background: rgb(253, 253, 253);
 }
 </style>

@@ -1,7 +1,7 @@
 
 <template>
   <div class="spinner">
-    <AppLoader v-if="!error">Signin in ...</AppLoader>
+    <AppLoader v-if="!error">Signing in ...</AppLoader>
     <div v-if="error" class="section">
       <h1 class="title is-1">Login error</h1>
       <pre>{{ error }}</pre>

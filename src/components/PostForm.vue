@@ -47,10 +47,7 @@
       <AppLoader />
     </template>
 
-    <form style="position:relative" @submit.prevent>
-      <div style="position:absolute;right:40px;top:20px">
-        <em v-if="lastTimeSaved">saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
-      </div>
+    <form @submit.prevent>
       <textarea-autosize
         @keydown.enter.native.prevent="onTitleEnter"
         autofocus
@@ -75,7 +72,6 @@ import gql from "graphql-tag";
 import AppNotify from "./AppNotify";
 import { REQUEST_STATE } from "../lib/helpers";
 import { ckeditorUploadAdapterPlugin } from "../lib/ckeditorUploadAdapter";
-import ApiButton from "../components/ApiButton";
 
 const PostResponseFragment = gql`
   fragment PostResponse on Post {
@@ -129,8 +125,7 @@ export default {
     // Use the <ckeditor> component in this view.
     ckeditor: CKEditor.component,
     AppLoader,
-    AppNotify,
-    ApiButton
+    AppNotify
   },
   data() {
     return {
@@ -320,9 +315,12 @@ export default {
 </script>
 
 <style>
+.writeForm {
+  background-color: white;
+}
+
 .writeForm form {
   font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background-color: rgba(255, 255, 255, 0.9);
   padding: 0 2rem;
   margin: auto;
   max-width: 940px;

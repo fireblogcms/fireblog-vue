@@ -40,7 +40,7 @@
           <div v-if="meQueryState === 'FINISHED_OK'" id="profile-dropdown" class="item">
             <div
               v-click-outside="onProfileDropdownOutsideClick"
-              class="dropdown is-right"
+              class="dropdown is-right animated zoomIn"
               :class="{ 'is-active': dropdownMenuActive }"
             >
               <div class="dropdown-trigger" @click="dropdownMenuActive = !dropdownMenuActive">

@@ -1,63 +1,66 @@
 <template>
   <AdminLayout>
     <AppNotify :errors="notifications.errors" :info="notifications.info" />
-    <div class="container">
-      <template v-if="myPodsRequestState === 'PENDING'">
-        <AppLoader />
-      </template>
-      <template v-if="myPodsRequestState === 'FINISHED_OK'">
+
+    <template v-if="initViewState === 'PENDING'">
+      <AppLoader>Loading blogs</AppLoader>
+    </template>
+    <template v-if="initViewState === 'FINISHED_OK'">
+      <div class="container">
         <template v-if="pods.edges.length === 0">
           <LayoutBody class="container" style="margin-top:60px">
             <BlogCreateForm :first="true" />
           </LayoutBody>
         </template>
         <template v-if="pods && pods.edges.length > 0">
-          <div>
-            <h1 style="padding-bottom:2rem;" class="title is-1">
-              <img
-                height="70"
-                style="position:relative;top:25px;padding-right:1rem"
-                src="/images/books-icon.png"
-              />
-              My blogs
-              <BulmaButtonLink
-                style="margin-top:30px"
-                class="is-primary is-large is-pulled-right"
-                :to="{name:'blogCreate'}"
+          <div class="animated fadeIn">
+            <div>
+              <h1 style="padding-bottom:2rem;" class="title is-1">
+                <img
+                  height="70"
+                  style="position:relative;top:25px;padding-right:1rem"
+                  src="/images/books-icon.png"
+                />
+                My blogs
+                <BulmaButtonLink
+                  style="margin-top:30px"
+                  class="is-primary is-large is-pulled-right"
+                  :to="{name:'blogCreate'}"
+                >
+                  <img width="40" style="margin-right:10px" src="/images/book.png" /> CREATE A NEW BLOG
+                </BulmaButtonLink>
+              </h1>
+            </div>
+            <LayoutBody>
+              <LayoutList
+                :onRowClick="onRowClick"
+                :items="pods.edges"
+                :itemUniqueKey="(edge) => edge.node._id"
               >
-                <img width="40" style="margin-right:10px" src="/images/book.png" /> CREATE A NEW BLOG
-              </BulmaButtonLink>
-            </h1>
-          </div>
-          <LayoutBody>
-            <LayoutList
-              :onRowClick="onRowClick"
-              :items="pods.edges"
-              :itemUniqueKey="(edge) => edge.node._id"
-            >
-              <template v-slot="{item}">
-                <div class="columns fade-in">
-                  <div class="column">
-                    <div class="content">
-                      <h2>
-                        <router-link :to="buildLinkToPostList(item)">{{ item.node.name }}</router-link>
-                        <em class="subtitle">
-                          - created
-                          {{ Number(item.node.createdAt) | moment("from") }}
-                        </em>
-                      </h2>
-                      <p>
-                        <em>{{ item.node.description }}</em>
-                      </p>
+                <template v-slot="{item}">
+                  <div class="columns fade-in">
+                    <div class="column">
+                      <div class="content">
+                        <h2>
+                          <router-link :to="buildLinkToPostList(item)">{{ item.node.name }}</router-link>
+                          <em class="subtitle">
+                            - created
+                            {{ Number(item.node.createdAt) | moment("from") }}
+                          </em>
+                        </h2>
+                        <p>
+                          <em>{{ item.node.description }}</em>
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </template>
-            </LayoutList>
-          </LayoutBody>
+                </template>
+              </LayoutList>
+            </LayoutBody>
+          </div>
         </template>
-      </template>
-    </div>
+      </div>
+    </template>
   </AdminLayout>
 </template>
 
@@ -108,7 +111,7 @@ export default {
   data() {
     return {
       pods: null,
-      myPodsRequestState: REQUEST_STATE.NOT_STARTED,
+      initViewState: REQUEST_STATE.NOT_STARTED,
       notifications: {
         errors: [],
         info: []
@@ -116,28 +119,36 @@ export default {
     };
   },
   methods: {
+    initView() {
+      this.initViewState = REQUEST_STATE.PENDING;
+      Promise.all([this.getBlogs()])
+        .then(() => {
+          this.initViewState = REQUEST_STATE.FINISHED_OK;
+        })
+        .catch(error => {
+          this.initViewState = REQUEST_STATE.FINISHED_ERROR;
+          this.notifications.errors.push("initView(): " + error.message);
+        });
+    },
     buildLinkToPostList(item) {
       return { name: "postList", params: { blogId: item.node._id } };
     },
     onRowClick(item) {
       this.$router.push(this.buildLinkToPostList(item));
     },
-    getPods() {
-      this.myPodsRequestState = REQUEST_STATE.PENDING;
+    getBlogs() {
       return apolloClient
         .query({ query: myPodsQuery })
         .then(result => {
-          this.myPodsRequestState = REQUEST_STATE.FINISHED_OK;
           this.pods = result.data.me.pods;
         })
         .catch(e => {
-          this.myPodsRequestState = REQUEST_STATE.FINISHED_ERROR;
-          this.notifications.errors.push("getPods() " + e.message);
+          this.notifications.errors.push("getBlogs() " + e.message);
         });
     }
   },
   created() {
-    this.getPods();
+    this.initView();
   }
 };
 </script>

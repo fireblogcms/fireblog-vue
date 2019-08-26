@@ -1,7 +1,7 @@
 <template>
   <div class="app-loader-wrapper has-text-centered section">
-    <div class="app-loader">
-      <Circle2 />
+    <Circle2 style="display:inline-block" />
+    <div>
       <slot />
     </div>
   </div>
