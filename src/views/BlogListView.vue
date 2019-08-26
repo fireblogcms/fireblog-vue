@@ -6,13 +6,13 @@
       <AppLoader>Loading blogs</AppLoader>
     </template>
     <template v-if="initViewState === 'FINISHED_OK'">
-      <div class="container">
-        <template v-if="pods.edges.length === 0">
-          <LayoutBody class="container" style="margin-top:60px">
-            <BlogCreateForm :first="true" />
-          </LayoutBody>
-        </template>
-        <template v-if="pods && pods.edges.length > 0">
+      <template v-if="pods.edges.length === 0">
+        <LayoutBody class="container" style="margin-top:60px">
+          <BlogCreateForm :first="true" />
+        </LayoutBody>
+      </template>
+      <template v-if="pods && pods.edges.length > 0">
+        <div class="container">
           <div class="animated fadeIn">
             <div>
               <h1 style="padding-bottom:2rem;" class="title is-1">
@@ -58,8 +58,8 @@
               </LayoutList>
             </LayoutBody>
           </div>
-        </template>
-      </div>
+        </div>
+      </template>
     </template>
   </AdminLayout>
 </template>

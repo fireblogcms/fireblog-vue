@@ -69,17 +69,14 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   // if route is public,do not check authentication
   if (to.matched.some(record => record.meta.public === true)) {
-    console.log("auth0: public route");
     next();
   }
   // user is already authenticated
   else if (isAuthenticated()) {
-    console.log("auth0: user is already authenticated");
     next();
   }
   // in all other cases, user must be authenticated.
   else {
-    console.log("Auth0 : User authorization control");
     auth0client.authorize({ target: to.path });
     next(false);
   }

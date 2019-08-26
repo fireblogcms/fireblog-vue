@@ -11,122 +11,123 @@
       </span>
     </portal>
 
-    <template v-if="initRequestsState === 'PENDING'">
-      <AppLoader />
+    <template v-if="initViewState === 'PENDING'">
+      <AppLoader>Loading posts</AppLoader>
     </template>
-    <template v-if="initRequestsState === 'FINISHED_OK'">
-      <header
-        v-if="initRequestsState === 'FINISHED_OK'"
-        class="container"
-        style="padding: 0 0 2rem 0"
-      >
-        <h1 class="title is-uppercase">
-          <img
-            style="height:70px !important;position:relative;top:20px;padding-right:1rem"
-            src="/images/book.png"
-          />
-          {{pod.name}} - POSTS
-          <BulmaButtonLink
-            style="margin-top:20px"
-            class="is-large is-pulled-right is-primary"
-            v-if="!isFirstPost"
-            :to="{name: 'postCreate', params:{blogId:$route.params.blogId}}"
-          >
-            <span>WRITE NEW POST</span>
-          </BulmaButtonLink>
-        </h1>
-      </header>
+    <template v-if="initViewState === 'FINISHED_OK'">
+      <div class="animated fadeIn">
+        <header class="container" style="padding: 0 0 2rem 0">
+          <h1 class="title is-uppercase">
+            <img
+              style="height:70px !important;position:relative;top:20px;padding-right:1rem"
+              src="/images/book.png"
+            />
+            {{pod.name}} - POSTS
+            <BulmaButtonLink
+              style="margin-top:20px"
+              class="is-large is-pulled-right is-primary"
+              v-if="!isFirstPost"
+              :to="{name: 'postCreate', params:{blogId:$route.params.blogId}}"
+            >
+              <span>WRITE NEW POST</span>
+            </BulmaButtonLink>
+          </h1>
+        </header>
 
-      <template v-if="isFirstPost === true">
-        <div class="container">
-          <LayoutBody>
-            <h2
-              style="font-weight:200"
-              class="title has-text-centered"
-            >Write your first post in this blog !</h2>
-            <div class="has-text-centered">
-              <div style="margin:2rem">
-                <BulmaButtonLink
-                  class="is-large is-primary"
-                  :to="{name: 'postCreate', params:{blogId:$route.params.blogId}}"
-                >Write</BulmaButtonLink>
+        <template v-if="isFirstPost === true">
+          <div class="container">
+            <LayoutBody>
+              <h2
+                style="font-weight:200"
+                class="title has-text-centered"
+              >Write your first post in this blog !</h2>
+              <div class="has-text-centered">
+                <div style="margin:2rem">
+                  <BulmaButtonLink
+                    class="is-large is-primary"
+                    :to="{name: 'postCreate', params:{blogId:$route.params.blogId}}"
+                  >Write</BulmaButtonLink>
+                </div>
               </div>
-            </div>
-          </LayoutBody>
-        </div>
-      </template>
-      <template v-if="!isFirstPost">
-        <section class="container">
-          <div class="tabs is-boxed is-medium" style="position:relative;margin-bottom:0;">
-            <ul style="border-bottom:0">
-              <li
-                @click="onStatusClick('PUBLISHED')"
-                :class="{ 'is-active': activeStatus == 'PUBLISHED' }"
-              >
-                <a>
-                  <img style="height:30px;padding-right:5px" src="/images/published.png" />
-                  Published
-                </a>
-              </li>
-              <li @click="onStatusClick('DRAFT')" :class="{ 'is-active': activeStatus == 'DRAFT' }">
-                <a>Draft</a>
-              </li>
-              <!--
+            </LayoutBody>
+          </div>
+        </template>
+        <template v-if="!isFirstPost">
+          <section class="container">
+            <div class="tabs is-boxed is-medium" style="position:relative;margin-bottom:0;">
+              <ul style="border-bottom:0">
+                <li
+                  @click="onStatusClick('PUBLISHED')"
+                  :class="{ 'is-active': activeStatus == 'PUBLISHED' }"
+                >
+                  <a>
+                    <img style="height:30px;padding-right:5px" src="/images/published.png" />
+                    Published
+                  </a>
+                </li>
+                <li
+                  @click="onStatusClick('DRAFT')"
+                  :class="{ 'is-active': activeStatus == 'DRAFT' }"
+                >
+                  <a>Draft</a>
+                </li>
+                <!--
             <li @click="onStatusClick('BIN')" :class="{ 'is-active': activeStatus == 'BIN' }">
               <a>
                 <img style="height:30px;padding-right:5px" src="/images/bin.png" />
                 Bin
               </a>
             </li>
-              -->
-            </ul>
-          </div>
-          <LayoutBody style="border-top-left-radius:0">
-            <div class="container" style="border-top-left-radius:0;">
-              <!--POST PENDING-->
-              <template v-if="postsRequestState === 'PENDING'">
-                <AppLoader />
-              </template>
-              <!--NO PUBLISHED POST FOUND-->
-              <template v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length === 0">
-                <div class="content section has-text-centered">
-                  <p>No post found with {{ activeStatus }} status for now.</p>
-                </div>
-              </template>
-              <template v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length > 0">
-                <LayoutList
-                  :onRowClick="onRowClick"
-                  :items="posts.edges"
-                  :itemUniqueKey="(item) => item.node._id"
-                >
-                  <template v-slot="{item}">
-                    <div class>
-                      <h2 class="title">
-                        <router-link
-                          :to="{name: 'postUpdate', params:{ blogId:$route.params.blogId, postId: item.node._id }}"
-                        >{{ item.node.title + " " }}</router-link>
-                        <span
-                          v-if="item.node.status === 'PUBLISHED'"
-                          class="subtitle"
-                        >published {{ Number(item.node.publishedAt) | moment("from") }}</span>
-                        <span
-                          v-if="item.node.status === 'DRAFT'"
-                          class="subtitle"
-                        >updated {{ Number(item.node.updatedAt) | moment("from") }}</span>
-                      </h2>
-
-                      <p
-                        v-if="item.node.content.length > 0"
-                      >{{striptags(item.node.content.substr(0, 200))}}...</p>
-                    </div>
-                  </template>
-                </LayoutList>
-              </template>
-              <!---->
+                -->
+              </ul>
             </div>
-          </LayoutBody>
-        </section>
-      </template>
+            <LayoutBody style="border-top-left-radius:0">
+              <div class="container" style="border-top-left-radius:0;">
+                <!--POST PENDING-->
+                <template v-if="postsRequestState === 'PENDING'">
+                  <AppLoader />
+                </template>
+                <!--NO PUBLISHED POST FOUND-->
+                <template v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length === 0">
+                  <div class="content section has-text-centered">
+                    <p>No post found with {{ activeStatus }} status for now.</p>
+                  </div>
+                </template>
+                <template v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length > 0">
+                  <LayoutList
+                    :onRowClick="onRowClick"
+                    :items="posts.edges"
+                    :itemUniqueKey="(item) => item.node._id"
+                  >
+                    <template v-slot="{item}">
+                      <div class>
+                        <h2 class="title">
+                          <router-link
+                            :to="{name: 'postUpdate', params:{ blogId:$route.params.blogId, postId: item.node._id }}"
+                          >{{ item.node.title + " " }}</router-link>
+                          <span
+                            v-if="item.node.status === 'PUBLISHED'"
+                            class="subtitle"
+                          >published {{ Number(item.node.publishedAt) | moment("from") }}</span>
+                          <span
+                            v-if="item.node.status === 'DRAFT'"
+                            class="subtitle"
+                          >updated {{ Number(item.node.updatedAt) | moment("from") }}</span>
+                        </h2>
+
+                        <p
+                          v-if="item.node.content.length > 0"
+                        >{{striptags(item.node.content.substr(0, 200))}}...</p>
+                      </div>
+                    </template>
+                  </LayoutList>
+                </template>
+                <!---->
+              </div>
+            </LayoutBody>
+          </section>
+        </template>
+      </div>
     </template>
   </AdminLayout>
 </template>
@@ -201,7 +202,7 @@ export default {
         errors: [],
         info: []
       },
-      initRequestsState: REQUEST_STATE.NOT_STARTED,
+      initViewState: REQUEST_STATE.NOT_STARTED,
       allPostsRequestState: REQUEST_STATE.NOT_STARTED,
       postsRequestState: REQUEST_STATE.NOT_STARTED,
       blogRequestState: REQUEST_STATE.NOT_STARTED,
@@ -214,7 +215,7 @@ export default {
   },
   created() {
     this.striptags = striptags;
-    this.init();
+    this.initView();
   },
   methods: {
     /**
@@ -223,15 +224,15 @@ export default {
      * - All published post (displayed in the "published" tab)
      * We will display a loader until this two requests are finished
      */
-    init() {
-      this.initRequestsState = REQUEST_STATE.PENDING;
+    initView() {
+      this.initViewState = REQUEST_STATE.PENDING;
       Promise.all([this.getPod(), this.getPosts(), this.getAllPosts()])
         .then(() => {
-          this.initRequestsState = REQUEST_STATE.FINISHED_OK;
+          this.initViewState = REQUEST_STATE.FINISHED_OK;
         })
         .catch(error => {
-          this.initRequestsState = REQUEST_STATE.FINISHED_ERROR;
-          this.notifications.errors.push("init(): " + error.message);
+          this.initViewState = REQUEST_STATE.FINISHED_ERROR;
+          this.notifications.errors.push("initView(): " + error.message);
         });
     },
     buildLinkToPost(item) {
@@ -270,7 +271,6 @@ export default {
           }
         })
         .then(result => {
-          console.log("result", result);
           this.blogRequestState = REQUEST_STATE.FINISHED_OK;
           this.pod = result.data.pod;
           return result;
