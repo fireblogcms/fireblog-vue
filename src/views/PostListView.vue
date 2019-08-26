@@ -108,9 +108,15 @@
                         v-if="item.node.status === 'PUBLISHED'"
                         class="subtitle"
                       >published {{ Number(item.node.publishedAt) | moment("from") }}</span>
+                      <span
+                        v-if="item.node.status === 'DRAFT'"
+                        class="subtitle"
+                      >updated {{ Number(item.node.updatedAt) | moment("from") }}</span>
                     </h2>
 
-                    <p>{{striptags(item.node.content.substr(200))}}</p>
+                    <p
+                      v-if="item.node.content.length > 0"
+                    >{{striptags(item.node.content.substr(0, 200))}}...</p>
                   </div>
                 </template>
               </LayoutList>

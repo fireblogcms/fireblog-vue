@@ -1,9 +1,10 @@
 <template>
   <div class="container">
     <div class="columns">
+      <!--COLONNE GAUCHE-->
       <div class="column">
         <router-link
-          style="margin-top:30px"
+          style="margin-top:30px;border:0"
           id="back-button"
           class="button"
           :to="{name: 'postList', params:{blogId:$route.params.blogId}}"
@@ -12,6 +13,9 @@
           Back
         </router-link>
       </div>
+      <!--END COLONNE GAUCHE-->
+
+      <!--COLONNE MILIEU-->
       <div class="column">
         <div class="writeForm">
           <AppNotify :errors="notifications.errors" />
@@ -42,18 +46,11 @@
           </form>
         </div>
       </div>
+      <!--END COLONNE MILIEU-->
+
+      <!--COLONNE DROITE-->
       <div class="column column-actions">
         <div style="position:fixed" class="actions">
-          <div v-if="!existingPost || (existingPost && existingPost.status === 'DRAFT')">
-            <input
-              @click="onSaveClick()"
-              class="button is-outlined item"
-              :class="{ 'is-loading': savingPostState === REQUEST_STATE.PENDING }"
-              type="submit"
-              value="SAVE DRAFT"
-            />
-          </div>
-
           <div>
             <input
               @click="onPublishPostClick()"
@@ -75,6 +72,16 @@
             />
           </div>
 
+          <div v-if="!existingPost || (existingPost && existingPost.status === 'DRAFT')">
+            <input
+              @click="onSaveClick()"
+              class="button is-outlined item"
+              :class="{ 'is-loading': savingPostState === REQUEST_STATE.PENDING }"
+              type="submit"
+              value="SAVE DRAFT"
+            />
+          </div>
+
           <div v-if="existingPost && existingPost.status === 'PUBLISHED'">
             <input
               @click="onUnpublishPostClick()"
@@ -87,6 +94,7 @@
           <!--<ApiButton />-->
         </div>
       </div>
+      <!--END COLONNE DROITE-->
     </div>
   </div>
 </template>
@@ -103,7 +111,7 @@ import gql from "graphql-tag";
 import AppNotify from "./AppNotify";
 import { REQUEST_STATE } from "../lib/helpers";
 import { ckeditorUploadAdapterPlugin } from "../lib/ckeditorUploadAdapter";
-import ApiButton from "../components/ApiButton";
+//import ApiButton from "../components/ApiButton";
 
 const PostResponseFragment = gql`
   fragment PostResponse on Post {
@@ -157,8 +165,8 @@ export default {
     // Use the <ckeditor> component in this view.
     ckeditor: CKEditor.component,
     AppLoader,
-    AppNotify,
-    ApiButton
+    AppNotify
+    //ApiButton
   },
   data() {
     return {
@@ -194,7 +202,7 @@ export default {
     */
     this.editorConfig = {
       extraPlugins: [ckeditorUploadAdapterPlugin],
-      toolbar: ["bold", "italic", "link", "heading"],
+      toolbar: ["bold", "italic", "link", "heading", "blockQuote", "code"],
       blockToolbar: ["imageUpload", "mediaEmbed"]
     };
 
@@ -398,7 +406,7 @@ export default {
   padding: 1px;
   margin: 0;
   resize: none; /*remove the resize handle on the bottom right*/
-  line-height: 1.8;
+  line-height: 1.7;
 }
 .writeForm .ck-toolbar {
   background: white;
