@@ -1,7 +1,7 @@
 <template>
   <AdminLayout>
     <AppNotify :errors="notifications.errors" :info="notifications.info" />
-    <div data-aos="fade-in" class="container">
+    <div class="container">
       <template v-if="myPodsRequestState === 'PENDING'">
         <AppLoader />
       </template>
@@ -36,7 +36,7 @@
               :itemUniqueKey="(edge) => edge.node._id"
             >
               <template v-slot="{item}">
-                <div data-aos="fade-in" class="columns fade-in">
+                <div class="columns fade-in">
                   <div class="column">
                     <div class="content">
                       <h2>

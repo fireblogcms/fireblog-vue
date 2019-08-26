@@ -1,6 +1,6 @@
 <template>
   <AdminLayout>
-    <div data-aos="fade-in" class="write-view animated fadeIn">
+    <div class="write-view animated fadeIn">
       <PostForm />
     </div>
   </AdminLayout>
