@@ -43,6 +43,7 @@ export function logout() {
     localStorage.removeItem(localStorageAuth0User);
     // user from Server, set by getUser()
     localStorage.removeItem(localStorageUser);
+    auth0client.logout({ returnTo: process.env.VUE_APP_SITE_BASE_URL });
   });
 }
 

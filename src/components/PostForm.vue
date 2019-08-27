@@ -199,9 +199,9 @@ export default {
     },
     async createPost(post) {
       const user = await getUser();
-      // current user as author by default
+      // current user as author by default. But another user might have been defined
+      // as the author, so do not override if this is already set.
       if (!post.author) {
-        // @FIXME : utiliser plutôt l'id de la base sur "sub"
         post.author = user._id;
       }
       post.pod = this.$route.params.blogId;

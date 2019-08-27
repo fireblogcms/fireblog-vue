@@ -14,7 +14,6 @@ export default {
   },
   async created() {
     logout();
-    window.location.replace(process.env.VUE_APP_SITE_BASE_URL);
   }
 };
 </script>
