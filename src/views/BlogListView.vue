@@ -114,19 +114,19 @@ export default {
   },
   methods: {
     blogCardStyles(edge, index) {
-      const defaultImage =
-        "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60";
       const styles = {
         backgroundSize: "cover"
       };
       if (edge.node.image) {
         styles["backgroundImage"] = `url(${edge.node.image})`;
       } else {
-        styles["backgroundImage"] = `url(${
-          this.blogsDefaultImagesMap[edge.node._id]
-            ? this.blogsDefaultImagesMap[edge.node._id]
-            : defaultImage
-        })`;
+        if (this.blogsDefaultImagesMap[edge.node._id]) {
+          styles["backgroundImage"] = `url(${
+            this.blogsDefaultImagesMap[edge.node._id]
+          })`;
+        } else {
+          styles["background-color"] = "rgb(240,240,240)";
+        }
       }
       return styles;
     },
