@@ -6,7 +6,7 @@
 
 <script>
 import { logout } from "../lib/auth";
-import AppLoader from "./AppLoader";
+import AppLoader from "../components/AppLoader";
 
 export default {
   components: {

@@ -103,7 +103,7 @@ export default {
   },
   data() {
     return {
-      pods: null,
+      blogs: null,
       initViewState: REQUEST_STATE.NOT_STARTED,
       notifications: {
         errors: [],

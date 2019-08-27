@@ -36,3 +36,16 @@ export function getUser() {
       return result.data.me;
     });
 }
+
+export function graphQLErrorsContainsTokenExpiredError(graphQLErrors) {
+  let result = false;
+  graphQLErrors.forEach(error => {
+    if (
+      error.extensions &&
+      error.extensions.code &&
+      error.extensions.code === "TOKEN_EXPIRED"
+    )
+      result = true;
+  });
+  return result;
+}
