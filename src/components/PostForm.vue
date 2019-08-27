@@ -199,6 +199,8 @@ export default {
     },
     async createPost(post) {
       const user = await getUser();
+      console.log("debug:createPost:user", user);
+      console.log("debug:createPost:post", post);
       // current user as author by default. But another user might have been defined
       // as the author, so do not override if this is already set.
       if (!post.author) {
