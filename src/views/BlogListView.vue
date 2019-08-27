@@ -205,7 +205,6 @@ export default {
 
 <style scoped>
 .main-call-to-action {
-  border: solid red 1px;
   float: right;
   margin-top: 30px;
 }
