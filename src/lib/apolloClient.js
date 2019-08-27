@@ -50,12 +50,11 @@ const client = new ApolloClient({
   connectToDevTools: process.env.NODE_ENV === "development" ? true : false,
   defaultOptions: {
     watchQuery: {
-      fetchPolicy: "network-only",
+      fetchPolicy: "no-cache",
       errorPolicy: "all"
     },
     query: {
-      //fetchPolicy: "network-only",
-      fetchPolicy: "cache-first",
+      fetchPolicy: "no-cache",
       errorPolicy: "all"
     },
     mutate: {

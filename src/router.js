@@ -10,6 +10,7 @@ import Auth0CallbackView from "./views/Auth0CallbackView.vue";
 import AccessTokenErrorView from "./views/AccessTokenErrorView.vue";
 import LogoutView from "./views/LogoutView";
 import { isAuthenticated, auth0client } from "./lib/auth";
+import { getUser } from "./lib/helpers";
 
 Vue.use(Router);
 
@@ -79,6 +80,9 @@ router.beforeEach((to, from, next) => {
   }
   // user is already authenticated
   else if (isAuthenticated()) {
+    getUser().then(user => {
+      $crisp.push(["set", "user:email", [user.email]]);
+    });
     next();
   }
   // in all other cases, user must be authenticated.

@@ -12,7 +12,6 @@ export const REQUEST_STATE = {
 export function getUser() {
   // User is cached in local storage.
   if (localStorage.getItem("user")) {
-    console.log("user loaded from cache");
     return Promise.resolve(JSON.parse(localStorage.getItem("user")));
   }
   return apolloClient
@@ -31,7 +30,6 @@ export function getUser() {
       `
     })
     .then(result => {
-      console.log("user loaded from server");
       localStorage.setItem(localStorageUser, JSON.stringify(result.data.me));
       return result.data.me;
     });

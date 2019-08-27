@@ -36,12 +36,14 @@ export function localLogin(authResult) {
 }
 
 export function logout() {
-  // access Token received by auth0, to request our GraphQL API
-  localStorage.removeItem(localStorageAccessToken);
-  // user received by auth0 token
-  localStorage.removeItem(localStorageAuth0User);
-  // user from Server, set by getUser()
-  localStorage.removeItem(localStorageUser);
+  return apolloClient.clearStore().then(() => {
+    // access Token received by auth0, to request our GraphQL API
+    localStorage.removeItem(localStorageAccessToken);
+    // user received by auth0 token
+    localStorage.removeItem(localStorageAuth0User);
+    // user from Server, set by getUser()
+    localStorage.removeItem(localStorageUser);
+  });
 }
 
 export function getAccessToken() {

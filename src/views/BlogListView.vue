@@ -74,14 +74,15 @@ import LayoutList from "../components/LayoutList";
 const myPodsQuery = gql`
   query myPodsQuery {
     me {
+      name
       pods(last: 100) {
         edges {
           node {
+            _id
             name
             description
             createdAt
             updatedAt
-            _id
           }
         }
       }
