@@ -3,6 +3,17 @@
     <div class="container">
       <div class="columns">
         <div class="column">
+          <span class="item tag is-medium" v-if="backToBlogsIsVisible()">
+            <router-link class="item" :to="{name:'blogList'}">
+              <img
+                class="is-hidden-mobile"
+                style="position:relative;height:20px !important;top:4px;"
+                src="/images/books.webp"
+              />
+              <i style="margin-left:10px" class="fas fa-chevron-left"></i>
+              All blogs
+            </router-link>
+          </span>
           <span class="item tag is-medium" v-if="pod && backToPodIsVisible()">
             <em>
               <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
@@ -211,6 +222,12 @@ export default {
     },
     backToPodIsVisible() {
       if (["postUpdate", "postCreate"].includes(this.$route.name)) {
+        return true;
+      }
+      return false;
+    },
+    backToBlogsIsVisible() {
+      if (["postList", "profile"].includes(this.$route.name)) {
         return true;
       }
       return false;

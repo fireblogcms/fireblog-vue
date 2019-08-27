@@ -1,19 +1,6 @@
 <template>
   <AdminLayout>
     <AppNotify :errors="notifications.errors" :infos="notifications.infos" />
-    <portal to="topbar-left">
-      <span class="item tag is-medium">
-        <router-link class="item" :to="{name:'blogList'}">
-          <img
-            class="is-hidden-mobile"
-            style="position:relative;height:20px !important;top:4px;"
-            src="/images/books.webp"
-          />
-          <i style="margin-left:10px" class="fas fa-chevron-left"></i>
-          All blogs
-        </router-link>
-      </span>
-    </portal>
 
     <template v-if="initViewState === 'PENDING'">
       <AppLoader>Loading posts</AppLoader>

@@ -67,7 +67,6 @@ import apolloClient from "../lib/apolloClient";
 import AppLoader from "../components/AppLoader";
 import Editor from "@ckeditor/ckeditor5-build-balloon-block";
 import CKEditor from "@ckeditor/ckeditor5-vue";
-import { getLocalUser } from "@/lib/auth";
 import gql from "graphql-tag";
 import AppNotify from "./AppNotify";
 import { REQUEST_STATE, getUser } from "../lib/helpers";
