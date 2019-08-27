@@ -14,7 +14,7 @@
               All blogs
             </router-link>
           </span>
-          <span class="item tag is-medium" v-if="pod && backToPodIsVisible()">
+          <span v-if="pod && backToPodIsVisible()" class="item tag is-medium">
             <em>
               <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
               <router-link :to="{name: 'postList', params:{blogId:$route.params.blogId}}">

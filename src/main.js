@@ -10,8 +10,6 @@ import "animate.css/animate.min.css";
 import * as Sentry from "@sentry/browser";
 import * as Integrations from "@sentry/integrations";
 
-console.log(" process.env.VUE_APP_SENTRY_URL", process.env.VUE_APP_SENTRY_URL);
-
 if (process.env.NODE_ENV === "production") {
   Sentry.init({
     dsn: process.env.VUE_APP_SENTRY_URL,
