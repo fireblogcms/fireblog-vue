@@ -10,15 +10,14 @@
                 style="position:relative;height:20px !important;top:4px;"
                 src="/images/books.webp"
               />
-              <i style="margin-left:10px" class="fas fa-chevron-left"></i>
-              All blogs
+              <span style="padding-left:10px;"><</span> All blogs
             </router-link>
           </span>
           <span v-if="pod && backToPodIsVisible()" class="item tag is-medium">
             <em>
               <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
               <router-link :to="{name: 'postList', params:{blogId:$route.params.blogId}}">
-                <i style="margin-left:10px" class="fas fa-chevron-left"></i>
+                <span style="padding-left:10px;"><</span>
                 {{ pod.name }}
               </router-link>
             </em>
