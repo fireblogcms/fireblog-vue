@@ -10,7 +10,7 @@ import Auth0CallbackView from "./views/Auth0CallbackView.vue";
 import AccessTokenErrorView from "./views/AccessTokenErrorView.vue";
 import LogoutView from "./views/LogoutView";
 import { isAuthenticated, auth0client } from "./lib/auth";
-import { getUser, logout } from "./lib/helpers";
+import { getUser } from "./lib/helpers";
 
 Vue.use(Router);
 
