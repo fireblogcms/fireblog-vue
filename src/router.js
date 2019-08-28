@@ -81,16 +81,20 @@ router.beforeEach((to, from, next) => {
   // user is already authenticated
   else if (isAuthenticated()) {
     getUser().then(user => {
-      // User don't want to give is email to be callbed bacl by support,
-      // because he is alread conneced
-      $crisp.push(["set", "user:email", [user.email]]);
+      if ($crisp) {
+        // User don't want to give is email to be callbed bacl by support,
+        // because he is alread conneced
+        $crisp.push(["set", "user:email", [user.email]]);
+      }
     });
     next();
   }
   // in all other cases, user must be authenticated.
   else {
-    auth0client.authorize({ target: to.path });
+    // abort the current navigation. .
     next(false);
+    // for re-authentication.
+    auth0client.authorize();
   }
 });
 
