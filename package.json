@@ -7,8 +7,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "deploy:staging": "git checkout staging;git merge dev;git push;git checkout dev",
-    "deploy:master": "git checkout master;git merge dev;git push;git checkout dev"
+    "deploy:staging": "git checkout dev;git push;git checkout staging;git merge dev;git push;git checkout dev",
+    "deploy:master": "git checkout dev;git push;git checkout master;git merge dev;git push;git checkout dev"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-build-balloon-block": "^12.0.0",
