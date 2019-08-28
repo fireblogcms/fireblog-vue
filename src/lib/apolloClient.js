@@ -35,14 +35,14 @@ const authLink = setContext((_, { headers }) => {
  * - networkError (object)
  * - operation (object) - infos about GraphqlQuery
  */
-const logoutLink = onError(infos => {
+const jwtTokenExpiredLink = onError(infos => {
   // if access token for our GraphQL API has expired, re-authenticate.
   if (graphQLErrorsContainsTokenExpiredError(infos.graphQLErrors)) {
     auth0client.authorize({ target: "/" });
   }
 });
 
-const link = ApolloLink.from([authLink, logoutLink, uploadLink]);
+const link = ApolloLink.from([authLink, jwtTokenExpiredLink, uploadLink]);
 
 const client = new ApolloClient({
   link,

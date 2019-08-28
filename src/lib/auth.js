@@ -7,7 +7,7 @@ export const localStorageAccessToken = "accessToken";
 // user received by auth0 token
 export const localStorageAuth0User = "auth0User";
 // user received from graphql server
-export const localStorageUser = "user";
+export const localStorageDatabaseUser = "user";
 
 export const auth0client = new auth0.WebAuth({
   audience: process.env.VUE_APP_AUTH0_AUDIENCE,
@@ -42,7 +42,7 @@ export function logout() {
     // user received by auth0 token
     localStorage.removeItem(localStorageAuth0User);
     // user from Server, set by getUser()
-    localStorage.removeItem(localStorageUser);
+    localStorage.removeItem(localStorageDatabaseUser);
     auth0client.logout({ returnTo: process.env.VUE_APP_SITE_BASE_URL });
   });
 }

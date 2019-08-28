@@ -1,6 +1,6 @@
 import apolloClient from "./apolloClient";
 import gql from "graphql-tag";
-import { localStorageUser } from "./auth";
+import { localStorageDatabaseUser } from "./auth";
 
 export const REQUEST_STATE = {
   NOT_STARTED: "NOT_STARTED",
@@ -9,30 +9,42 @@ export const REQUEST_STATE = {
   FINISHED_ERROR: "FINISHED_ERROR"
 };
 
+/**
+ * Get full user from our database.
+ */
 export function getUser() {
   // User is cached in local storage.
-  if (localStorage.getItem("user")) {
-    return Promise.resolve(JSON.parse(localStorage.getItem("user")));
-  }
-  return apolloClient
-    .query({
-      query: gql`
-        query getUser {
-          me {
-            _id
-            name
-            email
-            createdAt
-            updatedAt
-            picture
+  if (localStorage.getItem(localStorageDatabaseUser)) {
+    return Promise.resolve(
+      JSON.parse(localStorage.getItem(localStorageDatabaseUser))
+    );
+  } else {
+    return apolloClient
+      .query({
+        query: gql`
+          query getUser {
+            me {
+              _id
+              name
+              email
+              createdAt
+              updatedAt
+              picture
+            }
           }
+        `
+      })
+      .then(result => {
+        // save to local storage if we have a user object
+        if (result.data.me && result.data.me._id) {
+          localStorage.setItem(
+            localStorageDatabaseUser,
+            JSON.stringify(result.data.me)
+          );
+          return result.data.me;
         }
-      `
-    })
-    .then(result => {
-      localStorage.setItem(localStorageUser, JSON.stringify(result.data.me));
-      return result.data.me;
-    });
+      });
+  }
 }
 
 export function graphQLErrorsContainsTokenExpiredError(graphQLErrors) {
