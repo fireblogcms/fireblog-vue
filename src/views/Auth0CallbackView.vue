@@ -12,7 +12,7 @@
 <script>
 import apolloClient from "../lib/apolloClient";
 import AppLoader from "../components/AppLoader";
-import { auth0client, localLogin } from "../lib/auth";
+import { auth0Client, syncUserWithServer } from "../lib/auth";
 
 export default {
   components: {
@@ -23,22 +23,17 @@ export default {
       error: null
     };
   },
-  created() {
-    auth0client.parseHash((error, result) => {
-      // @FIXME handle error gracefully
-      if (error) {
-        this.error = error;
-      } else {
-        localLogin(result)
-          .then(r => {
-            this.$router.push({ path: "/" });
-          })
-          .catch(error => {
-            throw new Error(
-              "Failed to sync auth0 user with the server. Error: " + error
-            );
-          });
-      }
+  async created() {
+    const auth0 = await auth0Client();
+    auth0.handleRedirectCallback().then(async r => {
+      const user = await auth0.getUser();
+      syncUserWithServer({
+        _id: user.sub,
+        email: user.email,
+        name: user.name,
+        picture: user.picture ? user.picture : null
+      });
+      this.$router.push("/");
     });
   }
 };

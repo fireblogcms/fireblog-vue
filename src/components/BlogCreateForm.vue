@@ -47,7 +47,7 @@
 <script>
 import { generate } from "../lib/fantasyName.js";
 import apolloClient from "../lib/apolloClient";
-import { getLocalUser } from "../lib/auth";
+import { getUser } from "../lib/helpers";
 import gql from "graphql-tag";
 
 const createPostMutation = gql`
@@ -71,15 +71,15 @@ export default {
       name: ""
     };
   },
-  created() {
-    this.user = getLocalUser();
+  async created() {
+    this.user = await getUser();
   },
   methods: {
     onCreateClick() {
       apolloClient
         .mutate({
           mutation: createPostMutation,
-          variables: { pod: { owner: this.user.sub, name: this.name } }
+          variables: { pod: { owner: this.user._id, name: this.name } }
         })
         .then(result => {
           apolloClient.resetStore();

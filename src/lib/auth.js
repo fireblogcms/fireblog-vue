@@ -1,74 +1,36 @@
-import auth0 from "auth0-js";
+import createAuth0Client from "@auth0/auth0-spa-js";
 import apolloClient from "./apolloClient";
 import gql from "graphql-tag";
 
-// access Token received by auth0, to request our GraphQL API
-export const localStorageAccessToken = "accessToken";
-// user received by auth0 token
-export const localStorageAuth0User = "auth0User";
-// user received from graphql server
-export const localStorageDatabaseUser = "user";
+export let auth0 = null;
 
-export const auth0client = new auth0.WebAuth({
-  audience: process.env.VUE_APP_AUTH0_AUDIENCE,
-  domain: process.env.VUE_APP_AUTH0_DOMAIN,
-  redirectUri: `${process.env.VUE_APP_BASE_URL}/auth0-callback`,
-  clientID: process.env.VUE_APP_AUTH0_CLIENTID,
-  // We request TWO tokens from auth0
-  // - "id_token" :  for our web app: contains user informations (name, email etc)
-  //    Those informations can be trusted IF the webapp checks the token signature.
-  // - "access token": used by our webapp to access our GraphQL API.
-  //    access token informs the API that the bearer of the token has been authorized to access the API.
-  //    API must check the access token is valid.
-  responseType: "id_token token",
-  // request all openid fields (sub, ssi, etc) + email + full profile data
-  scope: "openid email profile"
-});
-
-// @FIXME : we should not store accessTokenin local storage for security reason.
-// Good enough for the proto.
-export function localLogin(authResult) {
-  const user = authResult.idTokenPayload;
-  localStorage.setItem(localStorageAccessToken, authResult.accessToken);
-  localStorage.setItem(localStorageAuth0User, JSON.stringify(user));
-  return syncUserWithServer({
-    _id: user.sub,
-    email: user.email,
-    name: user.name,
-    picture: user.picture ? user.picture : null
-  });
-}
-
-export function logout() {
-  return apolloClient.clearStore().then(() => {
-    // access Token received by auth0, to request our GraphQL API
-    localStorage.removeItem(localStorageAccessToken);
-    // user received by auth0 token
-    localStorage.removeItem(localStorageAuth0User);
-    // user from Server, set by getUser()
-    localStorage.removeItem(localStorageDatabaseUser);
-    auth0client.logout({ returnTo: process.env.VUE_APP_SITE_BASE_URL });
-  });
-}
-
-export function getAccessToken() {
-  return localStorage.getItem(localStorageAccessToken);
-}
-
-export function isAuthenticated() {
-  const user = getLocalUser();
-  if (!user) {
-    return false;
+/**
+ * Return Promise
+ */
+export async function auth0Client() {
+  if (!auth0) {
+    auth0 = await createAuth0Client({
+      audience: process.env.VUE_APP_AUTH0_AUDIENCE,
+      domain: process.env.VUE_APP_AUTH0_DOMAIN,
+      redirect_uri: `${process.env.VUE_APP_BASE_URL}/auth0-callback`,
+      client_id: process.env.VUE_APP_AUTH0_CLIENTID,
+      // We request TWO tokens from auth0
+      // - "id_token" :  for our web app: contains user informations (name, email etc)
+      //    Those informations can be trusted IF the webapp checks the token signature.
+      // - "access token": used by our webapp to access our GraphQL API.
+      //    access token informs the API that the bearer of the token has been authorized to access the API.
+      //    API must check the access token is valid.
+      //responseType: "id_token token",
+      // request all openid fields (sub, ssi, etc) + email + full profile data
+      scope: "openid email profile"
+    });
+    return auth0;
+  } else {
+    return Promise.resolve(auth0);
   }
-  const tokenExpiry = new Date(user.exp * 1000);
-  return user && tokenExpiry > Date.now();
 }
 
-export function getLocalUser() {
-  return JSON.parse(localStorage.getItem(localStorageAuth0User));
-}
-
-function syncUserWithServer({ _id, email, name, picture }) {
+export function syncUserWithServer({ _id, email, name, picture }) {
   return apolloClient.mutate({
     mutation: gql`
       mutation($user: UserUpsertInput!) {

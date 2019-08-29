@@ -9,8 +9,8 @@ import NotFoundView from "./views/NotFoundView";
 import Auth0CallbackView from "./views/Auth0CallbackView.vue";
 import AccessTokenErrorView from "./views/AccessTokenErrorView.vue";
 import LogoutView from "./views/LogoutView";
-import { isAuthenticated, auth0client } from "./lib/auth";
-import { getUser } from "./lib/helpers";
+import LoggedOutView from "./views/LoggedOutView";
+import { auth0Client } from "./lib/auth";
 
 Vue.use(Router);
 
@@ -62,6 +62,14 @@ const router = new Router({
       component: LogoutView
     },
     {
+      path: "/logged-out",
+      name: "logged-out",
+      component: LoggedOutView,
+      meta: {
+        public: true
+      }
+    },
+    {
       path: "/access-token-error",
       name: "accessTokenError",
       component: AccessTokenErrorView
@@ -73,14 +81,18 @@ const router = new Router({
   ]
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
+  const auth0 = await auth0Client();
+  const isAuthenticated = await auth0.isAuthenticated();
+
   // if route is public,do not check authentication
   if (to.matched.some(record => record.meta.public === true)) {
     next();
   }
+
   // user is already authenticated
-  else if (isAuthenticated()) {
-    getUser().then(user => {
+  else if (isAuthenticated) {
+    auth0.getUser().then(user => {
       if ($crisp) {
         // User don't want to give is email to be callbed bacl by support,
         // because he is alread conneced
@@ -91,10 +103,12 @@ router.beforeEach((to, from, next) => {
   }
   // in all other cases, user must be authenticated.
   else {
-    // abort the current navigation. .
+    // abort the current navigation.
     next(false);
-    // for re-authentication.
-    auth0client.authorize();
+    //  orce authentication.
+    await auth0.loginWithRedirect({
+      redirect_uri: `${process.env.VUE_APP_BASE_URL}/auth0-callback`
+    });
   }
 });
 

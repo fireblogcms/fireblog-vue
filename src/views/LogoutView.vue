@@ -5,15 +5,22 @@
 </template>
 
 <script>
-import { logout } from "../lib/auth";
+import { auth0Client } from "../lib/auth";
 import AppLoader from "../components/AppLoader";
+import { REQUEST_STATE } from "../lib/helpers";
 
 export default {
   components: {
     AppLoader
   },
+  data() {
+    return {
+      requestState: REQUEST_STATE.NOT_STARTED
+    };
+  },
   async created() {
-    logout();
+    const auth = await auth0Client();
+    auth.logout({ returnTo: process.env.VUE_APP_BASE_URL + "/logged-out" });
   }
 };
 </script>
