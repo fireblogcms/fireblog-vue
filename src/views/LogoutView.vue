@@ -20,7 +20,7 @@ export default {
   },
   async created() {
     const auth = await auth0Client();
-    auth.logout({ returnTo: process.env.VUE_APP_BASE_URL + "/logged-out" });
+    auth.logout({ returnTo: process.env.VUE_APP_SITE_BASE_URL });
   }
 };
 </script>

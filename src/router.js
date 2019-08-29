@@ -9,7 +9,6 @@ import NotFoundView from "./views/NotFoundView";
 import Auth0CallbackView from "./views/Auth0CallbackView.vue";
 import AccessTokenErrorView from "./views/AccessTokenErrorView.vue";
 import LogoutView from "./views/LogoutView";
-import LoggedOutView from "./views/LoggedOutView";
 import { auth0Client } from "./lib/auth";
 
 Vue.use(Router);
@@ -60,14 +59,6 @@ const router = new Router({
       path: "/logout",
       name: "logout",
       component: LogoutView
-    },
-    {
-      path: "/logged-out",
-      name: "logged-out",
-      component: LoggedOutView,
-      meta: {
-        public: true
-      }
     },
     {
       path: "/access-token-error",
