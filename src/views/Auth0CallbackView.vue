@@ -12,7 +12,7 @@
 <script>
 import apolloClient from "../lib/apolloClient";
 import AppLoader from "../components/AppLoader";
-import { auth0Client, syncUserWithServer } from "../lib/auth";
+import { auth0Client, syncAuth0UserWithServer } from "../lib/auth";
 
 export default {
   components: {
@@ -27,8 +27,8 @@ export default {
     const auth0 = await auth0Client();
     auth0.handleRedirectCallback().then(async r => {
       const user = await auth0.getUser();
-      syncUserWithServer({
-        _id: user.sub,
+      await syncAuth0UserWithServer({
+        auth0Id: user.sub,
         email: user.email,
         name: user.name,
         picture: user.picture ? user.picture : null

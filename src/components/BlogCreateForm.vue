@@ -68,11 +68,14 @@ export default {
   },
   data() {
     return {
+      user: null,
       name: ""
     };
   },
-  async created() {
-    this.user = await getUser();
+  created() {
+    getUser().then(user => {
+      this.user = user;
+    });
   },
   methods: {
     onCreateClick() {

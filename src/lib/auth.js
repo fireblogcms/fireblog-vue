@@ -30,20 +30,22 @@ export async function auth0Client() {
   }
 }
 
-export function syncUserWithServer({ _id, email, name, picture }) {
+export function syncAuth0UserWithServer({ auth0Id, email, name, picture }) {
+  console.log({ auth0Id, email, name, picture });
   return apolloClient.mutate({
     mutation: gql`
-      mutation($user: UserUpsertInput!) {
-        upsertUser(user: $user) {
+      mutation syncAuth0UserWithServer($user: syncAuth0UserInput!) {
+        syncAuth0User(user: $user) {
+          _id
           email
           name
           picture
-          _id
+          auth0Id
         }
       }
     `,
     variables: {
-      user: { _id, email, name, picture }
+      user: { auth0Id, email, name, picture }
     }
   });
 }
