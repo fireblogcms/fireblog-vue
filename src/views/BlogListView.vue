@@ -132,6 +132,7 @@ export default {
     },
     initView() {
       this.initViewState = REQUEST_STATE.PENDING;
+
       Promise.all([this.getBlogs()])
         .then(() => {
           this.initViewState = REQUEST_STATE.FINISHED_OK;

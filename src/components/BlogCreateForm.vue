@@ -72,10 +72,12 @@ export default {
     };
   },
   created() {
-    this.user = getLocalUser();
+    //this.user = getLocalUser();
   },
   methods: {
     onCreateClick() {
+      alert("blog create disabled");
+      /*
       apolloClient
         .mutate({
           mutation: createPostMutation,
@@ -88,6 +90,7 @@ export default {
             params: { blogId: result.data.createPod._id }
           });
         });
+        */
     },
     onGenerateCLick() {
       this.$refs.randomNameLink.addEventListener("mousedown", function(e) {
