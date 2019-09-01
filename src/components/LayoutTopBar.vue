@@ -179,7 +179,7 @@ export default {
                 name
                 email
                 picture
-                pods(last: 100) {
+                pods(language: fr, last: 100) {
                   edges {
                     node {
                       name

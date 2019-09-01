@@ -135,7 +135,7 @@ import striptags from "striptags";
 
 const postsQuery = gql`
   query postsQuery($pod: ID!, $status: PostPublicationStatus!) {
-    posts(filter: { pod: $pod, status: $status }, last: 100) {
+    posts(language: "fr", filter: { pod: $pod, status: $status }, last: 100) {
       edges {
         node {
           _id

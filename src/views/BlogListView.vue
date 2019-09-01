@@ -75,7 +75,7 @@ const myPodsQuery = gql`
   query myPodsQuery {
     me {
       name
-      pods(last: 100) {
+      pods(last: 100, language: fr) {
         edges {
           node {
             _id
