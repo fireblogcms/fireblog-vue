@@ -7,9 +7,11 @@
     </template>
     <template v-if="initViewState === 'FINISHED_OK'">
       <template v-if="blogs.edges.length === 0">
-        <LayoutBody class="container" style="margin-top:60px">
-          <BlogCreateForm :first="true" />
-        </LayoutBody>
+        <div class="section">
+          <LayoutBody class="container">
+            <BlogCreateForm :first="true" />
+          </LayoutBody>
+        </div>
       </template>
       <template v-if="blogs && blogs.edges.length > 0">
         <div class="container">

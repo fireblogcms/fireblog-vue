@@ -14,7 +14,7 @@
         <template v-if="first">
           <h2>Glad to see you here, {{ user.name }} 🤗</h2>
           <h2 style="font-weight:200;">
-            First, let's create your first Pod that will hold your articles.
+            Let's create your first blog.
             <br />Give it a name, or let
             <a
               ref="randomNameLink"
@@ -53,17 +53,24 @@
             <br />In which language will you write by default ?
           </h2>
           <div class="control">
-            <div class="select is-large is-fullwidth">
+            <div
+              class="select is-large is-fullwidth"
+              :class="{'is-danger': formErrors.blogContentDefaultLanguage}"
+            >
               <select v-model="inputs.blogContentDefaultLanguage">
-                <option>Select a language</option>
+                <option value>Select a language</option>
                 <option
                   class="has-text-centered"
                   :value="language.code"
                   v-for="language in languageList"
                   :key="language.code"
-                >{{language.nativeName}}</option>
+                >{{language.nativeName}} - {{language.englishName}}</option>
               </select>
             </div>
+            <p
+              class="has-text-centered help is-danger"
+              v-if="formErrors.blogContentDefaultLanguage"
+            >{{formErrors.blogContentDefaultLanguage}}</p>
           </div>
         </div>
         <br />
@@ -165,11 +172,12 @@ export default {
     },
     formGetErrors() {
       const errors = [];
+      console.log(this.inputs);
       if (!this.inputs.name.trim()) {
-        errors["name"] = "Field name is required";
+        errors["name"] = "Name is required";
       }
-      if (!this.inputs.blogContentDefaultLanguage()) {
-        errors["name"] = "Field name is required";
+      if (!this.inputs.blogContentDefaultLanguage.trim()) {
+        errors["blogContentDefaultLanguage"] = "Language is required";
       }
       return errors;
     },
