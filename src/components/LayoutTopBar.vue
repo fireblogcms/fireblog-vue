@@ -126,6 +126,27 @@ import getAllPostsApiExample from "../apiExamples/getAllPosts";
 import getSinglePostApiExample from "../apiExamples/getSinglePostApiExample";
 import ApiButton from "../components/ApiButton";
 
+const meWithMyPodsQuery = gql`
+  query meWithMyPodsQuery {
+    me {
+      name
+      email
+      picture
+      pods(language: fr, last: 100) {
+        edges {
+          node {
+            name
+            description
+            createdAt
+            updatedAt
+            _id
+          }
+        }
+      }
+    }
+  }
+`;
+
 export default {
   components: {
     ApiButton
@@ -173,26 +194,7 @@ export default {
     getMeWithMyPods() {
       return apolloClient
         .query({
-          query: gql`
-            query meWithMyPodsQuery {
-              me {
-                name
-                email
-                picture
-                pods(language: fr, last: 100) {
-                  edges {
-                    node {
-                      name
-                      description
-                      createdAt
-                      updatedAt
-                      _id
-                    }
-                  }
-                }
-              }
-            }
-          `
+          query: meWithMyPodsQuery
         })
         .then(result => {
           this.me = result.data.me;
@@ -202,7 +204,7 @@ export default {
       return apolloClient
         .query({
           query: gql`
-            query TopBarPodQuery($_id: ID!) {
+            query topBarPodQuery($_id: ID!) {
               pod(_id: $_id) {
                 name
               }
