@@ -30,7 +30,7 @@ export function getUser() {
     })
     .then(result => {
       if (result.data.me === null) {
-        throw new Error("User object is empty");
+        throw new Error("No logged in user found");
       }
       return result.data.me;
     });

@@ -1,8 +1,13 @@
 <template>
   <div class="pod-create-form section">
-    <div v-if="errors.length > 0" class="notification is-danger">{{errors.join(';')}}</div>
+    <template v-if="initState === 'PENDING'">
+      <AppLoader>Loading</AppLoader>
+    </template>
 
-    <template v-if="initState === 'PENDING'"></template>
+    <template v-if="initState === 'FINISHED_ERROR'">
+      <div class="notification is-danger">{{initStateError}}</div>
+    </template>
+
     <template v-if="initState === 'FINISHED_OK'">
       <div class="content has-text-centered">
         <!-- special text if this is the very first blog :) -->
@@ -39,10 +44,28 @@
               type="text"
               placeholder="Blog's Name"
             />
-            <p v-if="formErrors.name" class="help is-danger">{{formErrors.name}}</p>
           </div>
+          <p class="help is-danger" v-if="formErrors.name">{{formErrors.name}}</p>
         </div>
 
+        <div class="field">
+          <h2>
+            <br />In which language will you write by default ?
+          </h2>
+          <div class="control">
+            <div class="select is-large is-fullwidth">
+              <select v-model="inputs.blogContentDefaultLanguage">
+                <option>Select a language</option>
+                <option
+                  class="has-text-centered"
+                  :value="language.code"
+                  v-for="language in languageList"
+                  :key="language.code"
+                >{{language.nativeName}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
         <br />
 
         <div class="buttons are-medium is-centered">
@@ -74,7 +97,20 @@ const createPostMutation = gql`
   }
 `;
 
+const languageListQuery = gql`
+  query languageListQuery {
+    languages {
+      code
+      nativeName
+      englishName
+    }
+  }
+`;
+
 export default {
+  components: {
+    AppLoader
+  },
   props: {
     first: {
       type: Boolean
@@ -85,9 +121,12 @@ export default {
       errors: [],
       formErrors: [],
       initState: REQUEST_STATE.NOT_STARTED,
+      initStateError: null,
       user: null,
+      languageList: null,
       inputs: {
-        name: ""
+        name: "",
+        blogContentDefaultLanguage: null
       }
     };
   },
@@ -95,16 +134,41 @@ export default {
     this.init();
   },
   methods: {
-    init() {
+    async init() {
+      this.initStateError = null;
       this.initState = REQUEST_STATE.PENDING;
-      getUser().then(user => {
-        this.initState = REQUEST_STATE.FINISHED_OK;
-        this.user = user;
+      Promise.all([getUser(), this.getLanguageList()])
+        .then(([user, languageListResult]) => {
+          const languages = languageListResult.data.languages;
+          this.initState = REQUEST_STATE.FINISHED_OK;
+          this.user = user;
+          this.languageList = Object.keys(languages).map(i => {
+            return {
+              code: languages[i].code,
+              englishName: languages[i].englishName,
+              nativeName: languages[i].nativeName
+            };
+          });
+          // set browser language by default
+          this.inputs.blogContentDefaultLanguage =
+            navigator.language || navigator.userLanguage;
+        })
+        .catch(e => {
+          this.initState = REQUEST_STATE.FINISHED_ERROR;
+          this.initStateError = "init() : " + e;
+        });
+    },
+    getLanguageList() {
+      return apolloClient.query({
+        query: languageListQuery
       });
     },
     formGetErrors() {
       const errors = [];
       if (!this.inputs.name.trim()) {
+        errors["name"] = "Field name is required";
+      }
+      if (!this.inputs.blogContentDefaultLanguage()) {
         errors["name"] = "Field name is required";
       }
       return errors;
