@@ -121,10 +121,11 @@
 <script>
 import gql from "graphql-tag";
 import apolloClient from "../lib/apolloClient";
-import { getUser, REQUEST_STATE } from "../lib/helpers";
+import { getUser, LOADING_STATE } from "../lib/helpers";
 import getAllPostsApiExample from "../apiExamples/getAllPosts";
 import getSinglePostApiExample from "../apiExamples/getSinglePostApiExample";
 import ApiButton from "../components/ApiButton";
+import * as Sentry from "@sentry/browser";
 
 const meWithMyPodsQuery = gql`
   query meWithMyPodsQuery {
@@ -176,7 +177,7 @@ export default {
   },
   methods: {
     async init() {
-      this.initState = REQUEST_STATE.PENDING;
+      this.initState = LOADING_STATE.PENDING;
       const promises = [];
       promises.push(this.getMeWithMyPods());
       // if we are inside a pod, fetch it.
@@ -185,10 +186,11 @@ export default {
       }
       Promise.all(promises)
         .then(r => {
-          this.initState = REQUEST_STATE.FINISHED_OK;
+          this.initState = LOADING_STATE.COMPLETE_OK;
         })
         .catch(e => {
-          this.initState = REQUEST_STATE.FINISHED_ERROR;
+          this.initState = LOADING_STATE.COMPLETE_ERROR;
+          Sentry.captureException(new Error(e));
         });
     },
     getMeWithMyPods() {
@@ -219,6 +221,7 @@ export default {
         })
         .catch(error => {
           this.error = error;
+          Sentry.captureException(new Error(error));
         });
     },
     backToPodIsVisible() {

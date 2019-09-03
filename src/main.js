@@ -10,12 +10,10 @@ import "animate.css/animate.min.css";
 import * as Sentry from "@sentry/browser";
 import * as Integrations from "@sentry/integrations";
 
-if (process.env.NODE_ENV === "production") {
-  Sentry.init({
-    dsn: process.env.VUE_APP_SENTRY_URL,
-    integrations: [new Integrations.Vue({ Vue, attachProps: true })]
-  });
-}
+Sentry.init({
+  dsn: process.env.VUE_APP_SENTRY_URL,
+  integrations: [new Integrations.Vue({ Vue, attachProps: true })]
+});
 
 Vue.use(vClickOutside);
 Vue.use(PortalVue);

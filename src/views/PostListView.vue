@@ -2,10 +2,10 @@
   <AdminLayout>
     <AppNotify :errors="notifications.errors" :infos="notifications.infos" />
 
-    <template v-if="initViewState === 'PENDING'">
+    <template v-if="initState === 'PENDING'">
       <AppLoader>Loading posts</AppLoader>
     </template>
-    <template v-if="initViewState === 'FINISHED_OK'">
+    <template v-if="initState === 'COMPLETE_OK'">
       <div class="animated fadeIn">
         <header class="container" style="padding: 0 1rem 2rem 1rem">
           <div class="columns">
@@ -77,12 +77,12 @@
                   <AppLoader />
                 </template>
                 <!--NO PUBLISHED POST FOUND-->
-                <template v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length === 0">
+                <template v-if="postsRequestState === 'COMPLETE_OK' && posts.edges.length === 0">
                   <div class="content section has-text-centered">
                     <p>No post found with {{ activeStatus }} status for now.</p>
                   </div>
                 </template>
-                <template v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length > 0">
+                <template v-if="postsRequestState === 'COMPLETE_OK' && posts.edges.length > 0">
                   <LayoutList
                     :onRowClick="onRowClick"
                     :items="posts.edges"
@@ -126,12 +126,13 @@ import apolloClient from "../lib/apolloClient";
 import AdminLayout from "../layouts/AdminLayout";
 import gql from "graphql-tag";
 import AppLoader from "../components/AppLoader";
-import { REQUEST_STATE } from "../lib/helpers";
+import { LOADING_STATE } from "../lib/helpers";
 import AppNotify from "../components/AppNotify";
 import BulmaButtonLink from "../components/BulmaButtonLink";
 import LayoutBody from "../components/LayoutBody";
 import LayoutList from "../components/LayoutList";
 import striptags from "striptags";
+import * as Sentry from "@sentry/browser";
 
 const postsQuery = gql`
   query postsQuery($pod: ID!, $status: PostPublicationStatus!) {
@@ -191,10 +192,10 @@ export default {
         errors: [],
         info: []
       },
-      initViewState: REQUEST_STATE.NOT_STARTED,
-      allPostsRequestState: REQUEST_STATE.NOT_STARTED,
-      postsRequestState: REQUEST_STATE.NOT_STARTED,
-      blogRequestState: REQUEST_STATE.NOT_STARTED,
+      initState: LOADING_STATE.NOT_STARTED,
+      allPostsRequestState: LOADING_STATE.NOT_STARTED,
+      postsRequestState: LOADING_STATE.NOT_STARTED,
+      blogRequestState: LOADING_STATE.NOT_STARTED,
       pod: null,
       posts: null,
       activeStatus: "PUBLISHED",
@@ -204,7 +205,7 @@ export default {
   },
   created() {
     this.striptags = striptags;
-    this.initView();
+    this.init();
   },
   methods: {
     /**
@@ -213,15 +214,16 @@ export default {
      * - All published post (displayed in the "published" tab)
      * We will display a loader until this two requests are finished
      */
-    initView() {
-      this.initViewState = REQUEST_STATE.PENDING;
+    init() {
+      this.initState = LOADING_STATE.PENDING;
       Promise.all([this.getPod(), this.getPosts(), this.getAllPosts()])
         .then(() => {
-          this.initViewState = REQUEST_STATE.FINISHED_OK;
+          this.initState = LOADING_STATE.COMPLETE_OK;
         })
         .catch(error => {
-          this.initViewState = REQUEST_STATE.FINISHED_ERROR;
-          this.notifications.errors.push("initView(): " + error.message);
+          this.initState = LOADING_STATE.COMPLETE_ERROR;
+          this.notifications.errors.push("init(): " + error.message);
+          Sentry.captureException(new Error(error));
         });
     },
     buildLinkToPost(item) {
@@ -234,21 +236,22 @@ export default {
       this.$router.push(this.buildLinkToPost(item));
     },
     async getAllPosts() {
-      this.allPostsRequestState === REQUEST_STATE.PENDING;
+      this.allPostsRequestState === LOADING_STATE.PENDING;
       return apolloClient
         .query({
           query: allPostsQuery,
           variables: { pod: this.$route.params.blogId }
         })
         .then(result => {
-          this.allPostsRequestState = REQUEST_STATE.FINISHED_OK;
+          this.allPostsRequestState = LOADING_STATE.COMPLETE_OK;
           this.isFirstPost =
             result.data.posts.edges.length === 0 ? true : false;
           return result;
         })
         .catch(error => {
-          this.allPostsRequestState = REQUEST_STATE.FINISHED_ERROR;
+          this.allPostsRequestState = LOADING_STATE.COMPLETE_ERROR;
           this.notifications.errors.push("getAllPosts() " + error.message);
+          Sentry.captureException(new Error(error));
         });
     },
     getPod() {
@@ -260,17 +263,18 @@ export default {
           }
         })
         .then(result => {
-          this.blogRequestState = REQUEST_STATE.FINISHED_OK;
+          this.blogRequestState = LOADING_STATE.COMPLETE_OK;
           this.pod = result.data.pod;
           return result;
         })
         .catch(error => {
-          this.blogRequestState = REQUEST_STATE.FINISHED_ERROR;
+          this.blogRequestState = LOADING_STATE.COMPLETE_ERROR;
           this.notifications.errors.push("getPod() " + error.message);
+          Sentry.captureException(new Error(error));
         });
     },
     getPosts() {
-      this.postsRequestState = REQUEST_STATE.PENDING;
+      this.postsRequestState = LOADING_STATE.PENDING;
       this.notifications = {
         errors: [],
         info: []
@@ -284,13 +288,14 @@ export default {
           }
         })
         .then(result => {
-          this.postsRequestState = REQUEST_STATE.FINISHED_OK;
+          this.postsRequestState = LOADING_STATE.COMPLETE_OK;
           this.posts = result.data.posts;
           return result;
         })
         .catch(error => {
-          this.postsRequestState = REQUEST_STATE.FINISHED_ERROR;
+          this.postsRequestState = LOADING_STATE.COMPLETE_ERROR;
           this.notifications.errors.push("getPosts() " + error.message);
+          Sentry.captureException(new Error(error));
         });
     },
     onStatusClick(status) {

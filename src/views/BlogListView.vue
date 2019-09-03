@@ -1,11 +1,20 @@
 <template>
   <AdminLayout>
-    <AppNotify :errors="notifications.errors" :info="notifications.info" />
-
-    <template v-if="initViewState === 'PENDING'">
+    <!--<AppNotify :errors="notifications.errors" :info="notifications.info" />-->
+    <template v-if="initState === 'PENDING'">
       <AppLoader>Loading blogs</AppLoader>
     </template>
-    <template v-if="initViewState === 'FINISHED_OK'">
+    <template v-if="initState === 'COMPLETE_ERROR'">
+      <div class="section container">
+        <LayoutBody class="has-text-centered">
+          <div class="content">
+            <p>There was an issue fetching blogs.</p>
+            <pre>{{initStateError}}</pre>
+          </div>
+        </LayoutBody>
+      </div>
+    </template>
+    <template v-if="initState === 'COMPLETE_OK'">
       <template v-if="blogs.edges.length === 0">
         <div class="section">
           <LayoutBody class="container">
@@ -67,17 +76,18 @@ import AdminLayout from "../layouts/AdminLayout";
 import AppLoader from "../components/AppLoader";
 import gql from "graphql-tag";
 import BulmaButtonLink from "../components/BulmaButtonLink";
-import { REQUEST_STATE } from "../lib/helpers";
+import { LOADING_STATE } from "../lib/helpers";
 import AppNotify from "../components/AppNotify";
 import ButtonLink from "../components/ButtonLink";
 import LayoutBody from "../components/LayoutBody";
 import LayoutList from "../components/LayoutList";
+import * as Sentry from "@sentry/browser";
 
 const myPodsQuery = gql`
   query myPodsQuery {
     me {
       name
-      pods(last: 100, language: fr) {
+      pods(last: 100) {
         edges {
           node {
             _id
@@ -107,7 +117,7 @@ export default {
   data() {
     return {
       blogs: null,
-      initViewState: REQUEST_STATE.NOT_STARTED,
+      initState: LOADING_STATE.NOT_STARTED,
       notifications: {
         errors: [],
         info: []
@@ -132,16 +142,16 @@ export default {
       }
       return styles;
     },
-    initView() {
-      this.initViewState = REQUEST_STATE.PENDING;
-
+    init() {
+      this.initState = LOADING_STATE.PENDING;
       Promise.all([this.getBlogs()])
         .then(() => {
-          this.initViewState = REQUEST_STATE.FINISHED_OK;
+          this.initState = LOADING_STATE.COMPLETE_OK;
         })
         .catch(error => {
-          this.initViewState = REQUEST_STATE.FINISHED_ERROR;
-          this.notifications.errors.push("initView(): " + error.message);
+          this.initState = LOADING_STATE.COMPLETE_ERROR;
+          this.initStateError = error;
+          Sentry.captureException(new Error(this.initStateError));
         });
     },
     buildLinkToPostList(item) {
@@ -151,16 +161,12 @@ export default {
       this.$router.push(this.buildLinkToPostList(item));
     },
     getBlogs() {
-      return apolloClient
-        .query({ query: myPodsQuery })
-        .then(result => {
-          this.blogs = result.data.me.pods;
-          this.blogsEdgesReversed = [...this.blogs.edges].reverse();
-          this.blogsDefaultImagesMap = this.mapDefaultImagesToBlogId();
-        })
-        .catch(e => {
-          this.notifications.errors.push("getBlogs() " + e.message);
-        });
+      return apolloClient.query({ query: myPodsQuery }).then(result => {
+        this.blogs = result.data.me.pods;
+        console.log("blogs", this.blogs);
+        this.blogsEdgesReversed = [...this.blogs.edges].reverse();
+        this.blogsDefaultImagesMap = this.mapDefaultImagesToBlogId();
+      });
     },
     defaultImages() {
       return [
@@ -201,7 +207,7 @@ export default {
     }
   },
   created() {
-    this.initView();
+    this.init();
   }
 };
 </script>

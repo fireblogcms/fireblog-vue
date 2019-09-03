@@ -11,7 +11,7 @@
         @click="onSaveClick()"
         v-if="!existingPost || (existingPost && existingPost.status === 'DRAFT')"
         class="button is-outlined item"
-        :class="{ 'is-loading': savingPostState === REQUEST_STATE.PENDING }"
+        :class="{ 'is-loading': savingPostState === LOADING_STATE.PENDING }"
         type="submit"
         value="SAVE DRAFT"
       />
@@ -28,7 +28,7 @@
         @click="onPublishPostClick()"
         v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
         class="button is-outlined item is-primary"
-        :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
+        :class="{ 'is-loading': publishPostState === LOADING_STATE.PENDING }"
         type="submit"
         value="PUBLISH"
       />
@@ -37,13 +37,13 @@
         @click="onPublishPostClick()"
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
         class="button is-outlined item is-primary"
-        :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
+        :class="{ 'is-loading': publishPostState === LOADING_STATE.PENDING }"
         type="submit"
         value="PUBLISH CHANGES"
       />
     </portal>
 
-    <template v-if="loadingPostState === REQUEST_STATE.PENDING">
+    <template v-if="loadingPostState === LOADING_STATE.PENDING">
       <AppLoader />
     </template>
 
@@ -69,8 +69,9 @@ import Editor from "@ckeditor/ckeditor5-build-balloon-block";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import gql from "graphql-tag";
 import AppNotify from "./AppNotify";
-import { REQUEST_STATE, getUser } from "../lib/helpers";
+import { LOADING_STATE, getUser } from "../lib/helpers";
 import { ckeditorUploadAdapterPlugin } from "../lib/ckeditorUploadAdapter";
+import * as Sentry from "@sentry/browser";
 
 const PostResponseFragment = gql`
   fragment PostResponse on Post {
@@ -128,9 +129,9 @@ export default {
   },
   data() {
     return {
-      publishPostState: REQUEST_STATE.NOT_STARTED,
-      savingPostState: REQUEST_STATE.NOT_STARTED,
-      loadingPostState: REQUEST_STATE.NOT_STARTED,
+      publishPostState: LOADING_STATE.NOT_STARTED,
+      savingPostState: LOADING_STATE.NOT_STARTED,
+      loadingPostState: LOADING_STATE.NOT_STARTED,
       lastTimeSaved: null,
       existingPost: null,
       notifications: {
@@ -145,7 +146,7 @@ export default {
   },
   created() {
     this.editor = Editor;
-    this.REQUEST_STATE = REQUEST_STATE;
+    this.LOADING_STATE = LOADING_STATE;
     this.OPERATION = OPERATION;
     this.editorConfig = {
       extraPlugins: [ckeditorUploadAdapterPlugin],
@@ -155,16 +156,19 @@ export default {
 
     // if we are editing a post, the route
     if (this.operation() === OPERATION.UPDATE) {
-      this.loadingPostState = REQUEST_STATE.PENDING;
+      this.loadingPostState = LOADING_STATE.PENDING;
       this.getExistingPost()
         .then(result => {
           this.existingPost = result.data.post;
           this.inputs = this.prepareInputsFromPost(this.existingPost);
-          this.loadingPostState = REQUEST_STATE.FINISHED_OK;
+          this.loadingPostState = LOADING_STATE.COMPLETE_OK;
         })
-        .catch(e => {
-          this.notifications.errors.push("😞Sorry, loading post failed: " + e);
-          this.loadingPostState = REQUEST_STATE.FINISHED_ERROR;
+        .catch(error => {
+          this.notifications.errors.push(
+            "😞Sorry, loading post failed: " + error
+          );
+          this.loadingPostState = LOADING_STATE.COMPLETE_ERROR;
+          Sentry.captureException(new Error(error));
         });
     }
   },
@@ -214,7 +218,7 @@ export default {
         })
         .then(result => {
           apolloClient.resetStore();
-          this.savingPostState = REQUEST_STATE.FINISHED_OK;
+          this.savingPostState = LOADING_STATE.COMPLETE_OK;
           this.lastTimeSaved = Date.now();
           this.existingPost = result.data.createPost;
           // post is created, we are now in UPDATE mode for the form.
@@ -237,7 +241,8 @@ export default {
           this.notifications.errors.push(
             "😞Sorry, saving post failed with this error message: " + e
           );
-          this.savingPostState = REQUEST_STATE.FINISHED_ERROR;
+          this.savingPostState = LOADING_STATE.COMPLETE_ERROR;
+          Sentry.captureException(new Error(e));
         });
     },
     updatePost(post) {
@@ -252,14 +257,15 @@ export default {
           }
         })
         .then(result => {
-          this.savingPostState = REQUEST_STATE.FINISHED_OK;
+          this.savingPostState = LOADING_STATE.COMPLETE_OK;
           this.lastTimeSaved = Date.now();
           this.existingPost = result.data.updatePost;
           apolloClient.clearStore();
         })
         .catch(e => {
-          this.savingPostState = REQUEST_STATE.FINISHED_ERROR;
+          this.savingPostState = LOADING_STATE.COMPLETE_ERROR;
           this.notifications.errors.push("Sorry, updatePost failed : " + e);
+          Sentry.captureException(new Error(e));
         });
     },
     onSaveClick() {

@@ -6,7 +6,7 @@
       <AppLoader>Loading profile</AppLoader>
     </template>
 
-    <template v-if="initState === 'FINISHED_OK'">
+    <template v-if="initState === 'COMPLETE_OK'">
       <div class="container section animated fadeIn">
         <LayoutBody>
           <div style="padding:40px">
@@ -32,8 +32,9 @@ import apolloClient from "../lib/apolloClient";
 import LayoutBody from "../components/LayoutBody";
 import AppLoader from "../components/AppLoader";
 import AppNotify from "../components/AppNotify";
-import { REQUEST_STATE } from "../lib/helpers";
+import { LOADING_STATE } from "../lib/helpers";
 import gql from "graphql-tag";
+import * as Sentry from "@sentry/browser";
 
 export default {
   components: {
@@ -44,21 +45,22 @@ export default {
   },
   data() {
     return {
-      initState: REQUEST_STATE.NOT_STARTED,
+      initState: LOADING_STATE.NOT_STARTED,
       errors: [],
       me: null
     };
   },
   methods: {
     init() {
-      this.initState = REQUEST_STATE.PENDING;
+      this.initState = LOADING_STATE.PENDING;
       return Promise.all([this.getProfile()])
         .then(() => {
-          this.initState = REQUEST_STATE.FINISHED_OK;
+          this.initState = LOADING_STATE.COMPLETE_OK;
         })
         .catch(error => {
-          this.initState = REQUEST_STATE.FINISHED_ERROR;
+          this.initState = LOADING_STATE.COMPLETE_ERROR;
           this.errors.push(error);
+          Sentry.captureException(new Error(error));
         });
     },
     getProfile() {
@@ -85,6 +87,7 @@ export default {
           this.errors.push(
             "Sorry, an error occured while fetching your profile." + error
           );
+          Sentry.captureException(new Error(error));
         });
     }
   },

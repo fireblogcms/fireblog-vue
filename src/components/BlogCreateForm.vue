@@ -4,11 +4,11 @@
       <AppLoader>Loading</AppLoader>
     </template>
 
-    <template v-if="initState === 'FINISHED_ERROR'">
+    <template v-if="initState === 'COMPLETE_ERROR'">
       <div class="notification is-danger">{{initStateError}}</div>
     </template>
 
-    <template v-if="initState === 'FINISHED_OK'">
+    <template v-if="initState === 'COMPLETE_OK'">
       <div class="content has-text-centered">
         <!-- special text if this is the very first blog :) -->
         <template v-if="first">
@@ -91,10 +91,11 @@ import { generate } from "../lib/fantasyName.js";
 import apolloClient from "../lib/apolloClient";
 import { getUser } from "../lib/helpers";
 import gql from "graphql-tag";
-import { REQUEST_STATE } from "../lib/helpers";
+import { LOADING_STATE } from "../lib/helpers";
 import AppLoader from "../components/AppLoader";
+import * as Sentry from "@sentry/browser";
 
-const createPostMutation = gql`
+const createBlogMutation = gql`
   mutation createPod($pod: CreatePodInput!) {
     createPod(pod: $pod) {
       name
@@ -127,7 +128,7 @@ export default {
     return {
       errors: [],
       formErrors: [],
-      initState: REQUEST_STATE.NOT_STARTED,
+      initState: LOADING_STATE.NOT_STARTED,
       initStateError: null,
       user: null,
       languageList: null,
@@ -143,11 +144,11 @@ export default {
   methods: {
     async init() {
       this.initStateError = null;
-      this.initState = REQUEST_STATE.PENDING;
+      this.initState = LOADING_STATE.PENDING;
       Promise.all([getUser(), this.getLanguageList()])
         .then(([user, languageListResult]) => {
           const languages = languageListResult.data.languages;
-          this.initState = REQUEST_STATE.FINISHED_OK;
+          this.initState = LOADING_STATE.COMPLETE_OK;
           this.user = user;
           this.languageList = Object.keys(languages).map(i => {
             return {
@@ -161,8 +162,9 @@ export default {
             navigator.language || navigator.userLanguage;
         })
         .catch(e => {
-          this.initState = REQUEST_STATE.FINISHED_ERROR;
+          this.initState = LOADING_STATE.COMPLETE_ERROR;
           this.initStateError = "init() : " + e;
+          Sentry.captureException(new Error(e));
         });
     },
     getLanguageList() {
@@ -188,8 +190,14 @@ export default {
       }
       apolloClient
         .mutate({
-          mutation: createPostMutation,
-          variables: { pod: { owner: this.user._id, name: this.inputs.name } }
+          mutation: createBlogMutation,
+          variables: {
+            pod: {
+              owner: this.user._id,
+              name: this.inputs.name,
+              language: this.inputs.blogContentDefaultLanguage.replace("-", "_")
+            }
+          }
         })
         .then(result => {
           apolloClient.resetStore();
