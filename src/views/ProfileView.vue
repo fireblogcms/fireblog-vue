@@ -6,7 +6,7 @@
       <AppLoader>Loading profile</AppLoader>
     </template>
 
-    <template v-if="initState === 'COMPLETE_OK'">
+    <template v-if="initState === 'COMPLETED_OK'">
       <div class="container section animated fadeIn">
         <LayoutBody>
           <div style="padding:40px">
@@ -34,7 +34,7 @@ import AppLoader from "../components/AppLoader";
 import AppNotify from "../components/AppNotify";
 import { LOADING_STATE } from "../lib/helpers";
 import gql from "graphql-tag";
-import * as Sentry from "@sentry/browser";
+import logger from "../lib/logger";
 
 export default {
   components: {
@@ -55,12 +55,12 @@ export default {
       this.initState = LOADING_STATE.PENDING;
       return Promise.all([this.getProfile()])
         .then(() => {
-          this.initState = LOADING_STATE.COMPLETE_OK;
+          this.initState = LOADING_STATE.COMPLETED_OK;
         })
         .catch(error => {
-          this.initState = LOADING_STATE.COMPLETE_ERROR;
+          this.initState = LOADING_STATE.COMPLETED_ERROR;
           this.errors.push(error);
-          Sentry.captureException(new Error(error));
+          logger.error(new Error(error));
         });
     },
     getProfile() {
@@ -87,7 +87,7 @@ export default {
           this.errors.push(
             "Sorry, an error occured while fetching your profile." + error
           );
-          Sentry.captureException(new Error(error));
+          logger.error(new Error(error));
         });
     }
   },

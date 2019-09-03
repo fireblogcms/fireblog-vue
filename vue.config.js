@@ -38,13 +38,13 @@ function checkEnvVars(exampleEnvFile) {
     let diffDetected = null;
     if (diffLeft.length > 0) {
       diffDetected = true;
-      console.log(
+      logger.info(
         `Error: Thoses keys are defined in .env but not in ${exampleEnvFile} : ${diffLeft}`
       );
     }
     if (diffRight.length > 0) {
       diffDetected = true;
-      console.log(
+      logger.info(
         `Error: Thoses keys are defined in ${exampleEnvFile} but not in .env: ${diffRight}`
       );
     }

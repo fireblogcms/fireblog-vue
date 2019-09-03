@@ -3,7 +3,7 @@
   <div class="container section">
     <LayoutBody>
       <AppLoader v-if="initState === 'PENDING'">Signing in ...</AppLoader>
-      <div v-if="initState === 'COMPLETE_ERROR'" class="section">
+      <div v-if="initState === 'COMPLETED_ERROR'" class="section">
         <p>
           Sorry, an error occured Please try again
           <router-link :to="{name:'blogList'}">to log in</router-link>
@@ -21,7 +21,7 @@ import AppLoader from "../components/AppLoader";
 import { auth0Client, syncAuth0UserWithServer } from "../lib/auth";
 import { LOADING_STATE } from "../lib/helpers";
 import LayoutBody from "../components/LayoutBody";
-import * as Sentry from "@sentry/browser";
+import logger from "../lib/logger";
 
 export default {
   components: {
@@ -53,13 +53,13 @@ export default {
         });
       })
       .then(() => {
-        this.initState = LOADING_STATE.COMPLETE_OK;
+        this.initState = LOADING_STATE.COMPLETED_OK;
         this.$router.push("/");
       })
       .catch(e => {
-        this.initState = LOADING_STATE.COMPLETE_ERROR;
+        this.initState = LOADING_STATE.COMPLETED_ERROR;
         this.initStateError = e;
-        Sentry.captureException(new Error(e));
+        logger.error(new Error(e));
       });
   }
 };

@@ -71,7 +71,7 @@ import gql from "graphql-tag";
 import AppNotify from "./AppNotify";
 import { LOADING_STATE, getUser } from "../lib/helpers";
 import { ckeditorUploadAdapterPlugin } from "../lib/ckeditorUploadAdapter";
-import * as Sentry from "@sentry/browser";
+import logger from "../lib/logger";
 
 const PostResponseFragment = gql`
   fragment PostResponse on Post {
@@ -161,14 +161,14 @@ export default {
         .then(result => {
           this.existingPost = result.data.post;
           this.inputs = this.prepareInputsFromPost(this.existingPost);
-          this.loadingPostState = LOADING_STATE.COMPLETE_OK;
+          this.loadingPostState = LOADING_STATE.COMPLETED_OK;
         })
         .catch(error => {
           this.notifications.errors.push(
             "😞Sorry, loading post failed: " + error
           );
-          this.loadingPostState = LOADING_STATE.COMPLETE_ERROR;
-          Sentry.captureException(new Error(error));
+          this.loadingPostState = LOADING_STATE.COMPLETED_ERROR;
+          logger.error(new Error(error));
         });
     }
   },
@@ -203,8 +203,8 @@ export default {
     },
     async createPost(post) {
       const user = await getUser();
-      console.log("debug:createPost:user", user);
-      console.log("debug:createPost:post", post);
+      logger.info("debug:createPost:user", user);
+      logger.info("debug:createPost:post", post);
       // current user as author by default. But another user might have been defined
       // as the author, so do not override if this is already set.
       if (!post.author) {
@@ -218,7 +218,7 @@ export default {
         })
         .then(result => {
           apolloClient.resetStore();
-          this.savingPostState = LOADING_STATE.COMPLETE_OK;
+          this.savingPostState = LOADING_STATE.COMPLETED_OK;
           this.lastTimeSaved = Date.now();
           this.existingPost = result.data.createPost;
           // post is created, we are now in UPDATE mode for the form.
@@ -241,8 +241,8 @@ export default {
           this.notifications.errors.push(
             "😞Sorry, saving post failed with this error message: " + e
           );
-          this.savingPostState = LOADING_STATE.COMPLETE_ERROR;
-          Sentry.captureException(new Error(e));
+          this.savingPostState = LOADING_STATE.COMPLETED_ERROR;
+          logger.error(new Error(e));
         });
     },
     updatePost(post) {
@@ -257,15 +257,15 @@ export default {
           }
         })
         .then(result => {
-          this.savingPostState = LOADING_STATE.COMPLETE_OK;
+          this.savingPostState = LOADING_STATE.COMPLETED_OK;
           this.lastTimeSaved = Date.now();
           this.existingPost = result.data.updatePost;
           apolloClient.clearStore();
         })
         .catch(e => {
-          this.savingPostState = LOADING_STATE.COMPLETE_ERROR;
+          this.savingPostState = LOADING_STATE.COMPLETED_ERROR;
           this.notifications.errors.push("Sorry, updatePost failed : " + e);
-          Sentry.captureException(new Error(e));
+          logger.error(new Error(e));
         });
     },
     onSaveClick() {

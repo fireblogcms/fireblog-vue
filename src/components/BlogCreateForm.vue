@@ -4,11 +4,11 @@
       <AppLoader>Loading</AppLoader>
     </template>
 
-    <template v-if="initState === 'COMPLETE_ERROR'">
+    <template v-if="initState === 'COMPLETED_ERROR'">
       <div class="notification is-danger">{{initStateError}}</div>
     </template>
 
-    <template v-if="initState === 'COMPLETE_OK'">
+    <template v-if="initState === 'COMPLETED_OK'">
       <div class="content has-text-centered">
         <!-- special text if this is the very first blog :) -->
         <template v-if="first">
@@ -93,7 +93,7 @@ import { getUser } from "../lib/helpers";
 import gql from "graphql-tag";
 import { LOADING_STATE } from "../lib/helpers";
 import AppLoader from "../components/AppLoader";
-import * as Sentry from "@sentry/browser";
+import logger from "../lib/logger";
 
 const createBlogMutation = gql`
   mutation createPod($pod: CreatePodInput!) {
@@ -148,7 +148,7 @@ export default {
       Promise.all([getUser(), this.getLanguageList()])
         .then(([user, languageListResult]) => {
           const languages = languageListResult.data.languages;
-          this.initState = LOADING_STATE.COMPLETE_OK;
+          this.initState = LOADING_STATE.COMPLETED_OK;
           this.user = user;
           this.languageList = Object.keys(languages).map(i => {
             return {
@@ -162,9 +162,9 @@ export default {
             navigator.language || navigator.userLanguage;
         })
         .catch(e => {
-          this.initState = LOADING_STATE.COMPLETE_ERROR;
+          this.initState = LOADING_STATE.COMPLETED_ERROR;
           this.initStateError = "init() : " + e;
-          Sentry.captureException(new Error(e));
+          logger.error(new Error(e));
         });
     },
     getLanguageList() {
@@ -174,7 +174,7 @@ export default {
     },
     formGetErrors() {
       const errors = [];
-      console.log(this.inputs);
+      logger.info(this.inputs);
       if (!this.inputs.name.trim()) {
         errors["name"] = "Name is required";
       }
@@ -201,7 +201,7 @@ export default {
         })
         .then(result => {
           apolloClient.resetStore();
-          console.log("result", result);
+          logger.info("result", result);
           this.$router.push({
             name: "postList",
             params: { blogId: result.data.createPod._id }

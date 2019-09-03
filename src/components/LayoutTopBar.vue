@@ -125,7 +125,7 @@ import { getUser, LOADING_STATE } from "../lib/helpers";
 import getAllPostsApiExample from "../apiExamples/getAllPosts";
 import getSinglePostApiExample from "../apiExamples/getSinglePostApiExample";
 import ApiButton from "../components/ApiButton";
-import * as Sentry from "@sentry/browser";
+import logger from "../lib/logger";
 
 const meWithMyPodsQuery = gql`
   query meWithMyPodsQuery {
@@ -133,7 +133,7 @@ const meWithMyPodsQuery = gql`
       name
       email
       picture
-      pods(language: fr, last: 100) {
+      pods(last: 100) {
         edges {
           node {
             name
@@ -186,11 +186,11 @@ export default {
       }
       Promise.all(promises)
         .then(r => {
-          this.initState = LOADING_STATE.COMPLETE_OK;
+          this.initState = LOADING_STATE.COMPLETED_OK;
         })
         .catch(e => {
-          this.initState = LOADING_STATE.COMPLETE_ERROR;
-          Sentry.captureException(new Error(e));
+          this.initState = LOADING_STATE.COMPLETED_ERROR;
+          logger.error(e);
         });
     },
     getMeWithMyPods() {
@@ -221,7 +221,7 @@ export default {
         })
         .catch(error => {
           this.error = error;
-          Sentry.captureException(new Error(error));
+          logger.error(error);
         });
     },
     backToPodIsVisible() {

@@ -5,7 +5,7 @@
     <template v-if="initState === 'PENDING'">
       <AppLoader>Loading posts</AppLoader>
     </template>
-    <template v-if="initState === 'COMPLETE_OK'">
+    <template v-if="initState === 'COMPLETED_OK'">
       <div class="animated fadeIn">
         <header class="container" style="padding: 0 1rem 2rem 1rem">
           <div class="columns">
@@ -77,12 +77,12 @@
                   <AppLoader />
                 </template>
                 <!--NO PUBLISHED POST FOUND-->
-                <template v-if="postsRequestState === 'COMPLETE_OK' && posts.edges.length === 0">
+                <template v-if="postsRequestState === 'COMPLETED_OK' && posts.edges.length === 0">
                   <div class="content section has-text-centered">
                     <p>No post found with {{ activeStatus }} status for now.</p>
                   </div>
                 </template>
-                <template v-if="postsRequestState === 'COMPLETE_OK' && posts.edges.length > 0">
+                <template v-if="postsRequestState === 'COMPLETED_OK' && posts.edges.length > 0">
                   <LayoutList
                     :onRowClick="onRowClick"
                     :items="posts.edges"
@@ -218,10 +218,10 @@ export default {
       this.initState = LOADING_STATE.PENDING;
       Promise.all([this.getPod(), this.getPosts(), this.getAllPosts()])
         .then(() => {
-          this.initState = LOADING_STATE.COMPLETE_OK;
+          this.initState = LOADING_STATE.COMPLETED_OK;
         })
         .catch(error => {
-          this.initState = LOADING_STATE.COMPLETE_ERROR;
+          this.initState = LOADING_STATE.COMPLETED_ERROR;
           this.notifications.errors.push("init(): " + error.message);
           Sentry.captureException(new Error(error));
         });
@@ -243,15 +243,17 @@ export default {
           variables: { pod: this.$route.params.blogId }
         })
         .then(result => {
-          this.allPostsRequestState = LOADING_STATE.COMPLETE_OK;
+          console.log("result", result);
+          this.allPostsRequestState = LOADING_STATE.COMPLETED_OK;
           this.isFirstPost =
             result.data.posts.edges.length === 0 ? true : false;
           return result;
         })
         .catch(error => {
-          this.allPostsRequestState = LOADING_STATE.COMPLETE_ERROR;
+          this.allPostsRequestState = LOADING_STATE.COMPLETED_ERROR;
           this.notifications.errors.push("getAllPosts() " + error.message);
           Sentry.captureException(new Error(error));
+          return error;
         });
     },
     getPod() {
@@ -263,12 +265,12 @@ export default {
           }
         })
         .then(result => {
-          this.blogRequestState = LOADING_STATE.COMPLETE_OK;
+          this.blogRequestState = LOADING_STATE.COMPLETED_OK;
           this.pod = result.data.pod;
           return result;
         })
         .catch(error => {
-          this.blogRequestState = LOADING_STATE.COMPLETE_ERROR;
+          this.blogRequestState = LOADING_STATE.COMPLETED_ERROR;
           this.notifications.errors.push("getPod() " + error.message);
           Sentry.captureException(new Error(error));
         });
@@ -288,12 +290,12 @@ export default {
           }
         })
         .then(result => {
-          this.postsRequestState = LOADING_STATE.COMPLETE_OK;
+          this.postsRequestState = LOADING_STATE.COMPLETED_OK;
           this.posts = result.data.posts;
           return result;
         })
         .catch(error => {
-          this.postsRequestState = LOADING_STATE.COMPLETE_ERROR;
+          this.postsRequestState = LOADING_STATE.COMPLETED_ERROR;
           this.notifications.errors.push("getPosts() " + error.message);
           Sentry.captureException(new Error(error));
         });

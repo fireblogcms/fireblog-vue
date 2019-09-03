@@ -32,7 +32,7 @@ export async function auth0Client() {
 
 export function syncAuth0UserWithServer({ auth0Id, email, name, picture }) {
   if (process.env.NODE_ENV === "development") {
-    console.log("debug:syncAuth0UserWithServer()", {
+    logger.info("debug:syncAuth0UserWithServer()", {
       auth0Id,
       email,
       name,

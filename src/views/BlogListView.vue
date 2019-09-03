@@ -4,17 +4,12 @@
     <template v-if="initState === 'PENDING'">
       <AppLoader>Loading blogs</AppLoader>
     </template>
-    <template v-if="initState === 'COMPLETE_ERROR'">
-      <div class="section container">
-        <LayoutBody class="has-text-centered">
-          <div class="content">
-            <p>There was an issue fetching blogs.</p>
-            <pre>{{initStateError}}</pre>
-          </div>
-        </LayoutBody>
-      </div>
+    <template v-if="initState === 'COMPLETED_ERROR'">
+      <AppErrorReporter :error="initStateError">
+        <p>There was an issue fetching blogs.</p>
+      </AppErrorReporter>
     </template>
-    <template v-if="initState === 'COMPLETE_OK'">
+    <template v-if="initState === 'COMPLETED_OK'">
       <template v-if="blogs.edges.length === 0">
         <div class="section">
           <LayoutBody class="container">
@@ -80,8 +75,9 @@ import { LOADING_STATE } from "../lib/helpers";
 import AppNotify from "../components/AppNotify";
 import ButtonLink from "../components/ButtonLink";
 import LayoutBody from "../components/LayoutBody";
+import AppErrorReporter from "../components/AppErrorReporter";
 import LayoutList from "../components/LayoutList";
-import * as Sentry from "@sentry/browser";
+import logger from "../lib/logger";
 
 const myPodsQuery = gql`
   query myPodsQuery {
@@ -105,6 +101,7 @@ const myPodsQuery = gql`
 export default {
   components: {
     LayoutBody,
+    AppErrorReporter,
     BulmaButtonLink,
     BlogCreateForm,
     BulmaGrid,
@@ -146,12 +143,11 @@ export default {
       this.initState = LOADING_STATE.PENDING;
       Promise.all([this.getBlogs()])
         .then(() => {
-          this.initState = LOADING_STATE.COMPLETE_OK;
+          this.initState = LOADING_STATE.COMPLETED_OK;
         })
         .catch(error => {
-          this.initState = LOADING_STATE.COMPLETE_ERROR;
+          this.initState = LOADING_STATE.COMPLETED_ERROR;
           this.initStateError = error;
-          Sentry.captureException(new Error(this.initStateError));
         });
     },
     buildLinkToPostList(item) {
@@ -163,7 +159,7 @@ export default {
     getBlogs() {
       return apolloClient.query({ query: myPodsQuery }).then(result => {
         this.blogs = result.data.me.pods;
-        console.log("blogs", this.blogs);
+        logger.info("blogs", this.blogs);
         this.blogsEdgesReversed = [...this.blogs.edges].reverse();
         this.blogsDefaultImagesMap = this.mapDefaultImagesToBlogId();
       });

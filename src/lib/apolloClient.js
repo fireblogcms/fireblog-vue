@@ -1,14 +1,14 @@
 // @see https://www.apollographql.com/docs/react/basics/setup.html
 // @see https://www.apollographql.com/docs/react/api/apollo-client.html
-import { ApolloClient } from "apollo-client";
+import { ApolloClient, ApolloError } from "apollo-client";
 import { ApolloLink } from "apollo-link";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { setContext } from "apollo-link-context";
-//import { getAccessToken } from "./auth";
 import { createUploadLink } from "apollo-upload-client";
 import { onError } from "apollo-link-error";
-import { graphQLErrorsContainsTokenExpiredError } from "./helpers";
+//import { graphQLErrorsContainsTokenExpiredError } from "./helpers";
 import { auth0Client } from "./auth";
+import logger from "./logger";
 
 // An httpLink than support uploading files.
 const uploadLink = createUploadLink({ uri: process.env.VUE_APP_GRAPHQL_URL });
@@ -38,15 +38,27 @@ const authLink = setContext(async (_, { headers }) => {
  * - networkError (object)
  * - operation (object) - infos about GraphqlQuery
  */
-const jwtTokenExpiredLink = onError(infos => {
+const onErrorLink = onError(infos => {
+  const message = `ApolloError: ${
+    infos.operation.operationName
+  } ${infos.graphQLErrors.map(error => error.message).join(". ")}`;
+  logger.error(new Error(message));
   // if access token for our GraphQL API has expired, re-authenticate.
-  if (graphQLErrorsContainsTokenExpiredError(infos.graphQLErrors)) {
-    alert("token access error");
-    //auth0client.authorize({ target: "/" });
+  /*
+  if (
+    infos.graphQLErrors &&
+    graphQLErrorsContainsTokenExpiredError(infos.graphQLErrors)
+  ) {
+    const auth0 = await auth0Client();
+    await auth0.loginWithRedirect({
+      redirect_uri: `${process.env.VUE_APP_BASE_URL}/auth0-callback`
+    });
+
   }
+  */
 });
 
-const link = ApolloLink.from([authLink, jwtTokenExpiredLink, uploadLink]);
+const link = ApolloLink.from([authLink, onErrorLink, uploadLink]);
 
 const client = new ApolloClient({
   link,
