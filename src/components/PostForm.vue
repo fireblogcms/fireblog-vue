@@ -202,14 +202,19 @@ export default {
       };
     },
     async createPost(post) {
+      this.notifications.errors = [];
       const user = await getUser();
-      logger.info("debug:createPost:user", user);
-      logger.info("debug:createPost:post", post);
+      const pod = await this.loadPod(this.$route.params.blogId);
+
       // current user as author by default. But another user might have been defined
       // as the author, so do not override if this is already set.
       if (!post.author) {
         post.author = user._id;
+        post.language = pod.contentDefaultLanguage.replace("-", "_");
       }
+      logger.info("debug:createPost:pod", pod);
+      logger.info("debug:createPost:user", user);
+      logger.info("debug:createPost:post", post);
       post.pod = this.$route.params.blogId;
       return apolloClient
         .mutate({
@@ -243,6 +248,27 @@ export default {
           );
           this.savingPostState = LOADING_STATE.COMPLETED_ERROR;
           logger.error(new Error(e));
+        });
+    },
+    loadPod(id) {
+      return apolloClient
+        .query({
+          query: gql`
+            query loadPodQuery($_id: ID!) {
+              pod(_id: $_id) {
+                _id
+                contentDefaultLanguage
+                description
+                name
+              }
+            }
+          `,
+          variables: {
+            _id: id
+          }
+        })
+        .then(r => {
+          return r.data.pod;
         });
     },
     updatePost(post) {
