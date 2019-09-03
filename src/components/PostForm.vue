@@ -237,13 +237,6 @@ export default {
               postId: result.data.createPost._id
             }
           });
-          /*
-          this.$router.replace(
-            `/pod/${this.$route.params.blogId}/write/post/${
-              result.data.createPost._id
-            }`
-          );
-          */
         })
         .catch(e => {
           this.notifications.errors.push(
