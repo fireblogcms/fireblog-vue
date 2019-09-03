@@ -48,3 +48,25 @@ export function graphQLErrorsContainsTokenExpiredError(graphQLErrors) {
   });
   return result;
 }
+
+export function getPod(id) {
+  return apolloClient
+    .query({
+      query: gql`
+        query loadPodQuery($_id: ID!) {
+          pod(_id: $_id) {
+            _id
+            contentDefaultLanguage
+            description
+            name
+          }
+        }
+      `,
+      variables: {
+        _id: id
+      }
+    })
+    .then(r => {
+      return r.data.pod;
+    });
+}

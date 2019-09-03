@@ -69,7 +69,7 @@ import Editor from "@ckeditor/ckeditor5-build-balloon-block";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import gql from "graphql-tag";
 import AppNotify from "./AppNotify";
-import { LOADING_STATE, getUser } from "../lib/helpers";
+import { LOADING_STATE, getUser, getPod } from "../lib/helpers";
 import { ckeditorUploadAdapterPlugin } from "../lib/ckeditorUploadAdapter";
 import logger from "../lib/logger";
 
@@ -203,8 +203,11 @@ export default {
     },
     async createPost(post) {
       this.notifications.errors = [];
-      const user = await getUser();
-      const pod = await this.loadPod(this.$route.params.blogId);
+
+      const [user, pod] = await Promise.all([
+        getUser(),
+        getPod(this.$route.params.blogId)
+      ]);
 
       // current user as author by default. But another user might have been defined
       // as the author, so do not override if this is already set.
@@ -248,27 +251,6 @@ export default {
           );
           this.savingPostState = LOADING_STATE.COMPLETED_ERROR;
           logger.error(new Error(e));
-        });
-    },
-    loadPod(id) {
-      return apolloClient
-        .query({
-          query: gql`
-            query loadPodQuery($_id: ID!) {
-              pod(_id: $_id) {
-                _id
-                contentDefaultLanguage
-                description
-                name
-              }
-            }
-          `,
-          variables: {
-            _id: id
-          }
-        })
-        .then(r => {
-          return r.data.pod;
         });
     },
     updatePost(post) {
