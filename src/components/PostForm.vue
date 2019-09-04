@@ -237,6 +237,7 @@ export default {
               postId: result.data.createPost._id
             }
           });
+          return result;
         })
         .catch(e => {
           this.notifications.errors.push(
@@ -289,7 +290,13 @@ export default {
         this.updatePost(post);
       }
     },
-    onPublishPostClick() {
+    async onPublishPostClick() {
+      const response = confirm(
+        "Are you sure you want to publish your story now ?"
+      );
+      if (!response) {
+        return false;
+      }
       if (!this.inputs.title.trim()) {
         alert("A title is required");
         return;
@@ -301,7 +308,10 @@ export default {
           publishedAt: new Date(),
           status
         };
-        this.createPost(newPost);
+        await this.createPost(newPost);
+        alert(
+          "congratulations, your post is now published and shared with the world ! 🍾"
+        );
       }
       if (this.operation() === "UPDATE") {
         const post = {
@@ -309,10 +319,17 @@ export default {
           publishedAt: new Date(),
           status
         };
-        this.updatePost(post);
+        await this.updatePost(post);
+        alert("Your last changes have been published ");
       }
     },
     onUnpublishPostClick() {
+      const response = confirm(
+        "Are you sure you want to unpublish your story ?"
+      );
+      if (response === false) {
+        return false;
+      }
       const post = {
         ...this.preparePostFromInputs(this.inputs),
         status: "DRAFT"

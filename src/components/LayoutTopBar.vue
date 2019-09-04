@@ -14,13 +14,16 @@
             </router-link>
           </span>
           <span v-if="blog && backToBlogIsVisible()" class="item tag is-medium">
-            <em>
-              <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
-              <router-link :to="{name: 'postList', params:{blogId:$route.params.blogId}}">
+            <span style="cursor:pointer" @click="onBackToBlogClick">
+              <em>
+                <img
+                  style="position:relative;height:20px !important;top:4px;"
+                  src="/images/book.png"
+                />
                 <span style="padding-left:10px;"><</span>
                 {{ blog.name }}
-              </router-link>
-            </em>
+              </em>
+            </span>
           </span>
 
           <portal-target name="topbar-left">
@@ -246,6 +249,17 @@ export default {
     onProfileDropdownOutsideClick() {
       if (this.dropdownMenuActive === true) {
         this.dropdownMenuActive = false;
+      }
+    },
+    onBackToBlogClick() {
+      const response = confirm(
+        "Are you sure you want to quit ? Make sure to save your changes before !"
+      );
+      if (response === true) {
+        this.$router.push({
+          name: "postList",
+          params: { blogId: this.$route.params.blogId }
+        });
       }
     },
     onApiClick() {
