@@ -132,7 +132,7 @@ import BulmaButtonLink from "../components/BulmaButtonLink";
 import LayoutBody from "../components/LayoutBody";
 import LayoutList from "../components/LayoutList";
 import striptags from "striptags";
-import * as Sentry from "@sentry/browser";
+import logger from "../lib/logger";
 
 const postsQuery = gql`
   query postsQuery($blog: ID!, $status: PostPublicationStatus!) {
@@ -152,7 +152,7 @@ const postsQuery = gql`
   }
 `;
 
-const podQuery = gql`
+const blogQuery = gql`
   query blogQuery($_id: ID!) {
     blog(_id: $_id) {
       name
@@ -216,14 +216,14 @@ export default {
      */
     init() {
       this.initState = LOADING_STATE.PENDING;
-      Promise.all([this.getPod(), this.getPosts(), this.getAllPosts()])
+      Promise.all([this.getBlog(), this.getPosts(), this.getAllPosts()])
         .then(() => {
           this.initState = LOADING_STATE.COMPLETED_OK;
         })
         .catch(error => {
           this.initState = LOADING_STATE.COMPLETED_ERROR;
           this.notifications.errors.push("init(): " + error.message);
-          Sentry.captureException(new Error(error));
+          logger.error(new Error(error));
         });
     },
     buildLinkToPost(item) {
@@ -243,7 +243,6 @@ export default {
           variables: { blog: this.$route.params.blogId }
         })
         .then(result => {
-          console.log("result", result);
           this.allPostsRequestState = LOADING_STATE.COMPLETED_OK;
           this.isFirstPost =
             result.data.posts.edges.length === 0 ? true : false;
@@ -252,7 +251,7 @@ export default {
         .catch(error => {
           this.allPostsRequestState = LOADING_STATE.COMPLETED_ERROR;
           this.notifications.errors.push("getAllPosts() " + error.message);
-          Sentry.captureException(new Error(error));
+          logger.error(new Error(error));
           return error;
         });
     },
@@ -272,7 +271,7 @@ export default {
         .catch(error => {
           this.blogRequestState = LOADING_STATE.COMPLETED_ERROR;
           this.notifications.errors.push("getBlog() " + error.message);
-          Sentry.captureException(new Error(error));
+          logger.error(new Error(error));
         });
     },
     getPosts() {
@@ -297,7 +296,7 @@ export default {
         .catch(error => {
           this.postsRequestState = LOADING_STATE.COMPLETED_ERROR;
           this.notifications.errors.push("getPosts() " + error.message);
-          Sentry.captureException(new Error(error));
+          logger.error(new Error(error));
         });
     },
     onStatusClick(status) {
