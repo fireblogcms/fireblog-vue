@@ -69,7 +69,7 @@ import Editor from "@ckeditor/ckeditor5-build-balloon-block";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import gql from "graphql-tag";
 import AppNotify from "./AppNotify";
-import { LOADING_STATE, getUser, getPod } from "../lib/helpers";
+import { LOADING_STATE, getUser, getBlog } from "../lib/helpers";
 import { ckeditorUploadAdapterPlugin } from "../lib/ckeditorUploadAdapter";
 import logger from "../lib/logger";
 

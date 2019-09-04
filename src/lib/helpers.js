@@ -49,7 +49,7 @@ export function graphQLErrorsContainsTokenExpiredError(graphQLErrors) {
   return result;
 }
 
-export function getPod(id) {
+export function getBlog(id) {
   return apolloClient
     .query({
       query: gql`
