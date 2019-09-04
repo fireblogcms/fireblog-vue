@@ -1,16 +1,12 @@
 
 <template>
   <div class="container section">
-    <LayoutBody>
-      <AppLoader v-if="initState === 'PENDING'">Signing in ...</AppLoader>
-      <div v-if="initState === 'COMPLETED_ERROR'" class="section">
-        <p>
-          Sorry, an error occured Please try again
-          <router-link :to="{name:'blogList'}">to log in</router-link>
-        </p>
-        <br />
-        <pre class="notification is-danger">{{ initStateError }}</pre>
-      </div>
+    <AppErrorReporter
+      v-if="initState === 'COMPLETED_ERROR'"
+      :error="initStateError"
+    >Sorry, An error occured while signing.</AppErrorReporter>
+    <LayoutBody v-if="initState === 'PENDING'">
+      <AppLoader>Signing in ...</AppLoader>
     </LayoutBody>
   </div>
 </template>
@@ -21,12 +17,14 @@ import AppLoader from "../components/AppLoader";
 import { auth0Client, syncAuth0UserWithServer } from "../lib/auth";
 import { LOADING_STATE } from "../lib/helpers";
 import LayoutBody from "../components/LayoutBody";
+import AppErrorReporter from "../components/AppErrorReporter";
 import logger from "../lib/logger";
 
 export default {
   components: {
     AppLoader,
-    LayoutBody
+    LayoutBody,
+    AppErrorReporter
   },
   data() {
     return {

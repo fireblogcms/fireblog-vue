@@ -79,11 +79,11 @@ import AppErrorReporter from "../components/AppErrorReporter";
 import LayoutList from "../components/LayoutList";
 import logger from "../lib/logger";
 
-const myPodsQuery = gql`
-  query myPodsQuery {
+const myBlogsQuery = gql`
+  query myBlogsQuery {
     me {
       name
-      pods(last: 100) {
+      blogs(last: 100) {
         edges {
           node {
             _id
@@ -157,11 +157,11 @@ export default {
       this.$router.push(this.buildLinkToPostList(item));
     },
     getBlogs() {
-      return apolloClient.query({ query: myPodsQuery }).then(result => {
-        this.blogs = result.data.me.pods;
-        logger.info("blogs", this.blogs);
+      return apolloClient.query({ query: myBlogsQuery }).then(result => {
+        this.blogs = result.data.me.blogs;
         this.blogsEdgesReversed = [...this.blogs.edges].reverse();
         this.blogsDefaultImagesMap = this.mapDefaultImagesToBlogId();
+        return this.blogs;
       });
     },
     defaultImages() {

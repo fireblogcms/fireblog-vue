@@ -4,7 +4,7 @@ import Router from "../router";
 
 const uploadQuery = gql`
   mutation uploadQuery($file: Upload!, $podId: ID!) {
-    upload(file: $file, podId: $podId) {
+    upload(file: $file, blogId: $blogId) {
       url
       filename
       mimetype
@@ -22,11 +22,11 @@ class ckeditorUploadAdapter {
 
   // Starts the upload process.
   upload() {
-    // Each image is uploaded in a folder name after the pod Id, so
+    // Each image is uploaded in a folder name after the blog Id, so
     // make sure we have a blogId param at this point.
     if (!Router.currentRoute.params.blogId) {
       throw new Error(
-        "ckeditorUploadAdapter : No pod Id detected in the current url, aborting upload !"
+        "ckeditorUploadAdapter : No blog Id detected in the current url, aborting upload !"
       );
     }
 
@@ -38,10 +38,10 @@ class ckeditorUploadAdapter {
       return apolloClient
         .mutate({
           mutation: uploadQuery,
-          // put file in a folder named after the pod Id.
+          // put file in a folder named after the blog Id.
           variables: {
             file,
-            podId: Router.currentRoute.params.blogId
+            blogId: Router.currentRoute.params.blogId
           }
         })
         .then(result => {

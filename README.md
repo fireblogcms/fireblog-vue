@@ -1,6 +1,6 @@
-# Pod Administration
+# blog Administration
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/02aabb46-5198-4549-8640-58fcfdc6b7e9/deploy-status)](https://app.netlify.com/sites/pod-vue/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/02aabb46-5198-4549-8640-58fcfdc6b7e9/deploy-status)](https://app.netlify.com/sites/blog-vue/deploys)
 
 First create and fill a `.env.local` file..
 

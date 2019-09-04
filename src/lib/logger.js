@@ -12,6 +12,9 @@ export default {
     console.log(...arguments);
   },
   error(message) {
+    if (process.env.NODE_ENV === "development") {
+      console.error(message);
+    }
     Sentry.captureException(message);
   }
 };

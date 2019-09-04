@@ -1,5 +1,5 @@
 <template>
-  <div class="pod-create-form section">
+  <div class="blog-create-form section">
     <template v-if="initState === 'PENDING'">
       <AppLoader>Loading</AppLoader>
     </template>
@@ -23,7 +23,7 @@
           </h2>
         </template>
 
-        <!-- text is this is not the first pod -->
+        <!-- text is this is not the first blog -->
         <template v-if="!first">
           <h2>
             <br />Create a new Blog. Give it a name or let
@@ -96,8 +96,8 @@ import AppLoader from "../components/AppLoader";
 import logger from "../lib/logger";
 
 const createBlogMutation = gql`
-  mutation createPod($pod: CreatePodInput!) {
-    createPod(pod: $pod) {
+  mutation createBlog($blog: CreateBlogInput!) {
+    createBlog(blog: $blog) {
       name
       description
       _id
@@ -192,7 +192,7 @@ export default {
         .mutate({
           mutation: createBlogMutation,
           variables: {
-            pod: {
+            blog: {
               owner: this.user._id,
               name: this.inputs.name,
               language: this.inputs.blogContentDefaultLanguage.replace("-", "_")
@@ -204,7 +204,7 @@ export default {
           logger.info("result", result);
           this.$router.push({
             name: "postList",
-            params: { blogId: result.data.createPod._id }
+            params: { blogId: result.data.createBlog._id }
           });
         })
         .catch(error => {

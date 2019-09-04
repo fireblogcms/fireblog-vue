@@ -13,12 +13,12 @@
               <span style="padding-left:10px;"><</span> All blogs
             </router-link>
           </span>
-          <span v-if="pod && backToPodIsVisible()" class="item tag is-medium">
+          <span v-if="blog && backToBlogIsVisible()" class="item tag is-medium">
             <em>
               <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
               <router-link :to="{name: 'postList', params:{blogId:$route.params.blogId}}">
                 <span style="padding-left:10px;"><</span>
-                {{ pod.name }}
+                {{ blog.name }}
               </router-link>
             </em>
           </span>
@@ -68,13 +68,13 @@
                     <strong>My blogs</strong>
                   </router-link>
                   <router-link
-                    v-for="edge in me.pods.edges"
+                    v-for="edge in me.blogs.edges"
                     :key="edge.node._id"
                     :to="{name:'postList', params:{blogId:edge.node._id}}"
                     class="dropdown-item"
                   >{{ edge.node.name }}</router-link>
                   <router-link :to="{name:'blogCreate'}" style class="dropdown-item">
-                    <button class="button is-outlined is-primary is-small">Create new Pod</button>
+                    <button class="button is-outlined is-primary is-small">Create new blog</button>
                   </router-link>
                   <hr class="dropdown-divider" />
 
@@ -103,7 +103,7 @@
 
           <div class="field">
             <div class="control">
-              <input readonly="true" class="input" type="text" :value="podApiUrl" />
+              <input readonly="true" class="input" type="text" :value="blogApiUrl" />
             </div>
           </div>
           <div class="field" v-show="apiModalExample">
@@ -127,13 +127,13 @@ import getSinglePostApiExample from "../apiExamples/getSinglePostApiExample";
 import ApiButton from "../components/ApiButton";
 import logger from "../lib/logger";
 
-const meWithMyPodsQuery = gql`
-  query meWithMyPodsQuery {
+const meWithMyBlogsQuery = gql`
+  query meWithMyBlogsQuery {
     me {
       name
       email
       picture
-      pods(last: 100) {
+      blogs(last: 100) {
         edges {
           node {
             name
@@ -156,7 +156,7 @@ export default {
     return {
       initState: "NOT_STARTED",
       me: null,
-      pod: null,
+      blog: null,
       dropdownMenuActive: false,
       error: null,
       showApiModal: false,
@@ -166,7 +166,7 @@ export default {
     };
   },
   computed: {
-    podApiUrl() {
+    blogApiUrl() {
       return `${process.env.VUE_APP_GRAPHQL_POD_BASE_URL}/${
         this.$route.params.blogId
       }`;
@@ -179,10 +179,10 @@ export default {
     async init() {
       this.initState = LOADING_STATE.PENDING;
       const promises = [];
-      promises.push(this.getMeWithMyPods());
-      // if we are inside a pod, fetch it.
+      promises.push(this.getMeWithMyBlogs());
+      // if we are inside a blog, fetch it.
       if (["postList", "postCreate", "postUpdate"].includes(this.$route.name)) {
-        promises.push(this.getCurrentPod());
+        promises.push(this.getCurrentBlog());
       }
       Promise.all(promises)
         .then(r => {
@@ -193,21 +193,21 @@ export default {
           logger.error(e);
         });
     },
-    getMeWithMyPods() {
+    getMeWithMyBlogs() {
       return apolloClient
         .query({
-          query: meWithMyPodsQuery
+          query: meWithMyBlogsQuery
         })
         .then(result => {
           this.me = result.data.me;
         });
     },
-    getCurrentPod() {
+    getCurrentBlog() {
       return apolloClient
         .query({
           query: gql`
-            query topBarPodQuery($_id: ID!) {
-              pod(_id: $_id) {
+            query topBarBlogQuery($_id: ID!) {
+              blog(_id: $_id) {
                 name
               }
             }
@@ -217,14 +217,14 @@ export default {
           }
         })
         .then(result => {
-          this.pod = result.data.pod;
+          this.blog = result.data.blog;
         })
         .catch(error => {
           this.error = error;
           logger.error(error);
         });
     },
-    backToPodIsVisible() {
+    backToBlogIsVisible() {
       if (["postUpdate", "postCreate"].includes(this.$route.name)) {
         return true;
       }
@@ -252,7 +252,7 @@ export default {
       if (this.$route.name === "postList") {
         this.apiModalExampleTitle = "get all posts, with pagination support";
         this.apiModalExample = getAllPostsApiExample();
-        this.tryItLink = `${this.podApiUrl}?query=${encodeURI(
+        this.tryItLink = `${this.blogApiUrl}?query=${encodeURI(
           getAllPostsApiExample()
         )}`;
       }
@@ -261,7 +261,7 @@ export default {
         this.apiModalExample = getSinglePostApiExample({
           _id: this.$route.params.postId
         });
-        this.tryItLink = `${this.podApiUrl}?query=${encodeURI(
+        this.tryItLink = `${this.blogApiUrl}?query=${encodeURI(
           getSinglePostApiExample({ _id: this.$route.params.postId })
         )}`;
       }

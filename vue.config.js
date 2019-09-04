@@ -4,7 +4,7 @@ const path = require("path");
 const fs = require("fs");
 const dotenv = require("dotenv");
 const difference = require("lodash.difference");
-
+const logger = require("./src/lib/logger");
 /**
  * Make sure all env vars are correctly defined.
  *

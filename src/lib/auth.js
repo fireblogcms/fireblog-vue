@@ -1,6 +1,7 @@
 import createAuth0Client from "@auth0/auth0-spa-js";
 import apolloClient from "./apolloClient";
 import gql from "graphql-tag";
+import logger from "./logger";
 
 export let auth0 = null;
 

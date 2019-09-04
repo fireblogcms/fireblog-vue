@@ -53,8 +53,8 @@ export function getPod(id) {
   return apolloClient
     .query({
       query: gql`
-        query loadPodQuery($_id: ID!) {
-          pod(_id: $_id) {
+        query loadBlogQuery($_id: ID!) {
+          blog(_id: $_id) {
             _id
             contentDefaultLanguage
             description
@@ -67,6 +67,6 @@ export function getPod(id) {
       }
     })
     .then(r => {
-      return r.data.pod;
+      return r.data.blog;
     });
 }

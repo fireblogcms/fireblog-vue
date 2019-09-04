@@ -204,21 +204,21 @@ export default {
     async createPost(post) {
       this.notifications.errors = [];
 
-      const [user, pod] = await Promise.all([
+      const [user, blog] = await Promise.all([
         getUser(),
-        getPod(this.$route.params.blogId)
+        getBlog(this.$route.params.blogId)
       ]);
 
       // current user as author by default. But another user might have been defined
       // as the author, so do not override if this is already set.
       if (!post.author) {
         post.author = user._id;
-        post.language = pod.contentDefaultLanguage.replace("-", "_");
+        post.language = blog.contentDefaultLanguage.replace("-", "_");
       }
-      logger.info("debug:createPost:pod", pod);
+      logger.info("debug:createPost:blog", blog);
       logger.info("debug:createPost:user", user);
       logger.info("debug:createPost:post", post);
-      post.pod = this.$route.params.blogId;
+      post.blog = this.$route.params.blogId;
       return apolloClient
         .mutate({
           mutation: createPostQuery,

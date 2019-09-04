@@ -16,7 +16,7 @@
                   style="height:70px !important;position:relative;top:20px;padding-right:1rem"
                   src="/images/book.png"
                 />
-                {{pod.name}} - POSTS
+                {{blog.name}} - POSTS
               </h1>
             </div>
             <div class="column is-4">
@@ -135,8 +135,8 @@ import striptags from "striptags";
 import * as Sentry from "@sentry/browser";
 
 const postsQuery = gql`
-  query postsQuery($pod: ID!, $status: PostPublicationStatus!) {
-    posts(language: "fr", filter: { pod: $pod, status: $status }, last: 100) {
+  query postsQuery($blog: ID!, $status: PostPublicationStatus!) {
+    posts(language: "fr", filter: { blog: $blog, status: $status }, last: 100) {
       edges {
         node {
           _id
@@ -153,8 +153,8 @@ const postsQuery = gql`
 `;
 
 const podQuery = gql`
-  query podQuery($_id: ID!) {
-    pod(_id: $_id) {
+  query blogQuery($_id: ID!) {
+    blog(_id: $_id) {
       name
       description
     }
@@ -162,11 +162,11 @@ const podQuery = gql`
 `;
 
 /**
- * We need to know if this is the first post for this pod.
+ * We need to know if this is the first post for this blog.
  */
 const allPostsQuery = gql`
-  query allPostsQuery($pod: ID!) {
-    posts(filter: { pod: $pod }, last: 1) {
+  query allPostsQuery($blog: ID!) {
+    posts(filter: { blog: $blog }, last: 1) {
       edges {
         node {
           _id
@@ -196,7 +196,7 @@ export default {
       allPostsRequestState: LOADING_STATE.NOT_STARTED,
       postsRequestState: LOADING_STATE.NOT_STARTED,
       blogRequestState: LOADING_STATE.NOT_STARTED,
-      pod: null,
+      blog: null,
       posts: null,
       activeStatus: "PUBLISHED",
       // will be true or false, once we have counted all existing posts
@@ -240,7 +240,7 @@ export default {
       return apolloClient
         .query({
           query: allPostsQuery,
-          variables: { pod: this.$route.params.blogId }
+          variables: { blog: this.$route.params.blogId }
         })
         .then(result => {
           console.log("result", result);
@@ -256,22 +256,22 @@ export default {
           return error;
         });
     },
-    getPod() {
+    getBlog() {
       return apolloClient
         .query({
-          query: podQuery,
+          query: blogQuery,
           variables: {
             _id: this.$route.params.blogId
           }
         })
         .then(result => {
           this.blogRequestState = LOADING_STATE.COMPLETED_OK;
-          this.pod = result.data.pod;
+          this.blog = result.data.blog;
           return result;
         })
         .catch(error => {
           this.blogRequestState = LOADING_STATE.COMPLETED_ERROR;
-          this.notifications.errors.push("getPod() " + error.message);
+          this.notifications.errors.push("getBlog() " + error.message);
           Sentry.captureException(new Error(error));
         });
     },
@@ -285,7 +285,7 @@ export default {
         .query({
           query: postsQuery,
           variables: {
-            pod: this.$route.params.blogId,
+            blog: this.$route.params.blogId,
             status: this.activeStatus
           }
         })
