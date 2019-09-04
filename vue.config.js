@@ -4,7 +4,7 @@ const path = require("path");
 const fs = require("fs");
 const dotenv = require("dotenv");
 const difference = require("lodash.difference");
-const logger = require("./src/lib/logger");
+
 /**
  * Make sure all env vars are correctly defined.
  *
@@ -38,13 +38,13 @@ function checkEnvVars(exampleEnvFile) {
     let diffDetected = null;
     if (diffLeft.length > 0) {
       diffDetected = true;
-      logger.info(
+      console.log(
         `Error: Thoses keys are defined in .env but not in ${exampleEnvFile} : ${diffLeft}`
       );
     }
     if (diffRight.length > 0) {
       diffDetected = true;
-      logger.info(
+      console.log(
         `Error: Thoses keys are defined in ${exampleEnvFile} but not in .env: ${diffRight}`
       );
     }
