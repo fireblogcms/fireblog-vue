@@ -336,6 +336,8 @@ export default {
   padding: 2rem 4rem;
 }
 .writeForm textarea#title {
+  color: rgb(76, 74, 78);
+  font-family: Roslindale;
   background: transparent;
   /*font-family: serif;*/
   text-align: left;
@@ -362,7 +364,7 @@ export default {
   padding: 1px;
   margin: 0;
   resize: none; /*remove the resize handle on the bottom right*/
-  line-height: 1.8;
+  line-height: 30px;
 }
 .writeForm .ck-toolbar {
   background: white;
