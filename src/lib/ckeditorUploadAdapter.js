@@ -3,7 +3,7 @@ import gql from "graphql-tag";
 import Router from "../router";
 
 const uploadQuery = gql`
-  mutation uploadQuery($file: Upload!, $podId: ID!) {
+  mutation uploadQuery($file: Upload!, $blogId: ID!) {
     upload(file: $file, blogId: $blogId) {
       url
       filename
