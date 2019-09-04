@@ -336,12 +336,12 @@ export default {
   padding: 2rem 4rem;
 }
 .writeForm textarea#title {
-  color: rgb(76, 74, 78);
   font-family: Roslindale;
+  color: #333;
   background: transparent;
   /*font-family: serif;*/
   text-align: left;
-  font-size: 50px;
+  font-size: 60px;
   width: 100%;
   border: none !important;
   border-color: none;

@@ -2,7 +2,6 @@ body {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
   background: rgb(250, 250, 250);
   min-height: 100vh;
   height: 100%;
@@ -27,57 +26,6 @@ body img {
   color: #03a87c;
   border-radius: 10px;
   outline: none;
-}
-
-.child-is-vertical-centered {
-  height: 100vh;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* HOME VIEW */
-
-.writeForm input#title {
-  display: block;
-  border: none;
-  font-size: 3rem;
-  outline: none;
-  width: 100%;
-  margin-bottom: 1rem;
-}
-
-.writeForm textarea#content {
-  display: block;
-  outline: none;
-  width: 100%;
-  height: 90vh;
-  border: none;
-  font-size: 2rem;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
-
-.write-menu .item {
-  margin: 1rem;
-}
-
-.write-menu {
-  display: flex;
-  justify-content: center;
-  align-content: space-between;
-}
-
-.button.is-info {
-  background-color: #01c3a7 !important;
-  color: #fff;
-  cursor: pointer;
-}
-
-.card {
-  border-radius: 5px;
 }
 
 .animated.fadeIn {
