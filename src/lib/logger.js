@@ -7,7 +7,14 @@ import Vue from "vue";
 if (process.env.NODE_ENV === "production") {
   Sentry.init({
     dsn: process.env.VUE_APP_SENTRY_URL,
-    integrations: [new Integrations.Vue({ Vue, attachProps: true })]
+    integrations: [new Integrations.Vue({ Vue, attachProps: true })],
+    beforeSend(event, hint) {
+      // Check if it is an exception, and if so, show the report dialog
+      if (event.exception) {
+        Sentry.showReportDialog({ eventId: event.event_id });
+      }
+      return event;
+    }
   });
 }
 
