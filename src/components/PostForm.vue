@@ -7,40 +7,37 @@
       </span>
     </portal>
     <portal to="topbar-right" v-if="operation() === 'CREATE' || this.existingPost">
-      <input
-        @click="onSaveClick()"
+      <button
+        @click="onSaveDraftClick()"
         v-if="!existingPost || (existingPost && existingPost.status === 'DRAFT')"
         class="button is-outlined item"
-        :class="{ 'is-loading': savingPostState === LOADING_STATE.PENDING }"
+        :class="{ 'is-loading': savingDraftState === LOADING_STATE.PENDING }"
         type="submit"
-        value="SAVE DRAFT"
-      />
+      >SAVE DRAFT</button>
 
-      <input
+      <button
         @click="onUnpublishPostClick()"
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
         class="button is-outlined item"
         type="submit"
         value="UNPUBLISH"
-      />
+      >UNPUBLISH</button>
 
-      <input
+      <button
         @click="onPublishPostClick()"
         v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
         class="button is-outlined item is-primary"
         :class="{ 'is-loading': publishPostState === LOADING_STATE.PENDING }"
         type="submit"
-        value="PUBLISH"
-      />
+      >PUBLISH</button>
 
-      <input
+      <button
         @click="onPublishPostClick()"
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
         class="button is-outlined item is-primary"
         :class="{ 'is-loading': publishPostState === LOADING_STATE.PENDING }"
         type="submit"
-        value="PUBLISH CHANGES"
-      />
+      >PUBLISH CHANGES</button>
     </portal>
 
     <template v-if="loadingPostState === LOADING_STATE.PENDING">
@@ -71,7 +68,6 @@ import gql from "graphql-tag";
 import AppNotify from "./AppNotify";
 import { LOADING_STATE, getUser, getBlog } from "../lib/helpers";
 import { ckeditorUploadAdapterPlugin } from "../lib/ckeditorUploadAdapter";
-import logger from "../lib/logger";
 
 const PostResponseFragment = gql`
   fragment PostResponse on Post {
@@ -131,7 +127,7 @@ export default {
     return {
       publishPostState: LOADING_STATE.NOT_STARTED,
       savingPostState: LOADING_STATE.NOT_STARTED,
-      loadingPostState: LOADING_STATE.NOT_STARTED,
+      savingDraftState: LOADING_STATE.NOT_STARTED,
       lastTimeSaved: null,
       existingPost: null,
       notifications: {
@@ -163,12 +159,9 @@ export default {
           this.inputs = this.prepareInputsFromPost(this.existingPost);
           this.loadingPostState = LOADING_STATE.COMPLETED_OK;
         })
-        .catch(error => {
-          this.notifications.errors.push(
-            "😞Sorry, loading post failed: " + error
-          );
+        .catch(e => {
+          this.notifications.errors.push("😞Sorry, loading post failed: " + e);
           this.loadingPostState = LOADING_STATE.COMPLETED_ERROR;
-          logger.error(new Error(error));
         });
     }
   },
@@ -202,23 +195,17 @@ export default {
       };
     },
     async createPost(post) {
-      this.notifications.errors = [];
-
-      const [user, blog] = await Promise.all([
-        getUser(),
-        getBlog(this.$route.params.blogId)
-      ]);
-
+      const user = await getUser();
+      const blog = await getBlog(this.$route.params.blogId);
+      console.log("debug:createPost:user", user);
+      console.log("debug:createPost:post", post);
       // current user as author by default. But another user might have been defined
       // as the author, so do not override if this is already set.
       if (!post.author) {
         post.author = user._id;
-        post.language = blog.contentDefaultLanguage.replace("-", "_");
       }
-      logger.info("debug:createPost:blog", blog);
-      logger.info("debug:createPost:user", user);
-      logger.info("debug:createPost:post", post);
       post.blog = this.$route.params.blogId;
+      post.language = blog.contentDefaultLanguage.replace("-", "_");
       return apolloClient
         .mutate({
           mutation: createPostQuery,
@@ -226,7 +213,6 @@ export default {
         })
         .then(result => {
           apolloClient.resetStore();
-          this.savingPostState = LOADING_STATE.COMPLETED_OK;
           this.lastTimeSaved = Date.now();
           this.existingPost = result.data.createPost;
           // post is created, we are now in UPDATE mode for the form.
@@ -243,8 +229,7 @@ export default {
           this.notifications.errors.push(
             "😞Sorry, saving post failed with this error message: " + e
           );
-          this.savingPostState = LOADING_STATE.COMPLETED_ERROR;
-          logger.error(new Error(e));
+          return e;
         });
     },
     updatePost(post) {
@@ -259,24 +244,26 @@ export default {
           }
         })
         .then(result => {
-          this.savingPostState = LOADING_STATE.COMPLETED_OK;
           this.lastTimeSaved = Date.now();
           this.existingPost = result.data.updatePost;
           apolloClient.clearStore();
-        })
-        .catch(e => {
-          this.savingPostState = LOADING_STATE.COMPLETED_ERROR;
-          this.notifications.errors.push("Sorry, updatePost failed : " + e);
-          logger.error(new Error(e));
+          return result;
         });
     },
-    onSaveClick() {
+    onSaveDraftClick() {
       if (!this.inputs.title.trim()) {
         alert("A title is required");
         return;
       }
+      this.savingDraftState = LOADING_STATE.PENDING;
       if (this.operation() === OPERATION.CREATE) {
-        this.createPost(this.preparePostFromInputs(this.inputs));
+        this.createPost(this.preparePostFromInputs(this.inputs))
+          .then(() => {
+            this.savingDraftState = LOADING_STATE.COMPLETED_OK;
+          })
+          .catch(e => {
+            this.savingDraftState = LOADING_STATE.COMPLETED_ERROR;
+          });
       }
       //
       // UPDATE
@@ -287,49 +274,53 @@ export default {
           title: this.inputs.title,
           content: this.inputs.content
         };
-        this.updatePost(post);
+        this.updatePost(post)
+          .then(() => {
+            this.savingDraftState = LOADING_STATE.COMPLETED_OK;
+          })
+          .catch(e => {
+            this.savingDraftState = LOADING_STATE.COMPLETED_ERROR;
+          });
       }
     },
-    async onPublishPostClick() {
-      const response = confirm(
-        "Are you sure you want to publish your story now ?"
-      );
-      if (!response) {
-        return false;
-      }
+    onPublishPostClick() {
       if (!this.inputs.title.trim()) {
         alert("A title is required");
         return;
       }
       const status = "PUBLISHED";
       if (this.operation() === "CREATE") {
+        this.publishPostState = LOADING_STATE.PENDING;
         const newPost = {
           ...this.preparePostFromInputs(this.inputs),
           publishedAt: new Date(),
           status
         };
-        await this.createPost(newPost);
-        alert(
-          "congratulations, your post is now published and shared with the world ! 🍾"
-        );
+        this.createPost(newPost)
+          .then(() => {
+            this.publishPostState = LOADING_STATE.COMPLETED_OK;
+          })
+          .catch(e => {
+            this.publishPostState = LOADING_STATE.COMPLETED_ERROR;
+          });
       }
       if (this.operation() === "UPDATE") {
+        this.publishPostState = LOADING_STATE.PENDING;
         const post = {
           ...this.preparePostFromInputs(this.inputs),
           publishedAt: new Date(),
           status
         };
-        await this.updatePost(post);
-        alert("Your last changes have been published ");
+        this.updatePost(post)
+          .then(() => {
+            this.publishPostState = LOADING_STATE.COMPLETED_OK;
+          })
+          .catch(e => {
+            this.publishPostState = LOADING_STATE.COMPLETED_ERROR;
+          });
       }
     },
     onUnpublishPostClick() {
-      const response = confirm(
-        "Are you sure you want to unpublish your story ?"
-      );
-      if (response === false) {
-        return false;
-      }
       const post = {
         ...this.preparePostFromInputs(this.inputs),
         status: "DRAFT"
@@ -353,12 +344,10 @@ export default {
   padding: 2rem 4rem;
 }
 .writeForm textarea#title {
-  font-family: Roslindale;
-  color: #333;
   background: transparent;
-  /*font-family: serif;*/
+  font-family: Roslindale, serif;
   text-align: left;
-  font-size: 60px;
+  font-size: 53px;
   width: 100%;
   border: none !important;
   border-color: none;
@@ -381,7 +370,7 @@ export default {
   padding: 1px;
   margin: 0;
   resize: none; /*remove the resize handle on the bottom right*/
-  line-height: 30px;
+  line-height: 1.8;
 }
 .writeForm .ck-toolbar {
   background: white;
