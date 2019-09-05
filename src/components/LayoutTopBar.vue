@@ -90,45 +90,28 @@
         </div>
       </div>
     </div>
-    {{showApiModal}}
-    <BulmaModal v-model="showApiModal">
-      <template #title>COUCOU</template>
-      <template #body>COUCOU</template>
-    </BulmaModal>
 
-    <!--
-    <div :class="{ 'is-active': showApiModal }" class="modal animated fadeIn">
-      <div @click="showApiModal = false" class="modal-background"></div>
-      <div class="modal-card animated fadeInDown">
-        <header class="modal-card-head">
-          <p class="modal-card-title">
-            GRAPHQL API
-            <a
-              :href="tryItLink"
-              target="_blank"
-              class="button is-info is-pulled-right"
-            >Open GraphQL Explorer</a>
-          </p>
-        </header>
-        <div class="modal-card-body">
-          <div class="field">
-            <div class="control">
-              <input readonly="true" class="input" type="text" :value="blogApiUrl" />
-            </div>
-          </div>
-          <div class="field" v-show="apiModalExample">
-            <label class="label">{{apiModalExampleTitle}}</label>
-            <pre class="language-graphql"><code>{{apiModalExample}}</code></pre>
+    <BulmaModal v-model="showApiModal">
+      <template #title>
+        GRAPHQL API
+        <a
+          :href="tryItLink"
+          target="_blank"
+          class="button is-info is-pulled-right"
+        >Open GraphQL Explorer</a>
+      </template>
+      <template #body>
+        <div class="field">
+          <div class="control">
+            <input readonly="true" class="input" type="text" :value="blogApiUrl" />
           </div>
         </div>
-        <footer style="justify-content: flex-end;" class="modal-card-foot">
-          <button @click="showApiModal = false" class="button">Close</button>
-        </footer>
-
-      </div>
-      <button @click="showApiModal = false" class="modal-close is-large" aria-label="close"></button>
-    </div>
-    -->
+        <div class="field" v-show="apiModalExample">
+          <label class="label">{{apiModalExampleTitle}}</label>
+          <pre class="language-graphql"><code>{{apiModalExample}}</code></pre>
+        </div>
+      </template>
+    </BulmaModal>
   </div>
 </template>
 
