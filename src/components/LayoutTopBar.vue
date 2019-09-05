@@ -90,20 +90,27 @@
         </div>
       </div>
     </div>
+    {{showApiModal}}
+    <BulmaModal v-model="showApiModal">
+      <template #title>COUCOU</template>
+      <template #body>COUCOU</template>
+    </BulmaModal>
 
-    <div :class="{ 'is-active': showApiModal }" class="modal">
-      <div class="modal-background"></div>
-      <div class="modal-card">
-        <div class="modal-card-body">
-          <h1 class="title is-uppercase">
+    <!--
+    <div :class="{ 'is-active': showApiModal }" class="modal animated fadeIn">
+      <div @click="showApiModal = false" class="modal-background"></div>
+      <div class="modal-card animated fadeInDown">
+        <header class="modal-card-head">
+          <p class="modal-card-title">
             GRAPHQL API
             <a
               :href="tryItLink"
               target="_blank"
               class="button is-info is-pulled-right"
             >Open GraphQL Explorer</a>
-          </h1>
-
+          </p>
+        </header>
+        <div class="modal-card-body">
           <div class="field">
             <div class="control">
               <input readonly="true" class="input" type="text" :value="blogApiUrl" />
@@ -114,10 +121,14 @@
             <pre class="language-graphql"><code>{{apiModalExample}}</code></pre>
           </div>
         </div>
-        <!-- Any other Bulma elements you want -->
+        <footer style="justify-content: flex-end;" class="modal-card-foot">
+          <button @click="showApiModal = false" class="button">Close</button>
+        </footer>
+
       </div>
       <button @click="showApiModal = false" class="modal-close is-large" aria-label="close"></button>
     </div>
+    -->
   </div>
 </template>
 
@@ -128,6 +139,7 @@ import { getUser, LOADING_STATE } from "../lib/helpers";
 import getAllPostsApiExample from "../apiExamples/getAllPosts";
 import getSinglePostApiExample from "../apiExamples/getSinglePostApiExample";
 import ApiButton from "../components/ApiButton";
+import BulmaModal from "../components/BulmaModal";
 import logger from "../lib/logger";
 
 const meWithMyBlogsQuery = gql`
@@ -153,7 +165,8 @@ const meWithMyBlogsQuery = gql`
 
 export default {
   components: {
-    ApiButton
+    ApiButton,
+    BulmaModal
   },
   data() {
     return {

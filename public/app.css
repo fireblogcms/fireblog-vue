@@ -31,3 +31,6 @@ body img {
 .animated.fadeIn {
   animation-duration: 0.1s;
 }
+.animated.fadeInDown {
+  animation-duration: 0.4s;
+}
