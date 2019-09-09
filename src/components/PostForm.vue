@@ -46,6 +46,7 @@
 
     <form @submit.prevent>
       <textarea-autosize
+        maxlength="250"
         @keydown.enter.native.prevent="onTitleEnter"
         autofocus
         rows="1"
@@ -54,7 +55,13 @@
         id="title"
         v-model="inputs.title"
       ></textarea-autosize>
-      <ckeditor ref="ckeditor" :editor="editor" v-model="inputs.content" :config="editorConfig"></ckeditor>
+      <ckeditor
+        class="content"
+        ref="ckeditor"
+        :editor="editor"
+        v-model="inputs.content"
+        :config="editorConfig"
+      ></ckeditor>
     </form>
   </div>
 </template>
@@ -141,12 +148,24 @@ export default {
     };
   },
   created() {
+    document.addEventListener("keypress", function onPress(event) {
+      if (event.key === "z" && event.ctrlKey) {
+        alert("ok");
+      }
+    });
     this.editor = Editor;
     this.LOADING_STATE = LOADING_STATE;
     this.OPERATION = OPERATION;
     this.editorConfig = {
       extraPlugins: [ckeditorUploadAdapterPlugin],
-      toolbar: ["bold", "italic", "link", "heading", "blockQuote"],
+      toolbar: [
+        "bold",
+        "italic",
+        "link",
+        "heading",
+        "blockQuote",
+        "bulletedList"
+      ],
       blockToolbar: ["imageUpload", "mediaEmbed"]
     };
 
@@ -166,6 +185,9 @@ export default {
     }
   },
   methods: {
+    onCtrlS() {
+      alert("okay");
+    },
     onTitleEnter() {
       this.$refs.ckeditor.$el.focus();
     },
@@ -376,9 +398,10 @@ export default {
   background: white;
   border: none;
 }
-.writeForm .ck-editor__editable p {
+.writeForm .ck-editor__editable p,
+li,
+a {
   font-size: 21px;
-  padding: 0.7rem 0;
 }
 .writeForm .ck-editor__editable h4 {
   font-size: 28px;
