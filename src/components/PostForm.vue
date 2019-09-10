@@ -9,11 +9,10 @@
     <portal to="topbar-right" v-if="operation() === 'CREATE' || this.existingPost">
       <button
         @click="onSaveDraftClick()"
-        v-if="!existingPost || (existingPost && existingPost.status === 'DRAFT')"
         class="button is-outlined item"
         :class="{ 'is-loading': savingDraftState === LOADING_STATE.PENDING }"
         type="submit"
-      >SAVE DRAFT</button>
+      >{{!existingPost || (existingPost && existingPost.status === 'DRAFT') ? "SAVE DRAFT" : "SAVE CHANGES"}}</button>
 
       <button
         @click="onUnpublishPostClick()"
@@ -75,6 +74,7 @@ import gql from "graphql-tag";
 import AppNotify from "./AppNotify";
 import { LOADING_STATE, getUser, getBlog } from "../lib/helpers";
 import { ckeditorUploadAdapterPlugin } from "../lib/ckeditorUploadAdapter";
+import hotkeys from "hotkeys-js";
 
 const PostResponseFragment = gql`
   fragment PostResponse on Post {
@@ -148,10 +148,19 @@ export default {
     };
   },
   created() {
-    document.addEventListener("keypress", function onPress(event) {
-      if (event.key === "z" && event.ctrlKey) {
-        alert("ok");
+    hotkeys.filter = event => {
+      if (
+        this.$route.name === "postUpdate" ||
+        this.$route.name === "postCreate"
+      ) {
+        return true;
       }
+      return false;
+    };
+    hotkeys("ctrl+s,command+s", (event, handler) => {
+      // Prevent the default refresh event under WINDOWS system
+      this.onSaveDraftClick();
+      event.preventDefault();
     });
     this.editor = Editor;
     this.LOADING_STATE = LOADING_STATE;
@@ -166,7 +175,10 @@ export default {
         "blockQuote",
         "bulletedList"
       ],
-      blockToolbar: ["imageUpload", "mediaEmbed"]
+      blockToolbar: ["imageUpload", "mediaEmbed"],
+      image: {
+        toolbar: ["imageTextAlternative"]
+      }
     };
 
     // if we are editing a post, the route
@@ -185,9 +197,6 @@ export default {
     }
   },
   methods: {
-    onCtrlS() {
-      alert("okay");
-    },
     onTitleEnter() {
       this.$refs.ckeditor.$el.focus();
     },
