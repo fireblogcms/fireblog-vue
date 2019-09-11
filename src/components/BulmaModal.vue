@@ -11,7 +11,9 @@
         <slot name="body" />
       </div>
       <footer style="justify-content: flex-end;" class="modal-card-foot">
-        <button @click="onCloseClick" class="button">Close</button>
+        <slot name="footer">
+          <button @click="onCloseClick" class="button">Close</button>
+        </slot>
       </footer>
     </div>
     <button @click="onCloseClick" class="modal-close is-large" aria-label="close"></button>

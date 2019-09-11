@@ -70,6 +70,7 @@
                 </li>
               </ul>
             </div>
+
             <LayoutBody style="border-top-left-radius:0">
               <div class="container" style="border-top-left-radius:0;">
                 <LayoutList
@@ -120,7 +121,7 @@
                             >Unpublish</div>
                           -->
                           <div
-                            @click="onDeleteClick(item.node._id)"
+                            @click="onDeleteClick(item.node)"
                             style="min-width:100px"
                             class="button is-outlined"
                           >Delete</div>
@@ -136,6 +137,14 @@
         </template>
       </div>
     </template>
+    <BulmaModal v-model="deleteModal.show">
+      <template #title>{{deleteModal.title}}</template>
+      <template #body>This action cannot be undone</template>
+      <template #footer>
+        <div @click="deleteModal.show = false" class="button is-success">OUPS NO, CANCEL !</div>
+        <div @click="onDeleteModalConfirmClick" class="button is-danger">DELETE IT. FOREVER.</div>
+      </template>
+    </BulmaModal>
   </AdminLayout>
 </template>
 
@@ -151,6 +160,7 @@ import LayoutBody from "../components/LayoutBody";
 import LayoutList from "../components/LayoutList";
 import striptags from "striptags";
 import logger from "../lib/logger";
+import BulmaModal from "../components/BulmaModal";
 
 const postsQuery = gql`
   query postsQuery($blog: ID!, $status: PostPublicationStatus!) {
@@ -212,7 +222,8 @@ export default {
     AppNotify,
     LayoutBody,
     LayoutList,
-    BulmaButtonLink
+    BulmaButtonLink,
+    BulmaModal
   },
   data() {
     return {
@@ -225,6 +236,11 @@ export default {
       postsRequestState: LOADING_STATE.NOT_STARTED,
       blogRequestState: LOADING_STATE.NOT_STARTED,
       deletePostRequestState: LOADING_STATE.NOT_STARTED,
+      deleteModal: {
+        show: false,
+        title: null,
+        data: null
+      },
       blog: null,
       posts: null,
       activeStatus: "PUBLISHED",
@@ -328,40 +344,46 @@ export default {
           logger.error(new Error(error));
         });
     },
-    onStatusClick(status) {
-      this.activeStatus = status;
-      this.getPosts();
-    },
-    onDeleteClick(postId) {
-      const confirmed = confirm(
-        "Are your sure you want to delete this article ? This action can not be reverted !"
-      );
-      if (!confirmed) {
-        return;
-      }
+    deletePost(post) {
+      console.log("post", post);
       this.deletePostRequestState = LOADING_STATE.PENDING;
       return apolloClient
         .mutate({
           mutation: deletePostMutation,
-          variables: { id: postId }
+          variables: { id: post._id }
         })
         .then(result => {
           this.deletePostRequestState = LOADING_STATE.COMPLETED_OK;
           console.log("result", result);
           const post = result.data.deletePost;
-          alert(`${post.title} has been deleted !`);
           return this.getPosts();
+          this.deleteModal.show = false;
           return result;
         })
         .catch(error => {
           this.deletePostRequestState = LOADING_STATE.COMPLETED_ERROR;
           this.notifications.errors.push("onDeleteClick() " + error.message);
           logger.error(new Error(error));
+          this.deleteModal.show = false;
           return error;
         });
     },
+    onStatusClick(status) {
+      this.activeStatus = status;
+      this.getPosts();
+    },
+    onDeleteClick(post) {
+      this.deleteModal.post = post;
+      this.deleteModal.show = true;
+      this.deleteModal.title = `Delete ${post.title}`;
+    },
     onUnpublishClick(status) {
       alert("unpublish");
+    },
+    onDeleteModalConfirmClick() {
+      this.deletePost(this.deleteModal.post).then(r => {
+        this.deleteModal.show = false;
+      });
     }
   }
 };
