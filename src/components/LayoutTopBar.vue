@@ -14,6 +14,7 @@
             </router-link>
           </span>
           <span v-if="blog && backToBlogIsVisible()" class="item tag is-medium">
+            <!--
             <span style="cursor:pointer" @click="onBackToBlogClick">
               <em>
                 <img
@@ -24,6 +25,7 @@
                 {{ blog.name }}
               </em>
             </span>
+            -->
           </span>
 
           <portal-target name="topbar-left">

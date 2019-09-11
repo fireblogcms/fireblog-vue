@@ -70,65 +70,59 @@
               </ul>
             </div>
 
-            <LayoutBody style="border-top-left-radius:0">
+            <LayoutBody style="border-top-left-radius:0;min-height:200px">
               <div class="container" style="border-top-left-radius:0;">
-                <LayoutList
-                  style="height:200px"
-                  :items="posts.edges"
-                  :itemUniqueKey="(item) => item.node._id"
-                >
-                  <!--POST PENDING-->
-                  <template v-if="postsRequestState === 'PENDING'">
-                    <AppLoader />
-                  </template>
+                <template v-if="postsRequestState === 'COMPLETED_OK' && posts.edges.length === 0">
+                  <div class="content section has-text-centered">
+                    <p>No post found with {{ activeStatus }} status for now.</p>
+                  </div>
+                </template>
+                <template v-if="posts.edges.length > 0">
+                  <LayoutList :items="posts.edges" :itemUniqueKey="(item) => item.node._id">
+                    <!--POST PENDING-->
+                    <AppLoader v-show="postsRequestState === 'PENDING'" />
 
-                  <!--NO PUBLISHED POST FOUND-->
-                  <template v-if="postsRequestState === 'COMPLETED_OK' && posts.edges.length === 0">
-                    <div class="content section has-text-centered">
-                      <p>No post found with {{ activeStatus }} status for now.</p>
-                    </div>
-                  </template>
-                  <!-- POST LIST -->
+                    <!-- POST LIST -->
+                    <template v-if="postsRequestState === 'COMPLETED_OK'" v-slot="{item}">
+                      <div class="columns">
+                        <div @click="onRowClick(item)" class="column is-10">
+                          <h2 class="title">
+                            {{ item.node.title + " " }}
+                            <span
+                              v-if="item.node.status === 'PUBLISHED'"
+                              class="subtitle"
+                            >published {{ Number(item.node.publishedAt) | moment("from") }}</span>
+                            <span
+                              v-if="item.node.status === 'DRAFT'"
+                              class="subtitle"
+                            >updated {{ Number(item.node.updatedAt) | moment("from") }}</span>
+                          </h2>
 
-                  <template v-if="postsRequestState === 'COMPLETED_OK'" v-slot="{item}">
-                    <div class="columns">
-                      <div @click="onRowClick(item)" class="column is-10">
-                        <h2 class="title">
-                          {{ item.node.title + " " }}
-                          <span
-                            v-if="item.node.status === 'PUBLISHED'"
-                            class="subtitle"
-                          >published {{ Number(item.node.publishedAt) | moment("from") }}</span>
-                          <span
-                            v-if="item.node.status === 'DRAFT'"
-                            class="subtitle"
-                          >updated {{ Number(item.node.updatedAt) | moment("from") }}</span>
-                        </h2>
-
-                        <p v-if="item.node.content.length > 0">
-                          <em>{{striptags(item.node.content.substr(0, 200))}}...</em>
-                        </p>
-                      </div>
-                      <div class="column is-2">
-                        <div class="actions">
-                          <!--
+                          <p v-if="item.node.content.length > 0">
+                            <em>{{striptags(item.node.content.substr(0, 200))}}...</em>
+                          </p>
+                        </div>
+                        <div class="column is-2">
+                          <div class="actions">
+                            <!--
                             <div
                               @click="onUnpublishClick"
                               v-show="activeStatus === 'PUBLISHED'"
                               style="min-width:100px"
                               class="button is-outlined"
                             >Unpublish</div>
-                          -->
-                          <div
-                            @click="onDeleteClick(item.node)"
-                            style="min-width:100px"
-                            class="button is-outlined"
-                          >Delete</div>
+                            -->
+                            <div
+                              @click="onDeleteClick(item.node)"
+                              style="min-width:100px"
+                              class="button is-outlined"
+                            >Delete</div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </template>
-                </LayoutList>
+                    </template>
+                  </LayoutList>
+                </template>
                 <!---->
               </div>
             </LayoutBody>
@@ -231,9 +225,7 @@ export default {
         info: []
       },
       initState: LOADING_STATE.NOT_STARTED,
-      allPostsRequestState: LOADING_STATE.NOT_STARTED,
       postsRequestState: LOADING_STATE.NOT_STARTED,
-      blogRequestState: LOADING_STATE.NOT_STARTED,
       deletePostRequestState: LOADING_STATE.NOT_STARTED,
       deleteModal: {
         show: false,
@@ -260,13 +252,17 @@ export default {
      */
     init() {
       this.initState = LOADING_STATE.PENDING;
-      Promise.all([this.getBlog(), this.getPosts(), this.getAllPosts()])
+      Promise.all([
+        this.getBlog(),
+        this.getPosts(this.activeStatus),
+        this.getAllPosts()
+      ])
         .then(() => {
           this.initState = LOADING_STATE.COMPLETED_OK;
         })
         .catch(error => {
           this.initState = LOADING_STATE.COMPLETED_ERROR;
-          this.notifications.errors.push("init(): " + error.message);
+          this.notifications.errors.push("initError: " + error.message);
           logger.error(new Error(error));
         });
     },
@@ -280,23 +276,15 @@ export default {
       this.$router.push(this.buildLinkToPost(item));
     },
     async getAllPosts() {
-      this.allPostsRequestState === LOADING_STATE.PENDING;
       return apolloClient
         .query({
           query: allPostsQuery,
           variables: { blog: this.$route.params.blogId }
         })
         .then(result => {
-          this.allPostsRequestState = LOADING_STATE.COMPLETED_OK;
           this.isFirstPost =
             result.data.posts.edges.length === 0 ? true : false;
           return result;
-        })
-        .catch(error => {
-          this.allPostsRequestState = LOADING_STATE.COMPLETED_ERROR;
-          this.notifications.errors.push("getAllPosts() " + error.message);
-          logger.error(new Error(error));
-          return error;
         });
     },
     getBlog() {
@@ -308,17 +296,11 @@ export default {
           }
         })
         .then(result => {
-          this.blogRequestState = LOADING_STATE.COMPLETED_OK;
           this.blog = result.data.blog;
           return result;
-        })
-        .catch(error => {
-          this.blogRequestState = LOADING_STATE.COMPLETED_ERROR;
-          this.notifications.errors.push("getBlog() " + error.message);
-          logger.error(new Error(error));
         });
     },
-    getPosts() {
+    getPosts(status) {
       this.postsRequestState = LOADING_STATE.PENDING;
       this.notifications = {
         errors: [],
@@ -329,7 +311,7 @@ export default {
           query: postsQuery,
           variables: {
             blog: this.$route.params.blogId,
-            status: this.activeStatus
+            status: status
           }
         })
         .then(result => {
@@ -344,7 +326,6 @@ export default {
         });
     },
     deletePost(post) {
-      console.log("post", post);
       this.deletePostRequestState = LOADING_STATE.PENDING;
       return apolloClient
         .mutate({
@@ -355,7 +336,7 @@ export default {
           this.deletePostRequestState = LOADING_STATE.COMPLETED_OK;
           console.log("result", result);
           const post = result.data.deletePost;
-          return this.getPosts();
+          return this.getPosts(this.activeStatus);
           this.deleteModal.show = false;
           return result;
         })
@@ -369,7 +350,7 @@ export default {
     },
     onStatusClick(status) {
       this.activeStatus = status;
-      this.getPosts();
+      this.getPosts(status);
     },
     onDeleteClick(post) {
       this.deleteModal.post = post;

@@ -2,17 +2,25 @@
   <div class="writeForm">
     <AppNotify :errors="notifications.errors" />
     <portal to="topbar-left">
+      <span style="cursor:pointer">
+        <em>
+          <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
+          <span style="padding-left:10px;"><</span>
+          {{ blog.name }}
+        </em>
+      </span>
       <span class="item button" style="border:0" v-if="lastTimeSaved">
         <em>saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
       </span>
     </portal>
     <portal to="topbar-right" v-if="operation() === 'CREATE' || this.existingPost">
       <button
+        v-if="!existingPost || (existingPost && existingPost.status === 'DRAFT')"
         @click="onSaveDraftClick()"
         class="button is-outlined item"
         :class="{ 'is-loading': savingDraftState === LOADING_STATE.PENDING }"
         type="submit"
-      >{{!existingPost || (existingPost && existingPost.status === 'DRAFT') ? "SAVE DRAFT" : "SAVE CHANGES"}}</button>
+      >SAVE DRAFT</button>
 
       <button
         @click="onUnpublishPostClick()"

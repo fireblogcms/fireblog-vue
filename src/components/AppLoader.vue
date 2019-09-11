@@ -19,11 +19,6 @@ export default {
 </script>
 
 <style scoped>
-.app-loader-wrapper {
-  position: absolute;
-  left: 0;
-  right: 0;
-}
 .app-loader {
   margin: auto;
   width: 200px;
