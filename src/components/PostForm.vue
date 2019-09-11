@@ -135,6 +135,7 @@ export default {
       publishPostState: LOADING_STATE.NOT_STARTED,
       savingPostState: LOADING_STATE.NOT_STARTED,
       savingDraftState: LOADING_STATE.NOT_STARTED,
+      loadingPostState: LOADING_STATE.NOT_STARTED,
       lastTimeSaved: null,
       existingPost: null,
       notifications: {
@@ -362,7 +363,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .writeForm {
   background-color: white;
 }

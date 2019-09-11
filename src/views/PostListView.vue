@@ -1,7 +1,6 @@
 <template>
   <AdminLayout>
     <AppNotify :errors="notifications.errors" :infos="notifications.infos" />
-
     <template v-if="initState === 'PENDING'">
       <AppLoader>Loading posts</AppLoader>
     </template>
