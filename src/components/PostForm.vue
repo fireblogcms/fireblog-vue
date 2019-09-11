@@ -362,7 +362,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .writeForm {
   background-color: white;
 }
@@ -408,8 +408,8 @@ export default {
   border: none;
 }
 .writeForm .ck-editor__editable p,
-li,
-a {
+.writeForm .ck-editor__editable li,
+.writeForm .ck-editor__editable a {
   font-size: 21px;
 }
 .writeForm .ck-editor__editable h4 {
