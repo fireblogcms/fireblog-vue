@@ -83,30 +83,45 @@
                   </div>
                 </template>
                 <template v-if="postsRequestState === 'COMPLETED_OK' && posts.edges.length > 0">
-                  <LayoutList
-                    :onRowClick="onRowClick"
-                    :items="posts.edges"
-                    :itemUniqueKey="(item) => item.node._id"
-                  >
+                  <LayoutList :items="posts.edges" :itemUniqueKey="(item) => item.node._id">
                     <template v-slot="{item}">
-                      <div class>
-                        <h2 class="title">
-                          <router-link
-                            :to="{name: 'postUpdate', params:{ blogId:$route.params.blogId, postId: item.node._id }}"
-                          >{{ item.node.title + " " }}</router-link>
-                          <span
-                            v-if="item.node.status === 'PUBLISHED'"
-                            class="subtitle"
-                          >published {{ Number(item.node.publishedAt) | moment("from") }}</span>
-                          <span
-                            v-if="item.node.status === 'DRAFT'"
-                            class="subtitle"
-                          >updated {{ Number(item.node.updatedAt) | moment("from") }}</span>
-                        </h2>
+                      <div class="columns">
+                        <div :onRowClick="onRowClick" class="column is-10">
+                          <h2 class="title">
+                            <router-link
+                              :to="{name: 'postUpdate', params:{ blogId:$route.params.blogId, postId: item.node._id }}"
+                            >{{ item.node.title + " " }}</router-link>
+                            <span
+                              v-if="item.node.status === 'PUBLISHED'"
+                              class="subtitle"
+                            >published {{ Number(item.node.publishedAt) | moment("from") }}</span>
+                            <span
+                              v-if="item.node.status === 'DRAFT'"
+                              class="subtitle"
+                            >updated {{ Number(item.node.updatedAt) | moment("from") }}</span>
+                          </h2>
 
-                        <p
-                          v-if="item.node.content.length > 0"
-                        >{{striptags(item.node.content.substr(0, 200))}}...</p>
+                          <p v-if="item.node.content.length > 0">
+                            <em>{{striptags(item.node.content.substr(0, 200))}}...</em>
+                          </p>
+                        </div>
+                        <div class="column is-2">
+                          <div class="actions">
+                            <!--
+                            <div
+                              @click="onUnpublishClick"
+                              v-show="activeStatus === 'PUBLISHED'"
+                              style="min-width:100px"
+                              class="button is-outlined"
+                            >Unpublish</div>
+                            -->
+                            <div
+                              @click="onDeleteClick(item.node._id)"
+                              style="min-width:100px"
+                              class="button is-outlined"
+                            >Delete</div>
+                          </div>
+                        </div>
                       </div>
                     </template>
                   </LayoutList>
@@ -177,6 +192,16 @@ const allPostsQuery = gql`
   }
 `;
 
+const deletePostMutation = gql`
+  mutation deletePostMutation($id: ID!) {
+    deletePost(_id: $id) {
+      slug
+      _id
+      title
+    }
+  }
+`;
+
 export default {
   components: {
     AdminLayout,
@@ -196,6 +221,7 @@ export default {
       allPostsRequestState: LOADING_STATE.NOT_STARTED,
       postsRequestState: LOADING_STATE.NOT_STARTED,
       blogRequestState: LOADING_STATE.NOT_STARTED,
+      deletePostRequestState: LOADING_STATE.NOT_STARTED,
       blog: null,
       posts: null,
       activeStatus: "PUBLISHED",
@@ -302,6 +328,37 @@ export default {
     onStatusClick(status) {
       this.activeStatus = status;
       this.getPosts();
+    },
+    onDeleteClick(postId) {
+      const confirmed = confirm(
+        "Be careful, this action can not be reverted !"
+      );
+      if (!confirmed) {
+        return;
+      }
+      this.deletePostRequestState = LOADING_STATE.PENDING;
+      return apolloClient
+        .mutate({
+          mutation: deletePostMutation,
+          variables: { id: postId }
+        })
+        .then(result => {
+          this.deletePostRequestState = LOADING_STATE.COMPLETED_OK;
+          console.log("result", result);
+          const post = result.data.deletePost;
+          alert(`${post.title} has been deleted !`);
+          return this.getPosts();
+          return result;
+        })
+        .catch(error => {
+          this.deletePostRequestState = LOADING_STATE.COMPLETED_ERROR;
+          this.notifications.errors.push("onDeleteClick() " + error.message);
+          logger.error(new Error(error));
+          return error;
+        });
+    },
+    onUnpublishClick(status) {
+      alert("unpublish");
     }
   }
 };
@@ -312,7 +369,21 @@ export default {
   float: right;
   margin-top: 30px;
 }
+@media screen and (min-width: 1024px) {
+  .actions .button {
+    margin-bottom: 15px;
+  }
+}
+
 @media screen and (max-width: 768px) {
+  .actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+  .actions .button {
+    margin-left: 20px;
+  }
   .main-call-to-action {
     margin-top: 0px;
     float: none;

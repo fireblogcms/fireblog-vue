@@ -159,7 +159,7 @@ export default {
     };
     hotkeys("ctrl+s,command+s", (event, handler) => {
       // Prevent the default refresh event under WINDOWS system
-      this.onSaveDraftClick();
+      //this.onSaveDraftClick();
       event.preventDefault();
     });
     this.editor = Editor;
