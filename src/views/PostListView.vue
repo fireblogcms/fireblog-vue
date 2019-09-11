@@ -72,60 +72,63 @@
             </div>
             <LayoutBody style="border-top-left-radius:0">
               <div class="container" style="border-top-left-radius:0;">
-                <!--POST PENDING-->
-                <template v-if="postsRequestState === 'PENDING'">
-                  <AppLoader />
-                </template>
-                <!--NO PUBLISHED POST FOUND-->
-                <template v-if="postsRequestState === 'COMPLETED_OK' && posts.edges.length === 0">
-                  <div class="content section has-text-centered">
-                    <p>No post found with {{ activeStatus }} status for now.</p>
-                  </div>
-                </template>
-                <template v-if="postsRequestState === 'COMPLETED_OK' && posts.edges.length > 0">
-                  <LayoutList :items="posts.edges" :itemUniqueKey="(item) => item.node._id">
-                    <template v-slot="{item}">
-                      <div class="columns">
-                        <div :onRowClick="onRowClick" class="column is-10">
-                          <h2 class="title">
-                            <router-link
-                              :to="{name: 'postUpdate', params:{ blogId:$route.params.blogId, postId: item.node._id }}"
-                            >{{ item.node.title + " " }}</router-link>
-                            <span
-                              v-if="item.node.status === 'PUBLISHED'"
-                              class="subtitle"
-                            >published {{ Number(item.node.publishedAt) | moment("from") }}</span>
-                            <span
-                              v-if="item.node.status === 'DRAFT'"
-                              class="subtitle"
-                            >updated {{ Number(item.node.updatedAt) | moment("from") }}</span>
-                          </h2>
+                <LayoutList
+                  style="height:200px"
+                  :items="posts.edges"
+                  :itemUniqueKey="(item) => item.node._id"
+                >
+                  <!--POST PENDING-->
+                  <template v-if="postsRequestState === 'PENDING'">
+                    <AppLoader />
+                  </template>
 
-                          <p v-if="item.node.content.length > 0">
-                            <em>{{striptags(item.node.content.substr(0, 200))}}...</em>
-                          </p>
-                        </div>
-                        <div class="column is-2">
-                          <div class="actions">
-                            <!--
+                  <!--NO PUBLISHED POST FOUND-->
+                  <template v-if="postsRequestState === 'COMPLETED_OK' && posts.edges.length === 0">
+                    <div class="content section has-text-centered">
+                      <p>No post found with {{ activeStatus }} status for now.</p>
+                    </div>
+                  </template>
+                  <!-- POST LIST -->
+
+                  <template v-if="postsRequestState === 'COMPLETED_OK'" v-slot="{item}">
+                    <div class="columns">
+                      <div @click="onRowClick(item)" class="column is-10">
+                        <h2 class="title">
+                          {{ item.node.title + " " }}
+                          <span
+                            v-if="item.node.status === 'PUBLISHED'"
+                            class="subtitle"
+                          >published {{ Number(item.node.publishedAt) | moment("from") }}</span>
+                          <span
+                            v-if="item.node.status === 'DRAFT'"
+                            class="subtitle"
+                          >updated {{ Number(item.node.updatedAt) | moment("from") }}</span>
+                        </h2>
+
+                        <p v-if="item.node.content.length > 0">
+                          <em>{{striptags(item.node.content.substr(0, 200))}}...</em>
+                        </p>
+                      </div>
+                      <div class="column is-2">
+                        <div class="actions">
+                          <!--
                             <div
                               @click="onUnpublishClick"
                               v-show="activeStatus === 'PUBLISHED'"
                               style="min-width:100px"
                               class="button is-outlined"
                             >Unpublish</div>
-                            -->
-                            <div
-                              @click="onDeleteClick(item.node._id)"
-                              style="min-width:100px"
-                              class="button is-outlined"
-                            >Delete</div>
-                          </div>
+                          -->
+                          <div
+                            @click="onDeleteClick(item.node._id)"
+                            style="min-width:100px"
+                            class="button is-outlined"
+                          >Delete</div>
                         </div>
                       </div>
-                    </template>
-                  </LayoutList>
-                </template>
+                    </div>
+                  </template>
+                </LayoutList>
                 <!---->
               </div>
             </LayoutBody>
@@ -331,7 +334,7 @@ export default {
     },
     onDeleteClick(postId) {
       const confirmed = confirm(
-        "Be careful, this action can not be reverted !"
+        "Are your sure you want to delete this article ? This action can not be reverted !"
       );
       if (!confirmed) {
         return;

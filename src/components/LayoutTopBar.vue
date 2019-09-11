@@ -249,7 +249,7 @@ export default {
     },
     onBackToBlogClick() {
       const response = confirm(
-        "Are you sure you want to quit ? Make sure to save your changes before !"
+        "Are you sure you want to quit ? Changes not saved will be lost!"
       );
       if (response === true) {
         this.$router.push({
