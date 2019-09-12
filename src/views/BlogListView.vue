@@ -1,15 +1,15 @@
 <template>
   <AdminLayout>
     <!--<AppNotify :errors="notifications.errors" :info="notifications.info" />-->
-    <template v-if="initState === 'PENDING'">
+    <template v-if="initDataState === 'PENDING'">
       <AppLoader>Loading blogs</AppLoader>
     </template>
-    <template v-if="initState === 'COMPLETED_ERROR'">
+    <template v-if="initDataState === 'COMPLETED_ERROR'">
       <AppErrorReporter :error="initStateError">
         <p>There was an issue fetching blogs.</p>
       </AppErrorReporter>
     </template>
-    <template v-if="initState === 'COMPLETED_OK'">
+    <template v-if="initDataState === 'COMPLETED_OK'">
       <template v-if="blogs.edges.length === 0">
         <div class="section">
           <LayoutBody class="container">
@@ -71,7 +71,7 @@ import AdminLayout from "../layouts/AdminLayout";
 import AppLoader from "../components/AppLoader";
 import gql from "graphql-tag";
 import BulmaButtonLink from "../components/BulmaButtonLink";
-import { LOADING_STATE } from "../lib/helpers";
+import { REQUEST_STATE } from "../lib/helpers";
 import AppNotify from "../components/AppNotify";
 import ButtonLink from "../components/ButtonLink";
 import LayoutBody from "../components/LayoutBody";
@@ -114,7 +114,7 @@ export default {
   data() {
     return {
       blogs: null,
-      initState: LOADING_STATE.NOT_STARTED,
+      initDataState: REQUEST_STATE.NOT_STARTED,
       notifications: {
         errors: [],
         info: []
@@ -139,14 +139,14 @@ export default {
       }
       return styles;
     },
-    init() {
-      this.initState = LOADING_STATE.PENDING;
+    initData() {
+      this.initDataState = REQUEST_STATE.PENDING;
       Promise.all([this.getBlogs()])
         .then(() => {
-          this.initState = LOADING_STATE.COMPLETED_OK;
+          this.initDataState = REQUEST_STATE.COMPLETED_OK;
         })
         .catch(error => {
-          this.initState = LOADING_STATE.COMPLETED_ERROR;
+          this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
           this.initStateError = error;
         });
     },
@@ -203,7 +203,7 @@ export default {
     }
   },
   created() {
-    this.init();
+    this.initData();
   }
 };
 </script>

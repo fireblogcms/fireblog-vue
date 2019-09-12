@@ -2,11 +2,11 @@
   <AdminLayout>
     <AppNotify :errors="errors" />
 
-    <template v-if="initState === 'PENDING'">
+    <template v-if="initDataState === 'PENDING'">
       <AppLoader>Loading profile</AppLoader>
     </template>
 
-    <template v-if="initState === 'COMPLETED_OK'">
+    <template v-if="initDataState === 'COMPLETED_OK'">
       <div class="container section animated fadeIn">
         <LayoutBody>
           <div style="padding:40px">
@@ -32,7 +32,7 @@ import apolloClient from "../lib/apolloClient";
 import LayoutBody from "../components/LayoutBody";
 import AppLoader from "../components/AppLoader";
 import AppNotify from "../components/AppNotify";
-import { LOADING_STATE } from "../lib/helpers";
+import { REQUEST_STATE } from "../lib/helpers";
 import gql from "graphql-tag";
 import logger from "../lib/logger";
 
@@ -45,20 +45,20 @@ export default {
   },
   data() {
     return {
-      initState: LOADING_STATE.NOT_STARTED,
+      initDataState: REQUEST_STATE.NOT_STARTED,
       errors: [],
       me: null
     };
   },
   methods: {
-    init() {
-      this.initState = LOADING_STATE.PENDING;
+    initData() {
+      this.initDataState = REQUEST_STATE.PENDING;
       return Promise.all([this.getProfile()])
         .then(() => {
-          this.initState = LOADING_STATE.COMPLETED_OK;
+          this.initDataState = REQUEST_STATE.COMPLETED_OK;
         })
         .catch(error => {
-          this.initState = LOADING_STATE.COMPLETED_ERROR;
+          this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
           this.errors.push(error);
           logger.error(new Error(error));
         });
@@ -92,7 +92,7 @@ export default {
     }
   },
   created() {
-    this.init();
+    this.initData();
   }
 };
 </script>

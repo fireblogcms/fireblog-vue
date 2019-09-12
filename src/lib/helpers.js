@@ -1,8 +1,7 @@
 import apolloClient from "./apolloClient";
 import gql from "graphql-tag";
-//import { localStorageDatabaseUser } from "./auth";
 
-export const LOADING_STATE = {
+export const REQUEST_STATE = {
   NOT_STARTED: "NOT_STARTED",
   PENDING: "PENDING",
   COMPLETED_OK: "COMPLETED_OK",

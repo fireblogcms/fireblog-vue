@@ -1,87 +1,85 @@
 <template>
   <div class="blog-create-form section">
-    <template v-if="initState === 'PENDING'">
+    <template v-if="initDataState === 'PENDING'">
       <AppLoader>Loading</AppLoader>
     </template>
 
-    <template v-if="initState === 'COMPLETED_ERROR'">
+    <template v-if="initDataState === 'COMPLETED_ERROR'">
       <div class="notification is-danger">{{initStateError}}</div>
     </template>
 
-    <template v-if="initState === 'COMPLETED_OK'">
-      <div class="content has-text-centered">
-        <!-- special text if this is the very first blog :) -->
-        <template v-if="first">
-          <h2>Glad to see you here, {{ user.name }} 🤗</h2>
-          <h2 style="font-weight:200;">
-            Let's create your first blog.
-            <br />Give it a name, or let
-            <a
-              ref="randomNameLink"
-              @click.prevent="onGenerateCLick"
-            >us suggest a nice one for you</a>
-          </h2>
-        </template>
+    <template v-if="initDataState === 'COMPLETED_OK'">
+      <LayoutBody>
+        <div class="section">
+          <div class="content has-text-centered">
+            <!-- special text if this is the very first blog :) -->
+            <template v-if="first">
+              <h2>Glad to see you here, {{ user.name }} 🤗</h2>
+              <h2 style="font-weight:200;">
+                Let's create your first blog.
+                <br />Give it a name, or let
+                <a
+                  ref="randomNameLink"
+                  @click.prevent="onGenerateCLick"
+                >us suggest a nice one for you</a>
+              </h2>
+            </template>
 
-        <!-- text is this is not the first blog -->
-        <template v-if="!first">
-          <h2>
-            <br />Create a new Blog. Give it a name or let
-            <a
-              ref="randomNameLink"
-              @click.prevent="onGenerateCLick"
-            >us suggest a nice one for you</a>
-          </h2>
-        </template>
-        <br />
+            <!-- text is this is not the first blog -->
+            <template v-if="!first">
+              <h2>Which is your blog name ?</h2>
+            </template>
+            <br />
 
-        <div class="field">
-          <div class="control">
-            <input
-              v-model="inputs.name"
-              class="input is-large"
-              :class="{'is-danger': formErrors.name}"
-              type="text"
-              placeholder="Blog's Name"
-            />
-          </div>
-          <p class="help is-danger" v-if="formErrors.name">{{formErrors.name}}</p>
-        </div>
-
-        <div class="field">
-          <h2>
-            <br />In which language will you write by default ?
-          </h2>
-          <div class="control">
-            <div
-              class="select is-large is-fullwidth"
-              :class="{'is-danger': formErrors.blogContentDefaultLanguage}"
-            >
-              <select v-model="inputs.blogContentDefaultLanguage">
-                <option value>Select a language</option>
-                <option
-                  class="has-text-centered"
-                  :value="language.code"
-                  v-for="language in languageList"
-                  :key="language.code"
-                >{{language.nativeName}} - {{language.englishName}}</option>
-              </select>
+            <div class="field">
+              <div class="control">
+                <input
+                  v-model="inputs.name"
+                  class="input is-large"
+                  :class="{'is-danger': formErrors.name}"
+                  type="text"
+                  placeholder="Blog's Name"
+                />
+              </div>
+              <p class="help is-danger" v-if="formErrors.name">{{formErrors.name}}</p>
             </div>
-            <p
-              class="has-text-centered help is-danger"
-              v-if="formErrors.blogContentDefaultLanguage"
-            >{{formErrors.blogContentDefaultLanguage}}</p>
+
+            <div class="field">
+              <h2>
+                <br />In which language will you write by default ?
+              </h2>
+              <div class="control">
+                <div
+                  class="select is-large is-fullwidth"
+                  :class="{'is-danger': formErrors.blogContentDefaultLanguage}"
+                >
+                  <select v-model="inputs.blogContentDefaultLanguage">
+                    <option value>Select a language</option>
+                    <option
+                      class="has-text-centered"
+                      :value="language.code"
+                      v-for="language in languageList"
+                      :key="language.code"
+                    >{{language.nativeName}} - {{language.englishName}}</option>
+                  </select>
+                </div>
+                <p
+                  class="has-text-centered help is-danger"
+                  v-if="formErrors.blogContentDefaultLanguage"
+                >{{formErrors.blogContentDefaultLanguage}}</p>
+              </div>
+            </div>
+            <br />
+
+            <div class="buttons are-medium is-centered">
+              <a class="button is-outlined" @click="$router.push('/')">CANCEL</a>
+              <button class="button is-primary" @click="onCreateClick">CREATE MY BLOG</button>
+            </div>
+
+            <!-- Any other Bulma elements you want -->
           </div>
         </div>
-        <br />
-
-        <div class="buttons are-medium is-centered">
-          <a class="button is-outlined is-primary" @click="$router.push('/')">CANCEL</a>
-          <button class="button is-primary" @click="onCreateClick">CREATE MY BLOG</button>
-        </div>
-
-        <!-- Any other Bulma elements you want -->
-      </div>
+      </LayoutBody>
     </template>
   </div>
 </template>
@@ -91,8 +89,9 @@ import { generate } from "../lib/fantasyName.js";
 import apolloClient from "../lib/apolloClient";
 import { getUser } from "../lib/helpers";
 import gql from "graphql-tag";
-import { LOADING_STATE } from "../lib/helpers";
+import { REQUEST_STATE } from "../lib/helpers";
 import AppLoader from "../components/AppLoader";
+import LayoutBody from "../components/LayoutBody";
 import logger from "../lib/logger";
 
 const createBlogMutation = gql`
@@ -117,7 +116,8 @@ const languageListQuery = gql`
 
 export default {
   components: {
-    AppLoader
+    AppLoader,
+    LayoutBody
   },
   props: {
     first: {
@@ -128,7 +128,7 @@ export default {
     return {
       errors: [],
       formErrors: [],
-      initState: LOADING_STATE.NOT_STARTED,
+      initDataState: REQUEST_STATE.NOT_STARTED,
       initStateError: null,
       user: null,
       languageList: null,
@@ -139,16 +139,16 @@ export default {
     };
   },
   created() {
-    this.init();
+    this.initData();
   },
   methods: {
-    async init() {
+    async initData() {
       this.initStateError = null;
-      this.initState = LOADING_STATE.PENDING;
+      this.initDataState = REQUEST_STATE.PENDING;
       Promise.all([getUser(), this.getLanguageList()])
         .then(([user, languageListResult]) => {
           const languages = languageListResult.data.languages;
-          this.initState = LOADING_STATE.COMPLETED_OK;
+          this.initDataState = REQUEST_STATE.COMPLETED_OK;
           this.user = user;
           this.languageList = Object.keys(languages).map(i => {
             return {
@@ -162,8 +162,8 @@ export default {
             navigator.language || navigator.userLanguage;
         })
         .catch(e => {
-          this.initState = LOADING_STATE.COMPLETED_ERROR;
-          this.initStateError = "init() : " + e;
+          this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
+          this.initStateError = "initData() : " + e;
           logger.error(new Error(e));
         });
     },

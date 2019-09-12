@@ -1,11 +1,10 @@
 <template>
   <AdminLayout>
     <AppNotify :errors="notifications.errors" :infos="notifications.infos" />
-
-    <template v-if="initState === 'PENDING'">
-      <AppLoader>Loading posts</AppLoader>
+    <template v-if="initDataState === 'PENDING'">
+      <AppLoader />
     </template>
-    <template v-if="initState === 'COMPLETED_OK'">
+    <template v-if="initDataState === 'COMPLETED_OK'">
       <div class="animated fadeIn">
         <header class="container" style="padding: 0 1rem 2rem 1rem">
           <div class="columns">
@@ -70,43 +69,53 @@
                 </li>
               </ul>
             </div>
-            <LayoutBody style="border-top-left-radius:0">
+
+            <LayoutBody style="border-top-left-radius:0;min-height:200px">
               <div class="container" style="border-top-left-radius:0;">
-                <!--POST PENDING-->
-                <template v-if="postsRequestState === 'PENDING'">
-                  <AppLoader />
-                </template>
-                <!--NO PUBLISHED POST FOUND-->
+                <AppLoader v-show="postsRequestState === 'PENDING'" />
                 <template v-if="postsRequestState === 'COMPLETED_OK' && posts.edges.length === 0">
                   <div class="content section has-text-centered">
                     <p>No post found with {{ activeStatus }} status for now.</p>
                   </div>
                 </template>
                 <template v-if="postsRequestState === 'COMPLETED_OK' && posts.edges.length > 0">
-                  <LayoutList
-                    :onRowClick="onRowClick"
-                    :items="posts.edges"
-                    :itemUniqueKey="(item) => item.node._id"
-                  >
+                  <LayoutList :items="posts.edges" :itemUniqueKey="(item) => item.node._id">
                     <template v-slot="{item}">
-                      <div class>
-                        <h2 class="title">
-                          <router-link
-                            :to="{name: 'postUpdate', params:{ blogId:$route.params.blogId, postId: item.node._id }}"
-                          >{{ item.node.title + " " }}</router-link>
-                          <span
-                            v-if="item.node.status === 'PUBLISHED'"
-                            class="subtitle"
-                          >published {{ Number(item.node.publishedAt) | moment("from") }}</span>
-                          <span
-                            v-if="item.node.status === 'DRAFT'"
-                            class="subtitle"
-                          >updated {{ Number(item.node.updatedAt) | moment("from") }}</span>
-                        </h2>
+                      <div class="columns">
+                        <div @click="onRowClick(item)" class="column is-10">
+                          <h2 class="title">
+                            <router-link :to="buildLinkToPost(item)">{{ item.node.title + " " }}</router-link>
+                            <span
+                              v-if="item.node.status === 'PUBLISHED'"
+                              class="subtitle"
+                            >published {{ Number(item.node.publishedAt) | moment("from") }}</span>
+                            <span
+                              v-if="item.node.status === 'DRAFT'"
+                              class="subtitle"
+                            >updated {{ Number(item.node.updatedAt) | moment("from") }}</span>
+                          </h2>
 
-                        <p
-                          v-if="item.node.content.length > 0"
-                        >{{striptags(item.node.content.substr(0, 200))}}...</p>
+                          <p v-if="item.node.content.length > 0">
+                            <em>{{striptags(item.node.content.substr(0, 200))}}...</em>
+                          </p>
+                        </div>
+                        <div class="column is-2">
+                          <div class="actions">
+                            <!--
+                            <div
+                              @click="onUnpublishClick"
+                              v-show="activeStatus === 'PUBLISHED'"
+                              style="min-width:100px"
+                              class="button is-outlined"
+                            >Unpublish</div>
+                            -->
+                            <div
+                              @click="onDeleteClick(item.node)"
+                              style="min-width:100px"
+                              class="button is-outlined"
+                            >Delete</div>
+                          </div>
+                        </div>
                       </div>
                     </template>
                   </LayoutList>
@@ -118,6 +127,14 @@
         </template>
       </div>
     </template>
+    <BulmaModal v-model="deleteModal.show">
+      <template #title>{{deleteModal.title}}</template>
+      <template #body>This action cannot be undone</template>
+      <template #footer>
+        <div @click="deleteModal.show = false" class="button is-success">OUPS NO, CANCEL !</div>
+        <div @click="onDeleteModalConfirmClick" class="button is-danger">DELETE IT. FOREVER.</div>
+      </template>
+    </BulmaModal>
   </AdminLayout>
 </template>
 
@@ -126,13 +143,14 @@ import apolloClient from "../lib/apolloClient";
 import AdminLayout from "../layouts/AdminLayout";
 import gql from "graphql-tag";
 import AppLoader from "../components/AppLoader";
-import { LOADING_STATE } from "../lib/helpers";
+import { REQUEST_STATE } from "../lib/helpers";
 import AppNotify from "../components/AppNotify";
 import BulmaButtonLink from "../components/BulmaButtonLink";
 import LayoutBody from "../components/LayoutBody";
 import LayoutList from "../components/LayoutList";
 import striptags from "striptags";
 import logger from "../lib/logger";
+import BulmaModal from "../components/BulmaModal";
 
 const postsQuery = gql`
   query postsQuery($blog: ID!, $status: PostPublicationStatus!) {
@@ -177,6 +195,16 @@ const allPostsQuery = gql`
   }
 `;
 
+const deletePostMutation = gql`
+  mutation deletePostMutation($id: ID!) {
+    deletePost(_id: $id) {
+      slug
+      _id
+      title
+    }
+  }
+`;
+
 export default {
   components: {
     AdminLayout,
@@ -184,7 +212,8 @@ export default {
     AppNotify,
     LayoutBody,
     LayoutList,
-    BulmaButtonLink
+    BulmaButtonLink,
+    BulmaModal
   },
   data() {
     return {
@@ -192,10 +221,14 @@ export default {
         errors: [],
         info: []
       },
-      initState: LOADING_STATE.NOT_STARTED,
-      allPostsRequestState: LOADING_STATE.NOT_STARTED,
-      postsRequestState: LOADING_STATE.NOT_STARTED,
-      blogRequestState: LOADING_STATE.NOT_STARTED,
+      initDataState: REQUEST_STATE.NOT_STARTED,
+      postsRequestState: REQUEST_STATE.NOT_STARTED,
+      deletePostRequestState: REQUEST_STATE.NOT_STARTED,
+      deleteModal: {
+        show: false,
+        title: null,
+        data: null
+      },
       blog: null,
       posts: null,
       activeStatus: "PUBLISHED",
@@ -205,7 +238,7 @@ export default {
   },
   created() {
     this.striptags = striptags;
-    this.init();
+    this.initData();
   },
   methods: {
     /**
@@ -214,15 +247,19 @@ export default {
      * - All published post (displayed in the "published" tab)
      * We will display a loader until this two requests are finished
      */
-    init() {
-      this.initState = LOADING_STATE.PENDING;
-      Promise.all([this.getBlog(), this.getPosts(), this.getAllPosts()])
+    initData() {
+      this.initDataState = REQUEST_STATE.PENDING;
+      Promise.all([
+        this.getBlog(),
+        this.getPosts(this.activeStatus),
+        this.getAllPosts()
+      ])
         .then(() => {
-          this.initState = LOADING_STATE.COMPLETED_OK;
+          this.initDataState = REQUEST_STATE.COMPLETED_OK;
         })
         .catch(error => {
-          this.initState = LOADING_STATE.COMPLETED_ERROR;
-          this.notifications.errors.push("init(): " + error.message);
+          this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
+          this.notifications.errors.push("initError: " + error.message);
           logger.error(new Error(error));
         });
     },
@@ -236,23 +273,15 @@ export default {
       this.$router.push(this.buildLinkToPost(item));
     },
     async getAllPosts() {
-      this.allPostsRequestState === LOADING_STATE.PENDING;
       return apolloClient
         .query({
           query: allPostsQuery,
           variables: { blog: this.$route.params.blogId }
         })
         .then(result => {
-          this.allPostsRequestState = LOADING_STATE.COMPLETED_OK;
           this.isFirstPost =
             result.data.posts.edges.length === 0 ? true : false;
           return result;
-        })
-        .catch(error => {
-          this.allPostsRequestState = LOADING_STATE.COMPLETED_ERROR;
-          this.notifications.errors.push("getAllPosts() " + error.message);
-          logger.error(new Error(error));
-          return error;
         });
     },
     getBlog() {
@@ -264,18 +293,12 @@ export default {
           }
         })
         .then(result => {
-          this.blogRequestState = LOADING_STATE.COMPLETED_OK;
           this.blog = result.data.blog;
           return result;
-        })
-        .catch(error => {
-          this.blogRequestState = LOADING_STATE.COMPLETED_ERROR;
-          this.notifications.errors.push("getBlog() " + error.message);
-          logger.error(new Error(error));
         });
     },
-    getPosts() {
-      this.postsRequestState = LOADING_STATE.PENDING;
+    getPosts(status) {
+      this.postsRequestState = REQUEST_STATE.PENDING;
       this.notifications = {
         errors: [],
         info: []
@@ -285,23 +308,59 @@ export default {
           query: postsQuery,
           variables: {
             blog: this.$route.params.blogId,
-            status: this.activeStatus
+            status: status
           }
         })
         .then(result => {
-          this.postsRequestState = LOADING_STATE.COMPLETED_OK;
+          this.postsRequestState = REQUEST_STATE.COMPLETED_OK;
           this.posts = result.data.posts;
           return result;
         })
         .catch(error => {
-          this.postsRequestState = LOADING_STATE.COMPLETED_ERROR;
+          this.postsRequestState = REQUEST_STATE.COMPLETED_ERROR;
           this.notifications.errors.push("getPosts() " + error.message);
           logger.error(new Error(error));
         });
     },
+    deletePost(post) {
+      this.deletePostRequestState = REQUEST_STATE.PENDING;
+      return apolloClient
+        .mutate({
+          mutation: deletePostMutation,
+          variables: { id: post._id }
+        })
+        .then(result => {
+          this.deletePostRequestState = REQUEST_STATE.COMPLETED_OK;
+          console.log("result", result);
+          const post = result.data.deletePost;
+          return this.getPosts(this.activeStatus);
+          this.deleteModal.show = false;
+          return result;
+        })
+        .catch(error => {
+          this.deletePostRequestState = REQUEST_STATE.COMPLETED_ERROR;
+          this.notifications.errors.push("onDeleteClick() " + error.message);
+          logger.error(new Error(error));
+          this.deleteModal.show = false;
+          return error;
+        });
+    },
     onStatusClick(status) {
       this.activeStatus = status;
-      this.getPosts();
+      this.getPosts(status);
+    },
+    onDeleteClick(post) {
+      this.deleteModal.post = post;
+      this.deleteModal.show = true;
+      this.deleteModal.title = `Delete ${post.title}`;
+    },
+    onUnpublishClick(status) {
+      alert("unpublish");
+    },
+    onDeleteModalConfirmClick() {
+      this.deletePost(this.deleteModal.post).then(r => {
+        this.deleteModal.show = false;
+      });
     }
   }
 };
@@ -312,7 +371,21 @@ export default {
   float: right;
   margin-top: 30px;
 }
+@media screen and (min-width: 1024px) {
+  .actions .button {
+    margin-bottom: 15px;
+  }
+}
+
 @media screen and (max-width: 768px) {
+  .actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+  .actions .button {
+    margin-left: 20px;
+  }
   .main-call-to-action {
     margin-top: 0px;
     float: none;

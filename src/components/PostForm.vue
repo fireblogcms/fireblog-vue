@@ -1,61 +1,93 @@
 <template>
   <div class="writeForm">
     <AppNotify :errors="notifications.errors" />
-    <portal to="topbar-left">
-      <span class="item button" style="border:0" v-if="lastTimeSaved">
-        <em>saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
-      </span>
-    </portal>
-    <portal to="topbar-right" v-if="operation() === 'CREATE' || this.existingPost">
-      <button
-        @click="onSaveDraftClick()"
-        v-if="!existingPost || (existingPost && existingPost.status === 'DRAFT')"
-        class="button is-outlined item"
-        :class="{ 'is-loading': savingDraftState === LOADING_STATE.PENDING }"
-        type="submit"
-      >SAVE DRAFT</button>
 
-      <button
-        @click="onUnpublishPostClick()"
-        v-if="existingPost && existingPost.status === 'PUBLISHED'"
-        class="button is-outlined item"
-        type="submit"
-        value="UNPUBLISH"
-      >UNPUBLISH</button>
-
-      <button
-        @click="onPublishPostClick()"
-        v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
-        class="button is-outlined item is-primary"
-        :class="{ 'is-loading': publishPostState === LOADING_STATE.PENDING }"
-        type="submit"
-      >PUBLISH</button>
-
-      <button
-        @click="onPublishPostClick()"
-        v-if="existingPost && existingPost.status === 'PUBLISHED'"
-        class="button is-outlined item is-primary"
-        :class="{ 'is-loading': publishPostState === LOADING_STATE.PENDING }"
-        type="submit"
-      >PUBLISH CHANGES</button>
-    </portal>
-
-    <template v-if="loadingPostState === LOADING_STATE.PENDING">
-      <AppLoader />
+    <!-- LOADER  displayed while initData are fetched -->
+    <template v-if="initDataState === 'PENDING'">
+      <AppLoader :absolute="true" />
     </template>
 
-    <form @submit.prevent>
-      <textarea-autosize
-        @keydown.enter.native.prevent="onTitleEnter"
-        autofocus
-        rows="1"
-        placeholder="Title"
-        type="text"
-        id="title"
-        v-model="inputs.title"
-      ></textarea-autosize>
-      <ckeditor ref="ckeditor" :editor="editor" v-model="inputs.content" :config="editorConfig"></ckeditor>
-    </form>
+    <template v-if="initDataState === REQUEST_STATE.COMPLETED_OK">
+      <!-- TOPBAR LEFT BUTTONS -->
+      <portal to="topbar-left">
+        <router-link :to="{ name: 'postList', params: { blogId: this.$route.params.blogId }}">
+          <span style="cursor:pointer" class="item tag is-medium">
+            <em>
+              <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
+              <span style="padding-left:10px;"><</span>
+              posts
+            </em>
+          </span>
+        </router-link>
+        <span class="item button" style="border:0" v-if="lastTimeSaved">
+          <em>saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
+        </span>
+      </portal>
+      <!-- END TOPBAR LEFT BUTTONS -->
+
+      <!-- TOPBAR RIGHT BUTTONS -->
+      <portal to="topbar-right" v-if="operation() === 'CREATE' || this.existingPost">
+        <button
+          v-if="!existingPost || (existingPost && existingPost.status === 'DRAFT')"
+          @click="onSaveDraftClick()"
+          class="button is-outlined item"
+          :class="{ 'is-loading': savingDraftState === REQUEST_STATE.PENDING }"
+          type="submit"
+        >SAVE DRAFT</button>
+
+        <button
+          @click="onUnpublishPostClick()"
+          v-if="existingPost && existingPost.status === 'PUBLISHED'"
+          class="button is-outlined item"
+          :class="{'is-loading': unpublishPostState === REQUEST_STATE.PENDING}"
+          :disabled="unpublishPostState === REQUEST_STATE.PENDING"
+          type="submit"
+          value="UNPUBLISH"
+        >UNPUBLISH</button>
+
+        <button
+          @click="onPublishPostClick()"
+          v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
+          class="button is-outlined item is-primary"
+          :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
+          :disabled="publishPostState === REQUEST_STATE.PENDING"
+          type="submit"
+        >PUBLISH</button>
+
+        <button
+          @click="onPublishPostClick()"
+          v-if="existingPost && existingPost.status === 'PUBLISHED'"
+          class="button item is-outlined is-primary"
+          :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
+          :disabled="publishPostState === REQUEST_STATE.PENDING"
+          type="submit"
+        >PUBLISH CHANGES</button>
+      </portal>
+      <!-- END TOPBAR RIGHT BUTTONS -->
+
+      <!-- FORM -->
+      <form @submit.prevent>
+        <textarea-autosize
+          maxlength="250"
+          @keydown.enter.native.prevent="onTitleEnter"
+          autofocus
+          rows="1"
+          placeholder="Title"
+          type="text"
+          id="title"
+          :disabled="savingDraftState ===  REQUEST_STATE.PENDING"
+          v-model="inputs.title"
+        ></textarea-autosize>
+        <ckeditor
+          class="content"
+          :disabled="savingDraftState ===  REQUEST_STATE.PENDING"
+          ref="ckeditor"
+          :editor="editor"
+          v-model="inputs.content"
+          :config="editorConfig"
+        ></ckeditor>
+      </form>
+    </template>
   </div>
 </template>
 
@@ -66,8 +98,10 @@ import Editor from "@ckeditor/ckeditor5-build-balloon-block";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import gql from "graphql-tag";
 import AppNotify from "./AppNotify";
-import { LOADING_STATE, getUser, getBlog } from "../lib/helpers";
+import { REQUEST_STATE, getUser, getBlog } from "../lib/helpers";
 import { ckeditorUploadAdapterPlugin } from "../lib/ckeditorUploadAdapter";
+import hotkeys from "hotkeys-js";
+import Loading from "vue-loading-overlay";
 
 const PostResponseFragment = gql`
   fragment PostResponse on Post {
@@ -111,6 +145,15 @@ const getExistingPostQuery = gql`
   }
 `;
 
+const blogQuery = gql`
+  query blogQuery($_id: ID!) {
+    blog(_id: $_id) {
+      name
+      description
+    }
+  }
+`;
+
 const OPERATION = {
   CREATE: "CREATE",
   UPDATE: "UPDATE"
@@ -121,13 +164,15 @@ export default {
     // Use the <ckeditor> component in this view.
     ckeditor: CKEditor.component,
     AppLoader,
-    AppNotify
+    AppNotify,
+    Loading
   },
   data() {
     return {
-      publishPostState: LOADING_STATE.NOT_STARTED,
-      savingPostState: LOADING_STATE.NOT_STARTED,
-      savingDraftState: LOADING_STATE.NOT_STARTED,
+      initDataState: REQUEST_STATE.NOT_STARTED,
+      publishPostState: REQUEST_STATE.NOT_STARTED,
+      unpublishPostState: REQUEST_STATE.NOT_STARTED,
+      savingDraftState: REQUEST_STATE.NOT_STARTED,
       lastTimeSaved: null,
       existingPost: null,
       notifications: {
@@ -141,31 +186,68 @@ export default {
     };
   },
   created() {
-    this.editor = Editor;
-    this.LOADING_STATE = LOADING_STATE;
+    this.initData();
+    this.REQUEST_STATE = REQUEST_STATE;
     this.OPERATION = OPERATION;
+    this.editor = Editor;
     this.editorConfig = {
       extraPlugins: [ckeditorUploadAdapterPlugin],
-      toolbar: ["bold", "italic", "link", "heading", "blockQuote"],
-      blockToolbar: ["imageUpload", "mediaEmbed"]
+      toolbar: [
+        "bold",
+        "italic",
+        "link",
+        "heading",
+        "blockQuote",
+        "bulletedList"
+      ],
+      blockToolbar: ["imageUpload", "mediaEmbed"],
+      image: {
+        toolbar: ["imageTextAlternative"]
+      }
     };
-
-    // if we are editing a post, the route
-    if (this.operation() === OPERATION.UPDATE) {
-      this.loadingPostState = LOADING_STATE.PENDING;
-      this.getExistingPost()
-        .then(result => {
-          this.existingPost = result.data.post;
-          this.inputs = this.prepareInputsFromPost(this.existingPost);
-          this.loadingPostState = LOADING_STATE.COMPLETED_OK;
-        })
-        .catch(e => {
-          this.notifications.errors.push("😞Sorry, loading post failed: " + e);
-          this.loadingPostState = LOADING_STATE.COMPLETED_ERROR;
-        });
-    }
+    hotkeys.filter = event => {
+      if (["postUpdate", "postCreate"].includes(this.$route.name)) {
+        return true;
+      }
+      return false;
+    };
+    hotkeys("ctrl+s,command+s", (event, handler) => {
+      // Prevent the default refresh event under WINDOWS system
+      // this.onSaveDraftClick();
+      event.preventDefault();
+    });
   },
   methods: {
+    initData() {
+      this.initDataState = REQUEST_STATE.PENDING;
+      const promises = [];
+      promises.push(this.getBlog());
+      // if we are editing a post, the route
+      if (this.operation() === OPERATION.UPDATE) {
+        promises.push(this.getExistingPost());
+      }
+      return Promise.all(promises)
+        .then(results => {
+          this.initDataState = REQUEST_STATE.COMPLETED_OK;
+        })
+        .catch(error => {
+          this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
+          logger.error(new Error(error));
+        });
+    },
+    getBlog() {
+      return apolloClient
+        .query({
+          query: blogQuery,
+          variables: {
+            _id: this.$route.params.blogId
+          }
+        })
+        .then(result => {
+          this.blog = result.data.blog;
+          return result;
+        });
+    },
     onTitleEnter() {
       this.$refs.ckeditor.$el.focus();
     },
@@ -174,10 +256,15 @@ export default {
       return this.$route.params.postId ? OPERATION.UPDATE : OPERATION.CREATE;
     },
     getExistingPost() {
-      return apolloClient.query({
-        query: getExistingPostQuery,
-        variables: { _id: this.$route.params.postId }
-      });
+      return apolloClient
+        .query({
+          query: getExistingPostQuery,
+          variables: { _id: this.$route.params.postId }
+        })
+        .then(result => {
+          this.existingPost = result.data.post;
+          this.inputs = this.prepareInputsFromPost(this.existingPost);
+        });
     },
     // prepare form inputs from a post object
     prepareInputsFromPost(post) {
@@ -255,14 +342,14 @@ export default {
         alert("A title is required");
         return;
       }
-      this.savingDraftState = LOADING_STATE.PENDING;
+      this.savingDraftState = REQUEST_STATE.PENDING;
       if (this.operation() === OPERATION.CREATE) {
         this.createPost(this.preparePostFromInputs(this.inputs))
           .then(() => {
-            this.savingDraftState = LOADING_STATE.COMPLETED_OK;
+            this.savingDraftState = REQUEST_STATE.COMPLETED_OK;
           })
           .catch(e => {
-            this.savingDraftState = LOADING_STATE.COMPLETED_ERROR;
+            this.savingDraftState = REQUEST_STATE.COMPLETED_ERROR;
           });
       }
       //
@@ -276,10 +363,10 @@ export default {
         };
         this.updatePost(post)
           .then(() => {
-            this.savingDraftState = LOADING_STATE.COMPLETED_OK;
+            this.savingDraftState = REQUEST_STATE.COMPLETED_OK;
           })
           .catch(e => {
-            this.savingDraftState = LOADING_STATE.COMPLETED_ERROR;
+            this.savingDraftState = REQUEST_STATE.COMPLETED_ERROR;
           });
       }
     },
@@ -290,7 +377,7 @@ export default {
       }
       const status = "PUBLISHED";
       if (this.operation() === "CREATE") {
-        this.publishPostState = LOADING_STATE.PENDING;
+        this.publishPostState = REQUEST_STATE.PENDING;
         const newPost = {
           ...this.preparePostFromInputs(this.inputs),
           publishedAt: new Date(),
@@ -298,14 +385,14 @@ export default {
         };
         this.createPost(newPost)
           .then(() => {
-            this.publishPostState = LOADING_STATE.COMPLETED_OK;
+            this.publishPostState = REQUEST_STATE.COMPLETED_OK;
           })
           .catch(e => {
-            this.publishPostState = LOADING_STATE.COMPLETED_ERROR;
+            this.publishPostState = REQUEST_STATE.COMPLETED_ERROR;
           });
       }
       if (this.operation() === "UPDATE") {
-        this.publishPostState = LOADING_STATE.PENDING;
+        this.publishPostState = REQUEST_STATE.PENDING;
         const post = {
           ...this.preparePostFromInputs(this.inputs),
           publishedAt: new Date(),
@@ -313,19 +400,26 @@ export default {
         };
         this.updatePost(post)
           .then(() => {
-            this.publishPostState = LOADING_STATE.COMPLETED_OK;
+            this.publishPostState = REQUEST_STATE.COMPLETED_OK;
           })
           .catch(e => {
-            this.publishPostState = LOADING_STATE.COMPLETED_ERROR;
+            this.publishPostState = REQUEST_STATE.COMPLETED_ERROR;
           });
       }
     },
     onUnpublishPostClick() {
+      this.unpublishPostState = REQUEST_STATE.PENDING;
       const post = {
         ...this.preparePostFromInputs(this.inputs),
         status: "DRAFT"
       };
-      this.updatePost(post);
+      this.updatePost(post)
+        .then(r => {
+          this.unpublishPostState = REQUEST_STATE.COMPLETED_OK;
+        })
+        .cath(e => {
+          this.unpublishPostState = REQUEST_STATE.COMPLETED_ERROR;
+        });
     }
   }
 };
@@ -376,9 +470,10 @@ export default {
   background: white;
   border: none;
 }
-.writeForm .ck-editor__editable p {
+.writeForm .ck-editor__editable p,
+.writeForm .ck-editor__editable li,
+.writeForm .ck-editor__editable a {
   font-size: 21px;
-  padding: 0.7rem 0;
 }
 .writeForm .ck-editor__editable h4 {
   font-size: 28px;

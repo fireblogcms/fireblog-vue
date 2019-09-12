@@ -1,9 +1,7 @@
 <template>
   <AdminLayout>
-    <div class="container section">
-      <LayoutBody>
-        <BlogCreateForm />
-      </LayoutBody>
+    <div class="container">
+      <BlogCreateForm />
     </div>
   </AdminLayout>
 </template>
