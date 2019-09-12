@@ -84,7 +84,7 @@
                       <div class="columns">
                         <div @click="onRowClick(item)" class="column is-10">
                           <h2 class="title">
-                            {{ item.node.title + " " }}
+                            <router-link :to="buildLinkToPost(item)">{{ item.node.title + " " }}</router-link>
                             <span
                               v-if="item.node.status === 'PUBLISHED'"
                               class="subtitle"

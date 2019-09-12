@@ -11,11 +11,11 @@
       <!-- TOPBAR LEFT BUTTONS -->
       <portal to="topbar-left">
         <router-link :to="{ name: 'postList', params: { blogId: this.$route.params.blogId }}">
-          <span style="cursor:pointer item tag is-medium">
+          <span style="cursor:pointer" class="item tag is-medium">
             <em>
               <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
               <span style="padding-left:10px;"><</span>
-              {{ blog.name }}
+              posts
             </em>
           </span>
         </router-link>
@@ -66,7 +66,7 @@
         <textarea-autosize
           maxlength="250"
           @keydown.enter.native.prevent="onTitleEnter"
-          ref="title"
+          autofocus
           rows="1"
           placeholder="Title"
           type="text"
@@ -408,14 +408,6 @@ export default {
         status: "DRAFT"
       };
       this.updatePost(post);
-    }
-  },
-  watch: {
-    initDataState(newValue, oldValue) {
-      // autofocus title when our component is ready
-      if (newValue === REQUEST_STATE.COMPLETED_OK) {
-        this.$refs.title.$el.focus();
-      }
     }
   }
 };
