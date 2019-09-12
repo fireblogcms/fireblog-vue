@@ -3,7 +3,7 @@
     <AppNotify :errors="notifications.errors" />
 
     <!-- LOADER  displayed while initData are fetched -->
-    <template v-if="initDataState === 'PENDING' || savingDraftState === 'PENDING'">
+    <template v-if="initDataState === 'PENDING'">
       <AppLoader :absolute="true" />
     </template>
 
@@ -39,6 +39,8 @@
           @click="onUnpublishPostClick()"
           v-if="existingPost && existingPost.status === 'PUBLISHED'"
           class="button is-outlined item"
+          :class="{'is-loading': unpublishPostState === REQUEST_STATE.PENDING}"
+          :disabled="unpublishPostState === REQUEST_STATE.PENDING"
           type="submit"
           value="UNPUBLISH"
         >UNPUBLISH</button>
@@ -48,14 +50,16 @@
           v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
           class="button is-outlined item is-primary"
           :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
+          :disabled="publishPostState === REQUEST_STATE.PENDING"
           type="submit"
         >PUBLISH</button>
 
         <button
           @click="onPublishPostClick()"
           v-if="existingPost && existingPost.status === 'PUBLISHED'"
-          class="button is-outlined item is-primary"
+          class="button item is-outlined is-primary"
           :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
+          :disabled="publishPostState === REQUEST_STATE.PENDING"
           type="submit"
         >PUBLISH CHANGES</button>
       </portal>
@@ -167,6 +171,7 @@ export default {
     return {
       initDataState: REQUEST_STATE.NOT_STARTED,
       publishPostState: REQUEST_STATE.NOT_STARTED,
+      unpublishPostState: REQUEST_STATE.NOT_STARTED,
       savingDraftState: REQUEST_STATE.NOT_STARTED,
       lastTimeSaved: null,
       existingPost: null,
@@ -403,11 +408,18 @@ export default {
       }
     },
     onUnpublishPostClick() {
+      this.unpublishPostState = REQUEST_STATE.PENDING;
       const post = {
         ...this.preparePostFromInputs(this.inputs),
         status: "DRAFT"
       };
-      this.updatePost(post);
+      this.updatePost(post)
+        .then(r => {
+          this.unpublishPostState = REQUEST_STATE.COMPLETED_OK;
+        })
+        .cath(e => {
+          this.unpublishPostState = REQUEST_STATE.COMPLETED_ERROR;
+        });
     }
   }
 };
