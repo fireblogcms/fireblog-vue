@@ -2,7 +2,7 @@
   <AdminLayout>
     <AppNotify :errors="notifications.errors" :infos="notifications.infos" />
     <template v-if="initDataState === 'PENDING'">
-      <AppLoader>Loading posts</AppLoader>
+      <AppLoader />
     </template>
     <template v-if="initDataState === 'COMPLETED_OK'">
       <div class="animated fadeIn">
@@ -72,18 +72,15 @@
 
             <LayoutBody style="border-top-left-radius:0;min-height:200px">
               <div class="container" style="border-top-left-radius:0;">
+                <AppLoader v-show="postsRequestState === 'PENDING'" />
                 <template v-if="postsRequestState === 'COMPLETED_OK' && posts.edges.length === 0">
                   <div class="content section has-text-centered">
                     <p>No post found with {{ activeStatus }} status for now.</p>
                   </div>
                 </template>
-                <template v-if="posts.edges.length > 0">
+                <template v-if="postsRequestState === 'COMPLETED_OK' && posts.edges.length > 0">
                   <LayoutList :items="posts.edges" :itemUniqueKey="(item) => item.node._id">
-                    <!--POST PENDING-->
-                    <AppLoader v-show="postsRequestState === 'PENDING'" />
-
-                    <!-- POST LIST -->
-                    <template v-if="postsRequestState === 'COMPLETED_OK'" v-slot="{item}">
+                    <template v-slot="{item}">
                       <div class="columns">
                         <div @click="onRowClick(item)" class="column is-10">
                           <h2 class="title">

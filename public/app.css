@@ -29,7 +29,7 @@ body img {
 }
 
 .animated.fadeIn {
-  animation-duration: 0.1s;
+  animation-duration: 0.2s;
 }
 .animated.fadeInDown {
   animation-duration: 0.4s;
