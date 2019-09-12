@@ -7,7 +7,7 @@
 <script>
 import { auth0Client } from "../lib/auth";
 import AppLoader from "../components/AppLoader";
-import { LOADING_STATE } from "../lib/helpers";
+import { REQUEST_STATE } from "../lib/helpers";
 
 export default {
   components: {
@@ -15,7 +15,7 @@ export default {
   },
   data() {
     return {
-      requestState: LOADING_STATE.NOT_STARTED
+      requestState: REQUEST_STATE.NOT_STARTED
     };
   },
   async created() {

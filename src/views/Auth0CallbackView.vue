@@ -2,10 +2,10 @@
 <template>
   <div class="container section">
     <AppErrorReporter
-      v-if="initState === 'COMPLETED_ERROR'"
+      v-if="initDataState === 'COMPLETED_ERROR'"
       :error="initStateError"
     >Sorry, An error occured while signing.</AppErrorReporter>
-    <LayoutBody v-if="initState === 'PENDING'">
+    <LayoutBody v-if="initDataState === 'PENDING'">
       <AppLoader>Signing in ...</AppLoader>
     </LayoutBody>
   </div>
@@ -15,7 +15,7 @@
 import apolloClient from "../lib/apolloClient";
 import AppLoader from "../components/AppLoader";
 import { auth0Client, syncAuth0UserWithServer } from "../lib/auth";
-import { LOADING_STATE } from "../lib/helpers";
+import { REQUEST_STATE } from "../lib/helpers";
 import LayoutBody from "../components/LayoutBody";
 import AppErrorReporter from "../components/AppErrorReporter";
 import logger from "../lib/logger";
@@ -29,12 +29,12 @@ export default {
   data() {
     return {
       error: null,
-      initState: LOADING_STATE.NOT_STARTED,
+      initDataState: REQUEST_STATE.NOT_STARTED,
       initStateError: null
     };
   },
   async created() {
-    this.initState = LOADING_STATE.PENDING;
+    this.initDataState = REQUEST_STATE.PENDING;
     this.initStateError = null;
     const auth0 = await auth0Client();
     auth0
@@ -51,11 +51,11 @@ export default {
         });
       })
       .then(() => {
-        this.initState = LOADING_STATE.COMPLETED_OK;
+        this.initDataState = REQUEST_STATE.COMPLETED_OK;
         this.$router.push("/");
       })
       .catch(e => {
-        this.initState = LOADING_STATE.COMPLETED_ERROR;
+        this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
         this.initStateError = e;
         logger.error(new Error(e));
       });

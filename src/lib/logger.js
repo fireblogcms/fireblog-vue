@@ -5,7 +5,7 @@ import Vue from "vue";
 // do not catch exceptions during development, because
 // we want exception to be displayed in our browser console.
 if (process.env.NODE_ENV === "production") {
-  Sentry.init({
+  Sentry.initData({
     dsn: process.env.VUE_APP_SENTRY_URL,
     integrations: [new Integrations.Vue({ Vue, attachProps: true })]
   });

@@ -1,10 +1,10 @@
 <template>
   <AdminLayout>
     <AppNotify :errors="notifications.errors" :infos="notifications.infos" />
-    <template v-if="initState === 'PENDING'">
+    <template v-if="initDataState === 'PENDING'">
       <AppLoader>Loading posts</AppLoader>
     </template>
-    <template v-if="initState === 'COMPLETED_OK'">
+    <template v-if="initDataState === 'COMPLETED_OK'">
       <div class="animated fadeIn">
         <header class="container" style="padding: 0 1rem 2rem 1rem">
           <div class="columns">
@@ -146,7 +146,7 @@ import apolloClient from "../lib/apolloClient";
 import AdminLayout from "../layouts/AdminLayout";
 import gql from "graphql-tag";
 import AppLoader from "../components/AppLoader";
-import { LOADING_STATE } from "../lib/helpers";
+import { REQUEST_STATE } from "../lib/helpers";
 import AppNotify from "../components/AppNotify";
 import BulmaButtonLink from "../components/BulmaButtonLink";
 import LayoutBody from "../components/LayoutBody";
@@ -224,9 +224,9 @@ export default {
         errors: [],
         info: []
       },
-      initState: LOADING_STATE.NOT_STARTED,
-      postsRequestState: LOADING_STATE.NOT_STARTED,
-      deletePostRequestState: LOADING_STATE.NOT_STARTED,
+      initDataState: REQUEST_STATE.NOT_STARTED,
+      postsRequestState: REQUEST_STATE.NOT_STARTED,
+      deletePostRequestState: REQUEST_STATE.NOT_STARTED,
       deleteModal: {
         show: false,
         title: null,
@@ -241,7 +241,7 @@ export default {
   },
   created() {
     this.striptags = striptags;
-    this.init();
+    this.initData();
   },
   methods: {
     /**
@@ -250,18 +250,18 @@ export default {
      * - All published post (displayed in the "published" tab)
      * We will display a loader until this two requests are finished
      */
-    init() {
-      this.initState = LOADING_STATE.PENDING;
+    initData() {
+      this.initDataState = REQUEST_STATE.PENDING;
       Promise.all([
         this.getBlog(),
         this.getPosts(this.activeStatus),
         this.getAllPosts()
       ])
         .then(() => {
-          this.initState = LOADING_STATE.COMPLETED_OK;
+          this.initDataState = REQUEST_STATE.COMPLETED_OK;
         })
         .catch(error => {
-          this.initState = LOADING_STATE.COMPLETED_ERROR;
+          this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
           this.notifications.errors.push("initError: " + error.message);
           logger.error(new Error(error));
         });
@@ -301,7 +301,7 @@ export default {
         });
     },
     getPosts(status) {
-      this.postsRequestState = LOADING_STATE.PENDING;
+      this.postsRequestState = REQUEST_STATE.PENDING;
       this.notifications = {
         errors: [],
         info: []
@@ -315,25 +315,25 @@ export default {
           }
         })
         .then(result => {
-          this.postsRequestState = LOADING_STATE.COMPLETED_OK;
+          this.postsRequestState = REQUEST_STATE.COMPLETED_OK;
           this.posts = result.data.posts;
           return result;
         })
         .catch(error => {
-          this.postsRequestState = LOADING_STATE.COMPLETED_ERROR;
+          this.postsRequestState = REQUEST_STATE.COMPLETED_ERROR;
           this.notifications.errors.push("getPosts() " + error.message);
           logger.error(new Error(error));
         });
     },
     deletePost(post) {
-      this.deletePostRequestState = LOADING_STATE.PENDING;
+      this.deletePostRequestState = REQUEST_STATE.PENDING;
       return apolloClient
         .mutate({
           mutation: deletePostMutation,
           variables: { id: post._id }
         })
         .then(result => {
-          this.deletePostRequestState = LOADING_STATE.COMPLETED_OK;
+          this.deletePostRequestState = REQUEST_STATE.COMPLETED_OK;
           console.log("result", result);
           const post = result.data.deletePost;
           return this.getPosts(this.activeStatus);
@@ -341,7 +341,7 @@ export default {
           return result;
         })
         .catch(error => {
-          this.deletePostRequestState = LOADING_STATE.COMPLETED_ERROR;
+          this.deletePostRequestState = REQUEST_STATE.COMPLETED_ERROR;
           this.notifications.errors.push("onDeleteClick() " + error.message);
           logger.error(new Error(error));
           this.deleteModal.show = false;

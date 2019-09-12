@@ -13,8 +13,8 @@
               <span style="padding-left:10px;"><</span> All blogs
             </router-link>
           </span>
-          <span v-if="blog && backToBlogIsVisible()" class="item tag is-medium">
-            <!--
+
+          <!--
             <span style="cursor:pointer" @click="onBackToBlogClick">
               <em>
                 <img
@@ -25,8 +25,7 @@
                 {{ blog.name }}
               </em>
             </span>
-            -->
-          </span>
+          -->
 
           <portal-target name="topbar-left">
             <!--
@@ -120,7 +119,7 @@
 <script>
 import gql from "graphql-tag";
 import apolloClient from "../lib/apolloClient";
-import { getUser, LOADING_STATE } from "../lib/helpers";
+import { getUser, REQUEST_STATE } from "../lib/helpers";
 import getAllPostsApiExample from "../apiExamples/getAllPosts";
 import getSinglePostApiExample from "../apiExamples/getSinglePostApiExample";
 import ApiButton from "../components/ApiButton";
@@ -155,7 +154,7 @@ export default {
   },
   data() {
     return {
-      initState: "NOT_STARTED",
+      initDataState: "NOT_STARTED",
       me: null,
       blog: null,
       dropdownMenuActive: false,
@@ -174,11 +173,11 @@ export default {
     }
   },
   created() {
-    this.init();
+    this.initData();
   },
   methods: {
-    async init() {
-      this.initState = LOADING_STATE.PENDING;
+    async initData() {
+      this.initDataState = REQUEST_STATE.PENDING;
       const promises = [];
       promises.push(this.getMeWithMyBlogs());
       // if we are inside a blog, fetch it.
@@ -187,10 +186,10 @@ export default {
       }
       Promise.all(promises)
         .then(r => {
-          this.initState = LOADING_STATE.COMPLETED_OK;
+          this.initDataState = REQUEST_STATE.COMPLETED_OK;
         })
         .catch(e => {
-          this.initState = LOADING_STATE.COMPLETED_ERROR;
+          this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
           logger.error(e);
         });
     },

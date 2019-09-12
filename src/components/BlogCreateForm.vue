@@ -1,14 +1,14 @@
 <template>
   <div class="blog-create-form section">
-    <template v-if="initState === 'PENDING'">
+    <template v-if="initDataState === 'PENDING'">
       <AppLoader>Loading</AppLoader>
     </template>
 
-    <template v-if="initState === 'COMPLETED_ERROR'">
+    <template v-if="initDataState === 'COMPLETED_ERROR'">
       <div class="notification is-danger">{{initStateError}}</div>
     </template>
 
-    <template v-if="initState === 'COMPLETED_OK'">
+    <template v-if="initDataState === 'COMPLETED_OK'">
       <LayoutBody>
         <div class="section">
           <div class="content has-text-centered">
@@ -89,7 +89,7 @@ import { generate } from "../lib/fantasyName.js";
 import apolloClient from "../lib/apolloClient";
 import { getUser } from "../lib/helpers";
 import gql from "graphql-tag";
-import { LOADING_STATE } from "../lib/helpers";
+import { REQUEST_STATE } from "../lib/helpers";
 import AppLoader from "../components/AppLoader";
 import LayoutBody from "../components/LayoutBody";
 import logger from "../lib/logger";
@@ -128,7 +128,7 @@ export default {
     return {
       errors: [],
       formErrors: [],
-      initState: LOADING_STATE.NOT_STARTED,
+      initDataState: REQUEST_STATE.NOT_STARTED,
       initStateError: null,
       user: null,
       languageList: null,
@@ -139,16 +139,16 @@ export default {
     };
   },
   created() {
-    this.init();
+    this.initData();
   },
   methods: {
-    async init() {
+    async initData() {
       this.initStateError = null;
-      this.initState = LOADING_STATE.PENDING;
+      this.initDataState = REQUEST_STATE.PENDING;
       Promise.all([getUser(), this.getLanguageList()])
         .then(([user, languageListResult]) => {
           const languages = languageListResult.data.languages;
-          this.initState = LOADING_STATE.COMPLETED_OK;
+          this.initDataState = REQUEST_STATE.COMPLETED_OK;
           this.user = user;
           this.languageList = Object.keys(languages).map(i => {
             return {
@@ -162,8 +162,8 @@ export default {
             navigator.language || navigator.userLanguage;
         })
         .catch(e => {
-          this.initState = LOADING_STATE.COMPLETED_ERROR;
-          this.initStateError = "init() : " + e;
+          this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
+          this.initStateError = "initData() : " + e;
           logger.error(new Error(e));
         });
     },
