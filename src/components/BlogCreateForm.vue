@@ -200,7 +200,6 @@ export default {
           }
         })
         .then(result => {
-          apolloClient.resetStore();
           logger.info("result", result);
           this.$router.push({
             name: "postList",

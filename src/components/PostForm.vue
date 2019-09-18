@@ -299,7 +299,6 @@ export default {
           variables: { post }
         })
         .then(result => {
-          apolloClient.resetStore();
           this.lastTimeSaved = Date.now();
           this.existingPost = result.data.createPost;
           // post is created, we are now in UPDATE mode for the form.

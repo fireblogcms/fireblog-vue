@@ -38,6 +38,17 @@ class ckeditorUploadAdapter {
       return apolloClient
         .mutate({
           mutation: uploadQuery,
+          context: {
+            fetchOptions: {
+              useUpload: true,
+              onProgress: progressEvent => {
+                this.loader.uploadTotal = progressEvent.total;
+                this.loader.uploaded = progressEvent.loaded;
+                console.log("this.loader", this.loader);
+                //console.info(progressEvent);
+              }
+            }
+          },
           // put file in a folder named after the blog Id.
           variables: {
             file,
