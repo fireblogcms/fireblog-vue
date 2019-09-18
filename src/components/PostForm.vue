@@ -484,6 +484,15 @@ export default {
   font-size: 40px;
 }
 
+button.ck-block-toolbar-button {
+  background-image: url("/images/editor-button-plus.svg") !important;
+  background-repeat: no-repeat !important;
+}
+
+.ck-block-toolbar-button svg {
+  display: none;
+}
+
 @media screen and (max-width: 768px) {
   .writeForm form {
     padding: 1rem;
