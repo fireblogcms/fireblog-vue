@@ -1,14 +1,13 @@
 
 <template>
-  <div class="container section">
-    <AppErrorReporter
-      v-if="initDataState === 'COMPLETED_ERROR'"
-      :error="initStateError"
-    >Sorry, An error occured while signing.</AppErrorReporter>
-    <LayoutBody v-if="initDataState === 'PENDING'">
-      <AppLoader>Signing in ...</AppLoader>
-    </LayoutBody>
-  </div>
+  <AdminLayout>
+    <div class="container section">
+      <AppError v-if="error">Sorry, an error occured while signing in.</AppError>
+      <LayoutBody v-if="initDataState === 'PENDING'">
+        <AppLoader>Signing in ...</AppLoader>
+      </LayoutBody>
+    </div>
+  </AdminLayout>
 </template>
 
 <script>
@@ -17,48 +16,54 @@ import AppLoader from "../components/AppLoader";
 import { auth0Client, syncAuth0UserWithServer } from "../lib/auth";
 import { REQUEST_STATE } from "../lib/helpers";
 import LayoutBody from "../components/LayoutBody";
-import AppErrorReporter from "../components/AppErrorReporter";
+import AdminLayout from "../layouts/AdminLayout";
+import AppError from "../components/AppError";
 import logger from "../lib/logger";
 
 export default {
   components: {
     AppLoader,
     LayoutBody,
-    AppErrorReporter
+    AppError,
+    AdminLayout
   },
   data() {
     return {
       error: null,
-      initDataState: REQUEST_STATE.NOT_STARTED,
-      initStateError: null
+      initDataState: REQUEST_STATE.NOT_STARTED
     };
   },
-  async created() {
-    this.initDataState = REQUEST_STATE.PENDING;
-    this.initStateError = null;
-    const auth0 = await auth0Client();
-    auth0
-      .handleRedirectCallback()
-      .then(async r => {
-        return auth0.getUser();
-      })
-      .then(user => {
-        return syncAuth0UserWithServer({
-          auth0Id: user.sub,
-          email: user.email,
-          name: user.name,
-          picture: user.picture ? user.picture : null
+  methods: {
+    async initData() {
+      this.initDataState = REQUEST_STATE.PENDING;
+      this.error = null;
+      const auth0 = await auth0Client();
+      auth0
+        .handleRedirectCallback()
+        .then(async r => {
+          return auth0.getUser();
+        })
+        .then(user => {
+          return syncAuth0UserWithServer({
+            auth0Id: user.sub,
+            email: user.email,
+            name: user.name,
+            picture: user.picture ? user.picture : null
+          });
+        })
+        .then(() => {
+          this.initDataState = REQUEST_STATE.COMPLETED_OK;
+          this.$router.push("/");
+        })
+        .catch(e => {
+          this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
+          this.error = e;
+          logger.error(new Error(e));
         });
-      })
-      .then(() => {
-        this.initDataState = REQUEST_STATE.COMPLETED_OK;
-        this.$router.push("/");
-      })
-      .catch(e => {
-        this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
-        this.initStateError = e;
-        logger.error(new Error(e));
-      });
+    }
+  },
+  async created() {
+    this.initData();
   }
 };
 </script>

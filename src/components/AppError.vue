@@ -1,16 +1,13 @@
 <template>
-  <div class="section container">
-    <LayoutBody class="has-text-centered">
-      <div class="content section">
+  <div class="section">
+    <div class="content has-text-centered">
+      <div class="notification is-danger">
         <slot />
-        <div>
-          <p>
-            <em>This error has been automatically reported to our team.</em>
-          </p>
-          <div class="notification is-danger">{{error}}</div>
-        </div>
       </div>
-    </LayoutBody>
+      <p>
+        <em>This error has been automatically reported to our team.</em>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -22,6 +19,8 @@ export default {
     LayoutBody
   },
   props: {
+    // this is the original JavaScript error. This error is NOT dispayed
+    // to the user, it is only sent to the logger.
     error: {
       type: [String, Error],
       required: true

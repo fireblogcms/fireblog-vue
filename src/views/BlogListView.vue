@@ -1,22 +1,17 @@
 <template>
   <AdminLayout>
-    <!--<AppNotify :errors="notifications.errors" :info="notifications.info" />-->
-    <template v-if="initDataState === 'PENDING'">
-      <AppLoader>Loading blogs</AppLoader>
-    </template>
-    <template v-if="initDataState === 'COMPLETED_ERROR'">
-      <AppErrorReporter :error="initStateError">
-        <p>There was an issue fetching blogs.</p>
-      </AppErrorReporter>
-    </template>
+    <AppLoader v-if="initDataState === 'PENDING'">Loading blogs</AppLoader>
+
+    <AppError v-if="error" :error="error">Sorry, an error occured while signing in</AppError>
+
     <template v-if="initDataState === 'COMPLETED_OK'">
+      <!-- if this is the fiirs blog, display form to create a blog -->
       <template v-if="blogs.edges.length === 0">
-        <div class="section">
-          <LayoutBody class="container">
-            <BlogCreateForm :first="true" />
-          </LayoutBody>
+        <div class="section container">
+          <BlogCreateForm :first="true" />
         </div>
       </template>
+      <!-- else, display the blog list -->
       <template v-if="blogs && blogs.edges.length > 0">
         <div class="container">
           <div class="animated fadeIn">
@@ -75,7 +70,7 @@ import { REQUEST_STATE } from "../lib/helpers";
 import AppNotify from "../components/AppNotify";
 import ButtonLink from "../components/ButtonLink";
 import LayoutBody from "../components/LayoutBody";
-import AppErrorReporter from "../components/AppErrorReporter";
+import AppError from "../components/AppError";
 import LayoutList from "../components/LayoutList";
 import logger from "../lib/logger";
 
@@ -101,7 +96,7 @@ const myBlogsQuery = gql`
 export default {
   components: {
     LayoutBody,
-    AppErrorReporter,
+    AppError,
     BulmaButtonLink,
     BlogCreateForm,
     BulmaGrid,
@@ -114,14 +109,23 @@ export default {
   data() {
     return {
       blogs: null,
-      initDataState: REQUEST_STATE.NOT_STARTED,
-      notifications: {
-        errors: [],
-        info: []
-      }
+      error: null,
+      initDataState: REQUEST_STATE.NOT_STARTED
     };
   },
   methods: {
+    initData() {
+      this.error = null;
+      this.initDataState = REQUEST_STATE.PENDING;
+      Promise.all([this.getBlogs()])
+        .then(() => {
+          this.initDataState = REQUEST_STATE.COMPLETED_OK;
+        })
+        .catch(error => {
+          this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
+          this.error = error;
+        });
+    },
     blogCardStyles(edge, index) {
       const styles = {
         backgroundSize: "cover"
@@ -139,17 +143,6 @@ export default {
       }
       return styles;
     },
-    initData() {
-      this.initDataState = REQUEST_STATE.PENDING;
-      Promise.all([this.getBlogs()])
-        .then(() => {
-          this.initDataState = REQUEST_STATE.COMPLETED_OK;
-        })
-        .catch(error => {
-          this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
-          this.initStateError = error;
-        });
-    },
     buildLinkToPostList(item) {
       return { name: "postList", params: { blogId: item.node._id } };
     },
@@ -157,12 +150,17 @@ export default {
       this.$router.push(this.buildLinkToPostList(item));
     },
     getBlogs() {
-      return apolloClient.query({ query: myBlogsQuery }).then(result => {
-        this.blogs = result.data.me.blogs;
-        this.blogsEdgesReversed = [...this.blogs.edges].reverse();
-        this.blogsDefaultImagesMap = this.mapDefaultImagesToBlogId();
-        return this.blogs;
-      });
+      return apolloClient
+        .query({ query: myBlogsQuery })
+        .then(result => {
+          this.blogs = result.data.me.blogs;
+          this.blogsEdgesReversed = [...this.blogs.edges].reverse();
+          this.blogsDefaultImagesMap = this.mapDefaultImagesToBlogId();
+          return this.blogs;
+        })
+        .catch(e => {
+          this.error = e;
+        });
     },
     defaultImages() {
       return [
