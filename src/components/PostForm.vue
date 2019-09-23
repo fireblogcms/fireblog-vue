@@ -1,6 +1,5 @@
 <template>
   <div class="writeForm">
-    {{mediaLoadingCounter}}
     <AppNotify :errors="notifications.errors" />
 
     <!-- LOADER  displayed while initData are fetched -->
@@ -82,7 +81,7 @@
           class="content"
           :disabled="savingDraftState ===  REQUEST_STATE.PENDING"
           ref="ckeditor"
-          :value="inputs.oldContent"
+          :value="oldContent"
           :editor="editor"
           @input="onContentInput"
           @ready="onEditorReady"
@@ -199,9 +198,10 @@ export default {
         errors: [],
         info: []
       },
+      // content loaded from database when page is loaded.
+      oldContent: "",
       inputs: {
         title: "",
-        oldContent: "",
         content: ""
       },
       showMediaLoadingModal: false
@@ -325,15 +325,13 @@ export default {
         })
         .then(result => {
           this.existingPost = result.data.post;
-          this.inputs = this.prepareInputsFromPost(this.existingPost);
+          this.prepareInputsFromPost(this.existingPost);
         });
     },
     // prepare form inputs from a post object
     prepareInputsFromPost(post) {
-      return {
-        title: post.title,
-        oldContent: post.content ? post.content : ""
-      };
+      this.oldContent = post.content ? post.content : "";
+      this.inputs.title = post.title;
     },
     // prepare a post object from form inputs
     preparePostFromInputs(inputs) {
