@@ -128,9 +128,9 @@
       </div>
     </template>
     <BulmaModal v-model="deleteModal.show">
-      <template #title></template>
+      <template #title>{{deleteModal.title}}</template>
       <template #body>
-        <h2>{{deleteModal.title}}</h2>This action cannot be undone
+        <p>This action cannot be undone</p>
       </template>
       <template #footer>
         <div @click="deleteModal.show = false" class="button is-success">OUPS NO, CANCEL !</div>
