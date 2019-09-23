@@ -115,7 +115,10 @@ export const uploadFetch = (url, options) =>
     });
 
     if (xhr.upload) {
-      xhr.upload.onprogress = options.onProgress;
+      xhr.upload.onprogress = progress => {
+        console.log("progression", progress);
+      };
+      //xhr.upload.onprogress = options.onProgress;
     }
 
     if (options.onAbortPossible) {

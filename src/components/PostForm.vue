@@ -101,17 +101,12 @@ import CKEditor from "@ckeditor/ckeditor5-vue";
 import gql from "graphql-tag";
 import AppNotify from "./AppNotify";
 import { REQUEST_STATE, getUser, getBlog } from "../lib/helpers";
-import { CloudinaryImageUploadAdapter } from "ckeditor-cloudinary-uploader-adapter";
-//import { ckeditorUploadAdapterPlugin } from "../lib/ckeditorUploadAdapter";
+// import { CloudinaryImageUploadAdapter } from "ckeditor-cloudinary-uploader-adapter";
+//import { ckeditorGraphQLUploadAdapterPlugin } from "../lib/ckeditorGraphQLUploadAdapter";
+import { ckeditorCloudinaryDirectUploadAdapaterPlugin } from "../lib/ckeditorCloudinaryDirectUploadAdapater";
 import hotkeys from "hotkeys-js";
 import Loading from "vue-loading-overlay";
 import logger from "../lib/logger";
-
-function imagePluginFactory(editor) {
-  editor.plugins.get("FileRepository").createUploadAdapter = loader => {
-    return new CloudinaryImageUploadAdapter(loader, "pod-cloud", "ml_default");
-  };
-}
 
 const PostResponseFragment = gql`
   fragment PostResponse on Post {
@@ -202,7 +197,7 @@ export default {
     this.OPERATION = OPERATION;
     this.editor = Editor;
     this.editorConfig = {
-      extraPlugins: [imagePluginFactory],
+      extraPlugins: [ckeditorCloudinaryDirectUploadAdapaterPlugin],
       toolbar: [
         "bold",
         "italic",

@@ -13,7 +13,7 @@ const uploadQuery = gql`
   }
 `;
 
-class ckeditorUploadAdapter {
+class ckeditorGraphQLUploadAdapter {
   constructor(loader) {
     // The file loader instance to use during the upload. It sounds scary but do not
     // worry — the loader will be passed into the adapter later on in this guide.
@@ -45,7 +45,6 @@ class ckeditorUploadAdapter {
                 this.loader.uploadTotal = progressEvent.total;
                 this.loader.uploaded = progressEvent.loaded;
                 console.log("this.loader", this.loader);
-                //console.info(progressEvent);
               }
             }
           },
@@ -71,9 +70,9 @@ class ckeditorUploadAdapter {
   }
 }
 
-export function ckeditorUploadAdapterPlugin(editor) {
+export function ckeditorGraphQLUploadAdapterPlugin(editor) {
   editor.plugins.get("FileRepository").createUploadAdapter = loader => {
     // Configure the URL to the upload script in your back-end here!
-    return new ckeditorUploadAdapter(loader);
+    return new ckeditorGraphQLUploadAdapter(loader);
   };
 }
