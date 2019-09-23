@@ -82,8 +82,10 @@
           class="content"
           :disabled="savingDraftState ===  REQUEST_STATE.PENDING"
           ref="ckeditor"
+          :value="inputs.oldContent"
           :editor="editor"
           @input="onContentInput"
+          @ready="onEditorReady"
           :config="editorConfig"
         ></ckeditor>
       </form>
@@ -99,9 +101,17 @@ import CKEditor from "@ckeditor/ckeditor5-vue";
 import gql from "graphql-tag";
 import AppNotify from "./AppNotify";
 import { REQUEST_STATE, getUser, getBlog } from "../lib/helpers";
-import { ckeditorUploadAdapterPlugin } from "../lib/ckeditorUploadAdapter";
+import { CloudinaryImageUploadAdapter } from "ckeditor-cloudinary-uploader-adapter";
+//import { ckeditorUploadAdapterPlugin } from "../lib/ckeditorUploadAdapter";
 import hotkeys from "hotkeys-js";
 import Loading from "vue-loading-overlay";
+import logger from "../lib/logger";
+
+function imagePluginFactory(editor) {
+  editor.plugins.get("FileRepository").createUploadAdapter = loader => {
+    return new CloudinaryImageUploadAdapter(loader, "pod-cloud", "ml_default");
+  };
+}
 
 const PostResponseFragment = gql`
   fragment PostResponse on Post {
@@ -181,6 +191,7 @@ export default {
       },
       inputs: {
         title: "",
+        oldContent: "",
         content: ""
       }
     };
@@ -191,7 +202,7 @@ export default {
     this.OPERATION = OPERATION;
     this.editor = Editor;
     this.editorConfig = {
-      extraPlugins: [ckeditorUploadAdapterPlugin],
+      extraPlugins: [imagePluginFactory],
       toolbar: [
         "bold",
         "italic",
@@ -220,6 +231,14 @@ export default {
   methods: {
     onContentInput(content) {
       this.inputs.content = content;
+    },
+    onEditorReady() {
+      const element = document.querySelector(
+        ".ck-block-toolbar-button  .ck-tooltip__text"
+      );
+      const toolTip = "Add media";
+      element.innerHTML = toolTip;
+      element.innerText = toolTip;
     },
     initData() {
       this.initDataState = REQUEST_STATE.PENDING;
@@ -273,7 +292,7 @@ export default {
     prepareInputsFromPost(post) {
       return {
         title: post.title,
-        content: post.content ? post.content : ""
+        oldContent: post.content ? post.content : ""
       };
     },
     // prepare a post object from form inputs
@@ -493,7 +512,11 @@ export default {
 button.ck-block-toolbar-button {
   background-image: url("/images/editor-button-plus.svg") !important;
   background-repeat: no-repeat !important;
-  cursor: pointer;
+  cursor: pointer !important;
+}
+
+button.ck-block-toolbar-button:hover {
+  background-color: transparent;
 }
 
 .ck-block-toolbar-button svg {
