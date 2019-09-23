@@ -83,7 +83,7 @@
           :disabled="savingDraftState ===  REQUEST_STATE.PENDING"
           ref="ckeditor"
           :editor="editor"
-          v-model="inputs.content"
+          @input="onContentInput"
           :config="editorConfig"
         ></ckeditor>
       </form>
@@ -218,6 +218,9 @@ export default {
     });
   },
   methods: {
+    onContentInput(content) {
+      this.inputs.content = content;
+    },
     initData() {
       this.initDataState = REQUEST_STATE.PENDING;
       const promises = [];
@@ -484,9 +487,13 @@ export default {
   font-size: 40px;
 }
 
+/**
+ * Replace "P" paragraph icon to a "+" to add media
+ */
 button.ck-block-toolbar-button {
   background-image: url("/images/editor-button-plus.svg") !important;
   background-repeat: no-repeat !important;
+  cursor: pointer;
 }
 
 .ck-block-toolbar-button svg {

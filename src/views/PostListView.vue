@@ -128,8 +128,10 @@
       </div>
     </template>
     <BulmaModal v-model="deleteModal.show">
-      <template #title>{{deleteModal.title}}</template>
-      <template #body>This action cannot be undone</template>
+      <template #title></template>
+      <template #body>
+        <h2>{{deleteModal.title}}</h2>This action cannot be undone
+      </template>
       <template #footer>
         <div @click="deleteModal.show = false" class="button is-success">OUPS NO, CANCEL !</div>
         <div @click="onDeleteModalConfirmClick" class="button is-danger">DELETE IT. FOREVER.</div>
@@ -352,7 +354,7 @@ export default {
     onDeleteClick(post) {
       this.deleteModal.post = post;
       this.deleteModal.show = true;
-      this.deleteModal.title = `Delete ${post.title}`;
+      this.deleteModal.title = `Delete "${post.title}"`;
     },
     onUnpublishClick(status) {
       alert("unpublish");
