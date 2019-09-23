@@ -1,6 +1,6 @@
 <template>
   <div class="writeForm">
-    {{anImageIsLoading}}
+    {{mediaLoadingCounter}}
     <AppNotify :errors="notifications.errors" />
 
     <!-- LOADER  displayed while initData are fetched -->
@@ -11,15 +11,14 @@
     <template v-if="initDataState === REQUEST_STATE.FINISHED_OK">
       <!-- TOPBAR LEFT BUTTONS -->
       <portal to="topbar-left">
-        <router-link :to="{ name: 'postList', params: { blogId: this.$route.params.blogId }}">
-          <span style="cursor:pointer" class="item tag is-medium">
-            <em>
-              <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
-              <span style="padding-left:10px;"><</span>
-              posts
-            </em>
-          </span>
-        </router-link>
+        <span @click="onBackToPostsClick" style="cursor:pointer" class="item tag is-medium">
+          <em>
+            <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
+            <span style="padding-left:10px;"><</span>
+            posts
+          </em>
+        </span>
+
         <span class="item button" style="border:0" v-if="lastTimeSaved">
           <em>saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
         </span>
@@ -91,6 +90,18 @@
         ></ckeditor>
       </form>
     </template>
+
+    <BulmaModal v-model="showMediaLoadingModal">
+      <template #title>{{mediaLoadingCounter}} media are currently uploading</template>
+      <template #body>If you quit now, some medias might not been saved.</template>
+      <template #footer>
+        <div
+          @click="showMediaLoadingModal = false"
+          class="button is-success"
+        >Wait for media to upload!</div>
+        <div @click="onMediaLoadingConfirmClick" class="button is-danger">Quit anyway</div>
+      </template>
+    </BulmaModal>
   </div>
 </template>
 
@@ -108,6 +119,7 @@ import { ckeditorCloudinaryDirectUploadAdapterPlugin } from "../utils/ckeditorCl
 import hotkeys from "hotkeys-js";
 import Loading from "vue-loading-overlay";
 import logger from "../utils/logger";
+import BulmaModal from "./BulmaModal";
 
 const PostResponseFragment = gql`
   fragment PostResponse on Post {
@@ -171,7 +183,8 @@ export default {
     ckeditor: CKEditor.component,
     AppLoader,
     AppNotify,
-    Loading
+    Loading,
+    BulmaModal
   },
   data() {
     return {
@@ -179,7 +192,7 @@ export default {
       publishPostState: REQUEST_STATE.NOT_STARTED,
       unpublishPostState: REQUEST_STATE.NOT_STARTED,
       savingDraftState: REQUEST_STATE.NOT_STARTED,
-      anImageIsLoading: false,
+      mediaLoadingCounter: 0,
       lastTimeSaved: null,
       existingPost: null,
       notifications: {
@@ -190,7 +203,8 @@ export default {
         title: "",
         oldContent: "",
         content: ""
-      }
+      },
+      showMediaLoadingModal: false
     };
   },
   created() {
@@ -201,12 +215,15 @@ export default {
     this.editorConfig = {
       extraPlugins: [
         ckeditorCloudinaryDirectUploadAdapterPlugin({
-          onRequestStateChange: state => {
-            if (state == REQUEST_STATE.PENDING) {
-              this.anImageIsLoading = true;
-            } else {
-              this.anImageIsLoading = false;
+          onRequestStateChange: ({ state, file }) => {
+            if (state === REQUEST_STATE.PENDING) {
+              this.mediaLoadingCounter = this.mediaLoadingCounter + 1;
             }
+            if (
+              state === REQUEST_STATE.FINISHED_OK ||
+              state === REQUEST_STATE.FINISHED_ERROR
+            )
+              this.mediaLoadingCounter = this.mediaLoadingCounter - 1;
           }
         })
       ],
@@ -236,8 +253,24 @@ export default {
     });
   },
   methods: {
+    onBackToPostsClick() {
+      if (this.mediaLoadingCounter > 0) {
+        this.showMediaLoadingModal = true;
+      } else {
+        this.$router.push({
+          name: "postList",
+          params: { blogId: this.$route.params.blogId }
+        });
+      }
+    },
     onContentInput(content) {
       this.inputs.content = content;
+    },
+    onMediaLoadingConfirmClick() {
+      this.$router.push({
+        name: "postList",
+        params: { blogId: this.$route.params.blogId }
+      });
     },
     onEditorReady() {
       const element = document.querySelector(

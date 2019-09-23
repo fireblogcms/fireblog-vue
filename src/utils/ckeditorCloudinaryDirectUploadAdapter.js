@@ -3,9 +3,6 @@ import { REQUEST_STATE } from "./helpers";
 
 class ckeditorCloudinaryDirectUploadAdapter {
   constructor(loader, options) {
-    if (options.onRequestStateChange) {
-      options.onRequestStateChange(REQUEST_STATE.NOT_STARTED);
-    }
     // The file loader instance to use during the upload. It sounds scary but do not
     // worry — the loader will be passed into the adapter later on in this guide.
     this.loader = loader;
@@ -16,13 +13,17 @@ class ckeditorCloudinaryDirectUploadAdapter {
     }/image/upload`;
     this.xhr = new XMLHttpRequest();
     this.options = options;
+    if (options.onRequestStateChange) {
+      options.onRequestStateChange({
+        state: REQUEST_STATE.NOT_STARTED,
+        xhr: this.xhr,
+        file: null
+      });
+    }
   }
 
   // Starts the upload process.
   upload() {
-    if (this.options.onRequestStateChange) {
-      this.options.onRequestStateChange(REQUEST_STATE.PENDING);
-    }
     if (!Router.currentRoute.params.blogId) {
       // Each image is uploaded in a folder name after the blog Id, so
       // make sure we have a blogId param at this point.
@@ -35,7 +36,13 @@ class ckeditorCloudinaryDirectUploadAdapter {
     // This promise is resolved when file has been uploaded.
     return this.loader.file.then(file => {
       if (this.options.onRequestStateChange) {
-        this.options.onRequestStateChange(REQUEST_STATE.PENDING);
+        if (this.options.onRequestStateChange) {
+          this.options.onRequestStateChange({
+            state: REQUEST_STATE.PENDING,
+            xhr: this.xhr,
+            file
+          });
+        }
       }
       return new Promise((resolve, reject) => {
         var fd = new FormData();
@@ -57,11 +64,19 @@ class ckeditorCloudinaryDirectUploadAdapter {
               default: response.secure_url
             };
             if (this.options.onRequestStateChange) {
-              this.options.onRequestStateChange(REQUEST_STATE.FINISHED_OK);
+              this.options.onRequestStateChange({
+                state: REQUEST_STATE.FINISHED_OK,
+                file: file,
+                xhr: this.xhr
+              });
             }
             resolve(images);
           } else if (this.xhr.status !== 200) {
-            this.options.onRequestStateChange(REQUEST_STATE.FINISHED_ERROR);
+            this.options.onRequestStateChange({
+              state: REQUEST_STATE.FINISHED_ERROR,
+              file: file,
+              xhr: this.xhr
+            });
             // Unsuccessful request, reject the promise
             reject("Upload failed");
           }
