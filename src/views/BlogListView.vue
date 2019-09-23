@@ -4,7 +4,7 @@
 
     <AppError v-if="error" :error="error">Sorry, an error occured while signing in</AppError>
 
-    <template v-if="initDataState === 'COMPLETED_OK'">
+    <template v-if="initDataState === 'FINISHED_OK'">
       <!-- if this is the fiirs blog, display form to create a blog -->
       <template v-if="blogs.edges.length === 0">
         <div class="section container">
@@ -59,20 +59,20 @@
 </template>
 
 <script>
-import apolloClient from "../lib/apolloClient";
+import apolloClient from "../utils/apolloClient";
 import BlogCreateForm from "../components/BlogCreateForm";
 import BulmaGrid from "../components/BulmaGrid";
 import AdminLayout from "../layouts/AdminLayout";
 import AppLoader from "../components/AppLoader";
 import gql from "graphql-tag";
 import BulmaButtonLink from "../components/BulmaButtonLink";
-import { REQUEST_STATE } from "../lib/helpers";
+import { REQUEST_STATE } from "../utils/helpers";
 import AppNotify from "../components/AppNotify";
 import ButtonLink from "../components/ButtonLink";
 import LayoutBody from "../components/LayoutBody";
 import AppError from "../components/AppError";
 import LayoutList from "../components/LayoutList";
-import logger from "../lib/logger";
+import logger from "../utils/logger";
 
 const myBlogsQuery = gql`
   query myBlogsQuery {
@@ -119,10 +119,10 @@ export default {
       this.initDataState = REQUEST_STATE.PENDING;
       Promise.all([this.getBlogs()])
         .then(() => {
-          this.initDataState = REQUEST_STATE.COMPLETED_OK;
+          this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
         .catch(error => {
-          this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
+          this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           this.error = error;
         });
     },

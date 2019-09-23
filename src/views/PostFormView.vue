@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import apolloClient from "../lib/apolloClient";
+import apolloClient from "../utils/apolloClient";
 import PostForm from "@/components/PostForm";
 import AdminLayout from "@/layouts/AdminLayout";
 import gql from "graphql-tag";

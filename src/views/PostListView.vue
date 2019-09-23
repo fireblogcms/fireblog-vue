@@ -4,7 +4,7 @@
     <template v-if="initDataState === 'PENDING'">
       <AppLoader />
     </template>
-    <template v-if="initDataState === 'COMPLETED_OK'">
+    <template v-if="initDataState === 'FINISHED_OK'">
       <div class="animated fadeIn">
         <header class="container" style="padding: 0 1rem 2rem 1rem">
           <div class="columns">
@@ -73,12 +73,12 @@
             <LayoutBody style="border-top-left-radius:0;min-height:200px">
               <div class="container" style="border-top-left-radius:0;">
                 <AppLoader v-show="postsRequestState === 'PENDING'" />
-                <template v-if="postsRequestState === 'COMPLETED_OK' && posts.edges.length === 0">
+                <template v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length === 0">
                   <div class="content section has-text-centered">
                     <p>No post found with {{ activeStatus }} status for now.</p>
                   </div>
                 </template>
-                <template v-if="postsRequestState === 'COMPLETED_OK' && posts.edges.length > 0">
+                <template v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length > 0">
                   <LayoutList :items="posts.edges" :itemUniqueKey="(item) => item.node._id">
                     <template v-slot="{item}">
                       <div class="columns">
@@ -141,17 +141,17 @@
 </template>
 
 <script>
-import apolloClient from "../lib/apolloClient";
+import apolloClient from "../utils/apolloClient";
 import AdminLayout from "../layouts/AdminLayout";
 import gql from "graphql-tag";
 import AppLoader from "../components/AppLoader";
-import { REQUEST_STATE } from "../lib/helpers";
+import { REQUEST_STATE } from "../utils/helpers";
 import AppNotify from "../components/AppNotify";
 import BulmaButtonLink from "../components/BulmaButtonLink";
 import LayoutBody from "../components/LayoutBody";
 import LayoutList from "../components/LayoutList";
 import striptags from "striptags";
-import logger from "../lib/logger";
+import logger from "../utils/logger";
 import BulmaModal from "../components/BulmaModal";
 
 const postsQuery = gql`
@@ -257,10 +257,10 @@ export default {
         this.getAllPosts()
       ])
         .then(() => {
-          this.initDataState = REQUEST_STATE.COMPLETED_OK;
+          this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
         .catch(error => {
-          this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
+          this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           this.notifications.errors.push("initError: " + error.message);
           logger.error(new Error(error));
         });
@@ -314,12 +314,12 @@ export default {
           }
         })
         .then(result => {
-          this.postsRequestState = REQUEST_STATE.COMPLETED_OK;
+          this.postsRequestState = REQUEST_STATE.FINISHED_OK;
           this.posts = result.data.posts;
           return result;
         })
         .catch(error => {
-          this.postsRequestState = REQUEST_STATE.COMPLETED_ERROR;
+          this.postsRequestState = REQUEST_STATE.FINISHED_ERROR;
           this.notifications.errors.push("getPosts() " + error.message);
           logger.error(new Error(error));
         });
@@ -332,7 +332,7 @@ export default {
           variables: { id: post._id }
         })
         .then(result => {
-          this.deletePostRequestState = REQUEST_STATE.COMPLETED_OK;
+          this.deletePostRequestState = REQUEST_STATE.FINISHED_OK;
           console.log("result", result);
           const post = result.data.deletePost;
           return this.getPosts(this.activeStatus);
@@ -340,7 +340,7 @@ export default {
           return result;
         })
         .catch(error => {
-          this.deletePostRequestState = REQUEST_STATE.COMPLETED_ERROR;
+          this.deletePostRequestState = REQUEST_STATE.FINISHED_ERROR;
           this.notifications.errors.push("onDeleteClick() " + error.message);
           logger.error(new Error(error));
           this.deleteModal.show = false;

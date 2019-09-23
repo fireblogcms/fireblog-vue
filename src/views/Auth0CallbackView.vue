@@ -11,14 +11,14 @@
 </template>
 
 <script>
-import apolloClient from "../lib/apolloClient";
+import apolloClient from "../utils/apolloClient";
 import AppLoader from "../components/AppLoader";
-import { auth0Client, syncAuth0UserWithServer } from "../lib/auth";
-import { REQUEST_STATE } from "../lib/helpers";
+import { auth0Client, syncAuth0UserWithServer } from "../utils/auth";
+import { REQUEST_STATE } from "../utils/helpers";
 import LayoutBody from "../components/LayoutBody";
 import AdminLayout from "../layouts/AdminLayout";
 import AppError from "../components/AppError";
-import logger from "../lib/logger";
+import logger from "../utils/logger";
 
 export default {
   components: {
@@ -52,11 +52,11 @@ export default {
           });
         })
         .then(() => {
-          this.initDataState = REQUEST_STATE.COMPLETED_OK;
+          this.initDataState = REQUEST_STATE.FINISHED_OK;
           this.$router.push("/");
         })
         .catch(e => {
-          this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
+          this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           this.error = e;
           logger.error(new Error(e));
         });

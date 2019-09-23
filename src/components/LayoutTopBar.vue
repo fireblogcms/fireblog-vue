@@ -118,13 +118,13 @@
 
 <script>
 import gql from "graphql-tag";
-import apolloClient from "../lib/apolloClient";
-import { getUser, REQUEST_STATE } from "../lib/helpers";
+import apolloClient from "../utils/apolloClient";
+import { getUser, REQUEST_STATE } from "../utils/helpers";
 import getAllPostsApiExample from "../apiExamples/getAllPosts";
 import getSinglePostApiExample from "../apiExamples/getSinglePostApiExample";
 import ApiButton from "../components/ApiButton";
 import BulmaModal from "../components/BulmaModal";
-import logger from "../lib/logger";
+import logger from "../utils/logger";
 
 const meWithMyBlogsQuery = gql`
   query meWithMyBlogsQuery {
@@ -186,10 +186,10 @@ export default {
       }
       Promise.all(promises)
         .then(r => {
-          this.initDataState = REQUEST_STATE.COMPLETED_OK;
+          this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
         .catch(e => {
-          this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
+          this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           logger.error(e);
         });
     },

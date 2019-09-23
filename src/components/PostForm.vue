@@ -1,5 +1,6 @@
 <template>
   <div class="writeForm">
+    {{anImageIsLoading}}
     <AppNotify :errors="notifications.errors" />
 
     <!-- LOADER  displayed while initData are fetched -->
@@ -7,7 +8,7 @@
       <AppLoader :absolute="true" />
     </template>
 
-    <template v-if="initDataState === REQUEST_STATE.COMPLETED_OK">
+    <template v-if="initDataState === REQUEST_STATE.FINISHED_OK">
       <!-- TOPBAR LEFT BUTTONS -->
       <portal to="topbar-left">
         <router-link :to="{ name: 'postList', params: { blogId: this.$route.params.blogId }}">
@@ -94,19 +95,19 @@
 </template>
 
 <script>
-import apolloClient from "../lib/apolloClient";
+import apolloClient from "../utils/apolloClient";
 import AppLoader from "../components/AppLoader";
 import Editor from "@ckeditor/ckeditor5-build-balloon-block";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import gql from "graphql-tag";
 import AppNotify from "./AppNotify";
-import { REQUEST_STATE, getUser, getBlog } from "../lib/helpers";
+import { REQUEST_STATE, getUser, getBlog } from "../utils/helpers";
 // import { CloudinaryImageUploadAdapter } from "ckeditor-cloudinary-uploader-adapter";
-//import { ckeditorGraphQLUploadAdapterPlugin } from "../lib/ckeditorGraphQLUploadAdapter";
-import { ckeditorCloudinaryDirectUploadAdapaterPlugin } from "../lib/ckeditorCloudinaryDirectUploadAdapater";
+//import { ckeditorGraphQLUploadAdapterPlugin } from "../utils/ckeditorGraphQLUploadAdapter";
+import { ckeditorCloudinaryDirectUploadAdapterPlugin } from "../utils/ckeditorCloudinaryDirectUploadAdapter";
 import hotkeys from "hotkeys-js";
 import Loading from "vue-loading-overlay";
-import logger from "../lib/logger";
+import logger from "../utils/logger";
 
 const PostResponseFragment = gql`
   fragment PostResponse on Post {
@@ -178,6 +179,7 @@ export default {
       publishPostState: REQUEST_STATE.NOT_STARTED,
       unpublishPostState: REQUEST_STATE.NOT_STARTED,
       savingDraftState: REQUEST_STATE.NOT_STARTED,
+      anImageIsLoading: false,
       lastTimeSaved: null,
       existingPost: null,
       notifications: {
@@ -197,7 +199,17 @@ export default {
     this.OPERATION = OPERATION;
     this.editor = Editor;
     this.editorConfig = {
-      extraPlugins: [ckeditorCloudinaryDirectUploadAdapaterPlugin],
+      extraPlugins: [
+        ckeditorCloudinaryDirectUploadAdapterPlugin({
+          onRequestStateChange: state => {
+            if (state == REQUEST_STATE.PENDING) {
+              this.anImageIsLoading = true;
+            } else {
+              this.anImageIsLoading = false;
+            }
+          }
+        })
+      ],
       toolbar: [
         "bold",
         "italic",
@@ -245,10 +257,10 @@ export default {
       }
       return Promise.all(promises)
         .then(results => {
-          this.initDataState = REQUEST_STATE.COMPLETED_OK;
+          this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
         .catch(error => {
-          this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
+          this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           logger.error(new Error(error));
         });
     },
@@ -362,10 +374,10 @@ export default {
       if (this.operation() === OPERATION.CREATE) {
         this.createPost(this.preparePostFromInputs(this.inputs))
           .then(() => {
-            this.savingDraftState = REQUEST_STATE.COMPLETED_OK;
+            this.savingDraftState = REQUEST_STATE.FINISHED_OK;
           })
           .catch(e => {
-            this.savingDraftState = REQUEST_STATE.COMPLETED_ERROR;
+            this.savingDraftState = REQUEST_STATE.FINISHED_ERROR;
           });
       }
       //
@@ -379,10 +391,10 @@ export default {
         };
         this.updatePost(post)
           .then(() => {
-            this.savingDraftState = REQUEST_STATE.COMPLETED_OK;
+            this.savingDraftState = REQUEST_STATE.FINISHED_OK;
           })
           .catch(e => {
-            this.savingDraftState = REQUEST_STATE.COMPLETED_ERROR;
+            this.savingDraftState = REQUEST_STATE.FINISHED_ERROR;
           });
       }
     },
@@ -401,10 +413,10 @@ export default {
         };
         this.createPost(newPost)
           .then(() => {
-            this.publishPostState = REQUEST_STATE.COMPLETED_OK;
+            this.publishPostState = REQUEST_STATE.FINISHED_OK;
           })
           .catch(e => {
-            this.publishPostState = REQUEST_STATE.COMPLETED_ERROR;
+            this.publishPostState = REQUEST_STATE.FINISHED_ERROR;
           });
       }
       if (this.operation() === "UPDATE") {
@@ -416,10 +428,10 @@ export default {
         };
         this.updatePost(post)
           .then(() => {
-            this.publishPostState = REQUEST_STATE.COMPLETED_OK;
+            this.publishPostState = REQUEST_STATE.FINISHED_OK;
           })
           .catch(e => {
-            this.publishPostState = REQUEST_STATE.COMPLETED_ERROR;
+            this.publishPostState = REQUEST_STATE.FINISHED_ERROR;
           });
       }
     },
@@ -431,10 +443,10 @@ export default {
       };
       this.updatePost(post)
         .then(r => {
-          this.unpublishPostState = REQUEST_STATE.COMPLETED_OK;
+          this.unpublishPostState = REQUEST_STATE.FINISHED_OK;
         })
         .cath(e => {
-          this.unpublishPostState = REQUEST_STATE.COMPLETED_ERROR;
+          this.unpublishPostState = REQUEST_STATE.FINISHED_ERROR;
         });
     }
   }
@@ -516,6 +528,10 @@ button.ck-block-toolbar-button:hover {
 
 .ck-block-toolbar-button svg {
   display: none;
+}
+
+.ck-block-toolbar-button .ck.ck-icon {
+  font-size: 2em !important;
 }
 
 @media screen and (max-width: 768px) {

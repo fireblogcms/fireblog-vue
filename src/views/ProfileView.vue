@@ -6,7 +6,7 @@
       <AppLoader>Loading profile</AppLoader>
     </template>
 
-    <template v-if="initDataState === 'COMPLETED_OK'">
+    <template v-if="initDataState === 'FINISHED_OK'">
       <div class="container section animated fadeIn">
         <LayoutBody>
           <div style="padding:40px">
@@ -28,13 +28,13 @@
 
 <script>
 import AdminLayout from "@/layouts/AdminLayout";
-import apolloClient from "../lib/apolloClient";
+import apolloClient from "../utils/apolloClient";
 import LayoutBody from "../components/LayoutBody";
 import AppLoader from "../components/AppLoader";
 import AppNotify from "../components/AppNotify";
-import { REQUEST_STATE } from "../lib/helpers";
+import { REQUEST_STATE } from "../utils/helpers";
 import gql from "graphql-tag";
-import logger from "../lib/logger";
+import logger from "../utils/logger";
 
 export default {
   components: {
@@ -55,10 +55,10 @@ export default {
       this.initDataState = REQUEST_STATE.PENDING;
       return Promise.all([this.getProfile()])
         .then(() => {
-          this.initDataState = REQUEST_STATE.COMPLETED_OK;
+          this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
         .catch(error => {
-          this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
+          this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           this.errors.push(error);
           logger.error(new Error(error));
         });

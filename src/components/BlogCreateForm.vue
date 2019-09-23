@@ -4,11 +4,11 @@
       <AppLoader>Loading</AppLoader>
     </template>
 
-    <template v-if="initDataState === 'COMPLETED_ERROR'">
+    <template v-if="initDataState === 'FINISHED_ERROR'">
       <div class="notification is-danger">{{initStateError}}</div>
     </template>
 
-    <template v-if="initDataState === 'COMPLETED_OK'">
+    <template v-if="initDataState === 'FINISHED_OK'">
       <LayoutBody>
         <div class="section">
           <div class="content has-text-centered">
@@ -85,14 +85,14 @@
 </template>
 
 <script>
-import { generate } from "../lib/fantasyName.js";
-import apolloClient from "../lib/apolloClient";
-import { getUser } from "../lib/helpers";
+import { generate } from "../utils/fantasyName.js";
+import apolloClient from "../utils/apolloClient";
+import { getUser } from "../utils/helpers";
 import gql from "graphql-tag";
-import { REQUEST_STATE } from "../lib/helpers";
+import { REQUEST_STATE } from "../utils/helpers";
 import AppLoader from "../components/AppLoader";
 import LayoutBody from "../components/LayoutBody";
-import logger from "../lib/logger";
+import logger from "../utils/logger";
 
 const createBlogMutation = gql`
   mutation createBlog($blog: CreateBlogInput!) {
@@ -148,7 +148,7 @@ export default {
       Promise.all([getUser(), this.getLanguageList()])
         .then(([user, languageListResult]) => {
           const languages = languageListResult.data.languages;
-          this.initDataState = REQUEST_STATE.COMPLETED_OK;
+          this.initDataState = REQUEST_STATE.FINISHED_OK;
           this.user = user;
           this.languageList = Object.keys(languages).map(i => {
             return {
@@ -162,7 +162,7 @@ export default {
             navigator.language || navigator.userLanguage;
         })
         .catch(e => {
-          this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
+          this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           this.initStateError = "initData() : " + e;
           logger.error(new Error(e));
         });

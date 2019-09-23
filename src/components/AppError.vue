@@ -13,7 +13,7 @@
 
 <script>
 import LayoutBody from "./LayoutBody";
-import logger from "../lib/logger";
+import logger from "../utils/logger";
 export default {
   components: {
     LayoutBody
