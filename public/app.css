@@ -35,5 +35,5 @@ body img {
   animation-duration: 0.4s;
 }
 #app .ck-progress-bar {
-  height: 3px;
+  height: 4px !important;
 }
