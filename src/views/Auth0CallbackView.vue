@@ -2,7 +2,11 @@
 <template>
   <AdminLayout>
     <div class="container section">
-      <AppError v-if="error">{{error}}</AppError>
+      <AppError v-if="error">
+        {{error}}.
+        <br />You can
+        <router-link to="/login">Retry to login</router-link>
+      </AppError>
       <LayoutBody v-if="initDataState === 'PENDING'">
         <AppLoader>Signing in ...</AppLoader>
       </LayoutBody>

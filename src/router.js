@@ -9,6 +9,7 @@ import NotFoundView from "./views/NotFoundView";
 import Auth0CallbackView from "./views/Auth0CallbackView.vue";
 import AccessTokenErrorView from "./views/AccessTokenErrorView.vue";
 import LogoutView from "./views/LogoutView";
+import LoginView from "./views/LoginView";
 import { auth0Client } from "./utils/auth";
 
 Vue.use(Router);
@@ -21,6 +22,14 @@ const router = new Router({
       path: "/",
       name: "blogList",
       component: BlogListView
+    },
+    {
+      path: "/login",
+      name: "login",
+      component: LoginView,
+      meta: {
+        public: true
+      }
     },
     {
       path: "/auth0-callback",
