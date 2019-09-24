@@ -1,6 +1,6 @@
 <template>
   <AdminLayout>
-    <AppNotify :errors="errors" />
+    <AppError :errors="errors" />
 
     <template v-if="initDataState === 'PENDING'">
       <AppLoader>Loading profile</AppLoader>
@@ -31,7 +31,7 @@ import AdminLayout from "@/layouts/AdminLayout";
 import apolloClient from "../utils/apolloClient";
 import LayoutBody from "../components/LayoutBody";
 import AppLoader from "../components/AppLoader";
-import AppNotify from "../components/AppNotify";
+import AppError from "../components/AppError";
 import { REQUEST_STATE } from "../utils/helpers";
 import gql from "graphql-tag";
 import logger from "../utils/logger";
@@ -41,7 +41,7 @@ export default {
     AdminLayout,
     LayoutBody,
     AppLoader,
-    AppNotify
+    AppError
   },
   data() {
     return {

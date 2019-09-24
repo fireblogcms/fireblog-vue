@@ -1,6 +1,6 @@
 <template>
   <AdminLayout>
-    <AppNotify :errors="notifications.errors" :infos="notifications.infos" />
+    <AppError :errors="notifications.errors" :infos="notifications.infos" />
     <template v-if="initDataState === 'PENDING'">
       <AppLoader />
     </template>
@@ -146,7 +146,7 @@ import AdminLayout from "../layouts/AdminLayout";
 import gql from "graphql-tag";
 import AppLoader from "../components/AppLoader";
 import { REQUEST_STATE } from "../utils/helpers";
-import AppNotify from "../components/AppNotify";
+import AppError from "../components/AppError";
 import BulmaButtonLink from "../components/BulmaButtonLink";
 import LayoutBody from "../components/LayoutBody";
 import LayoutList from "../components/LayoutList";
@@ -211,7 +211,7 @@ export default {
   components: {
     AdminLayout,
     AppLoader,
-    AppNotify,
+    AppError,
     LayoutBody,
     LayoutList,
     BulmaButtonLink,

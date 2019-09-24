@@ -1,14 +1,25 @@
 <template>
-  <div class="section">
-    <div class="content has-text-centered">
-      <div class="notification is-danger">
-        <slot />
-      </div>
+  <portal to="notifications">
+    <div class="container notification is-danger has-text-centered">
+      {{humanError}}
       <p>
-        <em>This error has been automatically reported to our team.</em>
+        <em>
+          This error has been automatically reported to our team.
+          <span
+            v-if="NODE_ENV === 'development'"
+            style="text-decoration:underline;cursor:pointer"
+            @click="showDetails = !showDetails"
+          >{{showDetails ? "Hide details" : "Show details"}}</span>
+        </em>
+        <div v-if="NODE_ENV === 'development'" v-show="showDetails === true">
+          {{machineError}}
+          <em>This detailed error is visible only in dev mode.</em>
+        </div>
       </p>
+
+      <div v-if="NODE_ENV === 'development'"></div>
     </div>
-  </div>
+  </portal>
 </template>
 
 <script>
@@ -17,14 +28,26 @@ export default {
   props: {
     // this is the original JavaScript error. This error is NOT dispayed
     // to the user, it is only sent to the logger.
-    error: {
+    machineError: {
       type: [String, Error],
+      required: true
+    },
+    humanError: {
+      type: String,
       required: true
     }
   },
+  data() {
+    return {
+      showDetails: false
+    };
+  },
   created() {
-    logger.error(this.error);
+    this.NODE_ENV = process.env.NODE_ENV;
+    // send automatically error to Sentry
+    logger.error(this.machineError);
   }
 };
 </script>
+
 
