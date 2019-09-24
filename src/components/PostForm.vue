@@ -1,70 +1,13 @@
 <template>
   <div class="writeForm">
-    <AppNotify :errors="notifications.errors" />
+    <AppError v-if="errorMessage">{{errorMessage}}</AppError>
 
     <!-- LOADER  displayed while initData are fetched -->
     <template v-if="initDataState === 'PENDING'">
       <AppLoader :absolute="true" />
     </template>
 
-    <template v-if="initDataState === REQUEST_STATE.COMPLETED_OK">
-      <!-- TOPBAR LEFT BUTTONS -->
-      <portal to="topbar-left">
-        <router-link :to="{ name: 'postList', params: { blogId: this.$route.params.blogId }}">
-          <span style="cursor:pointer" class="item tag is-medium">
-            <em>
-              <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
-              <span style="padding-left:10px;"><</span>
-              posts
-            </em>
-          </span>
-        </router-link>
-        <span class="item button" style="border:0" v-if="lastTimeSaved">
-          <em>saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
-        </span>
-      </portal>
-      <!-- END TOPBAR LEFT BUTTONS -->
-
-      <!-- TOPBAR RIGHT BUTTONS -->
-      <portal to="topbar-right" v-if="operation() === 'CREATE' || this.existingPost">
-        <button
-          v-if="!existingPost || (existingPost && existingPost.status === 'DRAFT')"
-          @click="onSaveDraftClick()"
-          class="button is-outlined item"
-          :class="{ 'is-loading': savingDraftState === REQUEST_STATE.PENDING }"
-          type="submit"
-        >SAVE DRAFT</button>
-
-        <button
-          @click="onUnpublishPostClick()"
-          v-if="existingPost && existingPost.status === 'PUBLISHED'"
-          class="button is-outlined item"
-          :class="{'is-loading': unpublishPostState === REQUEST_STATE.PENDING}"
-          :disabled="unpublishPostState === REQUEST_STATE.PENDING"
-          type="submit"
-          value="UNPUBLISH"
-        >UNPUBLISH</button>
-
-        <button
-          @click="onPublishPostClick()"
-          v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
-          class="button is-outlined item is-primary"
-          :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
-          :disabled="publishPostState === REQUEST_STATE.PENDING"
-          type="submit"
-        >PUBLISH</button>
-
-        <button
-          @click="onPublishPostClick()"
-          v-if="existingPost && existingPost.status === 'PUBLISHED'"
-          class="button item is-outlined is-primary"
-          :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
-          :disabled="publishPostState === REQUEST_STATE.PENDING"
-          type="submit"
-        >PUBLISH CHANGES</button>
-      </portal>
-      <!-- END TOPBAR RIGHT BUTTONS -->
-
+    <template v-if="initDataState === REQUEST_STATE.FINISHED_OK">
       <!-- FORM -->
       <form @submit.prevent>
         <textarea-autosize
@@ -82,26 +25,107 @@
           class="content"
           :disabled="savingDraftState ===  REQUEST_STATE.PENDING"
           ref="ckeditor"
+          :value="existingPost ? existingPost.content : ''"
           :editor="editor"
-          v-model="inputs.content"
+          @input="onContentInput"
+          @ready="onEditorReady"
           :config="editorConfig"
         ></ckeditor>
       </form>
     </template>
+
+    <!-- TOPBAR LEFT BUTTONS -->
+    <portal to="topbar-left">
+      <span @click="onBackToPostsClick" style="cursor:pointer" class="item tag is-medium">
+        <em>
+          <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
+          <IconBack />posts
+        </em>
+      </span>
+
+      <span class="item button" style="border:0" v-if="lastTimeSaved">
+        <em>saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
+      </span>
+    </portal>
+    <!-- END TOPBAR LEFT BUTTONS -->
+
+    <!-- TOPBAR RIGHT BUTTONS -->
+    <portal to="topbar-right" v-if="currentOperation() === 'CREATE' || this.existingPost">
+      <button
+        v-if="!existingPost || (existingPost && existingPost.status === 'DRAFT')"
+        @click="onSaveDraftClick()"
+        class="button is-outlined item"
+        :class="{ 'is-loading': savingDraftState === REQUEST_STATE.PENDING }"
+        type="submit"
+      >
+        SAVE DRAFT
+        <span class="animated bounce" v-if="changesDetected">*</span>
+      </button>
+
+      <button
+        @click="onUnpublishPostClick()"
+        v-if="existingPost && existingPost.status === 'PUBLISHED'"
+        class="button is-outlined item"
+        :class="{'is-loading': unpublishPostState === REQUEST_STATE.PENDING}"
+        :disabled="unpublishPostState === REQUEST_STATE.PENDING"
+        type="submit"
+        value="UNPUBLISH"
+      >UNPUBLISH</button>
+
+      <button
+        @click="onPublishPostClick()"
+        v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
+        class="button is-outlined item is-primary"
+        :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
+        :disabled="publishPostState === REQUEST_STATE.PENDING"
+        type="submit"
+      >PUBLISH</button>
+
+      <button
+        @click="onPublishPostClick()"
+        v-if="existingPost && existingPost.status === 'PUBLISHED'"
+        class="button item is-outlined is-primary"
+        :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
+        :disabled="publishPostState === REQUEST_STATE.PENDING"
+        type="submit"
+      >
+        PUBLISH CHANGES
+        <span class="animated bounce" v-if="changesDetected">*</span>
+      </button>
+    </portal>
+    <!-- END TOPBAR RIGHT BUTTONS -->
+
+    <!-- confirmation need before quitting post if changes are detected -->
+    <BulmaModal v-model="quitSecurityModal.show">
+      <template #title>{{quitSecurityModal.title}}</template>
+      <template #body>{{quitSecurityModal.content}}</template>
+      <template #footer>
+        <div
+          @click="quitSecurityModal.show = false"
+          class="button is-success"
+        >{{quitSecurityModal.cancelText}}</div>
+        <div
+          @click="onQuitSecurityModalConfirmClick"
+          class="button is-danger"
+        >{{quitSecurityModal.confirmText}}</div>
+      </template>
+    </BulmaModal>
   </div>
 </template>
 
 <script>
-import apolloClient from "../lib/apolloClient";
 import AppLoader from "../components/AppLoader";
 import Editor from "@ckeditor/ckeditor5-build-balloon-block";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import gql from "graphql-tag";
-import AppNotify from "./AppNotify";
-import { REQUEST_STATE, getUser, getBlog } from "../lib/helpers";
-import { ckeditorUploadAdapterPlugin } from "../lib/ckeditorUploadAdapter";
+import AppError from "./AppError";
 import hotkeys from "hotkeys-js";
-import Loading from "vue-loading-overlay";
+import logger from "../utils/logger";
+import BulmaModal from "./BulmaModal";
+import IconBack from "./IconBack";
+import apolloClient from "../utils/apolloClient";
+import { ckeditorCloudinaryDirectUploadAdapterPlugin } from "../utils/ckeditorCloudinaryDirectUploadAdapter";
+import { REQUEST_STATE, getUser, getBlog } from "../utils/helpers";
 
 const PostResponseFragment = gql`
   fragment PostResponse on Post {
@@ -154,18 +178,18 @@ const blogQuery = gql`
   }
 `;
 
-const OPERATION = {
+const OPERATION_TYPE = {
   CREATE: "CREATE",
   UPDATE: "UPDATE"
 };
 
 export default {
   components: {
-    // Use the <ckeditor> component in this view.
     ckeditor: CKEditor.component,
     AppLoader,
-    AppNotify,
-    Loading
+    AppError,
+    BulmaModal,
+    IconBack
   },
   data() {
     return {
@@ -173,25 +197,50 @@ export default {
       publishPostState: REQUEST_STATE.NOT_STARTED,
       unpublishPostState: REQUEST_STATE.NOT_STARTED,
       savingDraftState: REQUEST_STATE.NOT_STARTED,
+      changesDetected: false,
+      mediaLoadingCounter: 0,
       lastTimeSaved: null,
       existingPost: null,
-      notifications: {
-        errors: [],
-        info: []
-      },
+      errorMessage: null,
+      // content loaded from database when page is loaded.
       inputs: {
         title: "",
         content: ""
+      },
+      showMediaLoadingModal: false,
+      showChangesDetectedModal: false,
+      quitSecurityModal: {
+        show: false,
+        title: null,
+        content: null,
+        confirmText: null,
+        cancelText: null
       }
     };
   },
   created() {
     this.initData();
+    window.onbeforeunload = function(e) {
+      return "Are you sure you want to quit ?";
+    };
     this.REQUEST_STATE = REQUEST_STATE;
-    this.OPERATION = OPERATION;
+    this.OPERATION_TYPE = OPERATION_TYPE;
     this.editor = Editor;
     this.editorConfig = {
-      extraPlugins: [ckeditorUploadAdapterPlugin],
+      extraPlugins: [
+        ckeditorCloudinaryDirectUploadAdapterPlugin({
+          onRequestStateChange: ({ state, file }) => {
+            if (state === REQUEST_STATE.PENDING) {
+              this.mediaLoadingCounter = this.mediaLoadingCounter + 1;
+            }
+            if (
+              state === REQUEST_STATE.FINISHED_OK ||
+              state === REQUEST_STATE.FINISHED_ERROR
+            )
+              this.mediaLoadingCounter = this.mediaLoadingCounter - 1;
+          }
+        })
+      ],
       toolbar: [
         "bold",
         "italic",
@@ -205,6 +254,7 @@ export default {
         toolbar: ["imageTextAlternative"]
       }
     };
+    //  Cmd+S and Ctrl+S are shortcuts to save content.
     hotkeys.filter = event => {
       if (["postUpdate", "postCreate"].includes(this.$route.name)) {
         return true;
@@ -218,21 +268,79 @@ export default {
     });
   },
   methods: {
+    canQuit() {
+      let canQuit = true;
+      if (this.mediaLoadingCounter > 0) {
+        canQuit = false;
+        this.quitSecurityModal = {
+          show: true,
+          title: `${mediaLoadingCounter} Media are currently uploading`,
+          content: "If you quit now, some medias may not be saved.",
+          confirmText: "Wait for upload to complete!",
+          cancelText: "Quit anyway"
+        };
+      }
+      if (this.changesDetected) {
+        canQuit = false;
+        this.quitSecurityModal = {
+          show: true,
+          title: "Some changes have not been saved",
+          content: `If you quit now, your last changes will be lost`,
+          confirmText: "Quit anyway.",
+          cancelText: "Save my changes first"
+        };
+      }
+      return canQuit;
+    },
+    onBackToPostsClick() {
+      if (this.canQuit()) {
+        this.$router.push({
+          name: "postList",
+          params: { blogId: this.$route.params.blogId }
+        });
+      }
+    },
+    onTitleInput(value) {
+      alert(value);
+    },
+    onContentInput(value) {
+      this.changesDetected = true;
+      this.inputs.content = value;
+    },
+    onMediaLoadingConfirmClick() {
+      this.$router.push({
+        name: "postList",
+        params: { blogId: this.$route.params.blogId }
+      });
+    },
+    onQuitSecurityModalConfirmClick() {
+      this.$router.push({
+        name: "postList",
+        params: { blogId: this.$route.params.blogId }
+      });
+    },
+    onEditorReady() {
+      const element = document.querySelector(
+        ".ck-block-toolbar-button  .ck-tooltip__text"
+      );
+      const toolTip = "Add media";
+      element.innerHTML = toolTip;
+      element.innerText = toolTip;
+    },
     initData() {
       this.initDataState = REQUEST_STATE.PENDING;
       const promises = [];
       promises.push(this.getBlog());
-      // if we are editing a post, the route
-      if (this.operation() === OPERATION.UPDATE) {
+      if (this.currentOperation() === OPERATION_TYPE.UPDATE) {
         promises.push(this.getExistingPost());
       }
       return Promise.all(promises)
         .then(results => {
-          this.initDataState = REQUEST_STATE.COMPLETED_OK;
+          this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
         .catch(error => {
-          this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
-          logger.error(new Error(error));
+          this.initDataState = REQUEST_STATE.FINISHED_ERROR;
+          throw new Error(error);
         });
     },
     getBlog() {
@@ -251,9 +359,11 @@ export default {
     onTitleEnter() {
       this.$refs.ckeditor.$el.focus();
     },
-    operation() {
+    currentOperation() {
       // if there is a postId in the url, we are updating an existing post.
-      return this.$route.params.postId ? OPERATION.UPDATE : OPERATION.CREATE;
+      return this.$route.params.postId
+        ? OPERATION_TYPE.UPDATE
+        : OPERATION_TYPE.CREATE;
     },
     getExistingPost() {
       return apolloClient
@@ -263,18 +373,16 @@ export default {
         })
         .then(result => {
           this.existingPost = result.data.post;
-          this.inputs = this.prepareInputsFromPost(this.existingPost);
+          this.NormalizeInputsFromPost(this.existingPost);
         });
     },
-    // prepare form inputs from a post object
-    prepareInputsFromPost(post) {
-      return {
-        title: post.title,
-        content: post.content ? post.content : ""
-      };
+    // Prepare form inputs from a post object
+    NormalizeInputsFromPost(post) {
+      this.inputs.title = post.title;
+      this.inputs.content = post.content ? post.content : "";
     },
-    // prepare a post object from form inputs
-    preparePostFromInputs(inputs) {
+    // Prepare a post object from form inputs
+    NormalizePostFromInputs(inputs) {
       return {
         title: inputs.title,
         content: inputs.content,
@@ -284,8 +392,9 @@ export default {
     async createPost(post) {
       const user = await getUser();
       const blog = await getBlog(this.$route.params.blogId);
-      console.log("debug:createPost:user", user);
-      console.log("debug:createPost:post", post);
+      logger.info("debug:createPost:user", user);
+      logger.info("debug:createPost:post", post);
+      logger.info("debug:createPost:blog", blog);
       // current user as author by default. But another user might have been defined
       // as the author, so do not override if this is already set.
       if (!post.author) {
@@ -299,7 +408,6 @@ export default {
           variables: { post }
         })
         .then(result => {
-          apolloClient.resetStore();
           this.lastTimeSaved = Date.now();
           this.existingPost = result.data.createPost;
           // post is created, we are now in UPDATE mode for the form.
@@ -312,11 +420,9 @@ export default {
           });
           return result;
         })
-        .catch(e => {
-          this.notifications.errors.push(
-            "😞Sorry, saving post failed with this error message: " + e
-          );
-          return e;
+        .catch(error => {
+          this.errorMessage = "😞Sorry, an error occured while creating post.";
+          throw new Error(error);
         });
     },
     updatePost(post) {
@@ -334,7 +440,12 @@ export default {
           this.lastTimeSaved = Date.now();
           this.existingPost = result.data.updatePost;
           apolloClient.clearStore();
+          this.changesDetected = false;
           return result;
+        })
+        .catch(error => {
+          this.errorMessage = "😞Sorry, an error occured updating post";
+          throw new Error(error);
         });
     },
     onSaveDraftClick() {
@@ -343,19 +454,19 @@ export default {
         return;
       }
       this.savingDraftState = REQUEST_STATE.PENDING;
-      if (this.operation() === OPERATION.CREATE) {
-        this.createPost(this.preparePostFromInputs(this.inputs))
+      // NEW POST
+      if (this.currentOperation() === OPERATION_TYPE.CREATE) {
+        this.createPost(this.NormalizePostFromInputs(this.inputs))
           .then(() => {
-            this.savingDraftState = REQUEST_STATE.COMPLETED_OK;
+            this.savingDraftState = REQUEST_STATE.FINISHED_OK;
           })
-          .catch(e => {
-            this.savingDraftState = REQUEST_STATE.COMPLETED_ERROR;
+          .catch(error => {
+            this.savingDraftState = REQUEST_STATE.FINISHED_ERROR;
+            throw new Error(error);
           });
       }
-      //
-      // UPDATE
-      //
-      if (this.operation() === OPERATION.UPDATE) {
+      // EDITING EXISTING POST
+      if (this.currentOperation() === OPERATION_TYPE.UPDATE) {
         const post = {
           _id: this.$route.params.postId,
           title: this.inputs.title,
@@ -363,10 +474,12 @@ export default {
         };
         this.updatePost(post)
           .then(() => {
-            this.savingDraftState = REQUEST_STATE.COMPLETED_OK;
+            this.savingDraftState = REQUEST_STATE.FINISHED_OK;
           })
-          .catch(e => {
-            this.savingDraftState = REQUEST_STATE.COMPLETED_ERROR;
+          .catch(error => {
+            this.savingDraftState = REQUEST_STATE.FINISHED_ERROR;
+            this.errorMessage = "Sorry, an error occured while saving draft.";
+            throw new Error(error);
           });
       }
     },
@@ -375,51 +488,66 @@ export default {
         alert("A title is required");
         return;
       }
-      const status = "PUBLISHED";
-      if (this.operation() === "CREATE") {
+
+      if (this.currentOperation() === "CREATE") {
         this.publishPostState = REQUEST_STATE.PENDING;
         const newPost = {
-          ...this.preparePostFromInputs(this.inputs),
+          ...this.NormalizePostFromInputs(this.inputs),
           publishedAt: new Date(),
-          status
+          status: "PUBLISHED"
         };
         this.createPost(newPost)
           .then(() => {
-            this.publishPostState = REQUEST_STATE.COMPLETED_OK;
+            this.publishPostState = REQUEST_STATE.FINISHED_OK;
           })
-          .catch(e => {
-            this.publishPostState = REQUEST_STATE.COMPLETED_ERROR;
+          .catch(error => {
+            this.publishPostState = REQUEST_STATE.FINISHED_ERROR;
+            this.errorMessage = "Sorry, publishing failed.";
+            throw new Error(error);
           });
       }
-      if (this.operation() === "UPDATE") {
+      if (this.currentOperation() === "UPDATE") {
         this.publishPostState = REQUEST_STATE.PENDING;
         const post = {
-          ...this.preparePostFromInputs(this.inputs),
+          ...this.NormalizePostFromInputs(this.inputs),
           publishedAt: new Date(),
-          status
+          status: "PUBLISHED"
         };
         this.updatePost(post)
           .then(() => {
-            this.publishPostState = REQUEST_STATE.COMPLETED_OK;
+            this.publishPostState = REQUEST_STATE.FINISHED_OK;
           })
-          .catch(e => {
-            this.publishPostState = REQUEST_STATE.COMPLETED_ERROR;
+          .catch(error => {
+            this.errorMessage = "Sorry, publish operation failed.";
+            this.publishPostState = REQUEST_STATE.FINISHED_ERROR;
+            throw new Error(error);
           });
       }
     },
     onUnpublishPostClick() {
       this.unpublishPostState = REQUEST_STATE.PENDING;
       const post = {
-        ...this.preparePostFromInputs(this.inputs),
+        ...this.NormalizePostFromInputs(this.inputs),
         status: "DRAFT"
       };
       this.updatePost(post)
         .then(r => {
-          this.unpublishPostState = REQUEST_STATE.COMPLETED_OK;
+          this.unpublishPostState = REQUEST_STATE.FINISHED_OK;
         })
-        .cath(e => {
-          this.unpublishPostState = REQUEST_STATE.COMPLETED_ERROR;
+        .catch(error => {
+          this.errorMessage = "Sorry, an error occured while updating post.";
+          this.unpublishPostState = REQUEST_STATE.FINISHED_ERROR;
+          throw new Error(error);
         });
+    }
+  },
+  watch: {
+    "inputs.title": {
+      handler: function(newValue) {
+        if (this.initDataState === REQUEST_STATE.FINISHED_OK) {
+          this.changesDetected = true;
+        }
+      }
     }
   }
 };
@@ -489,5 +617,26 @@ export default {
   .writeForm form {
     padding: 1rem;
   }
+}
+
+/**
+ * Replace "P" paragraph icon to a "+" to add media
+ */
+button.ck-block-toolbar-button {
+  background-image: url("/images/editor-button-plus.svg") !important;
+  background-repeat: no-repeat !important;
+  cursor: pointer !important;
+}
+
+button.ck-block-toolbar-button:hover {
+  background-color: transparent;
+}
+
+.ck-block-toolbar-button svg {
+  display: none;
+}
+
+.ck-block-toolbar-button .ck.ck-icon {
+  font-size: 2em !important;
 }
 </style>

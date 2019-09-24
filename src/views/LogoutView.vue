@@ -5,9 +5,9 @@
 </template>
 
 <script>
-import { auth0Client } from "../lib/auth";
+import { auth0Client } from "../utils/auth";
 import AppLoader from "../components/AppLoader";
-import { REQUEST_STATE } from "../lib/helpers";
+import { REQUEST_STATE } from "../utils/helpers";
 
 export default {
   components: {

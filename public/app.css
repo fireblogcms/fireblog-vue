@@ -13,6 +13,15 @@ body img {
   height: none;
 }
 
+img,
+embed,
+iframe,
+object,
+video {
+  height: none;
+  max-width: 100%;
+}
+
 @font-face {
   font-family: Roslindale;
   src: url("/fonts/RoslindaleDisplayCondensed-Bold-Testing");
@@ -33,4 +42,7 @@ body img {
 }
 .animated.fadeInDown {
   animation-duration: 0.4s;
+}
+#app .ck-progress-bar {
+  height: 4px !important;
 }

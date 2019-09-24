@@ -1,83 +1,71 @@
 <template>
   <AdminLayout>
-    <!--<AppNotify :errors="notifications.errors" :info="notifications.info" />-->
-    <template v-if="initDataState === 'PENDING'">
-      <AppLoader>Loading blogs</AppLoader>
+    <AppLoader v-if="initDataState === 'PENDING'">Loading blogs</AppLoader>
+
+    <AppError v-if="errorMessage">{{errorMessage}}</AppError>
+
+    <!-- if this is the fiirs blog, display form to create a blog -->
+    <template v-if="initDataState === 'FINISHED_OK' && blogs &&  blogs.edges.length === 0">
+      <div class="section container">
+        <BlogCreateForm :first="true" />
+      </div>
     </template>
-    <template v-if="initDataState === 'COMPLETED_ERROR'">
-      <AppErrorReporter :error="initStateError">
-        <p>There was an issue fetching blogs.</p>
-      </AppErrorReporter>
-    </template>
-    <template v-if="initDataState === 'COMPLETED_OK'">
-      <template v-if="blogs.edges.length === 0">
-        <div class="section">
-          <LayoutBody class="container">
-            <BlogCreateForm :first="true" />
-          </LayoutBody>
-        </div>
-      </template>
-      <template v-if="blogs && blogs.edges.length > 0">
-        <div class="container">
-          <div class="animated fadeIn">
-            <header style="padding: 0 1rem 2rem 1rem">
-              <div class="columns">
-                <div class="column">
-                  <h1 style="padding-bottom:2rem;" class="title is-1">
-                    <img
-                      height="70"
-                      style="position:relative;top:25px;padding-right:1rem"
-                      src="/images/books-icon.png"
-                    />
-                    My blogs
-                  </h1>
-                </div>
-                <div class="column">
-                  <BulmaButtonLink
-                    class="is-primary is-large main-call-to-action"
-                    :to="{name:'blogCreate'}"
-                  >
-                    <img width="40" style="margin-right:10px" src="/images/book.png" /> CREATE A NEW BLOG
-                  </BulmaButtonLink>
-                </div>
+    <!-- else, display the blog list -->
+    <template v-if="initDataState === 'FINISHED_OK' && blogs && blogs.edges.length > 0">
+      <div class="container">
+        <div class="animated fadeIn">
+          <header style="padding: 0 1rem 2rem 1rem">
+            <div class="columns">
+              <div class="column">
+                <h1 style="padding-bottom:2rem;" class="title is-1">
+                  <img
+                    height="70"
+                    style="position:relative;top:25px;padding-right:1rem"
+                    src="/images/books-icon.png"
+                  />
+                  My blogs
+                </h1>
               </div>
-            </header>
-            <div class="container">
-              <div
-                v-for="(edge, index) in blogs.edges"
-                style="box-shadow: 0px 4px 5px rgba(229, 229, 229, 1);"
-                :style="blogCardStyles(edge, index)"
-                class="blog-card"
-                :key="edge.node._id"
-                @click="onRowClick(edge)"
-              >
-                <h2 class="title is-2">
-                  <router-link :to="buildLinkToPostList(edge)">{{ edge.node.name }}</router-link>
-                </h2>
+              <div class="column">
+                <BulmaButtonLink
+                  class="is-primary is-large main-call-to-action"
+                  :to="{name:'blogCreate'}"
+                >
+                  <img width="40" style="margin-right:10px" src="/images/book.png" /> CREATE A NEW BLOG
+                </BulmaButtonLink>
               </div>
+            </div>
+          </header>
+          <div class="container">
+            <div
+              v-for="(edge, index) in blogs.edges"
+              style="box-shadow: 0px 4px 5px rgba(229, 229, 229, 1);"
+              :style="blogCardStyles(edge, index)"
+              class="blog-card"
+              :key="edge.node._id"
+              @click="onRowClick(edge)"
+            >
+              <h2 class="title is-2">
+                <router-link :to="buildLinkToPostList(edge)">{{ edge.node.name }}</router-link>
+              </h2>
             </div>
           </div>
         </div>
-      </template>
+      </div>
     </template>
   </AdminLayout>
 </template>
 
 <script>
-import apolloClient from "../lib/apolloClient";
+import apolloClient from "../utils/apolloClient";
 import BlogCreateForm from "../components/BlogCreateForm";
-import BulmaGrid from "../components/BulmaGrid";
 import AdminLayout from "../layouts/AdminLayout";
 import AppLoader from "../components/AppLoader";
 import gql from "graphql-tag";
 import BulmaButtonLink from "../components/BulmaButtonLink";
-import { REQUEST_STATE } from "../lib/helpers";
-import AppNotify from "../components/AppNotify";
-import ButtonLink from "../components/ButtonLink";
-import LayoutBody from "../components/LayoutBody";
-import AppErrorReporter from "../components/AppErrorReporter";
-import LayoutList from "../components/LayoutList";
-import logger from "../lib/logger";
+import { REQUEST_STATE } from "../utils/helpers";
+import AppError from "../components/AppError";
+import logger from "../utils/logger";
 
 const myBlogsQuery = gql`
   query myBlogsQuery {
@@ -100,28 +88,31 @@ const myBlogsQuery = gql`
 
 export default {
   components: {
-    LayoutBody,
-    AppErrorReporter,
+    AppError,
     BulmaButtonLink,
     BlogCreateForm,
-    BulmaGrid,
     AdminLayout,
-    AppLoader,
-    AppNotify,
-    ButtonLink,
-    LayoutList
+    AppLoader
   },
   data() {
     return {
       blogs: null,
-      initDataState: REQUEST_STATE.NOT_STARTED,
-      notifications: {
-        errors: [],
-        info: []
-      }
+      error: null,
+      initDataState: REQUEST_STATE.NOT_STARTED
     };
   },
   methods: {
+    initData() {
+      this.initDataState = REQUEST_STATE.PENDING;
+      Promise.all([this.getBlogs()])
+        .then(() => {
+          this.initDataState = REQUEST_STATE.FINISHED_OK;
+        })
+        .catch(error => {
+          logger.error(error);
+          this.initDataState = REQUEST_STATE.FINISHED_ERROR;
+        });
+    },
     blogCardStyles(edge, index) {
       const styles = {
         backgroundSize: "cover"
@@ -139,17 +130,6 @@ export default {
       }
       return styles;
     },
-    initData() {
-      this.initDataState = REQUEST_STATE.PENDING;
-      Promise.all([this.getBlogs()])
-        .then(() => {
-          this.initDataState = REQUEST_STATE.COMPLETED_OK;
-        })
-        .catch(error => {
-          this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
-          this.initStateError = error;
-        });
-    },
     buildLinkToPostList(item) {
       return { name: "postList", params: { blogId: item.node._id } };
     },
@@ -157,12 +137,20 @@ export default {
       this.$router.push(this.buildLinkToPostList(item));
     },
     getBlogs() {
-      return apolloClient.query({ query: myBlogsQuery }).then(result => {
-        this.blogs = result.data.me.blogs;
-        this.blogsEdgesReversed = [...this.blogs.edges].reverse();
-        this.blogsDefaultImagesMap = this.mapDefaultImagesToBlogId();
-        return this.blogs;
-      });
+      this.errorMessage = null;
+      return apolloClient
+        .query({ query: myBlogsQuery })
+        .then(result => {
+          this.blogs = result.data.me.blogs;
+          this.blogsEdgesReversed = [...this.blogs.edges].reverse();
+          this.blogsDefaultImagesMap = this.mapDefaultImagesToBlogId();
+          return this.blogs;
+        })
+        .catch(error => {
+          this.errorMessage = "Sorry, an error occured while fetching blog";
+          logger.error(error);
+          throw new Error(error);
+        });
     },
     defaultImages() {
       return [

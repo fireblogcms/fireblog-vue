@@ -10,7 +10,7 @@
                 style="position:relative;height:20px !important;top:4px;"
                 src="/images/books.webp"
               />
-              <span style="padding-left:10px;"><</span> All blogs
+              <IconBack />All blogs
             </router-link>
           </span>
 
@@ -102,14 +102,27 @@
         >Open GraphQL Explorer</a>
       </template>
       <template #body>
+        <h2 class="title is-4">GraphQL endpoint</h2>
         <div class="field">
           <div class="control">
             <input readonly="true" class="input" type="text" :value="blogApiUrl" />
           </div>
         </div>
-        <div class="field" v-show="apiModalExample">
-          <label class="label">{{apiModalExampleTitle}}</label>
-          <pre class="language-graphql"><code>{{apiModalExample}}</code></pre>
+        <div
+          ref="apiModal"
+          :id="`example-${example.id}`"
+          v-for="example in apiModalExampleList"
+          :key="example.id"
+        >
+          <h2 style="margin-top:20px" class="title is-4">
+            {{example.label}}
+            <a
+              :href="`${blogApiUrl}?query=${encodeURI(example.snippet)}`"
+              target="_blank"
+              class="is-pulled-right button is-primary"
+            >Try it !</a>
+          </h2>
+          <pre class="language-graphql"><code>{{example.snippet}}</code></pre>
         </div>
       </template>
     </BulmaModal>
@@ -118,13 +131,15 @@
 
 <script>
 import gql from "graphql-tag";
-import apolloClient from "../lib/apolloClient";
-import { getUser, REQUEST_STATE } from "../lib/helpers";
+import apolloClient from "../utils/apolloClient";
+import { getUser, REQUEST_STATE } from "../utils/helpers";
 import getAllPostsApiExample from "../apiExamples/getAllPosts";
 import getSinglePostApiExample from "../apiExamples/getSinglePostApiExample";
+import apiExamples from "../apiExamples";
 import ApiButton from "../components/ApiButton";
 import BulmaModal from "../components/BulmaModal";
-import logger from "../lib/logger";
+import logger from "../utils/logger";
+import IconBack from "../components/IconBack";
 
 const meWithMyBlogsQuery = gql`
   query meWithMyBlogsQuery {
@@ -150,7 +165,8 @@ const meWithMyBlogsQuery = gql`
 export default {
   components: {
     ApiButton,
-    BulmaModal
+    BulmaModal,
+    IconBack
   },
   data() {
     return {
@@ -162,14 +178,13 @@ export default {
       showApiModal: false,
       apiModalExampleTitle: null,
       apiModalExample: null,
+      apiModalExampleList: [],
       tryItLink: null
     };
   },
   computed: {
     blogApiUrl() {
-      return `${process.env.VUE_APP_GRAPHQL_POD_BASE_URL}/${
-        this.$route.params.blogId
-      }`;
+      return `${process.env.VUE_APP_GRAPHQL_POD_BASE_URL}/${this.$route.params.blogId}`;
     }
   },
   created() {
@@ -185,12 +200,12 @@ export default {
         promises.push(this.getCurrentBlog());
       }
       Promise.all(promises)
-        .then(r => {
-          this.initDataState = REQUEST_STATE.COMPLETED_OK;
+        .then(() => {
+          this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
-        .catch(e => {
-          this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
-          logger.error(e);
+        .catch(error => {
+          this.initDataState = REQUEST_STATE.FINISHED_ERROR;
+          throw new Error(error);
         });
     },
     getMeWithMyBlogs() {
@@ -220,8 +235,8 @@ export default {
           this.blog = result.data.blog;
         })
         .catch(error => {
-          this.error = error;
-          logger.error(error);
+          this.errorMessage = error;
+          throw new Error(error);
         });
     },
     backToBlogIsVisible() {
@@ -260,22 +275,19 @@ export default {
       }
     },
     onApiClick() {
+      this.tryItLink = this.blogApiUrl;
+      const apiExamplesContext = {
+        postId: "{{POST_ID}}",
+        blogId: "{{BLOG_ID"
+      };
+
       if (this.$route.name === "postList") {
-        this.apiModalExampleTitle = "get all posts, with pagination support";
-        this.apiModalExample = getAllPostsApiExample();
-        this.tryItLink = `${this.blogApiUrl}?query=${encodeURI(
-          getAllPostsApiExample()
-        )}`;
+        apiExamplesContext.postId = this.$route.params.postId;
       }
       if (this.$route.name === "postUpdate") {
-        this.apiModalExampleTitle = "get a single post";
-        this.apiModalExample = getSinglePostApiExample({
-          _id: this.$route.params.postId
-        });
-        this.tryItLink = `${this.blogApiUrl}?query=${encodeURI(
-          getSinglePostApiExample({ _id: this.$route.params.postId })
-        )}`;
+        apiExamplesContext.postId = this.$route.params.postId;
       }
+      this.apiModalExampleList = apiExamples(apiExamplesContext);
       this.showApiModal = true;
     }
   }

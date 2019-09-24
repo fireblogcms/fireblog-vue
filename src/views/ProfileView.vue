@@ -1,12 +1,12 @@
 <template>
   <AdminLayout>
-    <AppNotify :errors="errors" />
+    <AppError v-if="errorMessage">{{errorMessage}}</AppError>
 
     <template v-if="initDataState === 'PENDING'">
       <AppLoader>Loading profile</AppLoader>
     </template>
 
-    <template v-if="initDataState === 'COMPLETED_OK'">
+    <template v-if="initDataState === 'FINISHED_OK'">
       <div class="container section animated fadeIn">
         <LayoutBody>
           <div style="padding:40px">
@@ -28,39 +28,40 @@
 
 <script>
 import AdminLayout from "@/layouts/AdminLayout";
-import apolloClient from "../lib/apolloClient";
+import apolloClient from "../utils/apolloClient";
 import LayoutBody from "../components/LayoutBody";
 import AppLoader from "../components/AppLoader";
-import AppNotify from "../components/AppNotify";
-import { REQUEST_STATE } from "../lib/helpers";
+import AppError from "../components/AppError";
+import { REQUEST_STATE } from "../utils/helpers";
 import gql from "graphql-tag";
-import logger from "../lib/logger";
+import logger from "../utils/logger";
 
 export default {
   components: {
     AdminLayout,
     LayoutBody,
     AppLoader,
-    AppNotify
+    AppError
   },
   data() {
     return {
       initDataState: REQUEST_STATE.NOT_STARTED,
-      errors: [],
+      errorMessage: null,
       me: null
     };
   },
   methods: {
     initData() {
+      this.errors = [];
       this.initDataState = REQUEST_STATE.PENDING;
       return Promise.all([this.getProfile()])
         .then(() => {
-          this.initDataState = REQUEST_STATE.COMPLETED_OK;
+          this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
         .catch(error => {
-          this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
-          this.errors.push(error);
-          logger.error(new Error(error));
+          this.initDataState = REQUEST_STATE.FINISHED_ERROR;
+          this.errorMessage = "Sorry, an error occured while loading page.";
+          throw new Error(error);
         });
     },
     getProfile() {
@@ -84,10 +85,9 @@ export default {
           return result;
         })
         .catch(error => {
-          this.errors.push(
-            "Sorry, an error occured while fetching your profile." + error
-          );
-          logger.error(new Error(error));
+          this.errorMessage =
+            "Sorry, an error occured while fetching your profile.";
+          throw new Error(error);
         });
     }
   },

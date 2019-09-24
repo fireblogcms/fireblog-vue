@@ -1,10 +1,10 @@
 <template>
   <AdminLayout>
-    <AppNotify :errors="notifications.errors" :infos="notifications.infos" />
+    <AppError v-if="errorMessage">{{errorMessage}}</AppError>
     <template v-if="initDataState === 'PENDING'">
       <AppLoader />
     </template>
-    <template v-if="initDataState === 'COMPLETED_OK'">
+    <template v-if="initDataState === 'FINISHED_OK'">
       <div class="animated fadeIn">
         <header class="container" style="padding: 0 1rem 2rem 1rem">
           <div class="columns">
@@ -73,12 +73,12 @@
             <LayoutBody style="border-top-left-radius:0;min-height:200px">
               <div class="container" style="border-top-left-radius:0;">
                 <AppLoader v-show="postsRequestState === 'PENDING'" />
-                <template v-if="postsRequestState === 'COMPLETED_OK' && posts.edges.length === 0">
+                <template v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length === 0">
                   <div class="content section has-text-centered">
                     <p>No post found with {{ activeStatus }} status for now.</p>
                   </div>
                 </template>
-                <template v-if="postsRequestState === 'COMPLETED_OK' && posts.edges.length > 0">
+                <template v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length > 0">
                   <LayoutList :items="posts.edges" :itemUniqueKey="(item) => item.node._id">
                     <template v-slot="{item}">
                       <div class="columns">
@@ -129,7 +129,9 @@
     </template>
     <BulmaModal v-model="deleteModal.show">
       <template #title>{{deleteModal.title}}</template>
-      <template #body>This action cannot be undone</template>
+      <template #body>
+        <p>This action cannot be undone</p>
+      </template>
       <template #footer>
         <div @click="deleteModal.show = false" class="button is-success">OUPS NO, CANCEL !</div>
         <div @click="onDeleteModalConfirmClick" class="button is-danger">DELETE IT. FOREVER.</div>
@@ -139,17 +141,17 @@
 </template>
 
 <script>
-import apolloClient from "../lib/apolloClient";
+import apolloClient from "../utils/apolloClient";
 import AdminLayout from "../layouts/AdminLayout";
 import gql from "graphql-tag";
 import AppLoader from "../components/AppLoader";
-import { REQUEST_STATE } from "../lib/helpers";
-import AppNotify from "../components/AppNotify";
+import { REQUEST_STATE } from "../utils/helpers";
+import AppError from "../components/AppError";
 import BulmaButtonLink from "../components/BulmaButtonLink";
 import LayoutBody from "../components/LayoutBody";
 import LayoutList from "../components/LayoutList";
 import striptags from "striptags";
-import logger from "../lib/logger";
+import logger from "../utils/logger";
 import BulmaModal from "../components/BulmaModal";
 
 const postsQuery = gql`
@@ -209,7 +211,7 @@ export default {
   components: {
     AdminLayout,
     AppLoader,
-    AppNotify,
+    AppError,
     LayoutBody,
     LayoutList,
     BulmaButtonLink,
@@ -217,10 +219,7 @@ export default {
   },
   data() {
     return {
-      notifications: {
-        errors: [],
-        info: []
-      },
+      errorMessage: null,
       initDataState: REQUEST_STATE.NOT_STARTED,
       postsRequestState: REQUEST_STATE.NOT_STARTED,
       deletePostRequestState: REQUEST_STATE.NOT_STARTED,
@@ -255,12 +254,11 @@ export default {
         this.getAllPosts()
       ])
         .then(() => {
-          this.initDataState = REQUEST_STATE.COMPLETED_OK;
+          this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
         .catch(error => {
-          this.initDataState = REQUEST_STATE.COMPLETED_ERROR;
-          this.notifications.errors.push("initError: " + error.message);
-          logger.error(new Error(error));
+          this.initDataState = REQUEST_STATE.FINISHED_ERROR;
+          throw new Error(error);
         });
     },
     buildLinkToPost(item) {
@@ -273,6 +271,7 @@ export default {
       this.$router.push(this.buildLinkToPost(item));
     },
     async getAllPosts() {
+      this.errorMessage = null;
       return apolloClient
         .query({
           query: allPostsQuery,
@@ -282,6 +281,10 @@ export default {
           this.isFirstPost =
             result.data.posts.edges.length === 0 ? true : false;
           return result;
+        })
+        .catch(error => {
+          this.errorMessage = "Sorry, an error occured while fetching posts";
+          throw new Error(error);
         });
     },
     getBlog() {
@@ -299,10 +302,6 @@ export default {
     },
     getPosts(status) {
       this.postsRequestState = REQUEST_STATE.PENDING;
-      this.notifications = {
-        errors: [],
-        info: []
-      };
       return apolloClient
         .query({
           query: postsQuery,
@@ -312,14 +311,14 @@ export default {
           }
         })
         .then(result => {
-          this.postsRequestState = REQUEST_STATE.COMPLETED_OK;
+          this.postsRequestState = REQUEST_STATE.FINISHED_OK;
           this.posts = result.data.posts;
           return result;
         })
         .catch(error => {
-          this.postsRequestState = REQUEST_STATE.COMPLETED_ERROR;
-          this.notifications.errors.push("getPosts() " + error.message);
-          logger.error(new Error(error));
+          this.postsRequestState = REQUEST_STATE.FINISHED_ERROR;
+          this.errorMessage = "Sorry, an error occured while fetching posts";
+          throw new Error(error);
         });
     },
     deletePost(post) {
@@ -330,19 +329,18 @@ export default {
           variables: { id: post._id }
         })
         .then(result => {
-          this.deletePostRequestState = REQUEST_STATE.COMPLETED_OK;
-          console.log("result", result);
+          this.deletePostRequestState = REQUEST_STATE.FINISHED_OK;
           const post = result.data.deletePost;
           return this.getPosts(this.activeStatus);
+        })
+        .then(r => {
           this.deleteModal.show = false;
-          return result;
         })
         .catch(error => {
-          this.deletePostRequestState = REQUEST_STATE.COMPLETED_ERROR;
-          this.notifications.errors.push("onDeleteClick() " + error.message);
-          logger.error(new Error(error));
+          this.deletePostRequestState = REQUEST_STATE.FINISHED_ERROR;
+          this.errorMessage = "Sorry an error occured while deleting post";
           this.deleteModal.show = false;
-          return error;
+          throw new Error(error);
         });
     },
     onStatusClick(status) {
@@ -352,7 +350,7 @@ export default {
     onDeleteClick(post) {
       this.deleteModal.post = post;
       this.deleteModal.show = true;
-      this.deleteModal.title = `Delete ${post.title}`;
+      this.deleteModal.title = `Delete "${post.title}"`;
     },
     onUnpublishClick(status) {
       alert("unpublish");
