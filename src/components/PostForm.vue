@@ -13,8 +13,7 @@
         <span @click="onBackToPostsClick" style="cursor:pointer" class="item tag is-medium">
           <em>
             <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
-            <span style="padding-left:10px;"><</span>
-            posts
+            <IconBack />posts
           </em>
         </span>
 
@@ -98,6 +97,7 @@
           @click="showMediaLoadingModal = false"
           class="button is-success"
         >Wait for media to upload!</div>
+
         <div @click="onMediaLoadingConfirmClick" class="button is-danger">Quit anyway</div>
       </template>
     </BulmaModal>
@@ -112,13 +112,12 @@ import CKEditor from "@ckeditor/ckeditor5-vue";
 import gql from "graphql-tag";
 import AppNotify from "./AppNotify";
 import { REQUEST_STATE, getUser, getBlog } from "../utils/helpers";
-// import { CloudinaryImageUploadAdapter } from "ckeditor-cloudinary-uploader-adapter";
-//import { ckeditorGraphQLUploadAdapterPlugin } from "../utils/ckeditorGraphQLUploadAdapter";
 import { ckeditorCloudinaryDirectUploadAdapterPlugin } from "../utils/ckeditorCloudinaryDirectUploadAdapter";
 import hotkeys from "hotkeys-js";
 import Loading from "vue-loading-overlay";
 import logger from "../utils/logger";
 import BulmaModal from "./BulmaModal";
+import IconBack from "./IconBack";
 
 const PostResponseFragment = gql`
   fragment PostResponse on Post {
@@ -178,12 +177,12 @@ const OPERATION = {
 
 export default {
   components: {
-    // Use the <ckeditor> component in this view.
     ckeditor: CKEditor.component,
     AppLoader,
     AppNotify,
     Loading,
-    BulmaModal
+    BulmaModal,
+    IconBack
   },
   data() {
     return {

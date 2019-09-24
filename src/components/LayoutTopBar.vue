@@ -10,7 +10,7 @@
                 style="position:relative;height:20px !important;top:4px;"
                 src="/images/books.webp"
               />
-              <span style="padding-left:10px;"><</span> All blogs
+              <IconBack />All blogs
             </router-link>
           </span>
 
@@ -125,6 +125,7 @@ import getSinglePostApiExample from "../apiExamples/getSinglePostApiExample";
 import ApiButton from "../components/ApiButton";
 import BulmaModal from "../components/BulmaModal";
 import logger from "../utils/logger";
+import IconBack from "../components/IconBack";
 
 const meWithMyBlogsQuery = gql`
   query meWithMyBlogsQuery {
@@ -150,7 +151,8 @@ const meWithMyBlogsQuery = gql`
 export default {
   components: {
     ApiButton,
-    BulmaModal
+    BulmaModal,
+    IconBack
   },
   data() {
     return {
@@ -167,9 +169,7 @@ export default {
   },
   computed: {
     blogApiUrl() {
-      return `${process.env.VUE_APP_GRAPHQL_POD_BASE_URL}/${
-        this.$route.params.blogId
-      }`;
+      return `${process.env.VUE_APP_GRAPHQL_POD_BASE_URL}/${this.$route.params.blogId}`;
     }
   },
   created() {
