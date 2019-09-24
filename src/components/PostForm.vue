@@ -1,6 +1,6 @@
 <template>
   <div class="writeForm">
-    <AppError v-if="error" :machineError="error.machine" :humanError="error.human" />
+    <AppError v-if="errorMessage">{{errorMessage}}</AppError>
 
     <!-- LOADER  displayed while initData are fetched -->
     <template v-if="initDataState === 'PENDING'">
@@ -191,7 +191,7 @@ export default {
       mediaLoadingCounter: 0,
       lastTimeSaved: null,
       existingPost: null,
-      error: null,
+      errorMessage: null,
       // content loaded from database when page is loaded.
       inputs: {
         title: "",
@@ -287,7 +287,7 @@ export default {
         })
         .catch(error => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
-          logger.error(new Error(error));
+          throw new Error(error);
         });
     },
     getBlog() {
@@ -337,7 +337,6 @@ export default {
       };
     },
     async createPost(post) {
-      this.error = null;
       const user = await getUser();
       const blog = await getBlog(this.$route.params.blogId);
       logger.info("debug:createPost:user", user);
@@ -368,15 +367,12 @@ export default {
           });
           return result;
         })
-        .catch(e => {
-          this.error = {
-            human: "😞Sorry, an error occured while creating post.",
-            machine: new Error(e)
-          };
+        .catch(error => {
+          this.errorMessage = "😞Sorry, an error occured while creating post.";
+          throw new Error(error);
         });
     },
     updatePost(post) {
-      this.error = null;
       if (!post._id) {
         post._id = this.$route.params.postId;
       }
@@ -393,15 +389,12 @@ export default {
           apolloClient.clearStore();
           return result;
         })
-        .catch(e => {
-          this.error = {
-            human: "😞Sorry, an error occured updating post",
-            machine: new Error(e)
-          };
+        .catch(error => {
+          this.errorMessage = "😞Sorry, an error occured updating post";
+          throw new Error(error);
         });
     },
     onSaveDraftClick() {
-      this.error = null;
       if (!this.inputs.title.trim()) {
         alert("A title is required");
         return;
@@ -413,8 +406,9 @@ export default {
           .then(() => {
             this.savingDraftState = REQUEST_STATE.FINISHED_OK;
           })
-          .catch(e => {
+          .catch(error => {
             this.savingDraftState = REQUEST_STATE.FINISHED_ERROR;
+            throw new Error(error);
           });
       }
       // EDITING EXISTING POST
@@ -428,17 +422,14 @@ export default {
           .then(() => {
             this.savingDraftState = REQUEST_STATE.FINISHED_OK;
           })
-          .catch(e => {
+          .catch(error => {
             this.savingDraftState = REQUEST_STATE.FINISHED_ERROR;
-            this.error = {
-              human: "Sorry, an error occured while saving draft.",
-              machine: new Error(e)
-            };
+            this.errorMessage = "Sorry, an error occured while saving draft.";
+            throw new Error(error);
           });
       }
     },
     onPublishPostClick() {
-      this.error = null;
       if (!this.inputs.title.trim()) {
         alert("A title is required");
         return;
@@ -455,12 +446,10 @@ export default {
           .then(() => {
             this.publishPostState = REQUEST_STATE.FINISHED_OK;
           })
-          .catch(e => {
+          .catch(error => {
             this.publishPostState = REQUEST_STATE.FINISHED_ERROR;
-            this.error = {
-              human: "Sorry, publishing failed.",
-              machine: new Error(e)
-            };
+            this.errorMessage = "Sorry, publishing failed.";
+            throw new Error(error);
           });
       }
       if (this.currentOperation() === "UPDATE") {
@@ -474,12 +463,10 @@ export default {
           .then(() => {
             this.publishPostState = REQUEST_STATE.FINISHED_OK;
           })
-          .catch(e => {
-            this.error = {
-              human: "Sorry, publish operation failed.",
-              machine: new Error(e)
-            };
+          .catch(error => {
+            this.errorMessage = "Sorry, publish operation failed.";
             this.publishPostState = REQUEST_STATE.FINISHED_ERROR;
+            throw new Error(error);
           });
       }
     },
@@ -493,12 +480,10 @@ export default {
         .then(r => {
           this.unpublishPostState = REQUEST_STATE.FINISHED_OK;
         })
-        .catch(e => {
-          this.error = {
-            human: "Sorry, unpublish operation failed.",
-            machine: new Error(e)
-          };
+        .catch(error => {
+          this.errorMessage = "Sorry, an error occured while updating post.";
           this.unpublishPostState = REQUEST_STATE.FINISHED_ERROR;
+          throw new Error(error);
         });
     }
   }

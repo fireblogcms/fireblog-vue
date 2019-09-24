@@ -2,7 +2,7 @@
 <template>
   <AdminLayout>
     <div class="container section">
-      <AppError v-if="error">Sorry, an error occured while signing in.</AppError>
+      <AppError v-if="error">{{error}}</AppError>
       <LayoutBody v-if="initDataState === 'PENDING'">
         <AppLoader>Signing in ...</AppLoader>
       </LayoutBody>
@@ -33,10 +33,12 @@ export default {
       initDataState: REQUEST_STATE.NOT_STARTED
     };
   },
+  async created() {
+    this.initData();
+  },
   methods: {
     async initData() {
       this.initDataState = REQUEST_STATE.PENDING;
-      this.error = null;
       const auth0 = await auth0Client();
       auth0
         .handleRedirectCallback()
@@ -55,15 +57,12 @@ export default {
           this.initDataState = REQUEST_STATE.FINISHED_OK;
           this.$router.push("/");
         })
-        .catch(e => {
+        .catch(error => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
-          this.error = e;
-          logger.error(new Error(e));
+          this.error = "Sorry, authentication failed";
+          logger.error(error);
         });
     }
-  },
-  async created() {
-    this.initData();
   }
 };
 </script>

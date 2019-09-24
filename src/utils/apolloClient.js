@@ -52,7 +52,7 @@ const authLink = setContext(async (_, { headers }) => {
  * - operation (object) - infos about GraphqlQuery
  */
 const onErrorLink = onError(infos => {
-  console.log("infos", infos);
+  /*
   if (infos.graphQLErrors) {
     const message = `ApolloError: ${
       infos.operation.operationName
@@ -61,6 +61,7 @@ const onErrorLink = onError(infos => {
   } else {
     logger.error(new Error(infos.networkError));
   }
+  */
   // if access token for our GraphQL API has expired, re-authenticate.
   /*
   if (

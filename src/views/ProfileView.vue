@@ -1,6 +1,6 @@
 <template>
   <AdminLayout>
-    <AppError :errors="errors" />
+    <AppError v-if="errorMessage">{{errorMessage}}</AppError>
 
     <template v-if="initDataState === 'PENDING'">
       <AppLoader>Loading profile</AppLoader>
@@ -46,12 +46,13 @@ export default {
   data() {
     return {
       initDataState: REQUEST_STATE.NOT_STARTED,
-      errors: [],
+      errorMessage: null,
       me: null
     };
   },
   methods: {
     initData() {
+      this.errors = [];
       this.initDataState = REQUEST_STATE.PENDING;
       return Promise.all([this.getProfile()])
         .then(() => {
@@ -59,8 +60,8 @@ export default {
         })
         .catch(error => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
-          this.errors.push(error);
-          logger.error(new Error(error));
+          this.errorMessage = "Sorry, an error occured while loading page.";
+          throw new Error(error);
         });
     },
     getProfile() {
@@ -84,10 +85,9 @@ export default {
           return result;
         })
         .catch(error => {
-          this.errors.push(
-            "Sorry, an error occured while fetching your profile." + error
-          );
-          logger.error(new Error(error));
+          this.errorMessage =
+            "Sorry, an error occured while fetching your profile.";
+          throw new Error(error);
         });
     }
   },

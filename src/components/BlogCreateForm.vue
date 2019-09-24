@@ -161,10 +161,10 @@ export default {
           this.inputs.blogContentDefaultLanguage =
             navigator.language || navigator.userLanguage;
         })
-        .catch(e => {
+        .catch(error => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           this.initStateError = "initData() : " + e;
-          logger.error(new Error(e));
+          throw new Error(error);
         });
     },
     getLanguageList() {
@@ -210,6 +210,7 @@ export default {
           this.errors.push(
             "Blog created failed with following message: " + error
           );
+          throw new Error(error);
         });
     },
     onGenerateCLick() {

@@ -1,6 +1,6 @@
 <template>
   <AdminLayout>
-    <AppError :errors="notifications.errors" :infos="notifications.infos" />
+    <AppError v-if="errorMessage">{{errorMessage}}</AppError>
     <template v-if="initDataState === 'PENDING'">
       <AppLoader />
     </template>
@@ -219,10 +219,7 @@ export default {
   },
   data() {
     return {
-      notifications: {
-        errors: [],
-        info: []
-      },
+      errorMessage: null,
       initDataState: REQUEST_STATE.NOT_STARTED,
       postsRequestState: REQUEST_STATE.NOT_STARTED,
       deletePostRequestState: REQUEST_STATE.NOT_STARTED,
@@ -261,8 +258,7 @@ export default {
         })
         .catch(error => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
-          this.notifications.errors.push("initError: " + error.message);
-          logger.error(new Error(error));
+          throw new Error(error);
         });
     },
     buildLinkToPost(item) {
@@ -275,6 +271,7 @@ export default {
       this.$router.push(this.buildLinkToPost(item));
     },
     async getAllPosts() {
+      this.errorMessage = null;
       return apolloClient
         .query({
           query: allPostsQuery,
@@ -284,6 +281,10 @@ export default {
           this.isFirstPost =
             result.data.posts.edges.length === 0 ? true : false;
           return result;
+        })
+        .catch(error => {
+          this.errorMessage = "Sorry, an error occured while fetching posts";
+          throw new Error(error);
         });
     },
     getBlog() {
@@ -301,10 +302,6 @@ export default {
     },
     getPosts(status) {
       this.postsRequestState = REQUEST_STATE.PENDING;
-      this.notifications = {
-        errors: [],
-        info: []
-      };
       return apolloClient
         .query({
           query: postsQuery,
@@ -320,8 +317,8 @@ export default {
         })
         .catch(error => {
           this.postsRequestState = REQUEST_STATE.FINISHED_ERROR;
-          this.notifications.errors.push("getPosts() " + error.message);
-          logger.error(new Error(error));
+          this.errorMessage = "Sorry, an error occured while fetching posts";
+          throw new Error(error);
         });
     },
     deletePost(post) {
@@ -333,18 +330,17 @@ export default {
         })
         .then(result => {
           this.deletePostRequestState = REQUEST_STATE.FINISHED_OK;
-          console.log("result", result);
           const post = result.data.deletePost;
           return this.getPosts(this.activeStatus);
+        })
+        .then(r => {
           this.deleteModal.show = false;
-          return result;
         })
         .catch(error => {
           this.deletePostRequestState = REQUEST_STATE.FINISHED_ERROR;
-          this.notifications.errors.push("onDeleteClick() " + error.message);
-          logger.error(new Error(error));
+          this.errorMessage = "Sorry an error occured while deleting post";
           this.deleteModal.show = false;
-          return error;
+          throw new Error(error);
         });
     },
     onStatusClick(status) {

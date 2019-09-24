@@ -220,7 +220,7 @@ export default {
           this.blog = result.data.blog;
         })
         .catch(error => {
-          this.error = error;
+          this.errorMessage = error;
           logger.error(error);
         });
     },

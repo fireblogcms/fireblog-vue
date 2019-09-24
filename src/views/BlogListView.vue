@@ -2,58 +2,56 @@
   <AdminLayout>
     <AppLoader v-if="initDataState === 'PENDING'">Loading blogs</AppLoader>
 
-    <AppError v-if="error" :error="error">Sorry, an error occured while signing in</AppError>
+    <AppError v-if="errorMessage">{{errorMessage}}</AppError>
 
-    <template v-if="initDataState === 'FINISHED_OK'">
-      <!-- if this is the fiirs blog, display form to create a blog -->
-      <template v-if="blogs.edges.length === 0">
-        <div class="section container">
-          <BlogCreateForm :first="true" />
-        </div>
-      </template>
-      <!-- else, display the blog list -->
-      <template v-if="blogs && blogs.edges.length > 0">
-        <div class="container">
-          <div class="animated fadeIn">
-            <header style="padding: 0 1rem 2rem 1rem">
-              <div class="columns">
-                <div class="column">
-                  <h1 style="padding-bottom:2rem;" class="title is-1">
-                    <img
-                      height="70"
-                      style="position:relative;top:25px;padding-right:1rem"
-                      src="/images/books-icon.png"
-                    />
-                    My blogs
-                  </h1>
-                </div>
-                <div class="column">
-                  <BulmaButtonLink
-                    class="is-primary is-large main-call-to-action"
-                    :to="{name:'blogCreate'}"
-                  >
-                    <img width="40" style="margin-right:10px" src="/images/book.png" /> CREATE A NEW BLOG
-                  </BulmaButtonLink>
-                </div>
+    <!-- if this is the fiirs blog, display form to create a blog -->
+    <template v-if="initDataState === 'FINISHED_OK' && blogs &&  blogs.edges.length === 0">
+      <div class="section container">
+        <BlogCreateForm :first="true" />
+      </div>
+    </template>
+    <!-- else, display the blog list -->
+    <template v-if="initDataState === 'FINISHED_OK' && blogs && blogs.edges.length > 0">
+      <div class="container">
+        <div class="animated fadeIn">
+          <header style="padding: 0 1rem 2rem 1rem">
+            <div class="columns">
+              <div class="column">
+                <h1 style="padding-bottom:2rem;" class="title is-1">
+                  <img
+                    height="70"
+                    style="position:relative;top:25px;padding-right:1rem"
+                    src="/images/books-icon.png"
+                  />
+                  My blogs
+                </h1>
               </div>
-            </header>
-            <div class="container">
-              <div
-                v-for="(edge, index) in blogs.edges"
-                style="box-shadow: 0px 4px 5px rgba(229, 229, 229, 1);"
-                :style="blogCardStyles(edge, index)"
-                class="blog-card"
-                :key="edge.node._id"
-                @click="onRowClick(edge)"
-              >
-                <h2 class="title is-2">
-                  <router-link :to="buildLinkToPostList(edge)">{{ edge.node.name }}</router-link>
-                </h2>
+              <div class="column">
+                <BulmaButtonLink
+                  class="is-primary is-large main-call-to-action"
+                  :to="{name:'blogCreate'}"
+                >
+                  <img width="40" style="margin-right:10px" src="/images/book.png" /> CREATE A NEW BLOG
+                </BulmaButtonLink>
               </div>
+            </div>
+          </header>
+          <div class="container">
+            <div
+              v-for="(edge, index) in blogs.edges"
+              style="box-shadow: 0px 4px 5px rgba(229, 229, 229, 1);"
+              :style="blogCardStyles(edge, index)"
+              class="blog-card"
+              :key="edge.node._id"
+              @click="onRowClick(edge)"
+            >
+              <h2 class="title is-2">
+                <router-link :to="buildLinkToPostList(edge)">{{ edge.node.name }}</router-link>
+              </h2>
             </div>
           </div>
         </div>
-      </template>
+      </div>
     </template>
   </AdminLayout>
 </template>
@@ -105,15 +103,14 @@ export default {
   },
   methods: {
     initData() {
-      this.error = null;
       this.initDataState = REQUEST_STATE.PENDING;
       Promise.all([this.getBlogs()])
         .then(() => {
           this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
         .catch(error => {
+          logger.error(error);
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
-          this.error = error;
         });
     },
     blogCardStyles(edge, index) {
@@ -140,6 +137,7 @@ export default {
       this.$router.push(this.buildLinkToPostList(item));
     },
     getBlogs() {
+      this.errorMessage = null;
       return apolloClient
         .query({ query: myBlogsQuery })
         .then(result => {
@@ -148,8 +146,10 @@ export default {
           this.blogsDefaultImagesMap = this.mapDefaultImagesToBlogId();
           return this.blogs;
         })
-        .catch(e => {
-          this.error = e;
+        .catch(error => {
+          this.errorMessage = "Sorry, an error occured while fetching blog";
+          logger.error(error);
+          throw new Error(error);
         });
     },
     defaultImages() {
