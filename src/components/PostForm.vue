@@ -57,7 +57,10 @@
         class="button is-outlined item"
         :class="{ 'is-loading': savingDraftState === REQUEST_STATE.PENDING }"
         type="submit"
-      >SAVE DRAFT</button>
+      >
+        SAVE DRAFT
+        <span v-if="changesDetected">*</span>
+      </button>
 
       <button
         @click="onUnpublishPostClick()"
@@ -89,6 +92,7 @@
     </portal>
     <!-- END TOPBAR RIGHT BUTTONS -->
 
+    <!-- confirmation need before quitting post if some media are still uploading -->
     <BulmaModal v-model="showMediaLoadingModal">
       <template #title>{{mediaLoadingCounter}} media are currently uploading</template>
       <template #body>If you quit now, some medias might not been saved.</template>
@@ -99,6 +103,22 @@
         >Wait for media to upload!</div>
 
         <div @click="onMediaLoadingConfirmClick" class="button is-danger">Quit anyway</div>
+      </template>
+    </BulmaModal>
+
+    <!-- confirmation need before quitting post if changes are detected -->
+    <BulmaModal v-model="quitSecurityModal.show">
+      <template #title>{{quitSecurityModal.title}}</template>
+      <template #body>{{quitSecurityModal.content}}</template>
+      <template #footer>
+        <div
+          @click="quitSecurityModal.show = false"
+          class="button is-success"
+        >{{quitSecurityModal.cancelText}}</div>
+        <div
+          @click="onChangesDetectedConfirmClick"
+          class="button is-danger"
+        >{{quitSecurityModal.confirmText}}</div>
       </template>
     </BulmaModal>
   </div>
@@ -188,6 +208,7 @@ export default {
       publishPostState: REQUEST_STATE.NOT_STARTED,
       unpublishPostState: REQUEST_STATE.NOT_STARTED,
       savingDraftState: REQUEST_STATE.NOT_STARTED,
+      changesDetected: false,
       mediaLoadingCounter: 0,
       lastTimeSaved: null,
       existingPost: null,
@@ -197,7 +218,15 @@ export default {
         title: "",
         content: ""
       },
-      showMediaLoadingModal: false
+      showMediaLoadingModal: false,
+      showChangesDetectedModal: false,
+      quitSecurityModal: {
+        show: false,
+        title: null,
+        content: null,
+        confirmText: null,
+        cancelText: null
+      }
     };
   },
   created() {
@@ -247,10 +276,32 @@ export default {
     });
   },
   methods: {
-    onBackToPostsClick() {
+    canQuit() {
+      let canQuit = true;
       if (this.mediaLoadingCounter > 0) {
-        this.showMediaLoadingModal = true;
-      } else {
+        canQuit = false;
+        this.quitSecurityModal = {
+          show: true,
+          title: `${mediaLoadingCounter} Media are still uploading`,
+          content: "If you quit now, some medias might not been saved.",
+          confirmText: "Wait for media to upload!",
+          cancelText: "Quit anyway"
+        };
+      }
+      if (this.changesDetected) {
+        canQuit = false;
+        this.quitSecurityModal = {
+          show: true,
+          title: "Some changes have not been saved",
+          content: `If you quit now, your last changes will be lost`,
+          confirmText: "Quit anyway.",
+          cancelText: "Save my changes first"
+        };
+      }
+      return canQuit;
+    },
+    onBackToPostsClick() {
+      if (this.canQuit()) {
         this.$router.push({
           name: "postList",
           params: { blogId: this.$route.params.blogId }
@@ -258,9 +309,16 @@ export default {
       }
     },
     onContentInput(content) {
+      this.changesDetected = true;
       this.inputs.content = content;
     },
     onMediaLoadingConfirmClick() {
+      this.$router.push({
+        name: "postList",
+        params: { blogId: this.$route.params.blogId }
+      });
+    },
+    onChangesDetectedConfirmClick() {
       this.$router.push({
         name: "postList",
         params: { blogId: this.$route.params.blogId }
@@ -387,6 +445,7 @@ export default {
           this.lastTimeSaved = Date.now();
           this.existingPost = result.data.updatePost;
           apolloClient.clearStore();
+          this.changesDetected = false;
           return result;
         })
         .catch(error => {
@@ -485,6 +544,14 @@ export default {
           this.unpublishPostState = REQUEST_STATE.FINISHED_ERROR;
           throw new Error(error);
         });
+    }
+  },
+  watch: {
+    "inputs.title": {
+      immediate: false,
+      handler: function(newValue) {
+        //this.changesDetected = true;
+      }
     }
   }
 };
