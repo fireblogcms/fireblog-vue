@@ -80,7 +80,7 @@
           class="content"
           :disabled="savingDraftState ===  REQUEST_STATE.PENDING"
           ref="ckeditor"
-          :value="oldContent"
+          :value="existingPost ? existingPost.content : ''"
           :editor="editor"
           @input="onContentInput"
           @ready="onEditorReady"
@@ -105,19 +105,18 @@
 </template>
 
 <script>
-import apolloClient from "../utils/apolloClient";
 import AppLoader from "../components/AppLoader";
 import Editor from "@ckeditor/ckeditor5-build-balloon-block";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import gql from "graphql-tag";
 import AppNotify from "./AppNotify";
-import { REQUEST_STATE, getUser, getBlog } from "../utils/helpers";
-import { ckeditorCloudinaryDirectUploadAdapterPlugin } from "../utils/ckeditorCloudinaryDirectUploadAdapter";
 import hotkeys from "hotkeys-js";
-import Loading from "vue-loading-overlay";
 import logger from "../utils/logger";
 import BulmaModal from "./BulmaModal";
 import IconBack from "./IconBack";
+import apolloClient from "../utils/apolloClient";
+import { ckeditorCloudinaryDirectUploadAdapterPlugin } from "../utils/ckeditorCloudinaryDirectUploadAdapter";
+import { REQUEST_STATE, getUser, getBlog } from "../utils/helpers";
 
 const PostResponseFragment = gql`
   fragment PostResponse on Post {
@@ -180,7 +179,6 @@ export default {
     ckeditor: CKEditor.component,
     AppLoader,
     AppNotify,
-    Loading,
     BulmaModal,
     IconBack
   },
@@ -198,7 +196,6 @@ export default {
         info: []
       },
       // content loaded from database when page is loaded.
-      oldContent: "",
       inputs: {
         title: "",
         content: ""
@@ -543,6 +540,12 @@ export default {
   font-size: 40px;
 }
 
+@media screen and (max-width: 768px) {
+  .writeForm form {
+    padding: 1rem;
+  }
+}
+
 /**
  * Replace "P" paragraph icon to a "+" to add media
  */
@@ -562,11 +565,5 @@ button.ck-block-toolbar-button:hover {
 
 .ck-block-toolbar-button .ck.ck-icon {
   font-size: 2em !important;
-}
-
-@media screen and (max-width: 768px) {
-  .writeForm form {
-    padding: 1rem;
-  }
 }
 </style>

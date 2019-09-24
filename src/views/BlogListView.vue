@@ -61,17 +61,12 @@
 <script>
 import apolloClient from "../utils/apolloClient";
 import BlogCreateForm from "../components/BlogCreateForm";
-import BulmaGrid from "../components/BulmaGrid";
 import AdminLayout from "../layouts/AdminLayout";
 import AppLoader from "../components/AppLoader";
 import gql from "graphql-tag";
 import BulmaButtonLink from "../components/BulmaButtonLink";
 import { REQUEST_STATE } from "../utils/helpers";
-import AppNotify from "../components/AppNotify";
-import ButtonLink from "../components/ButtonLink";
-import LayoutBody from "../components/LayoutBody";
 import AppError from "../components/AppError";
-import LayoutList from "../components/LayoutList";
 import logger from "../utils/logger";
 
 const myBlogsQuery = gql`
@@ -95,16 +90,11 @@ const myBlogsQuery = gql`
 
 export default {
   components: {
-    LayoutBody,
     AppError,
     BulmaButtonLink,
     BlogCreateForm,
-    BulmaGrid,
     AdminLayout,
-    AppLoader,
-    AppNotify,
-    ButtonLink,
-    LayoutList
+    AppLoader
   },
   data() {
     return {
