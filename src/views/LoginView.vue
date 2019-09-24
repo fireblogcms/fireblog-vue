@@ -7,13 +7,11 @@
 </template>
 
 <script>
-import LayoutBody from "../components/LayoutBody";
 import AppLoader from "../components/AppLoader";
 import { auth0Client } from "../utils/auth";
 
 export default {
   components: {
-    LayoutBody,
     AppLoader
   },
   async created() {

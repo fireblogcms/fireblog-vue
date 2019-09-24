@@ -59,7 +59,7 @@
         type="submit"
       >
         SAVE DRAFT
-        <span v-if="changesDetected">*</span>
+        <span class="animated bounce" v-if="changesDetected">*</span>
       </button>
 
       <button
@@ -88,7 +88,10 @@
         :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
         :disabled="publishPostState === REQUEST_STATE.PENDING"
         type="submit"
-      >PUBLISH CHANGES</button>
+      >
+        PUBLISH CHANGES
+        <span class="animated bounce" v-if="changesDetected">*</span>
+      </button>
     </portal>
     <!-- END TOPBAR RIGHT BUTTONS -->
 
@@ -271,9 +274,9 @@ export default {
         canQuit = false;
         this.quitSecurityModal = {
           show: true,
-          title: `${mediaLoadingCounter} Media are still uploading`,
-          content: "If you quit now, some medias might not been saved.",
-          confirmText: "Wait for media to upload!",
+          title: `${mediaLoadingCounter} Media are currently uploading`,
+          content: "If you quit now, some medias may not be saved.",
+          confirmText: "Wait for upload to complete!",
           cancelText: "Quit anyway"
         };
       }
@@ -297,9 +300,12 @@ export default {
         });
       }
     },
-    onContentInput(content) {
+    onTitleInput(value) {
+      alert(value);
+    },
+    onContentInput(value) {
       this.changesDetected = true;
-      this.inputs.content = content;
+      this.inputs.content = value;
     },
     onMediaLoadingConfirmClick() {
       this.$router.push({
@@ -537,9 +543,10 @@ export default {
   },
   watch: {
     "inputs.title": {
-      immediate: false,
       handler: function(newValue) {
-        //this.changesDetected = true;
+        if (this.initDataState === REQUEST_STATE.FINISHED_OK) {
+          this.changesDetected = true;
+        }
       }
     }
   }
