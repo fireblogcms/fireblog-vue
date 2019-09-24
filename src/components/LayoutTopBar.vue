@@ -102,14 +102,27 @@
         >Open GraphQL Explorer</a>
       </template>
       <template #body>
+        <h2 class="title is-4">GraphQL endpoint</h2>
         <div class="field">
           <div class="control">
             <input readonly="true" class="input" type="text" :value="blogApiUrl" />
           </div>
         </div>
-        <div class="field" v-show="apiModalExample">
-          <label class="label">{{apiModalExampleTitle}}</label>
-          <pre class="language-graphql"><code>{{apiModalExample}}</code></pre>
+        <div
+          ref="apiModal"
+          :id="`example-${example.id}`"
+          v-for="example in apiModalExampleList"
+          :key="example.id"
+        >
+          <h2 style="margin-top:20px" class="title is-4">
+            {{example.label}}
+            <a
+              :href="`${blogApiUrl}?query=${encodeURI(example.snippet)}`"
+              target="_blank"
+              class="is-pulled-right button is-primary"
+            >Try it !</a>
+          </h2>
+          <pre class="language-graphql"><code>{{example.snippet}}</code></pre>
         </div>
       </template>
     </BulmaModal>
@@ -122,6 +135,7 @@ import apolloClient from "../utils/apolloClient";
 import { getUser, REQUEST_STATE } from "../utils/helpers";
 import getAllPostsApiExample from "../apiExamples/getAllPosts";
 import getSinglePostApiExample from "../apiExamples/getSinglePostApiExample";
+import apiExamples from "../apiExamples";
 import ApiButton from "../components/ApiButton";
 import BulmaModal from "../components/BulmaModal";
 import logger from "../utils/logger";
@@ -164,6 +178,7 @@ export default {
       showApiModal: false,
       apiModalExampleTitle: null,
       apiModalExample: null,
+      apiModalExampleList: [],
       tryItLink: null
     };
   },
@@ -185,12 +200,12 @@ export default {
         promises.push(this.getCurrentBlog());
       }
       Promise.all(promises)
-        .then(r => {
+        .then(() => {
           this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
-        .catch(e => {
+        .catch(error => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
-          logger.error(e);
+          throw new Error(error);
         });
     },
     getMeWithMyBlogs() {
@@ -221,7 +236,7 @@ export default {
         })
         .catch(error => {
           this.errorMessage = error;
-          logger.error(error);
+          throw new Error(error);
         });
     },
     backToBlogIsVisible() {
@@ -260,22 +275,19 @@ export default {
       }
     },
     onApiClick() {
+      this.tryItLink = this.blogApiUrl;
+      const apiExamplesContext = {
+        postId: "{{POST_ID}}",
+        blogId: "{{BLOG_ID"
+      };
+
       if (this.$route.name === "postList") {
-        this.apiModalExampleTitle = "get all posts, with pagination support";
-        this.apiModalExample = getAllPostsApiExample();
-        this.tryItLink = `${this.blogApiUrl}?query=${encodeURI(
-          getAllPostsApiExample()
-        )}`;
+        apiExamplesContext.postId = this.$route.params.postId;
       }
       if (this.$route.name === "postUpdate") {
-        this.apiModalExampleTitle = "get a single post";
-        this.apiModalExample = getSinglePostApiExample({
-          _id: this.$route.params.postId
-        });
-        this.tryItLink = `${this.blogApiUrl}?query=${encodeURI(
-          getSinglePostApiExample({ _id: this.$route.params.postId })
-        )}`;
+        apiExamplesContext.postId = this.$route.params.postId;
       }
+      this.apiModalExampleList = apiExamples(apiExamplesContext);
       this.showApiModal = true;
     }
   }
