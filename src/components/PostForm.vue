@@ -92,20 +92,6 @@
     </portal>
     <!-- END TOPBAR RIGHT BUTTONS -->
 
-    <!-- confirmation need before quitting post if some media are still uploading -->
-    <BulmaModal v-model="showMediaLoadingModal">
-      <template #title>{{mediaLoadingCounter}} media are currently uploading</template>
-      <template #body>If you quit now, some medias might not been saved.</template>
-      <template #footer>
-        <div
-          @click="showMediaLoadingModal = false"
-          class="button is-success"
-        >Wait for media to upload!</div>
-
-        <div @click="onMediaLoadingConfirmClick" class="button is-danger">Quit anyway</div>
-      </template>
-    </BulmaModal>
-
     <!-- confirmation need before quitting post if changes are detected -->
     <BulmaModal v-model="quitSecurityModal.show">
       <template #title>{{quitSecurityModal.title}}</template>
@@ -116,7 +102,7 @@
           class="button is-success"
         >{{quitSecurityModal.cancelText}}</div>
         <div
-          @click="onChangesDetectedConfirmClick"
+          @click="onQuitSecurityModalConfirmClick"
           class="button is-danger"
         >{{quitSecurityModal.confirmText}}</div>
       </template>
@@ -231,6 +217,9 @@ export default {
   },
   created() {
     this.initData();
+    window.onbeforeunload = function(e) {
+      return "Are you sure you want to quit ?";
+    };
     this.REQUEST_STATE = REQUEST_STATE;
     this.OPERATION_TYPE = OPERATION_TYPE;
     this.editor = Editor;
@@ -318,7 +307,7 @@ export default {
         params: { blogId: this.$route.params.blogId }
       });
     },
-    onChangesDetectedConfirmClick() {
+    onQuitSecurityModalConfirmClick() {
       this.$router.push({
         name: "postList",
         params: { blogId: this.$route.params.blogId }
