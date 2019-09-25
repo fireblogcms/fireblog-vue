@@ -63,7 +63,7 @@
       </button>
 
       <button
-        @click="onUnpublishPostClick()"
+        @click="onUnpublishClick()"
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
         class="button is-outlined item"
         :class="{'is-loading': unpublishPostState === REQUEST_STATE.PENDING}"
@@ -73,7 +73,7 @@
       >UNPUBLISH</button>
 
       <button
-        @click="onPublishPostClick()"
+        @click="onPublishClick()"
         v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
         class="button is-outlined item is-primary"
         :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
@@ -82,7 +82,7 @@
       >PUBLISH</button>
 
       <button
-        @click="onPublishPostClick()"
+        @click="onPublishClick()"
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
         class="button item is-outlined is-primary"
         :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
@@ -95,19 +95,20 @@
     </portal>
     <!-- END TOPBAR RIGHT BUTTONS -->
 
-    <!-- confirmation need before quitting post if changes are detected -->
-    <BulmaModal v-model="quitSecurityModal.show">
-      <template #title>{{quitSecurityModal.title}}</template>
-      <template #body>{{quitSecurityModal.content}}</template>
+    <BulmaModal v-model="modal.show">
+      <template #title>{{modal.title}}</template>
+      <template #body>{{modal.content}}</template>
       <template #footer>
         <div
-          @click="quitSecurityModal.show = false"
+          v-if="modal.cancelText && modal.cancelCallback"
+          @click="modal.cancelCallback"
           class="button is-success"
-        >{{quitSecurityModal.cancelText}}</div>
+        >{{modal.cancelText}}</div>
         <div
-          @click="onQuitSecurityModalConfirmClick"
+          v-if="modal.confirmText && modal.confirmCallback"
+          @click="modal.confirmCallback"
           class="button is-danger"
-        >{{quitSecurityModal.confirmText}}</div>
+        >{{modal.confirmText}}</div>
       </template>
     </BulmaModal>
   </div>
@@ -207,14 +208,18 @@ export default {
         title: "",
         content: ""
       },
-      showMediaLoadingModal: false,
-      showChangesDetectedModal: false,
-      quitSecurityModal: {
+      modal: {
         show: false,
         title: null,
         content: null,
         confirmText: null,
-        cancelText: null
+        confirmCallback: () => {
+          console.log("modal confirm callback ");
+        },
+        cancelText: null,
+        cancelCallback: () => {
+          console.log("cancel confirm callback ");
+        }
       }
     };
   },
@@ -268,65 +273,6 @@ export default {
     });
   },
   methods: {
-    canQuit() {
-      let canQuit = true;
-      if (this.mediaLoadingCounter > 0) {
-        canQuit = false;
-        this.quitSecurityModal = {
-          show: true,
-          title: `${mediaLoadingCounter} Media are currently uploading`,
-          content: "If you quit now, some medias may not be saved.",
-          confirmText: "Wait for upload to complete!",
-          cancelText: "Quit anyway"
-        };
-      }
-      if (this.changesDetected) {
-        canQuit = false;
-        this.quitSecurityModal = {
-          show: true,
-          title: "Some changes have not been saved",
-          content: `If you quit now, your last changes will be lost`,
-          confirmText: "Quit anyway.",
-          cancelText: "Save my changes first"
-        };
-      }
-      return canQuit;
-    },
-    onBackToPostsClick() {
-      if (this.canQuit()) {
-        this.$router.push({
-          name: "postList",
-          params: { blogId: this.$route.params.blogId }
-        });
-      }
-    },
-    onTitleInput(value) {
-      alert(value);
-    },
-    onContentInput(value) {
-      this.changesDetected = true;
-      this.inputs.content = value;
-    },
-    onMediaLoadingConfirmClick() {
-      this.$router.push({
-        name: "postList",
-        params: { blogId: this.$route.params.blogId }
-      });
-    },
-    onQuitSecurityModalConfirmClick() {
-      this.$router.push({
-        name: "postList",
-        params: { blogId: this.$route.params.blogId }
-      });
-    },
-    onEditorReady() {
-      const element = document.querySelector(
-        ".ck-block-toolbar-button  .ck-tooltip__text"
-      );
-      const toolTip = "Add media";
-      element.innerHTML = toolTip;
-      element.innerText = toolTip;
-    },
     initData() {
       this.initDataState = REQUEST_STATE.PENDING;
       const promises = [];
@@ -342,6 +288,62 @@ export default {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           throw new Error(error);
         });
+    },
+    onBackToPostsClick() {
+      if (this.mediaLoadingCounter > 0) {
+        this.modal = {
+          show: true,
+          title: "We haven' finished uploading your media",
+          content: `${this.mediaLoadingCounter} media ${
+            this.mediaLoadingCounter > 1 ? "are" : "is"
+          } currently uploading`,
+          cancelText: "Wait for uploads to complete!",
+          confirmText: "Quit anyway",
+          confirmCallback: () => {
+            this.$router.push({
+              name: "postList",
+              params: { blogId: this.$route.params.blogId }
+            });
+          },
+          cancelCallback: () => {
+            this.modal.show = false;
+          }
+        };
+      } else if (this.changesDetected) {
+        this.modal = {
+          show: true,
+          title: "Some changes have not been saved",
+          content: `If you quit now, your last changes will be lost`,
+          cancelText: "Save my changes first",
+          confirmText: "Quit anyway.",
+          confirmCallback: () => {
+            this.$router.push({
+              name: "postList",
+              params: { blogId: this.$route.params.blogId }
+            });
+          },
+          cancelCallback: () => {
+            this.modal.show = false;
+          }
+        };
+      } else {
+        this.$router.push({
+          name: "postList",
+          params: { blogId: this.$route.params.blogId }
+        });
+      }
+    },
+    onContentInput(value) {
+      this.changesDetected = true;
+      this.inputs.content = value;
+    },
+    onEditorReady() {
+      const element = document.querySelector(
+        ".ck-block-toolbar-button .ck-tooltip__text"
+      );
+      const toolTip = "Add media";
+      element.innerHTML = toolTip;
+      element.innerText = toolTip;
     },
     getBlog() {
       return apolloClient
@@ -359,8 +361,10 @@ export default {
     onTitleEnter() {
       this.$refs.ckeditor.$el.focus();
     },
+    /**
+     * Determine if we are currently creating a new post or updating an existing one.
+     */
     currentOperation() {
-      // if there is a postId in the url, we are updating an existing post.
       return this.$route.params.postId
         ? OPERATION_TYPE.UPDATE
         : OPERATION_TYPE.CREATE;
@@ -376,18 +380,28 @@ export default {
           this.NormalizeInputsFromPost(this.existingPost);
         });
     },
-    // Prepare form inputs from a post object
-    NormalizeInputsFromPost(post) {
-      this.inputs.title = post.title;
-      this.inputs.content = post.content ? post.content : "";
+    onPublishClick() {
+      if (this.mediaLoadingCounter > 0) {
+        this.modal = {
+          show: true,
+          title: "We can't publish now",
+          content: `${this.mediaLoadingCounter} media ${
+            this.mediaLoadingCounter > 1 ? "are" : "is"
+          } currently uploading`,
+          cancelText: "Wait for uploads to complete!",
+          cancelCallback: () => {
+            this.modal.show = false;
+          }
+        };
+      } else {
+        this.publish();
+      }
     },
-    // Prepare a post object from form inputs
-    NormalizePostFromInputs(inputs) {
-      return {
-        title: inputs.title,
-        content: inputs.content,
-        status: "DRAFT"
-      };
+    onUnpublishClick() {
+      this.unpublish();
+    },
+    onSaveDraftClick() {
+      this.saveDraft();
     },
     async createPost(post) {
       const user = await getUser();
@@ -448,7 +462,7 @@ export default {
           throw new Error(error);
         });
     },
-    onSaveDraftClick() {
+    saveDraft() {
       if (!this.inputs.title.trim()) {
         alert("A title is required");
         return;
@@ -483,12 +497,11 @@ export default {
           });
       }
     },
-    onPublishPostClick() {
+    publish() {
       if (!this.inputs.title.trim()) {
         alert("A title is required");
         return;
       }
-
       if (this.currentOperation() === "CREATE") {
         this.publishPostState = REQUEST_STATE.PENDING;
         const newPost = {
@@ -524,7 +537,7 @@ export default {
           });
       }
     },
-    onUnpublishPostClick() {
+    unpublish() {
       this.unpublishPostState = REQUEST_STATE.PENDING;
       const post = {
         ...this.NormalizePostFromInputs(this.inputs),
@@ -539,9 +552,23 @@ export default {
           this.unpublishPostState = REQUEST_STATE.FINISHED_ERROR;
           throw new Error(error);
         });
+    },
+    // Prepare form inputs from a post object
+    NormalizeInputsFromPost(post) {
+      this.inputs.title = post.title;
+      this.inputs.content = post.content ? post.content : "";
+    },
+    // Prepare a post object from form inputs
+    NormalizePostFromInputs(inputs) {
+      return {
+        title: inputs.title,
+        content: inputs.content,
+        status: "DRAFT"
+      };
     }
   },
   watch: {
+    // detect if title has been modified.
     "inputs.title": {
       handler: function(newValue) {
         if (this.initDataState === REQUEST_STATE.FINISHED_OK) {
