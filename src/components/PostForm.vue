@@ -2,38 +2,6 @@
   <div class="writeForm">
     <AppError v-if="errorMessage">{{errorMessage}}</AppError>
 
-    <!-- LOADER  displayed while initData are fetched -->
-    <template v-if="initDataState === 'PENDING'">
-      <AppLoader :absolute="true" />
-    </template>
-
-    <template v-if="initDataState === REQUEST_STATE.FINISHED_OK">
-      <!-- FORM -->
-      <form @submit.prevent>
-        <textarea-autosize
-          maxlength="250"
-          @keydown.enter.native.prevent="onTitleEnter"
-          autofocus
-          rows="1"
-          placeholder="Title"
-          type="text"
-          id="title"
-          :disabled="savingDraftState ===  REQUEST_STATE.PENDING"
-          v-model="inputs.title"
-        ></textarea-autosize>
-        <ckeditor
-          class="content"
-          :disabled="savingDraftState ===  REQUEST_STATE.PENDING"
-          ref="ckeditor"
-          :value="existingPost ? existingPost.content : ''"
-          :editor="editor"
-          @input="onContentInput"
-          @ready="onEditorReady"
-          :config="editorConfig"
-        ></ckeditor>
-      </form>
-    </template>
-
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
       <span @click="onBackToPostsClick" style="cursor:pointer" class="item tag is-medium">
@@ -94,6 +62,38 @@
       </button>
     </portal>
     <!-- END TOPBAR RIGHT BUTTONS -->
+
+    <!-- LOADER  displayed while initData are fetched -->
+    <template v-if="initDataState === 'PENDING'">
+      <AppLoader :absolute="true" />
+    </template>
+
+    <template v-if="initDataState === REQUEST_STATE.FINISHED_OK">
+      <!-- FORM -->
+      <form @submit.prevent>
+        <textarea-autosize
+          maxlength="250"
+          @keydown.enter.native.prevent="onTitleEnter"
+          autofocus
+          rows="1"
+          placeholder="Title"
+          type="text"
+          id="title"
+          :disabled="savingDraftState ===  REQUEST_STATE.PENDING"
+          v-model="inputs.title"
+        ></textarea-autosize>
+        <ckeditor
+          class="content"
+          :disabled="savingDraftState ===  REQUEST_STATE.PENDING"
+          ref="ckeditor"
+          :value="existingPost ? existingPost.content : ''"
+          :editor="editor"
+          @input="onContentInput"
+          @ready="onEditorReady"
+          :config="editorConfig"
+        ></ckeditor>
+      </form>
+    </template>
 
     <BulmaModal v-model="modal.show">
       <template #title>{{modal.title}}</template>

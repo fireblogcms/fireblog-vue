@@ -1,5 +1,20 @@
 <template>
   <AdminLayout>
+    <!-- TOPBAR LEFT BUTTONS -->
+    <portal to="topbar-left">
+      <span class="item tag is-medium">
+        <router-link class="item" :to="{name:'blogList'}">
+          <img
+            class="is-hidden-mobile"
+            style="position:relative;height:20px !important;top:4px;"
+            src="/images/books.webp"
+          />
+          <IconBack />All blogs
+        </router-link>
+      </span>
+    </portal>
+    <!-- END TOPBAR LEFT BUTTONS -->
+
     <AppError v-if="errorMessage">{{errorMessage}}</AppError>
     <template v-if="initDataState === 'PENDING'">
       <AppLoader />
@@ -143,6 +158,7 @@
 <script>
 import apolloClient from "../utils/apolloClient";
 import AdminLayout from "../layouts/AdminLayout";
+import IconBack from "../components/IconBack";
 import gql from "graphql-tag";
 import AppLoader from "../components/AppLoader";
 import { REQUEST_STATE } from "../utils/helpers";
@@ -215,7 +231,8 @@ export default {
     LayoutBody,
     LayoutList,
     BulmaButtonLink,
-    BulmaModal
+    BulmaModal,
+    IconBack
   },
   data() {
     return {
