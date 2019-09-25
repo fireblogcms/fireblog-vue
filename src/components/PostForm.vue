@@ -2,6 +2,8 @@
   <div class="writeForm">
     <AppError v-if="errorMessage">{{errorMessage}}</AppError>
 
+    <AppLoader v-if="initDataState === 'PENDING'" :absolute="true" />
+
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
       <span @click="onBackToPostsClick" style="cursor:pointer" class="item tag is-medium">
@@ -63,11 +65,6 @@
     </portal>
     <!-- END TOPBAR RIGHT BUTTONS -->
 
-    <!-- LOADER  displayed while initData are fetched -->
-    <template v-if="initDataState === 'PENDING'">
-      <AppLoader :absolute="true" />
-    </template>
-
     <template v-if="initDataState === REQUEST_STATE.FINISHED_OK">
       <!-- FORM -->
       <form @submit.prevent>
@@ -80,7 +77,8 @@
           type="text"
           id="title"
           :disabled="savingDraftState ===  REQUEST_STATE.PENDING"
-          v-model="inputs.title"
+          :value="existingPost ? existingPost.title : ''"
+          @input="onTitleInput"
         ></textarea-autosize>
         <ckeditor
           class="content"
@@ -166,15 +164,6 @@ const getExistingPostQuery = gql`
   query getExistingPostQuery($_id: ID!) {
     post(_id: $_id) {
       ...PostResponse
-    }
-  }
-`;
-
-const blogQuery = gql`
-  query blogQuery($_id: ID!) {
-    blog(_id: $_id) {
-      name
-      description
     }
   }
 `;
@@ -276,7 +265,7 @@ export default {
     initData() {
       this.initDataState = REQUEST_STATE.PENDING;
       const promises = [];
-      promises.push(this.getBlog());
+      promises.push(getBlog(this.$route.params.blogId));
       if (this.currentOperation() === OPERATION_TYPE.UPDATE) {
         promises.push(this.getExistingPost());
       }
@@ -333,9 +322,14 @@ export default {
         });
       }
     },
+    onTitleInput(value) {
+      if (this.initDataState === REQUEST_STATE.FINISHED_OK) {
+        this.inputs.title = value;
+      }
+    },
     onContentInput(value) {
-      this.changesDetected = true;
       this.inputs.content = value;
+      this.changesDetected = true;
     },
     onEditorReady() {
       const element = document.querySelector(
@@ -345,19 +339,8 @@ export default {
       element.innerHTML = toolTip;
       element.innerText = toolTip;
     },
-    getBlog() {
-      return apolloClient
-        .query({
-          query: blogQuery,
-          variables: {
-            _id: this.$route.params.blogId
-          }
-        })
-        .then(result => {
-          this.blog = result.data.blog;
-          return result;
-        });
-    },
+    // when user click "enter" in the title input,
+    // automically move cursor to the textarea
     onTitleEnter() {
       this.$refs.ckeditor.$el.focus();
     },
@@ -377,7 +360,13 @@ export default {
         })
         .then(result => {
           this.existingPost = result.data.post;
-          this.NormalizeInputsFromPost(this.existingPost);
+          this.inputs = {
+            ...this.normalizeInputsFromPost(this.existingPost)
+          };
+        })
+        .catch(error => {
+          this.errorMessage = "En error occured while loading post";
+          throw new Error(error);
         });
     },
     onPublishClick() {
@@ -406,9 +395,6 @@ export default {
     async createPost(post) {
       const user = await getUser();
       const blog = await getBlog(this.$route.params.blogId);
-      logger.info("debug:createPost:user", user);
-      logger.info("debug:createPost:post", post);
-      logger.info("debug:createPost:blog", blog);
       // current user as author by default. But another user might have been defined
       // as the author, so do not override if this is already set.
       if (!post.author) {
@@ -453,7 +439,6 @@ export default {
         .then(result => {
           this.lastTimeSaved = Date.now();
           this.existingPost = result.data.updatePost;
-          apolloClient.clearStore();
           this.changesDetected = false;
           return result;
         })
@@ -470,7 +455,11 @@ export default {
       this.savingDraftState = REQUEST_STATE.PENDING;
       // NEW POST
       if (this.currentOperation() === OPERATION_TYPE.CREATE) {
-        this.createPost(this.NormalizePostFromInputs(this.inputs))
+        const newPost = {
+          ...this.normalizePostFromInputs(this.inputs),
+          status: "DRAFT"
+        };
+        this.createPost(newPost)
           .then(() => {
             this.savingDraftState = REQUEST_STATE.FINISHED_OK;
           })
@@ -482,9 +471,9 @@ export default {
       // EDITING EXISTING POST
       if (this.currentOperation() === OPERATION_TYPE.UPDATE) {
         const post = {
-          _id: this.$route.params.postId,
-          title: this.inputs.title,
-          content: this.inputs.content
+          ...this.normalizePostFromInputs(this.inputs),
+          status: "DRAFT",
+          _id: this.$route.params.postId
         };
         this.updatePost(post)
           .then(() => {
@@ -505,7 +494,7 @@ export default {
       if (this.currentOperation() === "CREATE") {
         this.publishPostState = REQUEST_STATE.PENDING;
         const newPost = {
-          ...this.NormalizePostFromInputs(this.inputs),
+          ...this.normalizePostFromInputs(this.inputs),
           publishedAt: new Date(),
           status: "PUBLISHED"
         };
@@ -522,10 +511,11 @@ export default {
       if (this.currentOperation() === "UPDATE") {
         this.publishPostState = REQUEST_STATE.PENDING;
         const post = {
-          ...this.NormalizePostFromInputs(this.inputs),
+          ...this.normalizePostFromInputs(this.inputs),
           publishedAt: new Date(),
           status: "PUBLISHED"
         };
+        console.log("UPDATE", post);
         this.updatePost(post)
           .then(() => {
             this.publishPostState = REQUEST_STATE.FINISHED_OK;
@@ -540,7 +530,7 @@ export default {
     unpublish() {
       this.unpublishPostState = REQUEST_STATE.PENDING;
       const post = {
-        ...this.NormalizePostFromInputs(this.inputs),
+        ...this.normalizePostFromInputs(this.inputs),
         status: "DRAFT"
       };
       this.updatePost(post)
@@ -554,27 +544,16 @@ export default {
         });
     },
     // Prepare form inputs from a post object
-    NormalizeInputsFromPost(post) {
+    normalizeInputsFromPost(post) {
       this.inputs.title = post.title;
       this.inputs.content = post.content ? post.content : "";
     },
     // Prepare a post object from form inputs
-    NormalizePostFromInputs(inputs) {
+    normalizePostFromInputs(inputs) {
       return {
         title: inputs.title,
-        content: inputs.content,
-        status: "DRAFT"
+        content: inputs.content
       };
-    }
-  },
-  watch: {
-    // detect if title has been modified.
-    "inputs.title": {
-      handler: function(newValue) {
-        if (this.initDataState === REQUEST_STATE.FINISHED_OK) {
-          this.changesDetected = true;
-        }
-      }
     }
   }
 };
