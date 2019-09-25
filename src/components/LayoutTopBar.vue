@@ -132,9 +132,7 @@
 <script>
 import gql from "graphql-tag";
 import apolloClient from "../utils/apolloClient";
-import { getUser, REQUEST_STATE } from "../utils/helpers";
-import getAllPostsApiExample from "../apiExamples/getAllPosts";
-import getSinglePostApiExample from "../apiExamples/getSinglePostApiExample";
+import { getUser, REQUEST_STATE, getBlog } from "../utils/helpers";
 import apiExamples from "../apiExamples";
 import ApiButton from "../components/ApiButton";
 import BulmaModal from "../components/BulmaModal";
@@ -274,20 +272,24 @@ export default {
         });
       }
     },
-    onApiClick() {
+    async onApiClick() {
       this.tryItLink = this.blogApiUrl;
-      const apiExamplesContext = {
+      const context = {
         postId: "{{POST_ID}}",
-        blogId: "{{BLOG_ID"
+        language: navigator.language || navigator.userLanguage
       };
 
       if (this.$route.name === "postList") {
-        apiExamplesContext.postId = this.$route.params.postId;
+        const blog = await getBlog(this.$route.params.blogId);
+        context.language = blog.contentDefaultLanguage;
       }
       if (this.$route.name === "postUpdate") {
-        apiExamplesContext.postId = this.$route.params.postId;
+        const blog = await getBlog(this.$route.params.blogId);
+        context.language = blog.contentDefaultLanguage;
+        context.postId = this.$route.params.postId;
       }
-      this.apiModalExampleList = apiExamples(apiExamplesContext);
+
+      this.apiModalExampleList = apiExamples(context);
       this.showApiModal = true;
     }
   }

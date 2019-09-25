@@ -49,6 +49,10 @@ export function graphQLErrorsContainsTokenExpiredError(graphQLErrors) {
 }
 
 export function getBlog(id) {
+  const cache = {};
+  if (cache.id) {
+    return Promise.resolve(cache.id);
+  }
   return apolloClient
     .query({
       query: gql`
@@ -66,6 +70,7 @@ export function getBlog(id) {
       }
     })
     .then(r => {
+      cache.id = r.data.blog;
       return r.data.blog;
     });
 }

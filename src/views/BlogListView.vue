@@ -111,6 +111,7 @@ export default {
         })
         .catch(error => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
+          throw new Error(error);
         });
     },
     blogCardStyles(edge, index) {
@@ -140,12 +141,12 @@ export default {
         })
         .catch(error => {
           this.errorMessage = "Sorry, an error occured while fetching blog";
+          console.log("error", error);
           throw new Error(error);
         });
     }
   },
   created() {
-    console.log(gradient("hello"));
     this.initData();
   }
 };

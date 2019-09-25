@@ -44,7 +44,6 @@ class ckeditorGraphQLUploadAdapter {
               onProgress: progressEvent => {
                 this.loader.uploadTotal = progressEvent.total;
                 this.loader.uploaded = progressEvent.loaded;
-                console.log("this.loader", this.loader);
               }
             }
           },
