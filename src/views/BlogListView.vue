@@ -66,8 +66,8 @@ import AppError from "../components/AppError";
 import logger from "../utils/logger";
 import gradient from "random-gradient";
 
-const myBlogsQuery = gql`
-  query myBlogsQuery {
+const meWithMyBlogsQuery = gql`
+  query meWithMyBlogsQuery {
     me {
       name
       blogs(last: 100) {
@@ -132,7 +132,7 @@ export default {
     getBlogs() {
       this.errorMessage = null;
       return apolloClient
-        .query({ query: myBlogsQuery })
+        .query({ query: meWithMyBlogsQuery })
         .then(result => {
           this.blogs = result.data.me.blogs;
           return this.blogs;

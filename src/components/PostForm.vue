@@ -1,8 +1,11 @@
 <template>
   <div class="writeForm">
+    <!-- debug form values -->
+    <pre v-if="false">{{form}}</pre>
+
     <AppError v-if="errorMessage">{{errorMessage}}</AppError>
 
-    <AppLoader v-if="initDataState === 'PENDING'" :absolute="true" />
+    <AppLoader v-if="initDataState === 'PENDING'" />
 
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
@@ -13,7 +16,7 @@
         </em>
       </span>
 
-      <span class="item button" style="border:0" v-if="lastTimeSaved">
+      <span class="item button animated bouncedIn" style="border:0" v-if="lastTimeSaved">
         <em>saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
       </span>
     </portal>
@@ -77,14 +80,14 @@
           type="text"
           id="title"
           :disabled="savingDraftState ===  REQUEST_STATE.PENDING"
-          :value="existingPost ? existingPost.title : ''"
+          :value="form.values.initial.title"
           @input="onTitleInput"
         ></textarea-autosize>
         <ckeditor
           class="content"
           :disabled="savingDraftState ===  REQUEST_STATE.PENDING"
           ref="ckeditor"
-          :value="existingPost ? existingPost.content : ''"
+          :value="form.values.initial.content"
           :editor="editor"
           @input="onContentInput"
           @ready="onEditorReady"
@@ -173,6 +176,11 @@ const OPERATION_TYPE = {
   UPDATE: "UPDATE"
 };
 
+const initialFormValues = {
+  title: "",
+  content: ""
+};
+
 export default {
   components: {
     ckeditor: CKEditor.component,
@@ -192,23 +200,25 @@ export default {
       lastTimeSaved: null,
       existingPost: null,
       errorMessage: null,
-      // content loaded from database when page is loaded.
-      inputs: {
-        title: "",
-        content: ""
+      form: {
+        values: {
+          initial: {
+            ...initialFormValues
+          },
+          current: {
+            ...initialFormValues
+          },
+          modified: []
+        }
       },
       modal: {
         show: false,
         title: null,
         content: null,
         confirmText: null,
-        confirmCallback: () => {
-          console.log("modal confirm callback ");
-        },
+        confirmCallback: () => {},
         cancelText: null,
-        cancelCallback: () => {
-          console.log("cancel confirm callback ");
-        }
+        cancelCallback: () => {}
       }
     };
   },
@@ -256,7 +266,16 @@ export default {
   },
   beforeDestroy() {
     window.onbeforeunload = null;
-    hotkeys.unbind("ctrl+s,command+s");
+    hotkeys.unbind("ctrl+s");
+    hotkeys.unbind("command+s");
+  },
+  watch: {
+    "form.values": {
+      deep: true,
+      handler() {
+        this.changesDetected = this.detectChanges().changesDetected;
+      }
+    }
   },
   methods: {
     initData() {
@@ -319,14 +338,28 @@ export default {
         });
       }
     },
+    detectChanges() {
+      const modifiedValues = {};
+      Object.keys(this.form.values.initial).forEach(key => {
+        if (this.form.values.initial[key] !== this.form.values.current[key]) {
+          modifiedValues[key] = true;
+        } else {
+          modifiedValues[key] = false;
+        }
+      });
+      return {
+        modifiedValues,
+        changesDetected:
+          Object.values(modifiedValues).filter(v => v === true).length > 0
+            ? true
+            : false
+      };
+    },
     onTitleInput(value) {
-      if (this.initDataState === REQUEST_STATE.FINISHED_OK) {
-        this.inputs.title = value;
-      }
+      this.form.values.current.title = value;
     },
     onContentInput(value) {
-      this.inputs.content = value;
-      this.changesDetected = true;
+      this.form.values.current.content = value;
     },
     onEditorReady() {
       const element = document.querySelector(
@@ -357,9 +390,7 @@ export default {
         })
         .then(result => {
           this.existingPost = result.data.post;
-          this.inputs = {
-            ...this.normalizeInputsFromPost(this.existingPost)
-          };
+          this.setFormValuesFromPost(this.existingPost);
         })
         .catch(error => {
           this.errorMessage = "En error occured while loading post";
@@ -445,7 +476,7 @@ export default {
         });
     },
     saveDraft() {
-      if (!this.inputs.title.trim()) {
+      if (!this.form.values.current.title.trim()) {
         alert("A title is required");
         return;
       }
@@ -453,7 +484,7 @@ export default {
       // NEW POST
       if (this.currentOperation() === OPERATION_TYPE.CREATE) {
         const newPost = {
-          ...this.normalizePostFromInputs(this.inputs),
+          ...this.preparePostFromCurrentFormValues(),
           status: "DRAFT"
         };
         this.createPost(newPost)
@@ -468,10 +499,11 @@ export default {
       // EDITING EXISTING POST
       if (this.currentOperation() === OPERATION_TYPE.UPDATE) {
         const post = {
-          ...this.normalizePostFromInputs(this.inputs),
+          ...this.preparePostFromCurrentFormValues(),
           status: "DRAFT",
           _id: this.$route.params.postId
         };
+        this.setFormValuesFromPost(post);
         this.updatePost(post)
           .then(() => {
             this.savingDraftState = REQUEST_STATE.FINISHED_OK;
@@ -484,14 +516,14 @@ export default {
       }
     },
     publish() {
-      if (!this.inputs.title.trim()) {
+      if (!this.form.values.current.title.trim()) {
         alert("A title is required");
         return;
       }
       if (this.currentOperation() === "CREATE") {
         this.publishPostState = REQUEST_STATE.PENDING;
         const newPost = {
-          ...this.normalizePostFromInputs(this.inputs),
+          ...this.preparePostFromCurrentFormValues(),
           publishedAt: new Date(),
           status: "PUBLISHED"
         };
@@ -508,11 +540,10 @@ export default {
       if (this.currentOperation() === "UPDATE") {
         this.publishPostState = REQUEST_STATE.PENDING;
         const post = {
-          ...this.normalizePostFromInputs(this.inputs),
+          ...this.preparePostFromCurrentFormValues(),
           publishedAt: new Date(),
           status: "PUBLISHED"
         };
-        console.log("UPDATE", post);
         this.updatePost(post)
           .then(() => {
             this.publishPostState = REQUEST_STATE.FINISHED_OK;
@@ -527,7 +558,7 @@ export default {
     unpublish() {
       this.unpublishPostState = REQUEST_STATE.PENDING;
       const post = {
-        ...this.normalizePostFromInputs(this.inputs),
+        ...this.preparePostFromCurrentFormValues(),
         status: "DRAFT"
       };
       this.updatePost(post)
@@ -540,16 +571,25 @@ export default {
           throw new Error(error);
         });
     },
-    // Prepare form inputs from a post object
-    normalizeInputsFromPost(post) {
-      this.inputs.title = post.title;
-      this.inputs.content = post.content ? post.content : "";
+    /**
+     * initialFormValues : the values of form inputs when page is loaded
+     * currenfFormValues : the values modified by the user. Equal to initialFormValues on load.
+     */
+    setFormValuesFromPost(post) {
+      // initial
+      this.form.values.initial.title = post.title;
+      this.form.values.initial.content = post.content ? post.content : "";
+
+      // current
+      this.form.values.current = {
+        ...this.form.values.initial
+      };
     },
-    // Prepare a post object from form inputs
-    normalizePostFromInputs(inputs) {
+    // Prepare a post object from form form.values
+    preparePostFromCurrentFormValues() {
       return {
-        title: inputs.title,
-        content: inputs.content
+        title: this.form.values.current.title,
+        content: this.form.values.current.content
       };
     }
   }
