@@ -5,7 +5,7 @@
       <AppError v-if="error">
         {{error}}.
         <br />You can
-        <router-link to="/">Retry to login</router-link>
+        <router-link :to="{name:'login'}">Retry to login</router-link>
       </AppError>
       <LayoutBody v-if="initDataState === 'PENDING'">
         <AppLoader>Signing in ...</AppLoader>
