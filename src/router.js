@@ -14,17 +14,6 @@ import { auth0Client } from "./utils/auth";
 
 Vue.use(Router);
 
-const originalPush = Router.prototype.push;
-Router.prototype.push = function push(location, onResolve, onReject) {
-  if (onResolve || onReject)
-    return originalPush.call(this, location, onResolve, onReject);
-  try {
-    return originalPush.call(this, location).catch(err => err);
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 const router = new Router({
   mode: "history",
   base: process.env.BASE_URL,

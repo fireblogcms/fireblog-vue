@@ -97,22 +97,21 @@
                   <LayoutList :items="posts.edges" :itemUniqueKey="(item) => item.node._id">
                     <template v-slot="{item}">
                       <div class="columns">
-                        <div @click="onRowClick(item)" class="column is-10">
-                          <h2 class="title">
-                            <router-link :to="buildLinkToPost(item)">{{ item.node.title + " " }}</router-link>
-                            <span
-                              v-if="item.node.status === 'PUBLISHED'"
-                              class="subtitle"
-                            >published {{ Number(item.node.publishedAt) | moment("from") }}</span>
-                            <span
-                              v-if="item.node.status === 'DRAFT'"
-                              class="subtitle"
-                            >updated {{ Number(item.node.updatedAt) | moment("from") }}</span>
-                          </h2>
+                        <div @click="onRowClick(item)" class="column is-10 content">
+                          <h2 style="margin-bottom:0;padding:0">{{ item.node.title + " " }}</h2>
+                          <span
+                            style="color:rgba(0, 0, 0, 0.5);"
+                            v-if="item.node.status === 'PUBLISHED'"
+                          >published {{ Number(item.node.publishedAt) | moment("from") }}</span>
+                          <span
+                            style="color:rgba(0, 0, 0, 0.5);"
+                            v-if="item.node.status === 'DRAFT'"
+                          >updated {{ Number(item.node.updatedAt) | moment("from") }}</span>
 
-                          <p v-if="item.node.content.length > 0">
-                            <em>{{striptags(item.node.content.substr(0, 200))}}...</em>
-                          </p>
+                          <p
+                            style="padding-top:10px;font-style:italic"
+                            v-if="item.node.content.length > 0"
+                          >{{striptags(item.node.content.substr(0, 200))}}...</p>
                         </div>
                         <div class="column is-2">
                           <div class="actions">

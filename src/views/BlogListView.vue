@@ -43,11 +43,9 @@
               :style="blogCardStyles(edge, index)"
               class="blog-card"
               :key="edge.node._id"
-              @click="onRowClick(edge)"
+              @click="onRowClick(edge, $event)"
             >
-              <h2 class="title is-2">
-                <router-link :to="buildLinkToPostList(edge)">{{ edge.node.name }}</router-link>
-              </h2>
+              <h2 class="title is-2" style="color:white;">{{ edge.node.name }}</h2>
             </div>
           </div>
         </div>
@@ -128,7 +126,7 @@ export default {
     buildLinkToPostList(item) {
       return { name: "postList", params: { blogId: item.node._id } };
     },
-    onRowClick(item) {
+    onRowClick(item, event) {
       this.$router.push(this.buildLinkToPostList(item));
     },
     getBlogs() {

@@ -248,18 +248,15 @@ export default {
         toolbar: ["imageTextAlternative"]
       }
     };
-    //  Cmd+S and Ctrl+S are shortcuts to save content.
-    hotkeys.filter = event => {
-      if (["postUpdate", "postCreate"].includes(this.$route.name)) {
-        return true;
-      }
-      return false;
-    };
     hotkeys("ctrl+s,command+s", (event, handler) => {
       // Prevent the default refresh event under WINDOWS system
       // this.onSaveDraftClick();
       event.preventDefault();
     });
+  },
+  beforeDestroy() {
+    window.onbeforeunload = null;
+    hotkeys.unbind("ctrl+s,command+s");
   },
   methods: {
     initData() {
