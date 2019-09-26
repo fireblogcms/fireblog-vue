@@ -92,7 +92,7 @@ class ckeditorCloudinaryDirectUploadAdapter {
         // Setup the form data to be sent in the request
         const folder = `${
           process.env.VUE_APP_CLOUDINARY_ROOT_FOLDER
-        }/${blog_id}`;
+        }/BLOGS/${blogId}`;
         formData.append("upload_preset", this.unsignedUploadPreset);
         formData.append("folder", folder);
         formData.append("file", file);
