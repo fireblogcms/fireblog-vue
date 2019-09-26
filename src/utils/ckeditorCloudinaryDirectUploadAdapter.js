@@ -12,8 +12,9 @@ class ckeditorCloudinaryDirectUploadAdapter {
     // The file loader instance to use during the upload. It sounds scary but do not
     // worry — the loader will be passed into the adapter later on in this guide.
     this.loader = loader;
-    this.cloudName = "pod-cloud";
-    this.unsignedUploadPreset = "ml_default";
+    this.cloudName = process.env.VUE_APP_CLOUDINARY_CLOUD_NAME;
+    this.unsignedUploadPreset =
+      process.env.VUE_APP_CLOUDINARY_UNSIGNED_UPLOAD_PRESET;
     this.uploadUrl = `https://api.cloudinary.com/v1_1/${
       this.cloudName
     }/image/upload`;
@@ -52,9 +53,8 @@ class ckeditorCloudinaryDirectUploadAdapter {
       }
       return new Promise((resolve, reject) => {
         var formData = new FormData();
-        var url =
-          "https://api.cloudinary.com/v1_1/" + this.cloudName + "/upload";
-        this.xhr.open("POST", url, true);
+
+        this.xhr.open("POST", this.uploadUrl, true);
         // Hookup an event listener to update the upload progress bar
         this.xhr.upload.addEventListener("progress", event => {
           this.loader.uploadTotal = event.total;
