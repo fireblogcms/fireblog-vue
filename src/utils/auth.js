@@ -15,6 +15,7 @@ export async function auth0Client() {
       domain: process.env.VUE_APP_AUTH0_DOMAIN,
       redirect_uri: `${process.env.VUE_APP_BASE_URL}/auth0-callback`,
       client_id: process.env.VUE_APP_AUTH0_CLIENTID,
+      leeway: 120,
       // We request TWO tokens from auth0
       // - "id_token" :  for our web app: contains user informations (name, email etc)
       //    Those informations can be trusted IF the webapp checks the token signature.

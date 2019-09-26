@@ -1,5 +1,5 @@
 <template>
-  <AdminLayout>
+  <DefaultLayout>
     <AppLoader v-if="initDataState === 'PENDING'">Loading blogs</AppLoader>
 
     <AppError v-if="errorMessage">{{errorMessage}}</AppError>
@@ -43,23 +43,21 @@
               :style="blogCardStyles(edge, index)"
               class="blog-card"
               :key="edge.node._id"
-              @click="onRowClick(edge)"
+              @click="onRowClick(edge, $event)"
             >
-              <h2 class="title is-2">
-                <router-link :to="buildLinkToPostList(edge)">{{ edge.node.name }}</router-link>
-              </h2>
+              <h2 class="title is-2" style="color:white;">{{ edge.node.name }}</h2>
             </div>
           </div>
         </div>
       </div>
     </template>
-  </AdminLayout>
+  </DefaultLayout>
 </template>
 
 <script>
 import apolloClient from "../utils/apolloClient";
 import BlogCreateForm from "../components/BlogCreateForm";
-import AdminLayout from "../layouts/AdminLayout";
+import DefaultLayout from "../layouts/DefaultLayout";
 import AppLoader from "../components/AppLoader";
 import gql from "graphql-tag";
 import BulmaButtonLink from "../components/BulmaButtonLink";
@@ -92,7 +90,7 @@ export default {
     AppError,
     BulmaButtonLink,
     BlogCreateForm,
-    AdminLayout,
+    DefaultLayout,
     AppLoader
   },
   data() {
@@ -111,6 +109,7 @@ export default {
         })
         .catch(error => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
+          throw new Error(error);
         });
     },
     blogCardStyles(edge, index) {
@@ -127,7 +126,7 @@ export default {
     buildLinkToPostList(item) {
       return { name: "postList", params: { blogId: item.node._id } };
     },
-    onRowClick(item) {
+    onRowClick(item, event) {
       this.$router.push(this.buildLinkToPostList(item));
     },
     getBlogs() {
@@ -140,12 +139,12 @@ export default {
         })
         .catch(error => {
           this.errorMessage = "Sorry, an error occured while fetching blog";
+          console.log("error", error);
           throw new Error(error);
         });
     }
   },
   created() {
-    console.log(gradient("hello"));
     this.initData();
   }
 };

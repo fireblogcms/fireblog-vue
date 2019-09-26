@@ -1,5 +1,5 @@
 <template>
-  <AdminLayout>
+  <DefaultLayout>
     <div class="container">
       <div class="columns">
         <div class="column">
@@ -27,16 +27,16 @@
         </div>
       </div>
     </div>
-  </AdminLayout>
+  </DefaultLayout>
 </template>
 
 <script>
-import AdminLayout from "@/layouts/AdminLayout";
+import DefaultLayout from "@/layouts/DefaultLayout";
 
 export default {
   name: "home",
   components: {
-    AdminLayout
+    DefaultLayout
   }
 };
 </script>

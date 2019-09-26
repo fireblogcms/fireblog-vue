@@ -3,30 +3,7 @@
     <div class="container">
       <div class="columns">
         <div class="column">
-          <span class="item tag is-medium" v-if="backToBlogsIsVisible()">
-            <router-link class="item" :to="{name:'blogList'}">
-              <img
-                class="is-hidden-mobile"
-                style="position:relative;height:20px !important;top:4px;"
-                src="/images/books.webp"
-              />
-              <IconBack />All blogs
-            </router-link>
-          </span>
-
-          <!--
-            <span style="cursor:pointer" @click="onBackToBlogClick">
-              <em>
-                <img
-                  style="position:relative;height:20px !important;top:4px;"
-                  src="/images/book.png"
-                />
-                <span style="padding-left:10px;"><</span>
-                {{ blog.name }}
-              </em>
-            </span>
-          -->
-
+          <AppError v-if="errorMessage">{{errorMessage}}</AppError>
           <portal-target name="topbar-left">
             <!--
             This component can be located anywhere in your App.
@@ -41,13 +18,10 @@
             The slot content of the above portal component will be rendered here.
             -->
           </portal-target>
-          <ApiButton v-if="apiHelpIsVisible()" @click="onApiClick" />
-          <!--
-          <a @click="onApiClick" target="_blank" class="item button is-outlined">
-            <img style="height:20px !important;padding-right:10px" src="/images/graphql.svg" />API
-          </a>
-          -->
 
+          <ApiButton v-if="apiHelpIsVisible()" @click="onApiClick" />
+
+          <!--Dropdown menu with profile, blog list, logout link etc-->
           <div v-if="me" class="item" id="profile-dropdown">
             <div
               v-click-outside="onProfileDropdownOutsideClick"
@@ -81,7 +55,6 @@
                     <button class="button is-outlined is-primary is-small">Create new blog</button>
                   </router-link>
                   <hr class="dropdown-divider" />
-
                   <router-link :to="{name:'profile'}" class="dropdown-item">My account</router-link>
                   <router-link :to="{name: 'logout'}" class="dropdown-item">Logout</router-link>
                 </div>
@@ -92,11 +65,12 @@
       </div>
     </div>
 
+    <!-- GRAPHQL API DOCUMENTATION -->
     <BulmaModal v-model="showApiModal">
       <template #title>
         GRAPHQL API
         <a
-          :href="tryItLink"
+          :href="blogApiUrl"
           target="_blank"
           class="button is-info is-pulled-right"
         >Open GraphQL Explorer</a>
@@ -132,54 +106,28 @@
 <script>
 import gql from "graphql-tag";
 import apolloClient from "../utils/apolloClient";
-import { getUser, REQUEST_STATE } from "../utils/helpers";
-import getAllPostsApiExample from "../apiExamples/getAllPosts";
-import getSinglePostApiExample from "../apiExamples/getSinglePostApiExample";
+import { getUser, REQUEST_STATE, getBlog } from "../utils/helpers";
 import apiExamples from "../apiExamples";
 import ApiButton from "../components/ApiButton";
 import BulmaModal from "../components/BulmaModal";
+import AppError from "../components/AppError";
 import logger from "../utils/logger";
-import IconBack from "../components/IconBack";
-
-const meWithMyBlogsQuery = gql`
-  query meWithMyBlogsQuery {
-    me {
-      name
-      email
-      picture
-      blogs(last: 100) {
-        edges {
-          node {
-            name
-            description
-            createdAt
-            updatedAt
-            _id
-          }
-        }
-      }
-    }
-  }
-`;
 
 export default {
   components: {
-    ApiButton,
     BulmaModal,
-    IconBack
+    AppError,
+    ApiButton
   },
   data() {
     return {
-      initDataState: "NOT_STARTED",
+      initDataState: REQUEST_STATE.NOT_STARTED,
       me: null,
       blog: null,
       dropdownMenuActive: false,
-      error: null,
+      errorMessage: null,
       showApiModal: false,
-      apiModalExampleTitle: null,
-      apiModalExample: null,
-      apiModalExampleList: [],
-      tryItLink: null
+      apiModalExampleList: []
     };
   },
   computed: {
@@ -195,9 +143,9 @@ export default {
       this.initDataState = REQUEST_STATE.PENDING;
       const promises = [];
       promises.push(this.getMeWithMyBlogs());
-      // if we are inside a blog, fetch it.
+      // if we are inside a blog, fetch blog informations.
       if (["postList", "postCreate", "postUpdate"].includes(this.$route.name)) {
-        promises.push(this.getCurrentBlog());
+        promises.push(getBlog(this.$route.params.blogId));
       }
       Promise.all(promises)
         .then(() => {
@@ -211,45 +159,36 @@ export default {
     getMeWithMyBlogs() {
       return apolloClient
         .query({
-          query: meWithMyBlogsQuery
+          query: gql`
+            query meWithMyBlogsQuery {
+              me {
+                name
+                email
+                picture
+                blogs(last: 100) {
+                  edges {
+                    node {
+                      _id
+                      name
+                      description
+                      createdAt
+                      updatedAt
+                      contentDefaultLanguage
+                    }
+                  }
+                }
+              }
+            }
+          `
         })
         .then(result => {
           this.me = result.data.me;
-        });
-    },
-    getCurrentBlog() {
-      return apolloClient
-        .query({
-          query: gql`
-            query topBarBlogQuery($_id: ID!) {
-              blog(_id: $_id) {
-                name
-              }
-            }
-          `,
-          variables: {
-            _id: this.$route.params.blogId
-          }
-        })
-        .then(result => {
-          this.blog = result.data.blog;
         })
         .catch(error => {
-          this.errorMessage = error;
+          this.errorMessage =
+            "An error occured while fetching user information";
           throw new Error(error);
         });
-    },
-    backToBlogIsVisible() {
-      if (["postUpdate", "postCreate"].includes(this.$route.name)) {
-        return true;
-      }
-      return false;
-    },
-    backToBlogsIsVisible() {
-      if (["postList", "profile"].includes(this.$route.name)) {
-        return true;
-      }
-      return false;
     },
     apiHelpIsVisible() {
       const authorizedNames = ["postList", "postUpdate", "postCreate"];
@@ -263,31 +202,21 @@ export default {
         this.dropdownMenuActive = false;
       }
     },
-    onBackToBlogClick() {
-      const response = confirm(
-        "Are you sure you want to quit ? Changes not saved will be lost!"
-      );
-      if (response === true) {
-        this.$router.push({
-          name: "postList",
-          params: { blogId: this.$route.params.blogId }
-        });
-      }
-    },
-    onApiClick() {
-      this.tryItLink = this.blogApiUrl;
-      const apiExamplesContext = {
+    async onApiClick() {
+      const context = {
         postId: "{{POST_ID}}",
-        blogId: "{{BLOG_ID"
+        language: navigator.language || navigator.userLanguage
       };
-
       if (this.$route.name === "postList") {
-        apiExamplesContext.postId = this.$route.params.postId;
+        const blog = await getBlog(this.$route.params.blogId);
+        context.language = blog.contentDefaultLanguage;
       }
       if (this.$route.name === "postUpdate") {
-        apiExamplesContext.postId = this.$route.params.postId;
+        const blog = await getBlog(this.$route.params.blogId);
+        context.language = blog.contentDefaultLanguage;
+        context.postId = this.$route.params.postId;
       }
-      this.apiModalExampleList = apiExamples(apiExamplesContext);
+      this.apiModalExampleList = apiExamples(context);
       this.showApiModal = true;
     }
   }

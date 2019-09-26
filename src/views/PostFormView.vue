@@ -1,19 +1,19 @@
 <template>
-  <AdminLayout>
+  <DefaultLayout>
     <PostForm />
-  </AdminLayout>
+  </DefaultLayout>
 </template>
 
 <script>
 import PostForm from "@/components/PostForm";
-import AdminLayout from "@/layouts/AdminLayout";
+import DefaultLayout from "@/layouts/DefaultLayout";
 import gql from "graphql-tag";
 
 export default {
   name: "PostFormView",
   components: {
     PostForm,
-    AdminLayout
+    DefaultLayout
   }
 };
 </script>

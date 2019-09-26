@@ -1,13 +1,20 @@
 import Router from "../router";
 import { REQUEST_STATE } from "./helpers";
 
+/**
+ * Upload an image directly from ckEditor to Cloudinary servers with an XMLHttpRequest
+ * - less CPU for our own servers
+ * - Better and easier tracking of upload progress (which is critical because publishing
+ * an article if a image is not 100% uploaded will result in loss of this image)
+ */
 class ckeditorCloudinaryDirectUploadAdapter {
   constructor(loader, options) {
     // The file loader instance to use during the upload. It sounds scary but do not
     // worry — the loader will be passed into the adapter later on in this guide.
     this.loader = loader;
-    this.cloudName = "pod-cloud";
-    this.unsignedUploadPreset = "ml_default";
+    this.cloudName = process.env.VUE_APP_CLOUDINARY_CLOUD_NAME;
+    this.unsignedUploadPreset =
+      process.env.VUE_APP_CLOUDINARY_UNSIGNED_UPLOAD_PRESET;
     this.uploadUrl = `https://api.cloudinary.com/v1_1/${
       this.cloudName
     }/image/upload`;
@@ -45,14 +52,13 @@ class ckeditorCloudinaryDirectUploadAdapter {
         }
       }
       return new Promise((resolve, reject) => {
-        var fd = new FormData();
-        var url =
-          "https://api.cloudinary.com/v1_1/" + this.cloudName + "/upload";
-        this.xhr.open("POST", url, true);
+        var formData = new FormData();
+
+        this.xhr.open("POST", this.uploadUrl, true);
         // Hookup an event listener to update the upload progress bar
-        this.xhr.upload.addEventListener("progress", e => {
-          this.loader.uploadTotal = 100;
-          this.loader.uploaded = Math.round((e.loaded * 100) / e.total);
+        this.xhr.upload.addEventListener("progress", event => {
+          this.loader.uploadTotal = event.total;
+          this.loader.uploaded = event.loaded;
         });
 
         // Hookup a listener to listen for when the request state changes
@@ -83,9 +89,9 @@ class ckeditorCloudinaryDirectUploadAdapter {
         };
 
         // Setup the form data to be sent in the request
-        fd.append("upload_preset", this.unsignedUploadPreset);
-        fd.append("file", file);
-        this.xhr.send(fd);
+        formData.append("upload_preset", this.unsignedUploadPreset);
+        formData.append("file", file);
+        this.xhr.send(formData);
       });
     });
   }
