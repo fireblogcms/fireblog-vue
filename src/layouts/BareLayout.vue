@@ -6,12 +6,3 @@
   </div>
 </template>
 
-<script>
-import LayoutTopBar from "@/components/LayoutTopBar";
-
-export default {
-  components: {
-    LayoutTopBar
-  }
-};
-</script>

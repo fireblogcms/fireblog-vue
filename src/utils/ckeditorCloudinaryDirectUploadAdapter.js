@@ -31,7 +31,8 @@ class ckeditorCloudinaryDirectUploadAdapter {
 
   // Starts the upload process.
   upload() {
-    if (!Router.currentRoute.params.blogId) {
+    const blogId = Router.currentRoute.params.blogId;
+    if (!blogId) {
       // Each image is uploaded in a folder name after the blog Id, so
       // make sure we have a blogId param at this point.
       throw new Error(
@@ -89,7 +90,11 @@ class ckeditorCloudinaryDirectUploadAdapter {
         };
 
         // Setup the form data to be sent in the request
+        const folder = `${
+          process.env.VUE_APP_CLOUDINARY_ROOT_FOLDER
+        }/${blog_id}`;
         formData.append("upload_preset", this.unsignedUploadPreset);
+        formData.append("folder", folder);
         formData.append("file", file);
         this.xhr.send(formData);
       });
