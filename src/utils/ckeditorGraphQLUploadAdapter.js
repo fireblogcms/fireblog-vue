@@ -13,6 +13,10 @@ const uploadQuery = gql`
   }
 `;
 
+/**
+ * Upload an image directly from ckEditor to our own server, which then
+ * upload file to a file storage service.
+ */
 class ckeditorGraphQLUploadAdapter {
   constructor(loader) {
     // The file loader instance to use during the upload. It sounds scary but do not

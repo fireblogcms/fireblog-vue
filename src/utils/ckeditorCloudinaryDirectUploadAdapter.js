@@ -56,9 +56,9 @@ class ckeditorCloudinaryDirectUploadAdapter {
           "https://api.cloudinary.com/v1_1/" + this.cloudName + "/upload";
         this.xhr.open("POST", url, true);
         // Hookup an event listener to update the upload progress bar
-        this.xhr.upload.addEventListener("progress", e => {
-          this.loader.uploadTotal = progressEvent.total;
-          this.loader.uploaded = progressEvent.loaded;
+        this.xhr.upload.addEventListener("progress", event => {
+          this.loader.uploadTotal = event.total;
+          this.loader.uploaded = event.loaded;
         });
 
         // Hookup a listener to listen for when the request state changes
