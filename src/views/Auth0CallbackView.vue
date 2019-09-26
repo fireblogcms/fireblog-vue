@@ -1,35 +1,35 @@
 
 <template>
-  <AdminLayout>
+  <BareLayout>
     <div class="container section">
       <AppError v-if="error">
         {{error}}.
         <br />You can
-        <router-link to="/login">Retry to login</router-link>
+        <router-link to="/">Retry to login</router-link>
       </AppError>
       <LayoutBody v-if="initDataState === 'PENDING'">
         <AppLoader>Signing in ...</AppLoader>
       </LayoutBody>
     </div>
-  </AdminLayout>
+  </BareLayout>
 </template>
 
 <script>
-import apolloClient from "../utils/apolloClient";
+import BareLayout from "../layouts/BareLayout";
 import AppLoader from "../components/AppLoader";
 import { auth0Client, syncAuth0UserWithServer } from "../utils/auth";
 import { REQUEST_STATE } from "../utils/helpers";
 import LayoutBody from "../components/LayoutBody";
-import AdminLayout from "../layouts/AdminLayout";
 import AppError from "../components/AppError";
+import apolloClient from "../utils/apolloClient";
 import logger from "../utils/logger";
 
 export default {
   components: {
+    BareLayout,
     AppLoader,
     LayoutBody,
-    AppError,
-    AdminLayout
+    AppError
   },
   data() {
     return {
@@ -64,7 +64,7 @@ export default {
         .catch(error => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           this.error = "Sorry, authentication failed";
-          logger.error(error);
+          throw new Error(error);
         });
     }
   }

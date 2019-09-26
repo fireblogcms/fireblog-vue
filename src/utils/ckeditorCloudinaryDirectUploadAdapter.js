@@ -1,6 +1,12 @@
 import Router from "../router";
 import { REQUEST_STATE } from "./helpers";
 
+/**
+ * Upload an image directly from ckEditor to Cloudinary servers with an XMLHttpRequest
+ * - less CPU for our own servers
+ * - Better and easier tracking of upload progress (which is critical because publishing
+ * an article if a image is not 100% uploaded will result in loss of this image)
+ */
 class ckeditorCloudinaryDirectUploadAdapter {
   constructor(loader, options) {
     // The file loader instance to use during the upload. It sounds scary but do not
@@ -45,14 +51,14 @@ class ckeditorCloudinaryDirectUploadAdapter {
         }
       }
       return new Promise((resolve, reject) => {
-        var fd = new FormData();
+        var formData = new FormData();
         var url =
           "https://api.cloudinary.com/v1_1/" + this.cloudName + "/upload";
         this.xhr.open("POST", url, true);
         // Hookup an event listener to update the upload progress bar
         this.xhr.upload.addEventListener("progress", e => {
-          this.loader.uploadTotal = 100;
-          this.loader.uploaded = Math.round((e.loaded * 100) / e.total);
+          this.loader.uploadTotal = progressEvent.total;
+          this.loader.uploaded = progressEvent.loaded;
         });
 
         // Hookup a listener to listen for when the request state changes
@@ -83,9 +89,9 @@ class ckeditorCloudinaryDirectUploadAdapter {
         };
 
         // Setup the form data to be sent in the request
-        fd.append("upload_preset", this.unsignedUploadPreset);
-        fd.append("file", file);
-        this.xhr.send(fd);
+        formData.append("upload_preset", this.unsignedUploadPreset);
+        formData.append("file", file);
+        this.xhr.send(formData);
       });
     });
   }

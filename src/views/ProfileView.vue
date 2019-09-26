@@ -1,5 +1,5 @@
 <template>
-  <AdminLayout>
+  <DefaultLayout>
     <AppError v-if="errorMessage">{{errorMessage}}</AppError>
 
     <template v-if="initDataState === 'PENDING'">
@@ -23,11 +23,11 @@
         </LayoutBody>
       </div>
     </template>
-  </AdminLayout>
+  </DefaultLayout>
 </template>
 
 <script>
-import AdminLayout from "@/layouts/AdminLayout";
+import DefaultLayout from "@/layouts/DefaultLayout";
 import apolloClient from "../utils/apolloClient";
 import LayoutBody from "../components/LayoutBody";
 import AppLoader from "../components/AppLoader";
@@ -38,7 +38,7 @@ import logger from "../utils/logger";
 
 export default {
   components: {
-    AdminLayout,
+    DefaultLayout,
     LayoutBody,
     AppLoader,
     AppError

@@ -1,5 +1,5 @@
 <template>
-  <AdminLayout>
+  <DefaultLayout>
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
       <span class="item tag is-medium">
@@ -151,12 +151,12 @@
         <div @click="onDeleteModalConfirmClick" class="button is-danger">DELETE IT. FOREVER.</div>
       </template>
     </BulmaModal>
-  </AdminLayout>
+  </DefaultLayout>
 </template>
 
 <script>
 import apolloClient from "../utils/apolloClient";
-import AdminLayout from "../layouts/AdminLayout";
+import DefaultLayout from "../layouts/DefaultLayout";
 import IconBack from "../components/IconBack";
 import gql from "graphql-tag";
 import AppLoader from "../components/AppLoader";
@@ -224,7 +224,7 @@ const deletePostMutation = gql`
 
 export default {
   components: {
-    AdminLayout,
+    DefaultLayout,
     AppLoader,
     AppError,
     LayoutBody,

@@ -1,5 +1,5 @@
 <template>
-  <AdminLayout>
+  <DefaultLayout>
     <AppLoader v-if="initDataState === 'PENDING'">Loading blogs</AppLoader>
 
     <AppError v-if="errorMessage">{{errorMessage}}</AppError>
@@ -51,13 +51,13 @@
         </div>
       </div>
     </template>
-  </AdminLayout>
+  </DefaultLayout>
 </template>
 
 <script>
 import apolloClient from "../utils/apolloClient";
 import BlogCreateForm from "../components/BlogCreateForm";
-import AdminLayout from "../layouts/AdminLayout";
+import DefaultLayout from "../layouts/DefaultLayout";
 import AppLoader from "../components/AppLoader";
 import gql from "graphql-tag";
 import BulmaButtonLink from "../components/BulmaButtonLink";
@@ -90,7 +90,7 @@ export default {
     AppError,
     BulmaButtonLink,
     BlogCreateForm,
-    AdminLayout,
+    DefaultLayout,
     AppLoader
   },
   data() {

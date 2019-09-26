@@ -1,19 +1,19 @@
 <template>
-  <AdminLayout>
+  <DefaultLayout>
     <div class="container">
       <BlogCreateForm />
     </div>
-  </AdminLayout>
+  </DefaultLayout>
 </template>
 
 <script>
 import BlogCreateForm from "../components/BlogCreateForm";
-import AdminLayout from "@/layouts/AdminLayout";
+import DefaultLayout from "@/layouts/DefaultLayout";
 
 export default {
   components: {
     BlogCreateForm,
-    AdminLayout
+    DefaultLayout
   }
 };
 </script>
