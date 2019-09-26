@@ -216,13 +216,9 @@ export default {
         title: null,
         content: null,
         confirmText: null,
-        confirmCallback: () => {
-          console.log("modal confirm callback ");
-        },
+        confirmCallback: () => {},
         cancelText: null,
-        cancelCallback: () => {
-          console.log("cancel confirm callback ");
-        }
+        cancelCallback: () => {}
       }
     };
   },
@@ -277,7 +273,7 @@ export default {
     "form.values": {
       deep: true,
       handler() {
-        this.changesDetected = this.detectChanges().length > 0 ? true : false;
+        this.changesDetected = this.detectChanges().changesDetected;
       }
     }
   },
@@ -343,13 +339,21 @@ export default {
       }
     },
     detectChanges() {
-      const modified = [];
+      const modifiedValues = {};
       Object.keys(this.form.values.initial).forEach(key => {
-        if (this.form.values.initial[key] != this.form.values.current[key]) {
-          modified.push(key);
+        if (this.form.values.initial[key] !== this.form.values.current[key]) {
+          modifiedValues[key] = true;
+        } else {
+          modifiedValues[key] = false;
         }
       });
-      return modified;
+      return {
+        modifiedValues,
+        changesDetected:
+          Object.values(modifiedValues).filter(v => v === true).length > 0
+            ? true
+            : false
+      };
     },
     onTitleInput(value) {
       this.form.values.current.title = value;
@@ -499,7 +503,7 @@ export default {
           status: "DRAFT",
           _id: this.$route.params.postId
         };
-        console.log("post", post);
+        this.setFormValuesFromPost(post);
         this.updatePost(post)
           .then(() => {
             this.savingDraftState = REQUEST_STATE.FINISHED_OK;
@@ -540,7 +544,6 @@ export default {
           publishedAt: new Date(),
           status: "PUBLISHED"
         };
-        console.log("UPDATE", post);
         this.updatePost(post)
           .then(() => {
             this.publishPostState = REQUEST_STATE.FINISHED_OK;
