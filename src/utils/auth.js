@@ -33,14 +33,12 @@ export async function auth0Client() {
 }
 
 export function syncAuth0UserWithServer({ auth0Id, email, name, picture }) {
-  if (process.env.NODE_ENV === "development") {
-    logger.info("debug:syncAuth0UserWithServer()", {
-      auth0Id,
-      email,
-      name,
-      picture
-    });
-  }
+  logger.info("debug:syncAuth0UserWithServer()", {
+    auth0Id,
+    email,
+    name,
+    picture
+  });
   return apolloClient.mutate({
     mutation: gql`
       mutation syncAuth0UserWithServer($user: syncAuth0UserInput!) {
