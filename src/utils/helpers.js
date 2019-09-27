@@ -35,15 +35,14 @@ export function getUser() {
     });
 }
 
-export function graphQLErrorsContainsTokenExpiredError(graphQLErrors) {
-  let result = false;
-  graphQLErrors.forEach(error => {
+export function graphQLErrorsContainsCode(graphQLErrors, errorCode) {
+  const result = graphQLErrors.some(error => {
     if (
       error.extensions &&
       error.extensions.code &&
-      error.extensions.code === "TOKEN_EXPIRED"
+      error.extensions.code === errorCode
     )
-      result = true;
+      return true;
   });
   return result;
 }

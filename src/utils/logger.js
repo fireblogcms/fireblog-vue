@@ -13,22 +13,11 @@ if (process.env.NODE_ENV === "production") {
 
 export default {
   info() {
-    console.log(...arguments);
+    if (process.env.NODE_ENV === "development") {
+      console.log(...arguments);
+    }
   },
   error(error) {
-    /*
-    setTimeout(() => {
-
-      $crisp.push([
-        "do",
-        "message:show",
-        [
-          "text",
-          "I'm very sory you got an error :-( Can you tell me quickly how it happened to you ?"
-        ]
-      ]);
-    }, 1000);
-    */
     if (process.env.NODE_ENV === "production") {
       Sentry.captureException(message);
     } else {

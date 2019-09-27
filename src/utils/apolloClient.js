@@ -6,9 +6,7 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import { setContext } from "apollo-link-context";
 import { createUploadLink } from "apollo-upload-client";
 import { onError } from "apollo-link-error";
-//import { graphQLErrorsContainsTokenExpiredError } from "./helpers";
 import { auth0Client } from "./auth";
-import logger from "./logger";
 import { uploadFetch } from "./helpers";
 
 // Custom fetch to track upload progress from uploads mutation.
@@ -51,31 +49,7 @@ const authLink = setContext(async (_, { headers }) => {
  * - networkError (object)
  * - operation (object) - infos about GraphqlQuery
  */
-const onErrorLink = onError(infos => {
-  /*
-  if (infos.graphQLErrors) {
-    const message = `ApolloError: ${
-      infos.operation.operationName
-    } ${infos.graphQLErrors.map(error => error.message).join(". ")}`;
-    logger.error(new Error(message));
-  } else {
-    logger.error(new Error(infos.networkError));
-  }
-  */
-  // if access token for our GraphQL API has expired, re-authenticate.
-  /*
-  if (
-    infos.graphQLErrors &&
-    graphQLErrorsContainsTokenExpiredError(infos.graphQLErrors)
-  ) {
-    const auth0 = await auth0Client();
-    await auth0.loginWithRedirect({
-      redirect_uri: `${process.env.VUE_APP_BASE_URL}/auth0-callback`
-    });
-
-  }
-  */
-});
+const onErrorLink = onError(infos => {});
 
 const link = ApolloLink.from([authLink, onErrorLink, uploadLink]);
 
