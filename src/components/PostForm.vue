@@ -65,6 +65,8 @@
         PUBLISH CHANGES
         <span class="animated bounce" v-if="changesDetected">*</span>
       </button>
+
+      <!--<button @click="onProofreadClick()" class="button is-outlined item" type="submit">PROOFREAD</button>-->
     </portal>
     <!-- END TOPBAR RIGHT BUTTONS -->
 
@@ -256,6 +258,38 @@ export default {
       blockToolbar: ["imageUpload", "mediaEmbed"],
       image: {
         toolbar: ["imageTextAlternative"]
+      },
+      mediaEmbed: {
+        // Previews are always enabled if there’s a provider for a URL (below regex catches all URLs)
+        // By default `previewsInData` are disabled, but let’s set it to `false` explicitely to be sure
+        previewsInData: false,
+        providers: [
+          {
+            // hint: this is just for previews. Get actual HTML codes by making API calls from your CMS
+            name: "iframely previews",
+            // Match all URLs or just the ones you need:
+            url: /.+/,
+            html: match => {
+              const url = match[0];
+              var iframeUrl = `//cdn.iframe.ly/api/iframe?app=1&api_key=${
+                process.env.VUE_APP_IFRAMELY_API_KEY
+              }&url=${encodeURIComponent(url)}`;
+              // alternatively, use &key= instead of &api_key with the MD5 hash of your api_key
+              // more about it: https://iframely.com/docs/allow-origins
+
+              return (
+                // If you need, set maxwidth and other styles for 'iframely-embed' class - it's yours to customize
+                '<div class="iframely-embed">' +
+                '<div class="iframely-responsive">' +
+                `<iframe src="${iframeUrl}" ` +
+                'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>' +
+                "</iframe>" +
+                "</div>" +
+                "</div>"
+              );
+            }
+          }
+        ]
       }
     };
     hotkeys("ctrl+s,command+s", (event, handler) => {
@@ -373,6 +407,9 @@ export default {
     // automically move cursor to the textarea
     onTitleEnter() {
       this.$refs.ckeditor.$el.focus();
+    },
+    onProofreadClick() {
+      this.$router.newTab({ name: "postProofread" });
     },
     /**
      * Determine if we are currently creating a new post or updating an existing one.

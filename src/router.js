@@ -5,6 +5,7 @@ import ProfileView from "./views/ProfileView";
 import BlogCreateView from "./views/BlogCreateView";
 import BlogListView from "./views/BlogListView";
 import PostListView from "./views/PostListView";
+import PostProofreadView from "./views/PostProofreadView";
 import NotFoundView from "./views/NotFoundView";
 import Auth0CallbackView from "./views/Auth0CallbackView.vue";
 import AccessTokenErrorView from "./views/AccessTokenErrorView.vue";
@@ -13,6 +14,11 @@ import LoginView from "./views/LoginView";
 import { auth0Client } from "./utils/auth";
 
 Vue.use(Router);
+
+Router.prototype.newTab = function(routeObject) {
+  const { href } = this.resolve(routeObject);
+  window.open(href, "_blank");
+};
 
 const router = new Router({
   mode: "history",
@@ -58,6 +64,11 @@ const router = new Router({
       path: "/blog/:blogId/post/:postId",
       name: "postUpdate",
       component: PostFormView
+    },
+    {
+      path: "/blog/:blogId/post/:postId/proofread",
+      name: "postProofread",
+      component: PostProofreadView
     },
     {
       path: "/profile",
