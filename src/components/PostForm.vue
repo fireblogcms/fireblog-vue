@@ -269,8 +269,8 @@ export default {
             // hint: this is just for previews. Get actual HTML codes by making API calls from your CMS
             name: "iframely previews",
             // Match all URLs or just the ones you need:
-            //url: /^https:\/\/www\.instagram\.com.+|https:\/\/twitter\.com.+/,
-            url: new RegExp(richPreviewLinksAuthorizedDomains.join("|")),
+            url: /.+/,
+            //url: new RegExp(richPreviewLinksAuthorizedDomains.join("|")),
             html: match => {
               const url = match[0];
               var iframeUrl = `//cdn.iframe.ly/api/iframe?app=1&api_key=${
