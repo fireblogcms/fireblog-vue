@@ -75,7 +75,6 @@
         :class="{'is-loading':  savingPost.state === 'PENDING' && savingPost.publicationStatus === 'DRAFT' }"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
-        value="UNPUBLISH"
       >UNPUBLISH</button>
 
       <button
@@ -91,7 +90,7 @@
         @click="onPublishClick()"
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
         class="button item is-outlined is-primary"
-        :class="{ 'is-loading': savingPost.state === 'PENDING'}"
+        :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
       >
@@ -523,11 +522,11 @@ export default {
           }
         };
       } else {
-        this.savePost("PUBLISHED");
+        this.savePost(STATUS_ENUM.PUBLISHED);
       }
     },
     onUnpublishClick() {
-      this.unpublish();
+      this.savePost(STATUS_ENUM.DRAFT);
     },
     onSaveDraftClick() {
       this.savePost(STATUS_ENUM.DRAFT);
@@ -627,9 +626,6 @@ export default {
             throw new Error(error);
           });
       }
-    },
-    unpublish() {
-      this.savePost("DRAFT");
     },
     /**
      * initialFormValues : the values of form inputs when page is loaded
