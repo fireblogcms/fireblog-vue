@@ -395,6 +395,7 @@ export default {
       this.form.values.current.title = value;
     },
     onContentInput(value) {
+      console.log("test", this.$refs);
       this.form.values.current.content = value;
     },
     onEditorReady() {

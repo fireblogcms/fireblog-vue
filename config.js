@@ -4,5 +4,7 @@ export const richPreviewLinksAuthorizedDomains = [
   "^https://.+\\.youtube\\.com/.+",
   "^https://+.\\.linkedin\\.com/.+",
   "^https://.+\\.giphy\\.com/.+",
+  "^https://.+\\.github\\.com/.+",
+  "^https://.+\\.soundcloud\\.com/.+",
   "^https://gph\\.is/.+"
 ];
