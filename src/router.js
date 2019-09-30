@@ -97,7 +97,7 @@ router.beforeEach(async (to, from, next) => {
   const isAuthenticated = await auth0.isAuthenticated();
 
   // if route is public,do not check authentication
-  if (to.matched.some(record => record.meta.public === true)) {
+  if (to.matched.some(route => route.meta.public === true)) {
     next();
   }
 

@@ -66,7 +66,7 @@
         <span class="animated bounce" v-if="changesDetected">*</span>
       </button>
 
-      <!--<button @click="onProofreadClick()" class="button is-outlined item" type="submit">PROOFREAD</button>-->
+      <button @click="onProofreadClick()" class="button is-outlined item" type="submit">PROOFREAD</button>
     </portal>
     <!-- END TOPBAR RIGHT BUTTONS -->
 
@@ -276,7 +276,6 @@ export default {
               }&url=${encodeURIComponent(url)}`;
               // alternatively, use &key= instead of &api_key with the MD5 hash of your api_key
               // more about it: https://iframely.com/docs/allow-origins
-
               return (
                 // If you need, set maxwidth and other styles for 'iframely-embed' class - it's yours to customize
                 '<div class="iframely-embed">' +
