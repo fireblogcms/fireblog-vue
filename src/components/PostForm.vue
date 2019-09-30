@@ -44,16 +44,20 @@
         </em>
       </span>
 
-      <span class="item button animated bouncedIn" style="border:0" v-if="lastTimeSaved">
-        <em>saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
+      <span
+        class="item button animated bouncedIn"
+        style="border:0;color:rgba(0,0,0, 0.5);font-size:14px;position:relative;top:2px"
+        v-if="lastTimeSaved"
+      >
+        <em>{{getCurrentPublicationStatus()}} - saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
       </span>
     </portal>
     <!-- END TOPBAR LEFT BUTTONS -->
 
     <!-- TOPBAR RIGHT BUTTONS -->
-    <portal to="topbar-right" v-if="getCurrentOperation() === 'CREATE' || this.existingPost">
+    <portal to="topbar-right" v-if="initDataState === 'FINISHED_OK'">
       <button
-        v-if="!existingPost || (existingPost && existingPost.status === 'DRAFT')"
+        v-if="getCurrentPublicationStatus() === 'DRAFT'"
         @click="onSaveDraftClick()"
         class="button is-outlined item"
         :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'DRAFT' }"
@@ -87,7 +91,7 @@
         @click="onPublishClick()"
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
         class="button item is-outlined is-primary"
-        :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
+        :class="{ 'is-loading': savingPost.state === 'PENDING'}"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
       >
@@ -95,7 +99,12 @@
         <span class="animated bounce" v-if="changesDetected">*</span>
       </button>
 
-      <button @click="onProofreadClick()" class="button is-outlined item" type="submit">PROOFREAD</button>
+      <button
+        :disabled="savingPost.state === 'PENDING'"
+        @click="onProofreadClick()"
+        class="button is-outlined item"
+        type="submit"
+      >PROOFREAD</button>
     </portal>
     <!-- END TOPBAR RIGHT BUTTONS -->
 
@@ -342,7 +351,7 @@ export default {
         });
     },
     getCurrentPublicationStatus() {
-      return this.existingPost.status ? this.existingPost.status : "DRAFT";
+      return this.existingPost ? this.existingPost.status : "DRAFT";
     },
     savePost(status) {
       if (!STATUS_ENUM[status]) {
@@ -353,7 +362,7 @@ export default {
       }
       if (!this.form.values.current.title.trim()) {
         alert("A title is required");
-        return;
+        return Promise.reject("A title is required");
       }
       this.savingPost.state = REQUEST_STATE.PENDING;
       this.savingPost.publicationStatus = status;
@@ -365,9 +374,10 @@ export default {
         if (status === "PUBLISHED") {
           newPost.publishedAt = new Date();
         }
-        this.createPost(newPost)
-          .then(() => {
+        return this.createPost(newPost)
+          .then(result => {
             this.savingPost.state = REQUEST_STATE.FINISHED_OK;
+            return result;
           })
           .catch(error => {
             this.savingPost.state = REQUEST_STATE.FINISHED_ERROR;
@@ -383,9 +393,10 @@ export default {
         if (status === "PUBLISHED") {
           post.publishedAt = new Date();
         }
-        this.updatePost(post)
-          .then(() => {
+        return this.updatePost(post)
+          .then(result => {
             this.savingPost.state = REQUEST_STATE.FINISHED_OK;
+            return result;
           })
           .catch(error => {
             this.errorMessage = "Sorry, publish operation failed.";
@@ -475,9 +486,6 @@ export default {
     onTitleEnter() {
       this.$refs.ckeditor.$el.focus();
     },
-    onProofreadClick() {
-      this.$router.newTab({ name: "postProofread" });
-    },
     /**
      * Determine if we are currently creating a new post or updating an existing one.
      */
@@ -523,6 +531,11 @@ export default {
     },
     onSaveDraftClick() {
       this.savePost(STATUS_ENUM.DRAFT);
+    },
+    onProofreadClick() {
+      this.savePost(STATUS_ENUM.DRAFT).then(() => {
+        this.$router.newTab({ name: "postProofread" });
+      });
     },
     async createPost(post) {
       const user = await getUser();
