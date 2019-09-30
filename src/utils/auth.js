@@ -6,7 +6,8 @@ import logger from "./logger";
 export let auth0 = null;
 
 /**
- * Return Promise
+ * Return Promise.
+ * https://auth0.com/docs/libraries/lock/v11/configuration#leeway-integer-
  */
 export async function auth0Client() {
   if (!auth0) {
