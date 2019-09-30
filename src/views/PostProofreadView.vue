@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import BareLayout from "@/layouts/BareLayout";
 import apolloClient from "../utils/apolloClient";
 import AppLoader from "../components/AppLoader";
 import AppError from "../components/AppError";
@@ -32,7 +31,6 @@ import CKEditor from "@ckeditor/ckeditor5-vue";
 
 export default {
   components: {
-    BareLayout,
     AppLoader,
     AppError,
     ckeditor: CKEditor.component

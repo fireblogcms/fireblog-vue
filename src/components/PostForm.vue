@@ -7,69 +7,6 @@
 
     <AppLoader v-if="initDataState === 'PENDING'" />
 
-    <!-- TOPBAR LEFT BUTTONS -->
-    <portal to="topbar-left">
-      <span @click="onBackToPostsClick" style="cursor:pointer" class="item tag is-medium">
-        <em>
-          <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
-          <IconBack />posts
-        </em>
-      </span>
-
-      <span class="item button animated bouncedIn" style="border:0" v-if="lastTimeSaved">
-        <em>saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
-      </span>
-    </portal>
-    <!-- END TOPBAR LEFT BUTTONS -->
-
-    <!-- TOPBAR RIGHT BUTTONS -->
-    <portal to="topbar-right" v-if="currentOperation() === 'CREATE' || this.existingPost">
-      <button
-        v-if="!existingPost || (existingPost && existingPost.status === 'DRAFT')"
-        @click="onSaveDraftClick()"
-        class="button is-outlined item"
-        :class="{ 'is-loading': savingDraftState === REQUEST_STATE.PENDING }"
-        type="submit"
-      >
-        SAVE DRAFT
-        <span class="animated bounce" v-if="changesDetected">*</span>
-      </button>
-
-      <button
-        @click="onUnpublishClick()"
-        v-if="existingPost && existingPost.status === 'PUBLISHED'"
-        class="button is-outlined item"
-        :class="{'is-loading': unpublishPostState === REQUEST_STATE.PENDING}"
-        :disabled="unpublishPostState === REQUEST_STATE.PENDING"
-        type="submit"
-        value="UNPUBLISH"
-      >UNPUBLISH</button>
-
-      <button
-        @click="onPublishClick()"
-        v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
-        class="button is-outlined item is-primary"
-        :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
-        :disabled="publishPostState === REQUEST_STATE.PENDING"
-        type="submit"
-      >PUBLISH</button>
-
-      <button
-        @click="onPublishClick()"
-        v-if="existingPost && existingPost.status === 'PUBLISHED'"
-        class="button item is-outlined is-primary"
-        :class="{ 'is-loading': publishPostState === REQUEST_STATE.PENDING }"
-        :disabled="publishPostState === REQUEST_STATE.PENDING"
-        type="submit"
-      >
-        PUBLISH CHANGES
-        <span class="animated bounce" v-if="changesDetected">*</span>
-      </button>
-
-      <button @click="onProofreadClick()" class="button is-outlined item" type="submit">PROOFREAD</button>
-    </portal>
-    <!-- END TOPBAR RIGHT BUTTONS -->
-
     <template v-if="initDataState === REQUEST_STATE.FINISHED_OK">
       <!-- FORM -->
       <form @submit.prevent>
@@ -97,6 +34,70 @@
         ></ckeditor>
       </form>
     </template>
+
+    <!-- TOPBAR LEFT BUTTONS -->
+    <portal to="topbar-left">
+      <span @click="onBackToPostsClick" style="cursor:pointer" class="item tag is-medium">
+        <em>
+          <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
+          <IconBack />posts
+        </em>
+      </span>
+
+      <span class="item button animated bouncedIn" style="border:0" v-if="lastTimeSaved">
+        <em>saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
+      </span>
+    </portal>
+    <!-- END TOPBAR LEFT BUTTONS -->
+
+    <!-- TOPBAR RIGHT BUTTONS -->
+    <portal to="topbar-right" v-if="getCurrentOperation() === 'CREATE' || this.existingPost">
+      <button
+        v-if="!existingPost || (existingPost && existingPost.status === 'DRAFT')"
+        @click="onSaveDraftClick()"
+        class="button is-outlined item"
+        :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'DRAFT' }"
+        :disabled="savingPost.state === 'PENDING'"
+        type="submit"
+      >
+        SAVE DRAFT
+        <span class="animated bounce" v-if="changesDetected">*</span>
+      </button>
+
+      <button
+        @click="onUnpublishClick()"
+        v-if="existingPost && existingPost.status === 'PUBLISHED'"
+        class="button is-outlined item"
+        :class="{'is-loading':  savingPost.state === 'PENDING' && savingPost.publicationStatus === 'DRAFT' }"
+        :disabled="savingPost.state === 'PENDING'"
+        type="submit"
+        value="UNPUBLISH"
+      >UNPUBLISH</button>
+
+      <button
+        @click="onPublishClick()"
+        v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
+        class="button is-outlined item is-primary"
+        :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED' }"
+        :disabled="savingPost.state === 'PENDING'"
+        type="submit"
+      >PUBLISH</button>
+
+      <button
+        @click="onPublishClick()"
+        v-if="existingPost && existingPost.status === 'PUBLISHED'"
+        class="button item is-outlined is-primary"
+        :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
+        :disabled="savingPost.state === 'PENDING'"
+        type="submit"
+      >
+        PUBLISH CHANGES
+        <span class="animated bounce" v-if="changesDetected">*</span>
+      </button>
+
+      <button @click="onProofreadClick()" class="button is-outlined item" type="submit">PROOFREAD</button>
+    </portal>
+    <!-- END TOPBAR RIGHT BUTTONS -->
 
     <BulmaModal v-model="modal.show">
       <template #title>{{modal.title}}</template>
@@ -179,6 +180,12 @@ const OPERATION_TYPE = {
   UPDATE: "UPDATE"
 };
 
+const STATUS_ENUM = {
+  PUBLISHED: "PUBLISHED",
+  DRAFT: "DRAFT",
+  BIN: "BIN"
+};
+
 const initialFormValues = {
   title: "",
   content: ""
@@ -203,6 +210,10 @@ export default {
       lastTimeSaved: null,
       existingPost: null,
       errorMessage: null,
+      savingPost: {
+        state: REQUEST_STATE.NOT_STARTED,
+        publicationStatus: null
+      },
       form: {
         values: {
           initial: {
@@ -318,7 +329,7 @@ export default {
       this.initDataState = REQUEST_STATE.PENDING;
       const promises = [];
       promises.push(getBlog(this.$route.params.blogId));
-      if (this.currentOperation() === OPERATION_TYPE.UPDATE) {
+      if (this.getCurrentOperation() === OPERATION_TYPE.UPDATE) {
         promises.push(this.getExistingPost());
       }
       return Promise.all(promises)
@@ -329,6 +340,59 @@ export default {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           throw new Error(error);
         });
+    },
+    getCurrentPublicationStatus() {
+      return this.existingPost.status ? this.existingPost.status : "DRAFT";
+    },
+    savePost(status) {
+      if (!STATUS_ENUM[status]) {
+        throw new Error(
+          `Received unknown status ${status}. Status MUST be one of the following value: ` +
+            Object.values(STATUS_ENUM).join(", ")
+        );
+      }
+      if (!this.form.values.current.title.trim()) {
+        alert("A title is required");
+        return;
+      }
+      this.savingPost.state = REQUEST_STATE.PENDING;
+      this.savingPost.publicationStatus = status;
+      if (this.getCurrentOperation() === "CREATE") {
+        const newPost = {
+          ...this.preparePostFromCurrentFormValues(),
+          status
+        };
+        if (status === "PUBLISHED") {
+          newPost.publishedAt = new Date();
+        }
+        this.createPost(newPost)
+          .then(() => {
+            this.savingPost.state = REQUEST_STATE.FINISHED_OK;
+          })
+          .catch(error => {
+            this.savingPost.state = REQUEST_STATE.FINISHED_ERROR;
+            this.errorMessage = "Sorry, publishing failed.";
+            throw new Error(error);
+          });
+      }
+      if (this.getCurrentOperation() === "UPDATE") {
+        const post = {
+          ...this.preparePostFromCurrentFormValues(),
+          status
+        };
+        if (status === "PUBLISHED") {
+          post.publishedAt = new Date();
+        }
+        this.updatePost(post)
+          .then(() => {
+            this.savingPost.state = REQUEST_STATE.FINISHED_OK;
+          })
+          .catch(error => {
+            this.errorMessage = "Sorry, publish operation failed.";
+            this.saveDraft.state = REQUEST_STATE.FINISHED_ERROR;
+            throw new Error(error);
+          });
+      }
     },
     onBackToPostsClick() {
       if (this.mediaLoadingCounter > 0) {
@@ -417,7 +481,7 @@ export default {
     /**
      * Determine if we are currently creating a new post or updating an existing one.
      */
-    currentOperation() {
+    getCurrentOperation() {
       return this.$route.params.postId
         ? OPERATION_TYPE.UPDATE
         : OPERATION_TYPE.CREATE;
@@ -451,14 +515,14 @@ export default {
           }
         };
       } else {
-        this.publish();
+        this.savePost("PUBLISHED");
       }
     },
     onUnpublishClick() {
       this.unpublish();
     },
     onSaveDraftClick() {
-      this.saveDraft();
+      this.savePost(STATUS_ENUM.DRAFT);
     },
     async createPost(post) {
       const user = await getUser();
@@ -516,13 +580,9 @@ export default {
         });
     },
     saveDraft() {
-      if (!this.form.values.current.title.trim()) {
-        alert("A title is required");
-        return;
-      }
       this.savingDraftState = REQUEST_STATE.PENDING;
       // NEW POST
-      if (this.currentOperation() === OPERATION_TYPE.CREATE) {
+      if (this.getCurrentOperation() === OPERATION_TYPE.CREATE) {
         const newPost = {
           ...this.preparePostFromCurrentFormValues(),
           status: "DRAFT"
@@ -537,7 +597,7 @@ export default {
           });
       }
       // EDITING EXISTING POST
-      if (this.currentOperation() === OPERATION_TYPE.UPDATE) {
+      if (this.getCurrentOperation() === OPERATION_TYPE.UPDATE) {
         const post = {
           ...this.preparePostFromCurrentFormValues(),
           status: "DRAFT",
@@ -555,61 +615,8 @@ export default {
           });
       }
     },
-    publish() {
-      if (!this.form.values.current.title.trim()) {
-        alert("A title is required");
-        return;
-      }
-      if (this.currentOperation() === "CREATE") {
-        this.publishPostState = REQUEST_STATE.PENDING;
-        const newPost = {
-          ...this.preparePostFromCurrentFormValues(),
-          publishedAt: new Date(),
-          status: "PUBLISHED"
-        };
-        this.createPost(newPost)
-          .then(() => {
-            this.publishPostState = REQUEST_STATE.FINISHED_OK;
-          })
-          .catch(error => {
-            this.publishPostState = REQUEST_STATE.FINISHED_ERROR;
-            this.errorMessage = "Sorry, publishing failed.";
-            throw new Error(error);
-          });
-      }
-      if (this.currentOperation() === "UPDATE") {
-        this.publishPostState = REQUEST_STATE.PENDING;
-        const post = {
-          ...this.preparePostFromCurrentFormValues(),
-          publishedAt: new Date(),
-          status: "PUBLISHED"
-        };
-        this.updatePost(post)
-          .then(() => {
-            this.publishPostState = REQUEST_STATE.FINISHED_OK;
-          })
-          .catch(error => {
-            this.errorMessage = "Sorry, publish operation failed.";
-            this.publishPostState = REQUEST_STATE.FINISHED_ERROR;
-            throw new Error(error);
-          });
-      }
-    },
     unpublish() {
-      this.unpublishPostState = REQUEST_STATE.PENDING;
-      const post = {
-        ...this.preparePostFromCurrentFormValues(),
-        status: "DRAFT"
-      };
-      this.updatePost(post)
-        .then(r => {
-          this.unpublishPostState = REQUEST_STATE.FINISHED_OK;
-        })
-        .catch(error => {
-          this.errorMessage = "Sorry, an error occured while updating post.";
-          this.unpublishPostState = REQUEST_STATE.FINISHED_ERROR;
-          throw new Error(error);
-        });
+      this.savePost("DRAFT");
     },
     /**
      * initialFormValues : the values of form inputs when page is loaded
