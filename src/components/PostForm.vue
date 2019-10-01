@@ -129,7 +129,20 @@
         <PostFormAdvancedSettings />
       </template>
       <template class="has-text-centered" #footer>
-        <button @click="settingsModal.show = false" class="button is-primary is-large">Close</button>
+        <button @click="settingsModal.show = false" class="button is-large">Cancel</button>
+        <button @click="onPublishConfirmClick" class="button is-primary is-large">Publish now !</button>
+      </template>
+    </BulmaModal>
+
+    <BulmaModal class="hurrah-modal animated fadeIn" v-model="hurrahModal.show">
+      <template #body>
+        <div class="has-text-centered">
+          <h1 class="title is-1 has-text-centered">Hurrah ! Your post have been published !</h1>
+          <img src="https://media.giphy.com/media/3kD2Eciolhy4VOzjRV/giphy.gif" />
+        </div>
+      </template>
+      <template class="has-text-centered" #footer>
+        <button @click="hurrahModal.show = false" class="button is-primary is-large">Okay.</button>
       </template>
     </BulmaModal>
   </div>
@@ -249,8 +262,10 @@ export default {
         cancelCallback: () => {}
       },
       settingsModal: {
-        show: false,
-        content: "Hello world"
+        show: false
+      },
+      hurrahModal: {
+        show: false
       }
     };
   },
@@ -493,6 +508,12 @@ export default {
     // automically move cursor to the textarea
     onTitleEnter() {
       this.$refs.ckeditor.$el.focus();
+    },
+    onPublishConfirmClick() {
+      this.savePost("PUBLISHED").then(() => {
+        this.settingsModal.show = false;
+        this.hurrahModal.show = true;
+      });
     },
     /**
      * Determine if we are currently creating a new post or updating an existing one.
@@ -755,6 +776,12 @@ button.ck-block-toolbar-button:hover {
 }
 
 .settings-modal .modal-card {
+  border-radius: 5px;
+  width: 95%;
+  height: 100%;
+}
+
+.hurrah-modal .modal-card {
   border-radius: 5px;
   width: 95%;
   height: 100%;
