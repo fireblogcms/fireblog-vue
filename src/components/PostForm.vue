@@ -305,6 +305,7 @@ export default {
     return {
       form: this.form,
       savingPost: this.savingPost,
+      // we use a function here because of https://github.com/vuejs/vue/issues/7017
       existingPost: () => this.existingPost
     };
   },
@@ -500,7 +501,6 @@ export default {
       };
     },
     onTitleInput(value) {
-      this.existingPost._id = "pouet";
       this.form.values.current.title = value;
     },
     onContentInput(value) {
