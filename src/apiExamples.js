@@ -40,6 +40,7 @@ export default ({ postId, language }) => [
     title
     content
     publishedAt
+    image
     author {
       name
       email

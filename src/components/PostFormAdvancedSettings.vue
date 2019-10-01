@@ -28,7 +28,10 @@
 
       <div class="field">
         <label class="label">Featured Image</label>
-        <CloudinaryImageUpload @onUploaded="onUploaded" />
+        <CloudinaryImageUpload
+          :initialImage="this.form.values.initial.image"
+          @onUploaded="onUploaded"
+        />
       </div>
     </form>
 
@@ -59,7 +62,7 @@ export default {
   },
   methods: {
     onUploaded(result) {
-      this.form.values.current.featuredImage = result.default;
+      this.form.values.current.image = result.default;
     }
   }
 };

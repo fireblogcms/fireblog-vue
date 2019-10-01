@@ -11,8 +11,8 @@
     <div class="file is-large is-boxed has-name">
       <label style="width:100%" class="file-label">
         <input class="file-input" type="file" @change="processImage($event)" name="resume" />
-        <img class="image" height="200px" v-if="image && image.default" :src="image.default" />
-        <span v-show="!image" class="file-cta">
+        <img class="image" height="200px" v-if="displayedImage()" :src="displayedImage()" />
+        <span class="file-cta">
           <span class="file-icon">
             <img src="/images/icon-upload.svg" />
           </span>
@@ -30,10 +30,16 @@ import {
   getCloudinaryBlogFolderPath
 } from "../utils/helpers";
 export default {
+  props: {
+    initialImage: {
+      type: String,
+      default: null
+    }
+  },
   data() {
     return {
       uploadProgress: 0,
-      image: null,
+      uploadedImage: null,
       file: null
     };
   },
@@ -51,12 +57,19 @@ export default {
         }
       })
         .then(result => {
-          this.image = result;
+          this.uploadedImage = result;
           this.$emit("onUploaded", result);
         })
         .catch(error => {
           new Error(error);
         });
+    },
+    displayedImage() {
+      if (this.uploadedImage) {
+        return this.uploadedImage.default;
+      } else {
+        return this.initialImage;
+      }
     }
   }
 };

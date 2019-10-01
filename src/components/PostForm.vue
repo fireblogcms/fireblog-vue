@@ -194,6 +194,7 @@ const PostResponseFragment = gql`
     slug
     teaser
     publishedAt
+    image
     author {
       _id
       name
@@ -711,6 +712,7 @@ export default {
       this.form.values.initial.content = post.content ? post.content : "";
       this.form.values.initial.slug = post.slug ? post.slug : "";
       this.form.values.initial.teaser = post.teaser ? post.teaser : "";
+      this.form.values.initial.image = post.image ? post.image : "";
       this.form.values.current = {
         ...this.form.values.initial
       };
@@ -721,7 +723,8 @@ export default {
         title: this.form.values.current.title,
         content: this.form.values.current.content,
         slug: this.form.values.current.slug,
-        teaser: this.form.values.current.teaser
+        teaser: this.form.values.current.teaser,
+        image: this.form.values.current.image
       };
     },
     getRandomHurrahGif() {
