@@ -84,7 +84,7 @@
         :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED' }"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
-      >PUBLISH</button>
+      >BEGIN PUBLICATION</button>
 
       <button
         @click="onPublishClick()"
@@ -114,13 +114,22 @@
         <div
           v-if="modal.cancelText && modal.cancelCallback"
           @click="modal.cancelCallback"
-          class="button is-success"
+          class="button is-primary"
         >{{modal.cancelText}}</div>
         <div
           v-if="modal.confirmText && modal.confirmCallback"
           @click="modal.confirmCallback"
           class="button is-danger"
         >{{modal.confirmText}}</div>
+      </template>
+    </BulmaModal>
+
+    <BulmaModal class="settings-modal animated fadeIn" v-model="settingsModal.show">
+      <template #body>
+        <PostFormAdvancedSettings />
+      </template>
+      <template class="has-text-centered" #footer>
+        <button @click="settingsModal.show = false" class="button is-primary is-large">Close</button>
       </template>
     </BulmaModal>
   </div>
@@ -136,9 +145,15 @@ import hotkeys from "hotkeys-js";
 import logger from "../utils/logger";
 import BulmaModal from "./BulmaModal";
 import IconBack from "./IconBack";
+import PostFormAdvancedSettings from "./PostFormAdvancedSettings";
 import apolloClient from "../utils/apolloClient";
 import { ckeditorCloudinaryDirectUploadAdapterPlugin } from "../utils/ckeditorCloudinaryDirectUploadAdapter";
-import { REQUEST_STATE, getUser, getBlog } from "../utils/helpers";
+import {
+  REQUEST_STATE,
+  getUser,
+  getBlog,
+  formInitData
+} from "../utils/helpers";
 import { richPreviewLinksAuthorizedDomains } from "../../config";
 
 const PostResponseFragment = gql`
@@ -205,7 +220,8 @@ export default {
     AppLoader,
     AppError,
     BulmaModal,
-    IconBack
+    IconBack,
+    PostFormAdvancedSettings
   },
   data() {
     return {
@@ -222,17 +238,7 @@ export default {
         state: REQUEST_STATE.NOT_STARTED,
         publicationStatus: null
       },
-      form: {
-        values: {
-          initial: {
-            ...initialFormValues
-          },
-          current: {
-            ...initialFormValues
-          },
-          modified: []
-        }
-      },
+      form: formInitData({ initialFormValues }),
       modal: {
         show: false,
         title: null,
@@ -241,6 +247,10 @@ export default {
         confirmCallback: () => {},
         cancelText: null,
         cancelCallback: () => {}
+      },
+      settingsModal: {
+        show: false,
+        content: "Hello world"
       }
     };
   },
@@ -469,7 +479,6 @@ export default {
       this.form.values.current.title = value;
     },
     onContentInput(value) {
-      console.log("test", this.$refs);
       this.form.values.current.content = value;
     },
     onEditorReady() {
@@ -522,7 +531,8 @@ export default {
           }
         };
       } else {
-        this.savePost(STATUS_ENUM.PUBLISHED);
+        this.settingsModal.show = true;
+        //this.savePost(STATUS_ENUM.PUBLISHED);
       }
     },
     onUnpublishClick() {
@@ -737,5 +747,16 @@ button.ck-block-toolbar-button:hover {
 
 .ck-block-toolbar-button .ck.ck-icon {
   font-size: 2em !important;
+}
+
+.settings-modal .modal-close {
+  background: black;
+  top: 40px;
+}
+
+.settings-modal .modal-card {
+  border-radius: 5px;
+  width: 95%;
+  height: 100%;
 }
 </style>
