@@ -1,6 +1,6 @@
 import apolloClient from "./apolloClient";
 import gql from "graphql-tag";
-import slugify from "slugify";
+import slug from "slug";
 
 export const REQUEST_STATE = {
   NOT_STARTED: "NOT_STARTED",
@@ -13,7 +13,7 @@ export const REQUEST_STATE = {
  * Wrapper around slugify to ensure options consistance
  */
 export function createSlug(value, options) {
-  return slugify(value, {
+  return slug(value, {
     ...options,
     replacement: "-",
     lower: true

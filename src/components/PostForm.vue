@@ -537,7 +537,7 @@ export default {
       if (Object.keys(this.form.errors).length > 0) {
         return false;
       } else {
-        this.savePost("PUBLISHED").then(() => {
+        this.savePost(STATUS_ENUM.PUBLISHED).then(() => {
           this.settingsModal.show = false;
           this.hurrahModal.show = true;
         });
@@ -726,7 +726,7 @@ export default {
         errors.title = "Title is required";
       }
       // validate that slug is an url
-      if (!/^[a-z](-?[a-z])*$/.test(this.form.values.current.slug)) {
+      if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(this.form.values.current.slug)) {
         errors.slug = "Slug can only contains minusculs dans '-' characters.";
       }
       if (!this.form.values.current.slug.trim()) {
