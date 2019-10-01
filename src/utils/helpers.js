@@ -1,5 +1,6 @@
 import apolloClient from "./apolloClient";
 import gql from "graphql-tag";
+import slugify from "slugify";
 
 export const REQUEST_STATE = {
   NOT_STARTED: "NOT_STARTED",
@@ -7,6 +8,17 @@ export const REQUEST_STATE = {
   FINISHED_OK: "FINISHED_OK",
   FINISHED_ERROR: "FINISHED_ERROR"
 };
+
+/**
+ * Wrapper around slugify to ensure options consistance
+ */
+export function createSlug(value, options) {
+  return slugify(value, {
+    ...options,
+    replacement: "-",
+    lower: true
+  });
+}
 
 /**
  * Get full user from our database.
@@ -144,6 +156,7 @@ export const uploadFetch = (url, options) =>
  */
 export function formInitData({ initialFormValues }) {
   return {
+    errors: {},
     values: {
       initial: {
         ...initialFormValues

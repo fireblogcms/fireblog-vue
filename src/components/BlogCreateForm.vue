@@ -172,9 +172,8 @@ export default {
         query: languageListQuery
       });
     },
-    formGetErrors() {
+    getFormErrors() {
       const errors = [];
-      logger.info(this.inputs);
       if (!this.inputs.name.trim()) {
         errors["name"] = "Name is required";
       }
@@ -184,7 +183,7 @@ export default {
       return errors;
     },
     onCreateClick() {
-      this.formErrors = this.formGetErrors();
+      this.formErrors = this.getFormErrors();
       if (Object.keys(this.formErrors).length > 0) {
         return false;
       }

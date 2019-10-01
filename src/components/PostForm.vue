@@ -1,7 +1,7 @@
 <template>
   <div class="writeForm">
     <!-- debug form values -->
-    <pre v-if="false">{{form}}</pre>
+    <pre v-if="true">{{form}}</pre>
 
     <AppError v-if="errorMessage">{{errorMessage}}</AppError>
 
@@ -171,7 +171,8 @@ import {
   REQUEST_STATE,
   getUser,
   getBlog,
-  formInitData
+  formInitData,
+  createSlug
 } from "../utils/helpers";
 import { richPreviewLinksAuthorizedDomains } from "../../config";
 
@@ -284,6 +285,11 @@ export default {
       hurrahModal: {
         show: false
       }
+    };
+  },
+  provide() {
+    return {
+      form: this.form
     };
   },
   created() {
@@ -527,10 +533,15 @@ export default {
       this.$refs.ckeditor.$el.focus();
     },
     onPublishConfirmClick() {
-      this.savePost("PUBLISHED").then(() => {
-        this.settingsModal.show = false;
-        this.hurrahModal.show = true;
-      });
+      this.form.errors = this.getFormErrors();
+      if (Object.keys(this.form.errors).length > 0) {
+        return false;
+      } else {
+        this.savePost("PUBLISHED").then(() => {
+          this.settingsModal.show = false;
+          this.hurrahModal.show = true;
+        });
+      }
     },
     /**
      * Determine if we are currently creating a new post or updating an existing one.
@@ -569,7 +580,17 @@ export default {
           }
         };
       } else {
+        if (!this.form.values.initial.slug.trim()) {
+          this.form.values.current.slug = createSlug(
+            this.form.values.current.title,
+            {
+              replacement: "-",
+              lower: true
+            }
+          );
+        }
         this.settingsModal.show = true;
+
         //this.savePost(STATUS_ENUM.PUBLISHED);
       }
     },
@@ -698,6 +719,25 @@ export default {
       return randomHurraGifs[
         Math.floor(Math.floor(Math.random() * randomHurraGifs.length))
       ];
+    },
+    getFormErrors() {
+      const errors = {};
+      if (!this.form.values.current.title.trim()) {
+        errors.title = "Title is required";
+      }
+      // validate that slug is an url
+      if (!/^[a-z](-?[a-z])*$/.test(this.form.values.current.slug)) {
+        errors.slug = "Slug can only contains minusculs dans '-' characters.";
+      }
+      if (!this.form.values.current.slug.trim()) {
+        errors.slug = "Slug is required";
+      }
+      //// slug regex: ^[a-z](-?[a-z])*$
+      //if ()
+      if (!this.form.values.current.teaser.trim()) {
+        errors.teaser = "Teaser is required";
+      }
+      return errors;
     }
   }
 };

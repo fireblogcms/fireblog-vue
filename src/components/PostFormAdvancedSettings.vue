@@ -2,7 +2,7 @@
   <div class="post-form-advanced-settings">
     <form @submit.prevent>
       <div class="field">
-        <label class="label">Slug.</label>
+        <label class="label">Slug</label>
         <div class="control">
           <input
             v-model="form.values.current.slug"
@@ -11,6 +11,7 @@
             placeholder="slug"
           />
         </div>
+        <p class="help is-danger" v-if="form.errors.slug">{{form.errors.slug}}</p>
       </div>
 
       <div class="field">
@@ -22,6 +23,7 @@
             placeholder="Accroche"
           ></textarea>
         </div>
+        <p class="help is-danger" v-if="form.errors.teaser">{{form.errors.teaser}}</p>
       </div>
 
       <!--
@@ -49,17 +51,8 @@
 </template>
 
 <script>
-// slug regex: ^[a-z](-?[a-z])*$
 export default {
-  props: {
-    form: {
-      type: Object,
-      required: true
-    }
-  },
-  methods: {
-    validate() {}
-  }
+  inject: ["form"]
 };
 </script>
 
