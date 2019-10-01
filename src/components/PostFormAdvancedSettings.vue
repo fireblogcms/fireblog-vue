@@ -16,10 +16,15 @@
       <div class="field">
         <label class="label">Accroche</label>
         <div class="control">
-          <textarea class="textarea is-large" placeholder="Accroche"></textarea>
+          <textarea
+            v-model="form.values.current.teaser"
+            class="textarea is-large"
+            placeholder="Accroche"
+          ></textarea>
         </div>
       </div>
 
+      <!--
       <div class="field has-text-centered">
         <label class="label">Image mise en avant</label>
         <div class="file is-large is-boxed has-name has-text-centered">
@@ -35,6 +40,7 @@
           </label>
         </div>
       </div>
+      -->
     </form>
 
     <!-- debug form values -->
@@ -43,16 +49,13 @@
 </template>
 
 <script>
-import { formInitData } from "../utils/helpers";
-
-// ^[a-z](-?[a-z])*$
+// slug regex: ^[a-z](-?[a-z])*$
 export default {
-  data() {
-    return {
-      form: formInitData({
-        slug: ""
-      })
-    };
+  props: {
+    form: {
+      type: Object,
+      required: true
+    }
   },
   methods: {
     validate() {}

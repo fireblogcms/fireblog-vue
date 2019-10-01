@@ -126,7 +126,7 @@
 
     <BulmaModal class="settings-modal animated fadeIn" v-model="settingsModal.show">
       <template #body>
-        <PostFormAdvancedSettings />
+        <PostFormAdvancedSettings :form="form" />
       </template>
       <template class="has-text-centered" #footer>
         <button @click="settingsModal.show = false" class="button is-large">Cancel</button>
@@ -138,11 +138,11 @@
       <template #body>
         <div class="has-text-centered">
           <h1 class="title is-1 has-text-centered">Hurrah ! Your post have been published !</h1>
-          <img src="https://media.giphy.com/media/3kD2Eciolhy4VOzjRV/giphy.gif" />
+          <img style="border-radius:5px" :src="getRandomHurrahGif()" />
         </div>
       </template>
       <template class="has-text-centered" #footer>
-        <button @click="hurrahModal.show = false" class="button is-primary is-large">Okay.</button>
+        <button @click="hurrahModal.show = false" class="button is-primary is-large">Okay !</button>
       </template>
     </BulmaModal>
   </div>
@@ -211,6 +211,13 @@ const getExistingPostQuery = gql`
   }
 `;
 
+const randomHurraGifs = [
+  "https://media.giphy.com/media/3kD2Eciolhy4VOzjRV/giphy.gif",
+  "https://media.giphy.com/media/sRHX9qwNKQaQB48RAM/giphy.gif",
+  "https://media.giphy.com/media/7IW6Jnw29TYmgkuu3M/giphy.gif",
+  "https://media.giphy.com/media/Wq2xnn2ZnwiTtoD6Qk/giphy.gif"
+];
+
 const OPERATION_TYPE = {
   CREATE: "CREATE",
   UPDATE: "UPDATE"
@@ -224,7 +231,9 @@ const STATUS_ENUM = {
 
 const initialFormValues = {
   title: "",
-  content: ""
+  content: "",
+  slug: "",
+  teaser: ""
 };
 
 export default {
@@ -678,6 +687,11 @@ export default {
         title: this.form.values.current.title,
         content: this.form.values.current.content
       };
+    },
+    getRandomHurrahGif() {
+      return randomHurraGifs[
+        Math.floor(Math.floor(Math.random() * randomHurraGifs.length))
+      ];
     }
   }
 };
@@ -783,7 +797,5 @@ button.ck-block-toolbar-button:hover {
 
 .hurrah-modal .modal-card {
   border-radius: 5px;
-  width: 95%;
-  height: 100%;
 }
 </style>
