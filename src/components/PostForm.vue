@@ -180,6 +180,8 @@ const PostResponseFragment = gql`
     title
     content
     status
+    slug
+    teaser
     publishedAt
     author {
       _id
@@ -545,7 +547,7 @@ export default {
         })
         .then(result => {
           this.existingPost = result.data.post;
-          this.setFormValuesFromPost(this.existingPost);
+          this.prepareFormValuesFromPost(this.existingPost);
         })
         .catch(error => {
           this.errorMessage = "En error occured while loading post";
@@ -660,7 +662,7 @@ export default {
           status: "DRAFT",
           _id: this.$route.params.postId
         };
-        this.setFormValuesFromPost(post);
+        this.prepareFormValuesFromPost(post);
         this.updatePost(post)
           .then(() => {
             this.savingDraftState = REQUEST_STATE.FINISHED_OK;
@@ -672,16 +674,12 @@ export default {
           });
       }
     },
-    /**
-     * initialFormValues : the values of form inputs when page is loaded
-     * currenfFormValues : the values modified by the user. Equal to initialFormValues on load.
-     */
-    setFormValuesFromPost(post) {
+    prepareFormValuesFromPost(post) {
       // initial
       this.form.values.initial.title = post.title;
       this.form.values.initial.content = post.content ? post.content : "";
-
-      // current
+      this.form.values.initial.slug = post.slug ? post.slug : "";
+      this.form.values.initial.teaser = post.teaser ? post.teaser : "";
       this.form.values.current = {
         ...this.form.values.initial
       };
@@ -690,7 +688,9 @@ export default {
     preparePostFromCurrentFormValues() {
       return {
         title: this.form.values.current.title,
-        content: this.form.values.current.content
+        content: this.form.values.current.content,
+        slug: this.form.values.current.slug,
+        teaser: this.form.values.current.teaser
       };
     },
     getRandomHurrahGif() {
