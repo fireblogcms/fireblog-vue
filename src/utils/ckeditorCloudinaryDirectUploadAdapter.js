@@ -1,5 +1,5 @@
 import Router from "../router";
-import { REQUEST_STATE } from "./helpers";
+import { REQUEST_STATE, getCloudinaryBlogFolderPath } from "./helpers";
 
 /**
  * Upload an image directly from ckEditor to Cloudinary servers with an XMLHttpRequest
@@ -15,9 +15,7 @@ class ckeditorCloudinaryDirectUploadAdapter {
     this.cloudName = process.env.VUE_APP_CLOUDINARY_CLOUD_NAME;
     this.unsignedUploadPreset =
       process.env.VUE_APP_CLOUDINARY_UNSIGNED_UPLOAD_PRESET;
-    this.uploadUrl = `https://api.cloudinary.com/v1_1/${
-      this.cloudName
-    }/image/upload`;
+    this.uploadUrl = `https://api.cloudinary.com/v1_1/${this.cloudName}/image/upload`;
     this.xhr = new XMLHttpRequest();
     this.options = options;
     if (options.onRequestStateChange) {
@@ -90,9 +88,7 @@ class ckeditorCloudinaryDirectUploadAdapter {
         };
 
         // Setup the form data to be sent in the request
-        const folder = `${
-          process.env.VUE_APP_CLOUDINARY_ROOT_FOLDER
-        }/BLOGS/${blogId}`;
+        const folder = getCloudinaryBlogFolderPath(blogId);
         formData.append("upload_preset", this.unsignedUploadPreset);
         formData.append("folder", folder);
         formData.append("file", file);

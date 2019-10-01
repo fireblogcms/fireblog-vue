@@ -124,22 +124,31 @@
       </template>
     </BulmaModal>
 
+    <!-- HURRAH MODAL -->
     <BulmaModal class="settings-modal animated fadeIn" v-model="settingsModal.show">
       <template #body>
-        <PostFormAdvancedSettings :form="form" />
-      </template>
-      <template class="has-text-centered" #footer>
-        <button @click="settingsModal.show = false" class="button is-large">Cancel</button>
-
-        <button
-          @click="onPublishConfirmClick"
-          :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
-          :disabled="savingPost.state === 'PENDING'"
-          class="button is-primary is-large"
-        >{{getCurrentPublicationStatus() === 'PUBLISHED' ? "Publish changes !" : "Publish now !"}}</button>
+        <div class="container">
+          <div class="columns">
+            <div class="column is-6">
+              <PostFormAdvancedSettings />
+            </div>
+            <div class="column">
+              <div class="actions">
+                <button @click="settingsModal.show = false" class="button is-large">Cancel</button>
+                <button
+                  @click="onPublishConfirmClick"
+                  :disabled="savingPost.state === 'PENDING'"
+                  :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
+                  class="button is-primary is-large"
+                  style="margin-left:20px;"
+                >{{getCurrentPublicationStatus() === 'PUBLISHED' ? "Publish changes !" : "Publish now !"}}</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </template>
     </BulmaModal>
-
+    <!-- HURRAH MODAL -->
     <BulmaModal class="hurrah-modal animated fadeIn" v-model="hurrahModal.show">
       <template #body>
         <div class="has-text-centered">
@@ -748,7 +757,7 @@ export default {
   background-color: white;
 }
 
-.writeForm form {
+.writeForm > form {
   font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding: 0 2rem;
   margin: auto;
@@ -836,12 +845,19 @@ button.ck-block-toolbar-button:hover {
 }
 
 .settings-modal .modal-card {
-  border-radius: 5px;
-  width: 95%;
+  width: 99vw;
+  padding: 40px;
   height: 100%;
 }
 
-.hurrah-modal .modal-card {
+.settings-modal .modal-card-body {
   border-radius: 5px;
+  padding: 40px;
+}
+
+.settings-modal .actions {
+  padding-top: 30px;
+  display: flex;
+  justify-content: center;
 }
 </style>

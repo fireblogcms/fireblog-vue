@@ -9,6 +9,81 @@ export const REQUEST_STATE = {
   FINISHED_ERROR: "FINISHED_ERROR"
 };
 
+export function getCloudinaryBlogFolderPath(blogId) {
+  return `${process.env.VUE_APP_CLOUDINARY_ROOT_FOLDER}/BLOGS/${blogId}`;
+}
+
+export function cloudinaryUploadImage({ file, folder, options = {} }) {
+  if (!file) {
+    throw new Error("cloudinaryUploadImage(): missing file argument");
+  }
+  if (!folder) {
+    throw new Error("cloudinaryUploadImage(): missing folder argument");
+  }
+  const cloudName = process.env.VUE_APP_CLOUDINARY_CLOUD_NAME;
+  const unsignedUploadPreset =
+    process.env.VUE_APP_CLOUDINARY_UNSIGNED_UPLOAD_PRESET;
+  const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+  const xhr = new XMLHttpRequest();
+
+  if (options.onRequestStateChange) {
+    options.onRequestStateChange({
+      state: REQUEST_STATE.NOT_STARTED,
+      xhr,
+      file: null
+    });
+  }
+  return new Promise((resolve, reject) => {
+    var formData = new FormData();
+
+    xhr.open("POST", uploadUrl, true);
+    // Hookup an event listener to update the upload progress bar
+    xhr.upload.addEventListener("progress", event => {
+      if (options.onProgress)
+        options.onProgress({
+          total: event.total,
+          loaded: event.loaded,
+          percentage: (event.loaded * 100) / event.total
+        });
+    });
+
+    // Hookup a listener to listen for when the request state changes
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        // Successful upload, resolve the promise with the new image
+        var response = JSON.parse(xhr.responseText);
+        const images = {
+          default: response.secure_url
+        };
+        if (options.onRequestStateChange) {
+          options.onRequestStateChange({
+            state: REQUEST_STATE.FINISHED_OK,
+            file,
+            xhr
+          });
+        }
+        resolve(images);
+      } else if (xhr.status !== 200) {
+        if (options.onRequestStateChange) {
+          options.onRequestStateChange({
+            state: REQUEST_STATE.FINISHED_ERROR,
+            file,
+            xhr
+          });
+        }
+        // Unsuccessful request, reject the promise
+        reject("Upload failed");
+      }
+    };
+
+    // Setup the form data to be sent in the request
+    formData.append("upload_preset", unsignedUploadPreset);
+    formData.append("folder", folder);
+    formData.append("file", file);
+    xhr.send(formData);
+  });
+}
+
 /**
  * Wrapper around slugify to ensure options consistance
  */
