@@ -128,23 +128,25 @@
     <BulmaModal class="settings-modal animated fadeIn" v-model="settingsModal.show">
       <template #body>
         <div class="container">
-          <div class="columns">
-            <div class="column is-6">
-              <PostFormAdvancedSettings />
-            </div>
-            <div class="column">
-              <div class="actions">
-                <button @click="settingsModal.show = false" class="button is-large">Cancel</button>
-                <button
-                  @click="onPublishConfirmClick"
-                  :disabled="savingPost.state === 'PENDING'"
-                  :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
-                  class="button is-primary is-large"
-                  style="margin-left:20px;"
-                >{{getCurrentPublicationStatus() === 'PUBLISHED' ? "Publish changes !" : "Publish now !"}}</button>
-              </div>
-            </div>
+          <PostFormAdvancedSettings
+            :postForm="form"
+            :existingPost="existingPost"
+            :savingPost="savingPost"
+            @onCancelClick="settingsModal.show = false"
+            @onPublishClick="onAdvancedPublishClick"
+          />
+          <!--
+          <div class="actions">
+            <button @click="settingsModal.show = false" class="button is-large">Cancel</button>
+            <button
+              @click="onAdvancedPublishClick"
+              :disabled="savingPost.state === 'PENDING'"
+              :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
+              class="button is-primary is-large"
+              style="margin-left:20px;"
+            >{{getCurrentPublicationStatus() === 'PUBLISHED' ? "Publish changes !" : "Publish now !"}}</button>
           </div>
+          -->
         </div>
       </template>
     </BulmaModal>
@@ -181,7 +183,8 @@ import {
   getUser,
   getBlog,
   formInitData,
-  createSlug
+  createSlug,
+  ckeditorIframelyMediaProvider
 } from "../utils/helpers";
 import { richPreviewLinksAuthorizedDomains } from "../../config";
 
@@ -266,6 +269,7 @@ export default {
   },
   data() {
     return {
+      hello: "world",
       initDataState: REQUEST_STATE.NOT_STARTED,
       publishPostState: REQUEST_STATE.NOT_STARTED,
       unpublishPostState: REQUEST_STATE.NOT_STARTED,
@@ -299,7 +303,9 @@ export default {
   },
   provide() {
     return {
-      form: this.form
+      form: this.form,
+      savingPost: this.savingPost,
+      existingPost: () => this.existingPost
     };
   },
   created() {
@@ -338,41 +344,11 @@ export default {
         toolbar: ["imageTextAlternative"]
       },
       mediaEmbed: {
-        // Previews are always enabled if there’s a provider for a URL (below regex catches all URLs)
-        // By default `previewsInData` are disabled, but let’s set it to `false` explicitely to be sure
         previewsInData: false,
-        providers: [
-          {
-            // hint: this is just for previews. Get actual HTML codes by making API calls from your CMS
-            name: "iframely previews",
-            // Match all URLs or just the ones you need:
-            url: /.+/,
-            //url: new RegExp(richPreviewLinksAuthorizedDomains.join("|")),
-            html: match => {
-              const url = match[0];
-              var iframeUrl = `//cdn.iframe.ly/api/iframe?app=1&api_key=${
-                process.env.VUE_APP_IFRAMELY_API_KEY
-              }&url=${encodeURIComponent(url)}`;
-              // alternatively, use &key= instead of &api_key with the MD5 hash of your api_key
-              // more about it: https://iframely.com/docs/allow-origins
-              return (
-                // If you need, set maxwidth and other styles for 'iframely-embed' class - it's yours to customize
-                '<div class="iframely-embed">' +
-                '<div class="iframely-responsive">' +
-                "loading ..." +
-                `<iframe src="${iframeUrl}" ` +
-                'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>' +
-                "</iframe>" +
-                "</div>" +
-                "</div>"
-              );
-            }
-          }
-        ]
+        providers: [ckeditorIframelyMediaProvider()]
       }
     };
     hotkeys("ctrl+s,command+s", (event, handler) => {
-      // Prevent the default refresh event under WINDOWS system
       // this.onSaveDraftClick();
       event.preventDefault();
     });
@@ -524,6 +500,7 @@ export default {
       };
     },
     onTitleInput(value) {
+      this.existingPost._id = "pouet";
       this.form.values.current.title = value;
     },
     onContentInput(value) {
@@ -542,7 +519,7 @@ export default {
     onTitleEnter() {
       this.$refs.ckeditor.$el.focus();
     },
-    onPublishConfirmClick() {
+    onAdvancedPublishClick() {
       this.form.errors = this.getFormErrors();
       if (Object.keys(this.form.errors).length > 0) {
         return false;
@@ -856,11 +833,5 @@ button.ck-block-toolbar-button:hover {
 .settings-modal .modal-card-body {
   border-radius: 5px;
   padding: 40px;
-}
-
-.settings-modal .actions {
-  padding-top: 30px;
-  display: flex;
-  justify-content: center;
 }
 </style>

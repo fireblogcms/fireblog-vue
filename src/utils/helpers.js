@@ -242,3 +242,31 @@ export function formInitData({ initialFormValues }) {
     }
   };
 }
+
+export function ckeditorIframelyMediaProvider() {
+  return {
+    // hint: this is just for previews. Get actual HTML codes by making API calls from your CMS
+    name: "iframely previews",
+    // Let iframely handle all links.
+    url: /.+/,
+    html: match => {
+      const url = match[0];
+      var iframeUrl = `//cdn.iframe.ly/api/iframe?app=1&api_key=${
+        process.env.VUE_APP_IFRAMELY_API_KEY
+      }&url=${encodeURIComponent(url)}`;
+      // alternatively, use &key= instead of &api_key with the MD5 hash of your api_key
+      // more about it: https://iframely.com/docs/allow-origins
+      return (
+        // If you need, set maxwidth and other styles for 'iframely-embed' class - it's yours to customize
+        '<div class="iframely-embed">' +
+        '<div class="iframely-responsive">' +
+        "loading ..." +
+        `<iframe src="${iframeUrl}" ` +
+        'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>' +
+        "</iframe>" +
+        "</div>" +
+        "</div>"
+      );
+    }
+  };
+}

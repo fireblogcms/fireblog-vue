@@ -11,7 +11,7 @@
     <div class="file is-large is-boxed has-name">
       <label style="width:100%" class="file-label">
         <input class="file-input" type="file" @change="processImage($event)" name="resume" />
-        <img class="image" height="200px" v-if="displayedImage()" :src="displayedImage()" />
+        <img v-if="uploadingState !== 'PENDING'" class="image" :src="displayedImage()" />
         <span class="file-cta">
           <span class="file-icon">
             <img src="/images/icon-upload.svg" />
@@ -27,7 +27,8 @@
 <script>
 import {
   cloudinaryUploadImage,
-  getCloudinaryBlogFolderPath
+  getCloudinaryBlogFolderPath,
+  REQUEST_STATE
 } from "../utils/helpers";
 export default {
   props: {
@@ -40,12 +41,16 @@ export default {
     return {
       uploadProgress: 0,
       uploadedImage: null,
-      file: null
+      file: null,
+      errorMessage: null,
+      uploadingState: REQUEST_STATE.NOT_STARTED
     };
   },
   methods: {
     processImage(event) {
       this.file = event.target.files[0];
+      this.uploadingState = REQUEST_STATE.PENDING;
+      this.errorMessage = null;
       cloudinaryUploadImage({
         file: this.file,
         folder: getCloudinaryBlogFolderPath(this.$route.params.blogId),
@@ -57,10 +62,13 @@ export default {
         }
       })
         .then(result => {
+          this.uploadingState = REQUEST_STATE.FINISHED_OK;
           this.uploadedImage = result;
           this.$emit("onUploaded", result);
         })
         .catch(error => {
+          this.errorMessage = error;
+          this.uploadingState = REQUEST_STATE.FINISHED_ERROR;
           new Error(error);
         });
     },

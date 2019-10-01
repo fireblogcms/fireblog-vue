@@ -32,7 +32,7 @@ export default {
 
 <style scoped>
 .layout-list .row {
-  padding: 20px 20px;
+  padding: 0px 20px;
   cursor: pointer;
 }
 
