@@ -1,7 +1,7 @@
 <template>
   <div class="writeForm">
     <!-- debug form values -->
-    <pre v-if="true">{{form}}</pre>
+    <pre v-if="false">{{form}}</pre>
 
     <AppError v-if="errorMessage">{{errorMessage}}</AppError>
 
