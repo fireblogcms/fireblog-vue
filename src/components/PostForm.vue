@@ -130,12 +130,13 @@
       </template>
       <template class="has-text-centered" #footer>
         <button @click="settingsModal.show = false" class="button is-large">Cancel</button>
+
         <button
           @click="onPublishConfirmClick"
           :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
           :disabled="savingPost.state === 'PENDING'"
           class="button is-primary is-large"
-        >Publish now !</button>
+        >{{getCurrentPublicationStatus() === 'PUBLISHED' ? "Publish changes !" : "Publish now !"}}</button>
       </template>
     </BulmaModal>
 
