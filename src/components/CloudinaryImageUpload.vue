@@ -50,6 +50,7 @@ export default {
     processImage(event) {
       this.file = event.target.files[0];
       this.uploadingState = REQUEST_STATE.PENDING;
+      this.$emit("onUploadingStateChange", this.uploadingState);
       this.errorMessage = null;
       cloudinaryUploadImage({
         file: this.file,
@@ -63,12 +64,14 @@ export default {
       })
         .then(result => {
           this.uploadingState = REQUEST_STATE.FINISHED_OK;
+          this.$emit("onUploadingStateChange", this.uploadingState);
           this.uploadedImage = result;
           this.$emit("onUploaded", result);
         })
         .catch(error => {
           this.errorMessage = error;
           this.uploadingState = REQUEST_STATE.FINISHED_ERROR;
+          this.$emit("onUploadingStateChange", this.uploadingState);
           new Error(error);
         });
     },

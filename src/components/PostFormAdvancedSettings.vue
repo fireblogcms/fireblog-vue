@@ -6,6 +6,7 @@
           <div class="field">
             <label class="label">Featured Image</label>
             <CloudinaryImageUpload
+              @onUploadingStateChange="onUploadingStateChange"
               :initialImage="form.values.initial.image"
               @onUploaded="onUploaded"
             />
@@ -41,7 +42,7 @@
             <button @click="onCancelClick" class="button is-large">Cancel</button>
             <button
               @click="onPublishClick"
-              :disabled="savingPost.state === 'PENDING'"
+              :disabled="savingPost.state === 'PENDING' || uploadingState === 'PENDING'"
               :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
               class="button is-primary is-large"
               style="margin-left:20px;"
@@ -66,7 +67,7 @@ export default {
   },
   data() {
     const data = {
-      uploadProgress: 0,
+      uploadingState: null,
       file: null
     };
     return data;
@@ -85,6 +86,9 @@ export default {
       return this.existingPost() && this.existingPost().status === "PUBLISHED"
         ? "PUBLISH CHANGES"
         : "PUBLISH NOW";
+    },
+    onUploadingStateChange(state) {
+      this.uploadingState = state;
     }
   }
 };
