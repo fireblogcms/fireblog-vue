@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-show="uploadProgress > 0 && uploadProgress < 100">
+    <div v-show="uploadingState === 'PENDING'">
       <progress
         style="border-radius:0"
         class="progress is-primary"

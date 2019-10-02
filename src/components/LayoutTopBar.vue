@@ -66,7 +66,7 @@
     </div>
 
     <!-- GRAPHQL API DOCUMENTATION -->
-    <BulmaModal v-model="showApiModal">
+    <BulmaModal class="api-modal" v-model="showApiModal">
       <template #title>
         GRAPHQL API
         <a

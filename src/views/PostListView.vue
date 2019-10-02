@@ -72,7 +72,7 @@
                   :class="{ 'is-active': activeStatus == 'PUBLISHED' }"
                 >
                   <a>
-                    <img style="height:30px;padding-right:5px" src="/images/published.png" />
+                    <!--<img style="height:30px;padding-right:5px" src="/images/published.png" />-->
                     Published
                   </a>
                 </li>
