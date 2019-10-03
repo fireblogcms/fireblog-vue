@@ -16,6 +16,7 @@ export default ({ postId, language }) => [
       node {
         slug
         title
+        teaser
         content
         updatedAt
         publishedAt
