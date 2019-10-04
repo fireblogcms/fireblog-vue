@@ -184,7 +184,8 @@ import {
   getBlog,
   formInitData,
   createSlug,
-  ckeditorIframelyMediaProvider
+  ckeditorIframelyMediaProvider,
+  graphQLErrorsContainsCode
 } from "../utils/helpers";
 import { richPreviewLinksAuthorizedDomains } from "../../config";
 
@@ -410,7 +411,12 @@ export default {
         }
         return this.createPost(newPost)
           .then(result => {
-            this.savingPost.state = REQUEST_STATE.FINISHED_OK;
+            if (result.errors) {
+              this.savingPost.state = REQUEST_STATE.FINISHED_ERROR;
+              throw new Error(result.errors[0].message);
+            } else {
+              this.savingPost.state = REQUEST_STATE.FINISHED_OK;
+            }
             return result;
           })
           .catch(error => {
@@ -429,12 +435,20 @@ export default {
         }
         return this.updatePost(post)
           .then(result => {
-            this.savingPost.state = REQUEST_STATE.FINISHED_OK;
+            if (result.errors) {
+              this.savingPost.state = REQUEST_STATE.FINISHED_ERROR;
+              throw new Error(result.errors[0].message);
+            } else {
+              this.savingPost.state = REQUEST_STATE.FINISHED_OK;
+            }
             return result;
           })
           .catch(error => {
-            this.errorMessage = "Sorry, publish operation failed.";
-            this.saveDraft.state = REQUEST_STATE.FINISHED_ERROR;
+            this.errorMessage = "Sorry, publish operation failed: " + error;
+            this.savingPost.state = REQUEST_STATE.FINISHED_ERROR;
+            if (this.settingsModal.show) {
+              this.settingsModal.show = false;
+            }
             throw new Error(error);
           });
       }
