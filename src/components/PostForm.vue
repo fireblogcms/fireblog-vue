@@ -389,6 +389,7 @@ export default {
       return this.existingPost ? this.existingPost.status : "DRAFT";
     },
     savePost(status) {
+      this.errorMessage = null;
       if (!STATUS_ENUM[status]) {
         throw new Error(
           `Received unknown status ${status}. Status MUST be one of the following value: ` +
@@ -411,17 +412,15 @@ export default {
         }
         return this.createPost(newPost)
           .then(result => {
-            if (result.errors) {
-              this.savingPost.state = REQUEST_STATE.FINISHED_ERROR;
-              throw new Error(result.errors[0].message);
-            } else {
-              this.savingPost.state = REQUEST_STATE.FINISHED_OK;
-            }
+            this.savingPost.state = REQUEST_STATE.FINISHED_OK;
             return result;
           })
           .catch(error => {
             this.savingPost.state = REQUEST_STATE.FINISHED_ERROR;
-            this.errorMessage = "Sorry, publishing failed.";
+            this.errorMessage = "Sorry, publishing failed: " + error;
+            if (this.settingsModal.show) {
+              this.settingsModal.show = false;
+            }
             throw new Error(error);
           });
       }
@@ -435,12 +434,7 @@ export default {
         }
         return this.updatePost(post)
           .then(result => {
-            if (result.errors) {
-              this.savingPost.state = REQUEST_STATE.FINISHED_ERROR;
-              throw new Error(result.errors[0].message);
-            } else {
-              this.savingPost.state = REQUEST_STATE.FINISHED_OK;
-            }
+            this.savingPost.state = REQUEST_STATE.FINISHED_OK;
             return result;
           })
           .catch(error => {
@@ -622,6 +616,9 @@ export default {
           variables: { post }
         })
         .then(result => {
+          if (result.errors) {
+            throw new Error(result.errors[0].message);
+          }
           this.lastTimeSaved = Date.now();
           this.existingPost = result.data.createPost;
           // post is created, we are now in UPDATE mode for the form.
@@ -651,6 +648,9 @@ export default {
           }
         })
         .then(result => {
+          if (result.errors) {
+            throw new Error(result.errors[0].message);
+          }
           this.lastTimeSaved = Date.now();
           this.existingPost = result.data.updatePost;
           this.changesDetected = false;

@@ -139,7 +139,6 @@ export default {
         })
         .catch(error => {
           this.errorMessage = "Sorry, an error occured while fetching blog";
-          console.log("error", error);
           throw new Error(error);
         });
     }
