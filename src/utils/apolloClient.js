@@ -60,14 +60,18 @@ const client = new ApolloClient({
   defaultOptions: {
     watchQuery: {
       fetchPolicy: "no-cache",
-      errorPolicy: "all"
+      // Any GraphQL Errors are treated the same as network errors and any data is ignored from the response.
+      errorPolicy: "none"
     },
     query: {
       fetchPolicy: "no-cache",
-      errorPolicy: "all"
+      // Any GraphQL Errors are treated the same as network errors and any data is ignored from the response.
+      errorPolicy: "none"
     },
     mutate: {
-      errorPolicy: "all"
+      fetchPolicy: "no-cache",
+      // Any GraphQL Errors are treated the same as network errors and any data is ignored from the response.
+      errorPolicy: "none"
     }
   }
 });

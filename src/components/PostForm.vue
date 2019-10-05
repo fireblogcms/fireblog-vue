@@ -616,9 +616,6 @@ export default {
           variables: { post }
         })
         .then(result => {
-          if (result.errors) {
-            throw new Error(result.errors[0].message);
-          }
           this.lastTimeSaved = Date.now();
           this.existingPost = result.data.createPost;
           // post is created, we are now in UPDATE mode for the form.
@@ -648,9 +645,6 @@ export default {
           }
         })
         .then(result => {
-          if (result.errors) {
-            throw new Error(result.errors[0].message);
-          }
           this.lastTimeSaved = Date.now();
           this.existingPost = result.data.updatePost;
           this.changesDetected = false;
