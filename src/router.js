@@ -4,6 +4,7 @@ import PostFormView from "./views/PostFormView";
 import ProfileView from "./views/ProfileView";
 import BlogCreateView from "./views/BlogCreateView";
 import BlogListView from "./views/BlogListView";
+import BlogSettingsView from "./views/BlogSettingsView";
 import PostListView from "./views/PostListView";
 import PostProofreadView from "./views/PostProofreadView";
 import NotFoundView from "./views/NotFoundView";
@@ -54,6 +55,11 @@ const router = new Router({
       path: "/blog/:blogId",
       name: "postList",
       component: PostListView
+    },
+    {
+      path: "/blog/:blogId/settings",
+      name: "blogSettings",
+      component: BlogSettingsView
     },
     {
       path: "/blog/:blogId/post/create",
