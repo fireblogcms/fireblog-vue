@@ -22,6 +22,17 @@
             <input class="input is-large" v-model="form.values.current.description" type="text" />
           </div>
         </div>
+        <div class="field">
+          <label class="label">Webhooks</label>
+          <textarea
+            v-model="form.values.current.webhooks"
+            class="textarea"
+            placeholder="e.g. Hello world"
+          ></textarea>
+          <p
+            class="help"
+          >You can specify multiple valid URLs by comma-separating them. Webhooks will be ping on each post update, delete and create.</p>
+        </div>
         <div>
           <button
             style="margin-top:20px;"
@@ -47,7 +58,9 @@ import gql from "graphql-tag";
 
 const initialFormValues = {
   name: "",
-  description: ""
+  description: "",
+  webhooks:
+    "https://api.netlify.com/build_hooks/5d99e8d7f2d05ba7eddb02d0 ,  https://yineo.fr "
 };
 
 export default {
@@ -106,11 +119,31 @@ export default {
         });
     },
     prepareBlogObjectFromInputs() {
-      return {
+      const blog = {
         _id: this.$route.params.blogId,
         name: this.form.values.current.name,
         description: this.form.values.current.description
       };
+      const webhooks = [];
+      if (this.form.values.current.webhooks.trim()) {
+        let webhooksArray = this.form.values.current.webhooks.split(",");
+        // remove extra spaces
+        webhooksArray = webhooksArray.map(webhook => webhook.trim());
+        webhooksArray.forEach(webhook => {
+          webhooks.push({
+            name: webhook,
+            url: webhook,
+            onEvents: [
+              "post:update",
+              "post:create",
+              "post:delete",
+              "blog:update"
+            ]
+          });
+        });
+        blog.webhooks = webhooks;
+      }
+      return blog;
     },
     initData() {
       this.errorMessage = null;
@@ -121,6 +154,7 @@ export default {
           this.initDataState = REQUEST_STATE.FINISHED_OK;
           this.form = formInitData({
             initialFormValues: {
+              ...initialFormValues,
               name: blog.name,
               description: blog.description
             }
