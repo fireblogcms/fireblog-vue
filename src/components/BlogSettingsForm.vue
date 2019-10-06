@@ -3,6 +3,7 @@
     <pre v-if="false">{{form}}</pre>
     <AppLoader v-if="initDataState === 'PENDING'">Loading blogs</AppLoader>
     <AppError v-if="errorMessage">{{errorMessage}}</AppError>
+    <AppMessage v-if="appMessage">{{appMessage}}</AppMessage>
     <LayoutBody
       style="margin-top:40px;padding:40px;"
       class="container"
@@ -25,6 +26,8 @@
           <button
             style="margin-top:20px;"
             class="button is-outlined is-primary is-large"
+            :class="{ 'is-loading': savingBlogState === 'PENDING'}"
+            :disabled="savingBlogState === 'PENDING'"
             type="submit"
           >Save</button>
         </div>
@@ -38,7 +41,9 @@ import LayoutBody from "../components/LayoutBody";
 import { getBlog, REQUEST_STATE, formInitData } from "../utils/helpers";
 import AppLoader from "../components/AppLoader";
 import AppError from "../components/AppError";
+import AppMessage from "../components/AppMessage";
 import apolloClient from "../utils/apolloClient";
+import gql from "graphql-tag";
 
 const initialFormValues = {
   name: "",
@@ -50,13 +55,17 @@ export default {
     LayoutBody,
     AppLoader,
     AppError,
+    AppMessage,
     LayoutBody
   },
   data() {
     return {
       blog: null,
       initDataState: REQUEST_STATE.NOT_STARTED,
-      form: formInitData({ initialFormValues })
+      savingBlogState: REQUEST_STATE.NOT_STARTED,
+      form: formInitData({ initialFormValues }),
+      errorMessage: null,
+      appMessage: null
     };
   },
   created() {
@@ -69,6 +78,39 @@ export default {
         errors.name = "Name is required";
       }
       return errors;
+    },
+    updateBlog(blog) {
+      this.savingBlogState = REQUEST_STATE.PENDING;
+      return apolloClient
+        .mutate({
+          mutation: gql`
+            mutation updateBlog($blog: UpdateBlogInput!) {
+              updateBlog(blog: $blog) {
+                name
+                description
+              }
+            }
+          `,
+          variables: {
+            blog
+          }
+        })
+        .then(result => {
+          this.savingBlogState = REQUEST_STATE.FINISHED_OK;
+          return result.data.updateBlog;
+        })
+        .catch(error => {
+          this.savingBlogState = REQUEST_STATE.FINISHED_ERROR;
+          this.errorMessage = error;
+          throw new Error(error);
+        });
+    },
+    prepareBlogObjectFromInputs() {
+      return {
+        _id: this.$route.params.blogId,
+        name: this.form.values.current.name,
+        description: this.form.values.current.description
+      };
     },
     initData() {
       this.errorMessage = null;
@@ -90,7 +132,10 @@ export default {
         });
     },
     onFormSubmit() {
-      console.log("this.form", this.form);
+      const blog = this.prepareBlogObjectFromInputs();
+      this.updateBlog(blog).then(updatedBlog => {
+        this.appMessage = `"${updatedBlog.name}" settings have been saved.`;
+      });
     }
   }
 };
