@@ -46,6 +46,11 @@
               @click="onRowClick(edge, $event)"
             >
               <h2 class="title is-2" style="color:white;">{{ edge.node.name }}</h2>
+              <div
+                @click.stop="onSettingsClick(edge.node, $event)"
+                style="min-width:100px"
+                class="button is-medium is-outlined settings"
+              >Settings</div>
             </div>
           </div>
         </div>
@@ -126,9 +131,6 @@ export default {
     buildLinkToPostList(item) {
       return { name: "postList", params: { blogId: item.node._id } };
     },
-    onRowClick(item, event) {
-      this.$router.push(this.buildLinkToPostList(item));
-    },
     getBlogs() {
       this.errorMessage = null;
       return apolloClient
@@ -142,6 +144,17 @@ export default {
             "Sorry, an error occured while fetching blog:" + error;
           throw new Error(error);
         });
+    },
+    onRowClick(item, event) {
+      this.$router.push(this.buildLinkToPostList(item));
+    },
+    onSettingsClick(blog) {
+      this.$router.push({
+        name: "blogSettings",
+        params: {
+          blogId: blog._id
+        }
+      });
     }
   },
   created() {
@@ -163,6 +176,7 @@ export default {
 }
 
 .blog-card {
+  position: relative;
   max-width: 700px;
   margin: auto;
   cursor: pointer;
@@ -186,6 +200,15 @@ export default {
 .blog-card .title a {
   color: white;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.blog-card .settings {
+  padding-left: 40px;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: url("/images/icon-settings.svg") no-repeat white 10px;
+  background-size: 25px;
 }
 </style>
 
