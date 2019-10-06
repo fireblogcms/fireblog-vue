@@ -203,10 +203,12 @@ export default {
 }
 
 .blog-card .settings {
-  background: rgba(255, 255, 255, 0.9);
+  padding-left: 40px;
   position: absolute;
   bottom: 20px;
   right: 20px;
+  background: url("/images/icon-settings.svg") no-repeat white 10px;
+  background-size: 25px;
 }
 </style>
 
