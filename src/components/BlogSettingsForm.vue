@@ -15,6 +15,7 @@
           <div class="control">
             <input v-model="form.values.current.name" class="input is-large" type="text" />
           </div>
+          <p class="help is-danger" v-if="form.errors.name">{{form.errors.name}}</p>
         </div>
         <div class="field">
           <label class="label">Description</label>
@@ -85,11 +86,10 @@ export default {
   },
   methods: {
     validateForm() {
-      const errors = {};
-      if (!this.form.values.name.trim()) {
-        errors.name = "Name is required";
+      this.form.errors = {};
+      if (!this.form.values.current.name.trim()) {
+        this.form.errors.name = "Field name is required";
       }
-      return errors;
     },
     updateBlog(blog) {
       this.savingBlogState = REQUEST_STATE.PENDING;
@@ -170,10 +170,19 @@ export default {
         });
     },
     onFormSubmit() {
-      const blog = this.prepareBlogObjectFromInputs();
-      this.updateBlog(blog).then(updatedBlog => {
-        this.appMessage = `"${updatedBlog.name}" settings have been saved.`;
-      });
+      this.errorMessage = null;
+      this.validateForm();
+      if (Object.keys(this.form.errors).length > 0) {
+        this.errorMessage = Object.keys(this.form.errors)
+          .map(key => this.form.errors[key])
+          .join(". ");
+        return;
+      } else {
+        const blog = this.prepareBlogObjectFromInputs();
+        this.updateBlog(blog).then(updatedBlog => {
+          this.appMessage = `"${updatedBlog.name}" settings have been saved.`;
+        });
+      }
     }
   }
 };
