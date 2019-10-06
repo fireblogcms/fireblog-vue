@@ -148,6 +148,11 @@ export function getBlog(id) {
             contentDefaultLanguage
             description
             name
+            webhooks {
+              name
+              onEvents
+              url
+            }
           }
         }
       `,

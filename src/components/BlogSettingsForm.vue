@@ -5,7 +5,7 @@
     <AppError v-if="errorMessage">{{errorMessage}}</AppError>
     <AppMessage v-if="appMessage">{{appMessage}}</AppMessage>
     <LayoutBody
-      style="margin-top:40px;padding:40px;"
+      style="margin:40px;padding:40px;"
       class="container"
       v-if="initDataState === 'FINISHED_OK'"
     >
@@ -151,12 +151,16 @@ export default {
       getBlog(this.$route.params.blogId)
         .then(blog => {
           this.blog = blog;
+          console.log("this.blog", this.blog);
           this.initDataState = REQUEST_STATE.FINISHED_OK;
           this.form = formInitData({
             initialFormValues: {
               ...initialFormValues,
               name: blog.name,
-              description: blog.description
+              description: blog.description,
+              webhooks: blog.webhooks
+                ? blog.webhooks.map(webhook => webhook.url).join(",")
+                : ""
             }
           });
         })
