@@ -1,57 +1,50 @@
 <template>
   <div>
+    <pre v-if="false">{{form}}</pre>
     <AppLoader v-if="initDataState === 'PENDING'">Loading blogs</AppLoader>
     <AppError v-if="errorMessage">{{errorMessage}}</AppError>
-    <LayoutBody v-if="initDataState === 'FINISHED_OK'">
-      <div class="columns">
-        <div class="column is-2">
-          <nav class="panel" style="margin-top:33px">
-            <a class="panel-block is-active">
-              <span class="panel-icon">
-                <i class="fas fa-book" aria-hidden="true"></i>
-              </span>
-              General
-            </a>
-            <a class="panel-block">
-              <span class="panel-icon">
-                <i class="fas fa-book" aria-hidden="true"></i>
-              </span>
-              Webooks
-            </a>
-          </nav>
-        </div>
-        <div class="column">
-          <div class="field">
-            <label class="label">Name</label>
-            <div class="control">
-              <input class="input" v-model="blog.name" type="text" placeholder="Text input" />
-            </div>
-          </div>
-
-          <div class="field">
-            <label class="label">Username</label>
-            <div class="control has-icons-left has-icons-right">
-              <input class="input is-success" type="text" placeholder="Text input" value="bulma" />
-              <span class="icon is-small is-left">
-                <i class="fas fa-user"></i>
-              </span>
-              <span class="icon is-small is-right">
-                <i class="fas fa-check"></i>
-              </span>
-            </div>
-            <p class="help is-success">This username is available</p>
+    <LayoutBody
+      style="margin-top:40px;padding:40px;"
+      class="container"
+      v-if="initDataState === 'FINISHED_OK'"
+    >
+      <form @submit.prevent="onFormSubmit">
+        <div class="field">
+          <label class="label">Name</label>
+          <div class="control">
+            <input v-model="form.values.current.name" class="input is-large" type="text" />
           </div>
         </div>
-      </div>
+        <div class="field">
+          <label class="label">Description</label>
+          <div class="control">
+            <input class="input is-large" v-model="form.values.current.description" type="text" />
+          </div>
+        </div>
+        <div>
+          <button
+            style="margin-top:20px;"
+            class="button is-outlined is-primary is-large"
+            type="submit"
+          >Save</button>
+        </div>
+      </form>
     </LayoutBody>
   </div>
 </template>
 
 <script>
 import LayoutBody from "../components/LayoutBody";
-import { getBlog, REQUEST_STATE } from "../utils/helpers";
+import { getBlog, REQUEST_STATE, formInitData } from "../utils/helpers";
 import AppLoader from "../components/AppLoader";
 import AppError from "../components/AppError";
+import apolloClient from "../utils/apolloClient";
+
+const initialFormValues = {
+  name: "",
+  description: ""
+};
+
 export default {
   components: {
     LayoutBody,
@@ -62,13 +55,21 @@ export default {
   data() {
     return {
       blog: null,
-      initDataState: REQUEST_STATE.NOT_STARTED
+      initDataState: REQUEST_STATE.NOT_STARTED,
+      form: formInitData({ initialFormValues })
     };
   },
   created() {
     this.initData();
   },
   methods: {
+    validateForm() {
+      const errors = {};
+      if (!this.form.values.name.trim()) {
+        errors.name = "Name is required";
+      }
+      return errors;
+    },
     initData() {
       this.errorMessage = null;
       this.initDataState = REQUEST_STATE.PENDING;
@@ -76,11 +77,20 @@ export default {
         .then(blog => {
           this.blog = blog;
           this.initDataState = REQUEST_STATE.FINISHED_OK;
+          this.form = formInitData({
+            initialFormValues: {
+              name: blog.name,
+              description: blog.description
+            }
+          });
         })
         .catch(error => {
           this.errorMessage = error;
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
         });
+    },
+    onFormSubmit() {
+      console.log("this.form", this.form);
     }
   }
 };
