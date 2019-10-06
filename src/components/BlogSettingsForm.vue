@@ -59,8 +59,7 @@ import gql from "graphql-tag";
 const initialFormValues = {
   name: "",
   description: "",
-  webhooks:
-    "https://api.netlify.com/build_hooks/5d99e8d7f2d05ba7eddb02d0 ,  https://yineo.fr "
+  webhooks: ""
 };
 
 export default {
@@ -142,6 +141,8 @@ export default {
           });
         });
         blog.webhooks = webhooks;
+      } else {
+        blog.webhooks = [];
       }
       return blog;
     },
@@ -151,7 +152,6 @@ export default {
       getBlog(this.$route.params.blogId)
         .then(blog => {
           this.blog = blog;
-          console.log("this.blog", this.blog);
           this.initDataState = REQUEST_STATE.FINISHED_OK;
           this.form = formInitData({
             initialFormValues: {
