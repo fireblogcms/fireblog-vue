@@ -24,15 +24,15 @@
           </div>
         </div>
         <div class="field">
-          <label class="label">Webhooks</label>
+          <label class="label">Static site rebuild webhooks</label>
           <textarea
-            v-model="form.values.current.webhooks"
+            v-model="form.values.current.staticBuildWebhooks"
             class="textarea"
             placeholder="e.g. Hello world"
           ></textarea>
           <p
             class="help"
-          >You can specify multiple valid URLs by comma-separating them. Webhooks will be ping on each post update, delete and create.</p>
+          >You can specify multiple valid URLs by comma-separating them. Those webooks will each time a build of your static blog is needed.</p>
         </div>
         <div>
           <button
@@ -60,7 +60,7 @@ import gql from "graphql-tag";
 const initialFormValues = {
   name: "",
   description: "",
-  webhooks: ""
+  staticBuildWebhooks: []
 };
 
 export default {
@@ -124,20 +124,19 @@ export default {
         description: this.form.values.current.description
       };
       const webhooks = [];
-      if (this.form.values.current.webhooks.trim()) {
-        let webhooksArray = this.form.values.current.webhooks.split(",");
-        // remove extra spaces
-        webhooksArray = webhooksArray.map(webhook => webhook.trim());
-        webhooksArray.forEach(webhook => {
+      if (this.form.values.current.staticBuildWebhooks.trim()) {
+        let staticBuildWebhooksArray = this.form.values.current.staticBuildWebhooks.split(
+          ","
+        );
+        //remove extra spaces
+        staticBuildWebhooksArray = staticBuildWebhooksArray.map(webhook =>
+          webhook.trim()
+        );
+        staticBuildWebhooksArray.forEach(webhook => {
           webhooks.push({
             name: webhook,
             url: webhook,
-            onEvents: [
-              "post:update",
-              "post:create",
-              "post:delete",
-              "blog:update"
-            ]
+            onEvents: ["global:staticBuildNeeded"]
           });
         });
         blog.webhooks = webhooks;
@@ -158,7 +157,7 @@ export default {
               ...initialFormValues,
               name: blog.name,
               description: blog.description,
-              webhooks: blog.webhooks
+              staticBuildWebhooks: blog.webhooks
                 ? blog.webhooks.map(webhook => webhook.url).join(",")
                 : ""
             }
