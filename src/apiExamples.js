@@ -5,7 +5,7 @@ export default ({ postId, language }) => [
     snippet: `
 {
   posts(last: 50, language:${language.replace("-", "_")}) {
-    PageInfo {
+    pageInfo {
       hasNextPage
       hasPreviousPage
       startCursor
