@@ -106,7 +106,7 @@
 <script>
 import gql from "graphql-tag";
 import apolloClient from "../utils/apolloClient";
-import { getUser, REQUEST_STATE, getBlog } from "../utils/helpers";
+import { getUser, REQUEST_STATE, getBlog, getPost } from "../utils/helpers";
 import apiExamples from "../apiExamples";
 import ApiButton from "../components/ApiButton";
 import BulmaModal from "../components/BulmaModal";
@@ -204,7 +204,7 @@ export default {
     },
     async onApiClick() {
       const context = {
-        postId: "{{POST_ID}}",
+        slug: "{{POST_SLUG}}",
         language: navigator.language || navigator.userLanguage
       };
       if (this.$route.name === "postList") {
@@ -212,9 +212,12 @@ export default {
         context.language = blog.contentDefaultLanguage;
       }
       if (this.$route.name === "postUpdate") {
-        const blog = await getBlog(this.$route.params.blogId);
+        const [blog, post] = await Promise.all([
+          getBlog(this.$route.params.blogId),
+          getPost(this.$route.params.postId)
+        ]);
         context.language = blog.contentDefaultLanguage;
-        context.postId = this.$route.params.postId;
+        context.slug = post.slug;
       }
       this.apiModalExampleList = apiExamples(context);
       this.showApiModal = true;

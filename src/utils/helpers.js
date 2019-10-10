@@ -166,6 +166,37 @@ export function getBlog(id) {
     });
 }
 
+export function getPost(id) {
+  const cache = {};
+  if (cache.id) {
+    return Promise.resolve(cache.id);
+  }
+  return apolloClient
+    .query({
+      query: gql`
+        query getPostQuery($_id: ID!) {
+          post(_id: $_id) {
+            _id
+            slug
+            content
+            publishedAt
+            author {
+              name
+              email
+            }
+          }
+        }
+      `,
+      variables: {
+        _id: id
+      }
+    })
+    .then(r => {
+      cache.id = r.data.post;
+      return r.data.post;
+    });
+}
+
 export const parseHeaders = rawHeaders => {
   const headers = new Headers();
   // Replace instances of \r\n and \n followed by at least one space or horizontal tab with a space

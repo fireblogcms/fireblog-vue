@@ -1,10 +1,10 @@
-export default ({ postId, language }) => [
+export default ({ slug, language }) => [
   {
-    label: "Get all posts",
     id: "getAllPosts",
+    label: "Get all posts",
     snippet: `
 {
-  posts(last: 50, language:${language.replace("-", "_")}) {
+  posts {
     pageInfo {
       hasNextPage
       hasPreviousPage
@@ -32,11 +32,11 @@ export default ({ postId, language }) => [
 `
   },
   {
-    id: "getSinglePost",
-    label: "Get a single post",
+    id: "getSinglePostBySlug",
+    label: "Get a single post by slug",
     snippet: `
 {
-  post(_id: "${postId}") {
+  post(slug: "${slug}") {
     slug
     title
     content
