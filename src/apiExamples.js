@@ -10,7 +10,7 @@ export default ({ slug, language }) => [
       hasPreviousPage
       startCursor
       endCursor
-    }
+    } 
     edges {
       cursor
       node {
@@ -50,5 +50,31 @@ export default ({ slug, language }) => [
   }
 }
     `
+  },
+  {
+    id: "getBlogWithPosts",
+    label: "Get blog informations",
+    snippet: `
+    {
+      blog {
+        name
+        description
+        owner {
+          name
+          email
+          name
+        }
+        posts {
+          edges {
+            node {
+              title
+              teaser
+            }
+          }
+        }
+      }
+    }
+      
+  `
   }
 ];
