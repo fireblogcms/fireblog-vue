@@ -145,7 +145,7 @@ export function getBlog(id) {
         query loadBlogQuery($_id: ID!) {
           blog(_id: $_id) {
             _id
-            contentDefaultLanguage
+            contentDefaultLocale
             description
             name
             webhooks {

@@ -1,4 +1,4 @@
-export default ({ slug, language }) => [
+export default ({ slug, locale }) => [
   {
     id: "getAllPosts",
     label: "Get all posts",

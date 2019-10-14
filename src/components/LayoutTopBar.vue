@@ -96,7 +96,7 @@
               class="is-pulled-right button is-primary"
             >Try it !</a>
           </h2>
-          <pre class="language-graphql"><code>{{example.snippet}}</code></pre>
+          <pre class="locale-graphql"><code>{{example.snippet}}</code></pre>
         </div>
       </template>
     </BulmaModal>
@@ -173,7 +173,7 @@ export default {
                       description
                       createdAt
                       updatedAt
-                      contentDefaultLanguage
+                      contentDefaultLocale
                     }
                   }
                 }
@@ -205,18 +205,18 @@ export default {
     async onApiClick() {
       const context = {
         slug: "{{POST_SLUG}}",
-        language: navigator.language || navigator.userLanguage
+        locale: navigator.language || navigator.userLanguage
       };
       if (this.$route.name === "postList") {
         const blog = await getBlog(this.$route.params.blogId);
-        context.language = blog.contentDefaultLanguage;
+        context.locale = blog.contentDefaultLocale;
       }
       if (this.$route.name === "postUpdate") {
         const [blog, post] = await Promise.all([
           getBlog(this.$route.params.blogId),
           getPost(this.$route.params.postId)
         ]);
-        context.language = blog.contentDefaultLanguage;
+        context.locale = blog.contentDefaultLocale;
         context.slug = post.slug;
       }
       this.apiModalExampleList = apiExamples(context);
