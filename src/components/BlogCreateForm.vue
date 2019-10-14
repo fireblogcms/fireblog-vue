@@ -106,7 +106,7 @@ const createBlogMutation = gql`
 
 const languageListQuery = gql`
   query languageListQuery {
-    languages {
+    locales {
       code
       nativeName
       englishName
