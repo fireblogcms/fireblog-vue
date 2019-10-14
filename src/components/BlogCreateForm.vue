@@ -194,7 +194,7 @@ export default {
             blog: {
               owner: this.user._id,
               name: this.inputs.name,
-              language: this.inputs.blogContentDefaultLocale.replace("-", "_")
+              locale: this.inputs.blogContentDefaultLocale.replace("-", "_")
             }
           }
         })
