@@ -163,7 +163,7 @@ export default {
         })
         .catch(error => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
-          this.initStateError = "initData() : " + e;
+          this.initStateError = "initData() : " + error;
           throw new Error(error);
         });
     },
