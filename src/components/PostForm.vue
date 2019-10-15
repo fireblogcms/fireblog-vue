@@ -98,12 +98,14 @@
         <span class="animated bounce" v-if="changesDetected">*</span>
       </button>
 
+      <!--
       <button
         :disabled="savingPost.state === 'PENDING'"
         @click="onProofreadClick()"
         class="button is-outlined item"
         type="submit"
       >PROOFREAD</button>
+      -->
     </portal>
     <!-- END TOPBAR RIGHT BUTTONS -->
 
