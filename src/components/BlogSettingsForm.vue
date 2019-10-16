@@ -5,7 +5,7 @@
     <AppError v-if="errorMessage">{{errorMessage}}</AppError>
     <AppMessage v-if="appMessage">{{appMessage}}</AppMessage>
     <LayoutBody
-      style="margin-top:40px;padding:40px;"
+      style="margin-top:40px;margin-bottom:40px;padding:40px;"
       class="container"
       v-if="initDataState === 'FINISHED_OK'"
     >
