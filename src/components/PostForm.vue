@@ -84,7 +84,7 @@
         :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED' }"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
-      >BEGIN PUBLICATION</button>
+      >PUBLICATION</button>
 
       <button
         @click="onPublishClick()"
@@ -431,7 +431,10 @@ export default {
           ...this.preparePostFromCurrentFormValues(),
           status
         };
-        if (status === "PUBLISHED") {
+        if (
+          this.getCurrentPublicationStatus() === "DRAFT" &&
+          status === "PUBLISHED"
+        ) {
           post.publishedAt = new Date();
         }
         return this.updatePost(post)

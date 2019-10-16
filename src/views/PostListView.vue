@@ -102,11 +102,11 @@
                           <span
                             style="color:rgba(0, 0, 0, 0.5);"
                             v-if="item.node.status === 'PUBLISHED'"
-                          >published {{ Number(item.node.publishedAt) | moment("from") }}</span>
+                          >published on {{ Number(item.node.publishedAt) | moment("DD MMMM YYYY - HH:mm") }}</span>
                           <span
                             style="color:rgba(0, 0, 0, 0.5);"
                             v-if="item.node.status === 'DRAFT'"
-                          >updated {{ Number(item.node.updatedAt) | moment("from") }}</span>
+                          >updated on {{ Number(item.node.updatedAt) | moment("DD MMMM YYYY - HH:mm") }}</span>
 
                           <p
                             style="padding-top:10px;font-style:italic"
