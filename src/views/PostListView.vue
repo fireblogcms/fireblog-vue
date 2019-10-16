@@ -171,7 +171,7 @@ import BulmaModal from "../components/BulmaModal";
 
 const postsQuery = gql`
   query postsQuery($blog: ID!, $status: PostPublicationStatus!) {
-    posts(language: "fr", filter: { blog: $blog, status: $status }, last: 100) {
+    posts(locale: "fr", filter: { blog: $blog, status: $status }, last: 100) {
       edges {
         node {
           _id

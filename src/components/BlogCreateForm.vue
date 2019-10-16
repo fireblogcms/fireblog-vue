@@ -51,9 +51,9 @@
               <div class="control">
                 <div
                   class="select is-large is-fullwidth"
-                  :class="{'is-danger': formErrors.blogContentDefaultLanguage}"
+                  :class="{'is-danger': formErrors.blogContentDefaultLocale}"
                 >
-                  <select v-model="inputs.blogContentDefaultLanguage">
+                  <select v-model="inputs.blogContentDefaultLocale">
                     <option value>Select a language</option>
                     <option
                       class="has-text-centered"
@@ -65,8 +65,8 @@
                 </div>
                 <p
                   class="has-text-centered help is-danger"
-                  v-if="formErrors.blogContentDefaultLanguage"
-                >{{formErrors.blogContentDefaultLanguage}}</p>
+                  v-if="formErrors.blogContentDefaultLocale"
+                >{{formErrors.blogContentDefaultLocale}}</p>
               </div>
             </div>
             <br />
@@ -106,7 +106,7 @@ const createBlogMutation = gql`
 
 const languageListQuery = gql`
   query languageListQuery {
-    languages {
+    locales {
       code
       nativeName
       englishName
@@ -134,7 +134,7 @@ export default {
       languageList: null,
       inputs: {
         name: "",
-        blogContentDefaultLanguage: null
+        blogContentDefaultLocale: null
       }
     };
   },
@@ -147,7 +147,7 @@ export default {
       this.initDataState = REQUEST_STATE.PENDING;
       Promise.all([getUser(), this.getLanguageList()])
         .then(([user, languageListResult]) => {
-          const languages = languageListResult.data.languages;
+          const languages = languageListResult.data.locales;
           this.initDataState = REQUEST_STATE.FINISHED_OK;
           this.user = user;
           this.languageList = Object.keys(languages).map(i => {
@@ -158,7 +158,7 @@ export default {
             };
           });
           // set browser language by default
-          this.inputs.blogContentDefaultLanguage =
+          this.inputs.blogContentDefaultLocale =
             navigator.language || navigator.userLanguage;
         })
         .catch(error => {
@@ -177,8 +177,8 @@ export default {
       if (!this.inputs.name.trim()) {
         errors["name"] = "Name is required";
       }
-      if (!this.inputs.blogContentDefaultLanguage.trim()) {
-        errors["blogContentDefaultLanguage"] = "Language is required";
+      if (!this.inputs.blogContentDefaultLocale.trim()) {
+        errors["blogContentDefaultLocale"] = "Language is required";
       }
       return errors;
     },
@@ -194,7 +194,7 @@ export default {
             blog: {
               owner: this.user._id,
               name: this.inputs.name,
-              language: this.inputs.blogContentDefaultLanguage.replace("-", "_")
+              locale: this.inputs.blogContentDefaultLocale.replace("-", "_")
             }
           }
         })
