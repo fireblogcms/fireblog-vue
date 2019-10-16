@@ -774,9 +774,12 @@ export default {
 }
 
 .writeForm > form {
+  box-shadow: 1px 1px 100px 1px rgba(0, 0, 0, 0.07);
+  border-radius: 6px;
   font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  padding: 0 2rem;
+  padding: 30px;
   margin: auto;
+  margin-bottom: 40px;
   max-width: 940px;
   padding: 2rem 4rem;
 }
