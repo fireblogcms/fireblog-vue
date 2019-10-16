@@ -135,13 +135,13 @@
             :existingPost="existingPost"
             :savingPost="savingPost"
             @onCancelClick="settingsModal.show = false"
-            @onPublicationClick="onAdvancedPublishClick"
+            @onPublishClick="onPublishClick"
           />
           <!--
           <div class="actions">
             <button @click="settingsModal.show = false" class="button is-large">Cancel</button>
             <button
-              @click="onAdvancedPublishClick"
+              @click="onPublishClick"
               :disabled="savingPost.state === 'PENDING'"
               :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
               class="button is-primary is-large"
@@ -534,7 +534,7 @@ export default {
     onTitleEnter() {
       this.$refs.ckeditor.$el.focus();
     },
-    onAdvancedPublishClick() {
+    onPublishClick() {
       this.form.errors = this.getFormErrors();
       if (Object.keys(this.form.errors).length > 0) {
         return false;
@@ -772,8 +772,8 @@ export default {
 }
 
 .writeForm > form {
-  box-shadow: 1px 1px 100px 1px rgba(0, 0, 0, 0.07);
-  border-radius: 6px;
+  box-shadow: 1px 1px 10px 1px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
   font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding: 30px;
   margin: auto;

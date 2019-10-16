@@ -65,16 +65,18 @@
           </div>
         </div>
       </div>
-      <div class="other settings">
-        <div class="actions">
-          <button @click="onCancelClick" class="button is-large">Cancel</button>
-          <button
-            @click="onPublishClick"
-            :disabled="savingPost.state === 'PENDING' || uploadingState === 'PENDING'"
-            :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
-            class="button is-primary is-large"
-            style="margin-left:20px;"
-          >{{getPublishButtonText()}}</button>
+      <div class="columns">
+        <div class="column">
+          <div class="actions">
+            <button @click="onCancelClick" class="button is-large">Cancel</button>
+            <button
+              @click="onPublishClick"
+              :disabled="savingPost.state === 'PENDING' || uploadingState === 'PENDING'"
+              :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
+              class="button is-primary is-large"
+              style="margin-left:20px;"
+            >{{getPublishButtonText()}}</button>
+          </div>
         </div>
       </div>
     </form>
