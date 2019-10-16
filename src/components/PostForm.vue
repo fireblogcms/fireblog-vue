@@ -409,7 +409,9 @@ export default {
           ...this.preparePostFromCurrentFormValues(),
           status
         };
-        newPost.publishedAt = new Date();
+        if (status === "PUBLISHED") {
+          newPost.publishedAt = new Date();
+        }
         return this.createPost(newPost)
           .then(result => {
             this.savingPost.state = REQUEST_STATE.FINISHED_OK;
