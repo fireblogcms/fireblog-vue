@@ -110,8 +110,8 @@
 
                           <p
                             style="padding-top:10px;font-style:italic"
-                            v-if="item.node.content.length > 0"
-                          >{{striptags(item.node.content.substr(0, 200))}}...</p>
+                            v-if="item.node.teaser.trim()"
+                          >{{striptags(item.node.teaser.substr(0, 200))}}...</p>
                         </div>
                         <div class="column is-2">
                           <div class="actions">
@@ -181,6 +181,7 @@ const postsQuery = gql`
           publishedAt
           status
           content
+          teaser
         }
       }
     }
