@@ -78,7 +78,7 @@
       >UNPUBLISH</button>
 
       <button
-        @click="onPublishClick()"
+        @click="onPublicationClick()"
         v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
         class="button is-outlined item is-primary"
         :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED' }"
@@ -87,7 +87,7 @@
       >PUBLICATION</button>
 
       <button
-        @click="onPublishClick()"
+        @click="onPublicationClick()"
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
         class="button item is-outlined is-primary"
         :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
@@ -114,15 +114,15 @@
       <template #body>{{modal.content}}</template>
       <template #footer>
         <div
-          v-if="modal.cancelText && modal.cancelCallback"
-          @click="modal.cancelCallback"
-          class="button is-primary"
-        >{{modal.cancelText}}</div>
-        <div
           v-if="modal.confirmText && modal.confirmCallback"
           @click="modal.confirmCallback"
           class="button is-danger"
         >{{modal.confirmText}}</div>
+        <div
+          v-if="modal.cancelText && modal.cancelCallback"
+          @click="modal.cancelCallback"
+          class="button is-primary"
+        >{{modal.cancelText}}</div>
       </template>
     </BulmaModal>
 
@@ -135,7 +135,7 @@
             :existingPost="existingPost"
             :savingPost="savingPost"
             @onCancelClick="settingsModal.show = false"
-            @onPublishClick="onAdvancedPublishClick"
+            @onPublicationClick="onAdvancedPublishClick"
           />
           <!--
           <div class="actions">
@@ -398,10 +398,6 @@ export default {
             Object.values(STATUS_ENUM).join(", ")
         );
       }
-      if (!this.form.values.current.title.trim()) {
-        alert("A title is required");
-        return Promise.reject("A title is required");
-      }
       this.savingPost.state = REQUEST_STATE.PENDING;
       this.savingPost.publicationStatus = status;
       if (this.getCurrentOperation() === "CREATE") {
@@ -477,8 +473,8 @@ export default {
           show: true,
           title: "Some changes have not been saved",
           content: `If you quit now, your last changes will be lost`,
-          cancelText: "Save my changes first",
-          confirmText: "Quit anyway.",
+          cancelText: "Save and quit",
+          confirmText: "Quit without saving",
           confirmCallback: () => {
             this.$router.push({
               name: "postList",
@@ -486,7 +482,13 @@ export default {
             });
           },
           cancelCallback: () => {
-            this.modal.show = false;
+            this.onSaveDraftClick().then(() => {
+              this.modal.show = false;
+              this.$router.push({
+                name: "postList",
+                params: { blogId: this.$route.params.blogId }
+              });
+            });
           }
         };
       } else {
@@ -566,19 +568,23 @@ export default {
           throw new Error(error);
         });
     },
-    onPublishClick() {
+    /**
+     * At least a title is required to begin publication process.
+     */
+    postFormIsValid() {
+      let isValid = true;
+      if (!this.form.values.current.title.trim()) {
+        alert("A title is required");
+        isValid = false;
+      }
+      return isValid;
+    },
+    onPublicationClick() {
+      if (!this.postFormIsValid()) {
+        return;
+      }
       if (this.mediaLoadingCounter > 0) {
-        this.modal = {
-          show: true,
-          title: "We can't publish now",
-          content: `${this.mediaLoadingCounter} media ${
-            this.mediaLoadingCounter > 1 ? "are" : "is"
-          } currently uploading`,
-          cancelText: "Wait for uploads to complete!",
-          cancelCallback: () => {
-            this.modal.show = false;
-          }
-        };
+        this.showMediaCurrentlyLoadingModal();
       } else {
         if (!this.form.values.initial.slug.trim()) {
           this.form.values.current.slug = createSlug(
@@ -598,7 +604,27 @@ export default {
       this.savePost(STATUS_ENUM.DRAFT);
     },
     onSaveDraftClick() {
-      this.savePost(STATUS_ENUM.DRAFT);
+      if (!this.postFormIsValid()) {
+        return Promise.reject("Form values are invalid");
+      } else if (this.mediaLoadingCounter > 0) {
+        Promise.reject("Media are currently loading");
+        this.showMediaCurrentlyLoadingModal();
+      } else {
+        return this.savePost(STATUS_ENUM.DRAFT);
+      }
+    },
+    showMediaCurrentlyLoadingModal() {
+      this.modal = {
+        show: true,
+        title: "We can't publish now",
+        content: `${this.mediaLoadingCounter} media ${
+          this.mediaLoadingCounter > 1 ? "are" : "is"
+        } currently uploading`,
+        cancelText: "Wait for uploads to complete!",
+        cancelCallback: () => {
+          this.modal.show = false;
+        }
+      };
     },
     onProofreadClick() {
       this.savePost(STATUS_ENUM.DRAFT).then(() => {
@@ -724,9 +750,6 @@ export default {
     },
     getFormErrors() {
       const errors = {};
-      if (!this.form.values.current.title.trim()) {
-        errors.title = "Title is required";
-      }
       // validate that slug is an url
       if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(this.form.values.current.slug)) {
         errors.slug = "Slug can only contains minusculs dans '-' characters.";
