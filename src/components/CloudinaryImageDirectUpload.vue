@@ -1,5 +1,10 @@
 <template>
-  <div>
+  <div class="cloudinary-image-direct-upload">
+    <img
+      v-if="displayImageWhenUploaded && uploadingState !== 'PENDING'"
+      class="image"
+      :src="displayedImage()"
+    />
     <div v-show="uploadingState === 'PENDING'">
       <progress
         style="border-radius:0"
@@ -8,10 +13,9 @@
         max="100"
       >{{uploadProgress}}</progress>
     </div>
-    <div class="file is-large is-boxed has-name">
-      <label style="width:100%" class="file-label">
+    <div class="file is-large is-boxed has-name is-centered">
+      <label class="file-label" style="width: 100%">
         <input class="file-input" type="file" @change="processImage($event)" name="resume" />
-        <img v-if="uploadingState !== 'PENDING'" class="image" :src="displayedImage()" />
         <span class="file-cta">
           <span class="file-icon">
             <img src="/images/icon-upload.svg" />
@@ -32,6 +36,10 @@ import {
 } from "../utils/helpers";
 export default {
   props: {
+    displayImageWhenUploaded: {
+      type: Boolean,
+      default: false
+    },
     initialImage: {
       type: String,
       default: null
@@ -87,7 +95,8 @@ export default {
 </script>
 
 <style scoped>
-.image:hover {
-  cursor: pointer;
+.file-icon img {
+  color: white;
 }
 </style>
+

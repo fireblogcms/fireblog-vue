@@ -757,8 +757,6 @@ export default {
       if (!this.form.values.current.slug.trim()) {
         errors.slug = "Slug is required";
       }
-      //// slug regex: ^[a-z](-?[a-z])*$
-      //if ()
       if (!this.form.values.current.teaser.trim()) {
         errors.teaser = "Teaser is required";
       }
