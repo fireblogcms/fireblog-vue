@@ -49,6 +49,7 @@ video {
 
 #app a {
   text-decoration: underline;
+  color: #333;
 }
 
 #app .is-box-shadowed {

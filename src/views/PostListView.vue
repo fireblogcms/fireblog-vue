@@ -154,7 +154,7 @@
         <p>This action cannot be undone</p>
       </template>
       <template #footer>
-        <div @click="deleteModal.show = false" class="button is-success">OUPS NO, CANCEL !</div>
+        <div @click="deleteModal.show = false" class="button is-primary">OUPS NO, CANCEL !</div>
         <div @click="onDeleteModalConfirmClick" class="button is-danger">DELETE IT. FOREVER.</div>
       </template>
     </BulmaModal>

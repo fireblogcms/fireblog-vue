@@ -813,6 +813,7 @@ export default {
   margin-bottom: 40px;
   max-width: 940px;
   padding: 2rem 4rem;
+  font-weight: 400;
 }
 .post-form-wrapper textarea#title {
   background: transparent;
