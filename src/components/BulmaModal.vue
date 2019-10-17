@@ -1,7 +1,7 @@
 <template>
   <div :class="{ 'is-active': value, 'fullscreen': fullscreen }" class="bulma-modal modal">
     <div @click="onCloseClick" class="modal-background"></div>
-    <div :class="{[animation]: true}" class="modal-card animated">
+    <div :class="{[animation]: animation ? true : false}" class="modal-card animated">
       <header v-if="this.$slots.title" class="modal-card-head">
         <p class="modal-card-title">
           <slot name="title" />
@@ -24,8 +24,8 @@
 export default {
   props: {
     animation: {
-      type: String,
-      default: "fadeInDown"
+      type: [String, null],
+      default: null
     },
     fullscreen: {
       type: Boolean,

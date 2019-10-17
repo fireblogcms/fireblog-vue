@@ -76,7 +76,8 @@
         </template>
       </BulmaModal>
       <!-- HURRAH MODAL -->
-      <BulmaModal class="hurrah-modal animated fadeIn" v-model="hurrahModal.show">
+
+      <BulmaModal v-model="publishingHurrahModal.show">
         <template #body>
           <div class="has-text-centered">
             <h1 class="title is-1 has-text-centered">Hurrah ! Your post have been published !</h1>
@@ -84,7 +85,27 @@
           </div>
         </template>
         <template class="has-text-centered" #footer>
-          <button @click="hurrahModal.show = false" class="button is-primary is-large">Okay !</button>
+          <button
+            @click="$router.push({name: 'postList'})"
+            class="button is-primary is-large"
+          >Okay !</button>
+        </template>
+      </BulmaModal>
+
+      <BulmaModal v-model="publishingChangesModal.show">
+        <template #body>
+          <div class="has-text-centered">
+            <h1
+              style="padding:100px;"
+              class="title is-3 has-text-centered"
+            >Your changes have been published !</h1>
+          </div>
+        </template>
+        <template class="has-text-centered" #footer>
+          <button
+            @click="$router.push({name: 'postList'})"
+            class="button is-primary is-large"
+          >Okay !</button>
         </template>
       </BulmaModal>
     </div>
@@ -297,7 +318,10 @@ export default {
       settingsModal: {
         show: false
       },
-      hurrahModal: {
+      publishingHurrahModal: {
+        show: false
+      },
+      publishingChangesModal: {
         show: false
       }
     };
@@ -426,7 +450,7 @@ export default {
           status
         };
         if (
-          this.getCurrentPublicationStatus() === "DRAFT" &&
+          this.existingPost.status !== "PUBLISHED" &&
           status === "PUBLISHED"
         ) {
           post.publishedAt = new Date();
@@ -533,13 +557,24 @@ export default {
       this.$refs.ckeditor.$el.focus();
     },
     onPublishClick() {
+      // If article is published or re-published from draft, we display a "Hurrah modal".
+      // If we only publish changes on a already published articles, we have a more
+      // sober modal.
+      let publishingChanges = false;
+      if (this.existingPost && this.existingPost.status === "PUBLISHED") {
+        publishingChanges = true;
+      }
       this.form.errors = this.getFormErrors();
       if (Object.keys(this.form.errors).length > 0) {
         return false;
       } else {
         this.savePost(STATUS_ENUM.PUBLISHED).then(() => {
           this.settingsModal.show = false;
-          this.hurrahModal.show = true;
+          if (publishingChanges === true) {
+            this.publishingChangesModal.show = true;
+          } else {
+            this.publishingHurrahModal.show = true;
+          }
         });
       }
     },
@@ -594,7 +629,6 @@ export default {
           );
         }
         this.settingsModal.show = true;
-
         //this.savePost(STATUS_ENUM.PUBLISHED);
       }
     },
