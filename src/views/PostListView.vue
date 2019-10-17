@@ -151,11 +151,24 @@
     <BulmaModal v-model="deleteModal.show">
       <template #title>{{deleteModal.title}}</template>
       <template #body>
-        <p>This action cannot be undone</p>
+        <div class="message is-danger">
+          <div class="message-body">
+            <p>
+              <strong>DANGER !</strong>
+              <br />This action cannot be undone.
+              <strong>{{deleteModal.post.title}}</strong> will be deleted forever.
+            </p>
+          </div>
+        </div>
       </template>
       <template #footer>
         <div @click="deleteModal.show = false" class="button is-primary">OUPS NO, CANCEL !</div>
-        <div @click="onDeleteModalConfirmClick" class="button is-danger">DELETE IT. FOREVER.</div>
+        <div
+          @click="onDeleteModalConfirmClick"
+          class="button is-danger"
+          :class="{'is-loading':deletePostRequestState === 'PENDING'}"
+          :disabled="deletePostRequestState === 'PENDING' ? true : false"
+        >DELETE IT. FOREVER.</div>
       </template>
     </BulmaModal>
   </DefaultLayout>
