@@ -6,7 +6,7 @@
           <!-- IMAGE UPLOAD FIELD -->
           <div class="field">
             <label>
-              <strong>Image</strong>
+              <strong>Featured image</strong>
             </label>
             <CloudinaryImageDirectUpload
               :displayImageWhenUploaded="false"
@@ -18,7 +18,10 @@
           <!-- TEASER FIELD -->
           <div class="field">
             <label>
-              <strong>Teaser</strong>: a short introductory for your post that stimulates readers interest.
+              <strong>Teaser</strong>
+              <div
+                class="field-help"
+              >a short introductory for your post that stimulates readers interest.</div>
             </label>
             <div class="control">
               <textarea
@@ -32,7 +35,8 @@
           <!-- SLUG FIELD -->
           <div class="field">
             <label>
-              <strong>Slug</strong>: used to build a seo-friendly url for your post.
+              <strong>Slug</strong>
+              <div class="field-help">used to build a seo-friendly url for your post.</div>
             </label>
 
             <div class="control">
@@ -47,20 +51,23 @@
           </div>
         </div>
         <div class="column">
-          <div class="preview-help has-text-centered">
-            <em>Approximative preview of how your story will appear when sharing its link on other websites like Twitter, Facebook etc:</em>
-          </div>
-          <div class="post-preview">
-            <div
-              v-if="this.form.values.current.image"
-              class="post-preview-image"
-              :style="{backgroundImage: `url(${this.form.values.current.image})`}"
-            ></div>
-            <div class="post-preview-content">
-              <div>
-                <strong>{{form.values.current.title}}</strong>
+          <div class="post-preview-wrapper">
+            <div class="field-help has-text-centered">
+              <label class="label">Post sharing preview</label>
+              Approximative preview of how your post will appear when sharing its link on other websites like Twitter, Facebook etc:
+            </div>
+            <div class="post-preview">
+              <div
+                v-if="this.form.values.current.image"
+                class="post-preview-image"
+                :style="{backgroundImage: `url(${this.form.values.current.image})`}"
+              ></div>
+              <div class="post-preview-content">
+                <div>
+                  <strong>{{form.values.current.title}}</strong>
+                </div>
+                <div class="content">{{form.values.current.teaser}}</div>
               </div>
-              <div class="content">{{form.values.current.teaser}}</div>
             </div>
           </div>
         </div>
@@ -68,12 +75,13 @@
       <div class="columns">
         <div class="column">
           <div class="actions">
-            <button @click="onCancelClick" class="button is-large">Cancel</button>
+            <button @click="onCancelClick" class="button is-medium">Go back</button>
+
             <button
               @click="onPublishClick"
               :disabled="savingPost.state === 'PENDING' || uploadingState === 'PENDING'"
               :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
-              class="button is-primary is-large"
+              class="button is-primary is-medium"
               style="margin-left:20px;"
             >{{getPublishButtonText()}}</button>
           </div>
@@ -127,6 +135,11 @@ export default {
 .label {
   padding-bottom: 0px;
 }
+.field-help {
+  font-weight: 100;
+  font-size: 15px;
+  font-style: italic;
+}
 .actions {
   display: flex;
   justify-content: center;
@@ -134,13 +147,15 @@ export default {
 .post-preview-help {
   max-width: 500px;
 }
-.post-preview {
+.post-preview-wrapper {
   max-width: 500px;
+}
+.post-preview {
   margin-top: 10px;
   margin: 20px auto;
   border-radius: 3px;
   border: 1px solid #dedede;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.06);
 }
 
 .post-preview-image {

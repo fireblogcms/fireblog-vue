@@ -64,14 +64,6 @@ export default ({ slug, locale }) => [
           email
           name
         }
-        posts {
-          edges {
-            node {
-              title
-              teaser
-            }
-          }
-        }
       }
     }
       

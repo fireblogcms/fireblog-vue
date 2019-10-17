@@ -1,13 +1,11 @@
 <template>
-  <div class="writeForm">
-    <!-- debug form values -->
-    <pre v-if="false">{{form}}</pre>
-
-    <AppError v-if="errorMessage">{{errorMessage}}</AppError>
-
+  <div>
     <AppLoader v-if="initDataState === 'PENDING'" />
+    <AppError v-if="errorMessage">{{errorMessage}}</AppError>
+    <div v-if="initDataState === REQUEST_STATE.FINISHED_OK" class="post-form-wrapper">
+      <!-- debug form values -->
+      <pre v-if="false">{{form}}</pre>
 
-    <template v-if="initDataState === REQUEST_STATE.FINISHED_OK">
       <!-- FORM -->
       <form @submit.prevent>
         <textarea-autosize
@@ -33,7 +31,63 @@
           :config="editorConfig"
         ></ckeditor>
       </form>
-    </template>
+
+      <BulmaModal v-model="modal.show">
+        <template #title>{{modal.title}}</template>
+        <template #body>{{modal.content}}</template>
+        <template #footer>
+          <div
+            v-if="modal.confirmText && modal.confirmCallback"
+            @click="modal.confirmCallback"
+            class="button is-danger"
+          >{{modal.confirmText}}</div>
+          <div
+            v-if="modal.cancelText && modal.cancelCallback"
+            @click="modal.cancelCallback"
+            class="button is-primary"
+          >{{modal.cancelText}}</div>
+        </template>
+      </BulmaModal>
+
+      <!-- PUBLISH MODAL -->
+      <BulmaModal :fullscreen="true" v-model="settingsModal.show">
+        <template #body>
+          <div class="container">
+            <PostFormAdvancedSettings
+              :postForm="form"
+              :existingPost="existingPost"
+              :savingPost="savingPost"
+              @onCancelClick="settingsModal.show = false"
+              @onPublishClick="onPublishClick"
+            />
+            <!--
+          <div class="actions">
+            <button @click="settingsModal.show = false" class="button is-large">Cancel</button>
+            <button
+              @click="onPublishClick"
+              :disabled="savingPost.state === 'PENDING'"
+              :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
+              class="button is-primary is-large"
+              style="margin-left:20px;"
+            >{{getCurrentPublicationStatus() === 'PUBLISHED' ? "Publish changes !" : "Publish now !"}}</button>
+          </div>
+            -->
+          </div>
+        </template>
+      </BulmaModal>
+      <!-- HURRAH MODAL -->
+      <BulmaModal class="hurrah-modal animated fadeIn" v-model="hurrahModal.show">
+        <template #body>
+          <div class="has-text-centered">
+            <h1 class="title is-1 has-text-centered">Hurrah ! Your post have been published !</h1>
+            <img style="border-radius:5px" :src="getRandomHurrahGif()" />
+          </div>
+        </template>
+        <template class="has-text-centered" #footer>
+          <button @click="hurrahModal.show = false" class="button is-primary is-large">Okay !</button>
+        </template>
+      </BulmaModal>
+    </div>
 
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
@@ -108,62 +162,6 @@
       -->
     </portal>
     <!-- END TOPBAR RIGHT BUTTONS -->
-
-    <BulmaModal v-model="modal.show">
-      <template #title>{{modal.title}}</template>
-      <template #body>{{modal.content}}</template>
-      <template #footer>
-        <div
-          v-if="modal.confirmText && modal.confirmCallback"
-          @click="modal.confirmCallback"
-          class="button is-danger"
-        >{{modal.confirmText}}</div>
-        <div
-          v-if="modal.cancelText && modal.cancelCallback"
-          @click="modal.cancelCallback"
-          class="button is-primary"
-        >{{modal.cancelText}}</div>
-      </template>
-    </BulmaModal>
-
-    <!-- HURRAH MODAL -->
-    <BulmaModal class="settings-modal animated fadeIn" v-model="settingsModal.show">
-      <template #body>
-        <div class="container">
-          <PostFormAdvancedSettings
-            :postForm="form"
-            :existingPost="existingPost"
-            :savingPost="savingPost"
-            @onCancelClick="settingsModal.show = false"
-            @onPublishClick="onPublishClick"
-          />
-          <!--
-          <div class="actions">
-            <button @click="settingsModal.show = false" class="button is-large">Cancel</button>
-            <button
-              @click="onPublishClick"
-              :disabled="savingPost.state === 'PENDING'"
-              :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
-              class="button is-primary is-large"
-              style="margin-left:20px;"
-            >{{getCurrentPublicationStatus() === 'PUBLISHED' ? "Publish changes !" : "Publish now !"}}</button>
-          </div>
-          -->
-        </div>
-      </template>
-    </BulmaModal>
-    <!-- HURRAH MODAL -->
-    <BulmaModal class="hurrah-modal animated fadeIn" v-model="hurrahModal.show">
-      <template #body>
-        <div class="has-text-centered">
-          <h1 class="title is-1 has-text-centered">Hurrah ! Your post have been published !</h1>
-          <img style="border-radius:5px" :src="getRandomHurrahGif()" />
-        </div>
-      </template>
-      <template class="has-text-centered" #footer>
-        <button @click="hurrahModal.show = false" class="button is-primary is-large">Okay !</button>
-      </template>
-    </BulmaModal>
   </div>
 </template>
 
@@ -767,11 +765,12 @@ export default {
 </script>
 
 <style>
-.writeForm {
+.post-form-wrapper {
   background-color: white;
+  padding-top: 30px;
 }
 
-.writeForm > form {
+.post-form-wrapper > form {
   box-shadow: 1px 1px 10px 1px rgba(0, 0, 0, 0.05);
   border-radius: 10px;
   font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -781,7 +780,7 @@ export default {
   max-width: 940px;
   padding: 2rem 4rem;
 }
-.writeForm textarea#title {
+.post-form-wrapper textarea#title {
   background: transparent;
   font-family: Roslindale, serif;
   text-align: left;
@@ -791,7 +790,7 @@ export default {
   border-color: none;
   outline: none !important;
 }
-.writeForm .ck-content {
+.post-form-wrapper .ck-content {
   padding: 0rem 2rem;
   background: transparent;
   text-align: left;
@@ -810,27 +809,27 @@ export default {
   resize: none; /*remove the resize handle on the bottom right*/
   line-height: 1.8;
 }
-.writeForm .ck-toolbar {
+.post-form-wrapper .ck-toolbar {
   background: white;
   border: none;
 }
-.writeForm .ck-editor__editable p,
-.writeForm .ck-editor__editable li,
-.writeForm .ck-editor__editable a {
+.post-form-wrapper .ck-editor__editable p,
+.post-form-wrapper .ck-editor__editable li,
+.post-form-wrapper .ck-editor__editable a {
   font-size: 21px;
 }
-.writeForm .ck-editor__editable h4 {
+.post-form-wrapper .ck-editor__editable h4 {
   font-size: 28px;
 }
-.writeForm .ck-editor__editable h3 {
+.post-form-wrapper .ck-editor__editable h3 {
   font-size: 34px;
 }
-.writeForm .ck-editor__editable h2 {
+.post-form-wrapper .ck-editor__editable h2 {
   font-size: 40px;
 }
 
 @media screen and (max-width: 768px) {
-  .writeForm form {
+  .post-form-wrapper form {
     padding: 1rem;
   }
 }
@@ -854,21 +853,5 @@ button.ck-block-toolbar-button:hover {
 
 .ck-block-toolbar-button .ck.ck-icon {
   font-size: 2em !important;
-}
-
-.settings-modal .modal-close {
-  background: black;
-  top: 40px;
-}
-
-.settings-modal .modal-card {
-  width: 99vw;
-  padding: 40px;
-  height: 100%;
-}
-
-.settings-modal .modal-card-body {
-  border-radius: 5px;
-  padding: 40px;
 }
 </style>
