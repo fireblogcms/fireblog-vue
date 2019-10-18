@@ -96,7 +96,7 @@
         <template #body>
           <div class="has-text-centered">
             <h1
-              style="padding:100px;"
+              style="padding:30px;"
               class="title is-3 has-text-centered"
             >Your changes have been published !</h1>
           </div>
@@ -120,11 +120,15 @@
       </span>
 
       <span
-        class="item button animated bouncedIn"
+        class="item button"
         style="border:0;color:rgba(0,0,0, 0.5);font-size:14px;position:relative;top:2px"
-        v-if="lastTimeSaved"
       >
-        <em>{{getCurrentPublicationStatus()}} - saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
+        <em>
+          {{getCurrentPublicationStatus()}}
+          <span
+            v-if="lastTimeSaved"
+          >- saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</span>
+        </em>
       </span>
     </portal>
     <!-- END TOPBAR LEFT BUTTONS -->
