@@ -31,84 +31,78 @@
           :config="editorConfig"
         ></ckeditor>
       </form>
-
-      <BulmaModal v-model="modal.show">
-        <template #title>{{modal.title}}</template>
-        <template #body>{{modal.content}}</template>
-        <template #footer>
-          <div
-            v-if="modal.confirmText && modal.confirmCallback"
-            @click="modal.confirmCallback"
-            class="button is-danger"
-          >{{modal.confirmText}}</div>
-          <div
-            v-if="modal.cancelText && modal.cancelCallback"
-            @click="modal.cancelCallback"
-            class="button is-primary"
-          >{{modal.cancelText}}</div>
-        </template>
-      </BulmaModal>
-
-      <!-- PUBLISH MODAL -->
-      <BulmaModal :fullscreen="true" v-model="settingsModal.show">
-        <template #body>
-          <div class="container">
-            <PostFormAdvancedSettings
-              :postForm="form"
-              :existingPost="existingPost"
-              :savingPost="savingPost"
-              @onCancelClick="settingsModal.show = false"
-              @onPublishClick="onPublishClick"
-            />
-            <!--
-          <div class="actions">
-            <button @click="settingsModal.show = false" class="button is-large">Cancel</button>
-            <button
-              @click="onPublishClick"
-              :disabled="savingPost.state === 'PENDING'"
-              :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
-              class="button is-primary is-large"
-              style="margin-left:20px;"
-            >{{getCurrentPublicationStatus() === 'PUBLISHED' ? "Publish changes !" : "Publish now !"}}</button>
-          </div>
-            -->
-          </div>
-        </template>
-      </BulmaModal>
-      <!-- HURRAH MODAL -->
-
-      <BulmaModal v-model="publishingHurrahModal.show">
-        <template #body>
-          <div class="has-text-centered">
-            <h1 class="title is-1 has-text-centered">Hurrah ! Your post have been published !</h1>
-            <img style="border-radius:5px" :src="getRandomHurrahGif()" />
-          </div>
-        </template>
-        <template class="has-text-centered" #footer>
-          <button
-            @click="publishingHurrahModal.show = false"
-            class="button is-primary is-large"
-          >Okay !</button>
-        </template>
-      </BulmaModal>
-
-      <BulmaModal v-model="publishingChangesModal.show">
-        <template #body>
-          <div class="has-text-centered">
-            <h1
-              style="padding:30px;"
-              class="title is-3 has-text-centered"
-            >Your changes have been published !</h1>
-          </div>
-        </template>
-        <template class="has-text-centered" #footer>
-          <button
-            @click="publishingChangesModal.show = false"
-            class="button is-primary is-large"
-          >Okay !</button>
-        </template>
-      </BulmaModal>
     </div>
+
+    <BulmaModal v-model="modal.show">
+      <template #title>{{modal.title}}</template>
+      <template #body>{{modal.content}}</template>
+      <template #footer>
+        <div
+          v-if="modal.confirmText && modal.confirmCallback"
+          @click="modal.confirmCallback"
+          class="button is-danger"
+        >{{modal.confirmText}}</div>
+        <div
+          v-if="modal.cancelText && modal.cancelCallback"
+          @click="modal.cancelCallback"
+          class="button is-primary"
+        >{{modal.cancelText}}</div>
+      </template>
+    </BulmaModal>
+
+    <!-- PUBLISH MODAL -->
+    <BulmaModal
+      class="publication-settings-modal"
+      :fullscreen="true"
+      v-model="publicationSettingsModal.show"
+    >
+      <template #body>
+        <div class="container">
+          <PostFormAdvancedSettings
+            :postForm="form"
+            :existingPost="existingPost"
+            :savingPost="savingPost"
+            @onCancelClick="publicationSettingsModal.show = false"
+            @onPublishClick="onPublishClick"
+          />
+        </div>
+      </template>
+      <template class="has-text-centered" #footer></template>
+    </BulmaModal>
+
+    <!-- HURRAH MODAL -->
+    <BulmaModal class="hurrah-modal" v-model="publishingHurrahModal.show">
+      <template #body>
+        <div class="has-text-centered">
+          <h1 class="title is-1 has-text-centered">Hurrah ! Your post have been published !</h1>
+          <img style="border-radius:5px" :src="getRandomHurrahGif()" />
+        </div>
+      </template>
+      <template class="has-text-centered" #footer>
+        <button
+          @click="publishingHurrahModal.show = false"
+          class="button is-primary is-large"
+        >Okay !</button>
+      </template>
+    </BulmaModal>
+
+    <BulmaModal class="publishing-changes-modal" v-model="publishingChangesModal.show">
+      <template #title></template>
+      <template #body>
+        <div class="has-text-centered">
+          <h1
+            style="padding:30px;"
+            class="title is-3 has-text-centered"
+          >Your changes have been published !</h1>
+        </div>
+      </template>
+      <template class="has-text-centered" #footer>
+        <button
+          @click="publishingChangesModal.show = false"
+          class="button is-primary is-large"
+        >Okay !</button>
+      </template>
+    </BulmaModal>
 
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
@@ -320,7 +314,7 @@ export default {
         cancelText: null,
         cancelCallback: () => {}
       },
-      settingsModal: {
+      publicationSettingsModal: {
         show: false
       },
       publishingHurrahModal: {
@@ -336,7 +330,9 @@ export default {
       form: this.form,
       savingPost: this.savingPost,
       // we use a function here because of https://github.com/vuejs/vue/issues/7017
-      existingPost: () => this.existingPost
+      existingPost: () => {
+        return this.existingPost ? this.existingPost : null;
+      }
     };
   },
   created() {
@@ -443,8 +439,8 @@ export default {
           .catch(error => {
             this.savingPost.state = REQUEST_STATE.FINISHED_ERROR;
             this.errorMessage = "Sorry, publishing failed: " + error;
-            if (this.settingsModal.show) {
-              this.settingsModal.show = false;
+            if (this.publicationSettingsModal.show) {
+              this.publicationSettingsModal.show = false;
             }
             throw new Error(error);
           });
@@ -468,8 +464,8 @@ export default {
           .catch(error => {
             this.errorMessage = "Sorry, publish operation failed: " + error;
             this.savingPost.state = REQUEST_STATE.FINISHED_ERROR;
-            if (this.settingsModal.show) {
-              this.settingsModal.show = false;
+            if (this.publicationSettingsModal.show) {
+              this.publicationSettingsModal.show = false;
             }
             throw new Error(error);
           });
@@ -574,7 +570,7 @@ export default {
         return false;
       } else {
         this.savePost(STATUS_ENUM.PUBLISHED).then(() => {
-          this.settingsModal.show = false;
+          this.publicationSettingsModal.show = false;
           if (publishingChanges === true) {
             this.publishingChangesModal.show = true;
           } else {
@@ -633,7 +629,7 @@ export default {
             }
           );
         }
-        this.settingsModal.show = true;
+        this.publicationSettingsModal.show = true;
       }
     },
     onUnpublishClick() {

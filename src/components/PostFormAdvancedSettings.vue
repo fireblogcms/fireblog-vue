@@ -78,7 +78,7 @@
             <button @click="onCancelClick" class="button is-medium">Go back</button>
 
             <button
-              @click="onPublishClick"
+              @click="onPublishClick()"
               :disabled="savingPost.state === 'PENDING' || uploadingState === 'PENDING'"
               :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
               class="button is-primary is-medium"
