@@ -38,6 +38,7 @@
                   class="input is-large"
                   :class="{'is-danger': formErrors.name}"
                   type="text"
+                  maxlength="250"
                   placeholder="Blog's Name"
                 />
               </div>

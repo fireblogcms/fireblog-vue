@@ -39,13 +39,17 @@
           <div class="container">
             <div
               v-for="(edge, index) in blogs.edges"
-              style="box-shadow: 0px 4px 5px rgba(229, 229, 229, 1);"
+              style="box-shadow: rgba(14, 30, 37, 0.12) 1px 1px 10px 0px;border-radius:6px"
               :style="blogCardStyles(edge, index)"
               class="blog-card"
               :key="edge.node._id"
               @click="onRowClick(edge, $event)"
             >
-              <h2 class="title is-2;" style="color:white;">{{ edge.node.name }}</h2>
+              <div class="blog-infos">
+                <h2 class="title">{{ edge.node.name }}</h2>
+                <h3 class="subtitle" v-if="edge.node.description">{{edge.node.description}}</h3>
+              </div>
+
               <div
                 @click.stop="onSettingsClick(edge.node, $event)"
                 style="min-width:100px;font-weight:300"
@@ -188,16 +192,22 @@ export default {
   justify-content: center;
 }
 
-.blog-card .title {
+.blog-card .blog-infos {
+  padding: 10px;
+  text-align: center;
+  color: white;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  text-align: center;
-  padding: 10px;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
 }
 
-.blog-card .title a {
+.blog-infos .title,
+.blog-infos .subtitle {
   color: white;
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.blog-infos .subtitle {
+  font-style: italic;
 }
 
 .blog-card .settings {

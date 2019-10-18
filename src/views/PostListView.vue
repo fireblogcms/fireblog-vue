@@ -9,7 +9,7 @@
             style="position:relative;height:20px !important;top:4px;"
             src="/images/books.webp"
           />
-          <IconBack />All blogs
+          <IconBack />My blogs
         </router-link>
       </span>
     </portal>

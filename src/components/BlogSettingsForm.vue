@@ -13,7 +13,12 @@
         <div class="field">
           <label class="label">Name</label>
           <div class="control">
-            <input v-model="form.values.current.name" class="input is-large" type="text" />
+            <input
+              v-model="form.values.current.name"
+              class="input is-large"
+              type="text"
+              maxlength="250"
+            />
           </div>
           <p class="help is-danger" v-if="form.errors.name">{{form.errors.name}}</p>
         </div>

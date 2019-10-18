@@ -14,7 +14,7 @@
         v-if="this.$slots.footer"
         style="justify-content: center;"
         class="modal-card-foot"
-        :class="{'is-white': allWhite}"
+        :class="{'is-white': whiteFooter}"
       >
         <slot name="footer">
           <button @click="onCloseClick" class="button">Close</button>
