@@ -687,7 +687,9 @@ export default {
           this.lastTimeSaved = Date.now();
           this.existingPost = result.data.createPost;
           // post is created, we are now in UPDATE mode for the form.
-          this.$store.commit("postJustPublished", true);
+          if (this.existingPost.status === "PUBLISHED") {
+            this.$store.commit("postJustPublished", true);
+          }
           this.$router.replace({
             name: "postUpdate",
             params: {
