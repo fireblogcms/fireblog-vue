@@ -629,7 +629,6 @@ export default {
           );
         }
         this.settingsModal.show = true;
-        //this.savePost(STATUS_ENUM.PUBLISHED);
       }
     },
     onUnpublishClick() {
@@ -800,13 +799,13 @@ export default {
 
 <style>
 .post-form-wrapper {
-  background-color: white;
   padding-top: 30px;
+  padding-bottom: 30px;
 }
 
 .post-form-wrapper > form {
-  box-shadow: 1px 1px 10px 1px rgba(0, 0, 0, 0.05);
-  border-radius: 10px;
+  box-shadow: 1px 1px 4px 1px rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
   font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding: 30px;
   margin: auto;
@@ -814,6 +813,7 @@ export default {
   max-width: 940px;
   padding: 2rem 4rem;
   font-weight: 400;
+  background: white;
 }
 .post-form-wrapper textarea#title {
   background: transparent;
