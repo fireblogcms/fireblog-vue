@@ -24,23 +24,21 @@
         <header class="container" style="padding: 0 1rem 2rem 1rem">
           <div class="columns">
             <div class="column">
-              <h1 class="title is-uppercase">
+              <h1 class="title is-2 is-uppercase">
                 <img
                   class="is-hidden-mobile"
                   style="height:70px !important;position:relative;top:20px;padding-right:1rem"
                   src="/images/book.png"
                 />
-                {{blog.name}} - POSTS
+                {{blog.name}} : POSTS
               </h1>
             </div>
             <div class="column is-4">
-              <BulmaButtonLink
-                class="is-large is-primary main-call-to-action"
+              <button
+                class="button is-large is-primary main-call-to-action is-box-shadowed"
                 v-if="!isFirstPost"
-                :to="{name: 'postCreate', params:{blogId:$route.params.blogId}}"
-              >
-                <span>WRITE NEW POST</span>
-              </BulmaButtonLink>
+                @click="$router.push({name: 'postCreate', params:{blogId:$route.params.blogId}})"
+              >WRITE NEW POST</button>
             </div>
           </div>
         </header>
@@ -71,10 +69,7 @@
                   @click="onStatusClick('PUBLISHED')"
                   :class="{ 'is-active': activeStatus == 'PUBLISHED' }"
                 >
-                  <a>
-                    <!--<img style="height:30px;padding-right:5px" src="/images/published.png" />-->
-                    Published
-                  </a>
+                  <a>Published</a>
                 </li>
                 <li
                   @click="onStatusClick('DRAFT')"
@@ -97,8 +92,20 @@
                   <LayoutList :items="posts.edges" :itemUniqueKey="(item) => item.node._id">
                     <template v-slot="{item}">
                       <div class="columns">
-                        <div @click="onRowClick(item)" class="column is-10 content">
-                          <h2 style="margin-bottom:0;padding:0">{{ item.node.title + " " }}</h2>
+                        <div class="column is-1">
+                          <div
+                            v-if="item.node.image"
+                            v-lazy:background-image="item.node.image"
+                            class="post-list-image"
+                          />
+                        </div>
+                        <div @click="onRowClick(item)" class="column is-9 content">
+                          <h2 class="post-list-title">
+                            <router-link
+                              class="item"
+                              :to="{name:'postUpdate', params:{blogId:$route.params.blogId, postId:item.node._id}}"
+                            >{{ item.node.title + " " }}</router-link>
+                          </h2>
                           <span
                             style="color:rgba(0, 0, 0, 0.5);"
                             v-if="item.node.status === 'PUBLISHED'"
@@ -109,9 +116,9 @@
                           >updated on {{ Number(item.node.updatedAt) | moment("DD MMMM YYYY - HH:mm") }}</span>
 
                           <p
-                            style="padding-top:10px;font-style:italic"
-                            v-if="item.node.content.length > 0"
-                          >{{striptags(item.node.content.substr(0, 200))}}...</p>
+                            style="padding-top:10px"
+                            v-if="item.node.teaser.trim()"
+                          >{{striptags(item.node.teaser.substr(0, 200))}}</p>
                         </div>
                         <div class="column is-2">
                           <div class="actions">
@@ -123,11 +130,11 @@
                               class="button is-outlined"
                             >Unpublish</div>
                             -->
-                            <div
+                            <span
                               @click="onDeleteClick(item.node)"
                               style="min-width:100px"
                               class="button is-outlined"
-                            >Delete</div>
+                            >Delete</span>
                           </div>
                         </div>
                       </div>
@@ -144,11 +151,24 @@
     <BulmaModal v-model="deleteModal.show">
       <template #title>{{deleteModal.title}}</template>
       <template #body>
-        <p>This action cannot be undone</p>
+        <div class="message is-danger">
+          <div class="message-body">
+            <p>
+              <strong>DANGER !</strong>
+              <br />This action cannot be undone.
+              <strong>{{deleteModal.post && deleteModal.post.title}}</strong> will be deleted forever.
+            </p>
+          </div>
+        </div>
       </template>
       <template #footer>
-        <div @click="deleteModal.show = false" class="button is-success">OUPS NO, CANCEL !</div>
-        <div @click="onDeleteModalConfirmClick" class="button is-danger">DELETE IT. FOREVER.</div>
+        <div @click="deleteModal.show = false" class="button is-primary">OUPS NO, CANCEL !</div>
+        <div
+          @click="onDeleteModalConfirmClick"
+          class="button is-danger"
+          :class="{'is-loading':deletePostRequestState === 'PENDING'}"
+          :disabled="deletePostRequestState === 'PENDING' ? true : false"
+        >DELETE IT. FOREVER.</div>
       </template>
     </BulmaModal>
   </DefaultLayout>
@@ -181,6 +201,8 @@ const postsQuery = gql`
           publishedAt
           status
           content
+          teaser
+          image
         }
       }
     }
@@ -381,10 +403,33 @@ export default {
 </script>
 
 <style scoped>
+#app .tabs li a {
+  text-decoration: none;
+}
+
 .main-call-to-action {
   float: right;
   margin-top: 30px;
 }
+
+.post-list-image {
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: auto;
+  margin-top: 5px;
+  width: 90px;
+  height: 90px;
+  overflow: hidden;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 3px 3px 5px rgba(229, 229, 229, 1);
+}
+.post-list-title {
+  margin-bottom: 0;
+  padding: 0;
+}
+
 @media screen and (min-width: 1024px) {
   .actions .button {
     margin-bottom: 15px;

@@ -8,7 +8,9 @@ import PortalVue from "portal-vue";
 import vClickOutside from "v-click-outside";
 import "animate.css/animate.min.css";
 import "vue-loading-overlay/dist/vue-loading.css";
+import VueLazyload from "vue-lazyload";
 
+Vue.use(VueLazyload);
 Vue.use(vClickOutside);
 Vue.use(PortalVue);
 Vue.use(VueTextareaAutosize);

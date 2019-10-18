@@ -1,13 +1,11 @@
 <template>
-  <div class="writeForm">
-    <!-- debug form values -->
-    <pre v-if="false">{{form}}</pre>
-
-    <AppError v-if="errorMessage">{{errorMessage}}</AppError>
-
+  <div>
     <AppLoader v-if="initDataState === 'PENDING'" />
+    <AppError v-if="errorMessage">{{errorMessage}}</AppError>
+    <div v-if="initDataState === REQUEST_STATE.FINISHED_OK" class="post-form-wrapper">
+      <!-- debug form values -->
+      <pre v-if="false">{{form}}</pre>
 
-    <template v-if="initDataState === REQUEST_STATE.FINISHED_OK">
       <!-- FORM -->
       <form @submit.prevent>
         <textarea-autosize
@@ -33,23 +31,100 @@
           :config="editorConfig"
         ></ckeditor>
       </form>
-    </template>
+    </div>
+
+    <BulmaModal v-model="modal.show">
+      <template #title>{{modal.title}}</template>
+      <template #body>{{modal.content}}</template>
+      <template #footer>
+        <div
+          v-if="modal.confirmText && modal.confirmCallback"
+          @click="modal.confirmCallback"
+          class="button is-danger"
+        >{{modal.confirmText}}</div>
+        <div
+          v-if="modal.cancelText && modal.cancelCallback"
+          @click="modal.cancelCallback"
+          class="button is-primary"
+        >{{modal.cancelText}}</div>
+      </template>
+    </BulmaModal>
+
+    <!-- PUBLISH MODAL -->
+
+    <BulmaModal
+      class="publication-settings-modal"
+      :fullscreen="true"
+      v-model="publicationSettingsModal.show"
+    >
+      <template #body>
+        <div class="container">
+          <PostFormAdvancedSettings
+            :postForm="form"
+            :existingPost="existingPost"
+            :savingPost="savingPost"
+            @onCancelClick="publicationSettingsModal.show = false"
+            @onPublishClick="onPublishClick"
+          />
+        </div>
+      </template>
+      <template class="has-text-centered" #footer></template>
+    </BulmaModal>
+
+    <!-- HURRAH MODAL -->
+    <BulmaModal class="hurrah-modal" v-model="publishingHurrahModal.show">
+      <template #body>
+        <div class="has-text-centered">
+          <h1 class="title is-1 has-text-centered">Hurrah ! Your post have been published !</h1>
+          <img style="border-radius:5px" :src="getRandomHurrahGif()" />
+        </div>
+      </template>
+      <template class="has-text-centered" #footer>
+        <button
+          @click="publishingHurrahModal.show = false"
+          class="button is-primary is-large"
+        >Okay !</button>
+      </template>
+    </BulmaModal>
+
+    <BulmaModal class="publishing-changes-modal" v-model="publishingChangesModal.show">
+      <template #title></template>
+      <template #body>
+        <div class="has-text-centered">
+          <h1
+            style="padding:30px;"
+            class="title is-3 has-text-centered"
+          >Your changes have been published !</h1>
+        </div>
+      </template>
+      <template class="has-text-centered" #footer>
+        <button
+          @click="publishingChangesModal.show = false"
+          class="button is-primary is-large"
+        >Okay !</button>
+      </template>
+    </BulmaModal>
 
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
       <span @click="onBackToPostsClick" style="cursor:pointer" class="item tag is-medium">
-        <em>
+        <em style="text-decoration:underline">
           <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
           <IconBack />posts
         </em>
       </span>
 
       <span
-        class="item button animated bouncedIn"
-        style="border:0;color:rgba(0,0,0, 0.5);font-size:14px;position:relative;top:2px"
-        v-if="lastTimeSaved"
+        v-if="initDataState === 'FINISHED_OK'"
+        class="item"
+        style="color:rgba(0,0,0, 0.6);font-size:14px;"
       >
-        <em>{{getCurrentPublicationStatus()}} - saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</em>
+        <em>
+          {{getCurrentPublicationStatus()}}
+          <span
+            v-if="getCurrentPublicationStatus() === 'DRAFT' && lastTimeSaved"
+          >- saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</span>
+        </em>
       </span>
     </portal>
     <!-- END TOPBAR LEFT BUTTONS -->
@@ -78,7 +153,7 @@
       >UNPUBLISH</button>
 
       <button
-        @click="onPublishClick()"
+        @click="onPublicationClick()"
         v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
         class="button is-outlined item is-primary"
         :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED' }"
@@ -87,7 +162,7 @@
       >PUBLICATION</button>
 
       <button
-        @click="onPublishClick()"
+        @click="onPublicationClick()"
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
         class="button item is-outlined is-primary"
         :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
@@ -108,62 +183,6 @@
       -->
     </portal>
     <!-- END TOPBAR RIGHT BUTTONS -->
-
-    <BulmaModal v-model="modal.show">
-      <template #title>{{modal.title}}</template>
-      <template #body>{{modal.content}}</template>
-      <template #footer>
-        <div
-          v-if="modal.cancelText && modal.cancelCallback"
-          @click="modal.cancelCallback"
-          class="button is-primary"
-        >{{modal.cancelText}}</div>
-        <div
-          v-if="modal.confirmText && modal.confirmCallback"
-          @click="modal.confirmCallback"
-          class="button is-danger"
-        >{{modal.confirmText}}</div>
-      </template>
-    </BulmaModal>
-
-    <!-- HURRAH MODAL -->
-    <BulmaModal class="settings-modal animated fadeIn" v-model="settingsModal.show">
-      <template #body>
-        <div class="container">
-          <PostFormAdvancedSettings
-            :postForm="form"
-            :existingPost="existingPost"
-            :savingPost="savingPost"
-            @onCancelClick="settingsModal.show = false"
-            @onPublishClick="onAdvancedPublishClick"
-          />
-          <!--
-          <div class="actions">
-            <button @click="settingsModal.show = false" class="button is-large">Cancel</button>
-            <button
-              @click="onAdvancedPublishClick"
-              :disabled="savingPost.state === 'PENDING'"
-              :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
-              class="button is-primary is-large"
-              style="margin-left:20px;"
-            >{{getCurrentPublicationStatus() === 'PUBLISHED' ? "Publish changes !" : "Publish now !"}}</button>
-          </div>
-          -->
-        </div>
-      </template>
-    </BulmaModal>
-    <!-- HURRAH MODAL -->
-    <BulmaModal class="hurrah-modal animated fadeIn" v-model="hurrahModal.show">
-      <template #body>
-        <div class="has-text-centered">
-          <h1 class="title is-1 has-text-centered">Hurrah ! Your post have been published !</h1>
-          <img style="border-radius:5px" :src="getRandomHurrahGif()" />
-        </div>
-      </template>
-      <template class="has-text-centered" #footer>
-        <button @click="hurrahModal.show = false" class="button is-primary is-large">Okay !</button>
-      </template>
-    </BulmaModal>
   </div>
 </template>
 
@@ -296,10 +315,13 @@ export default {
         cancelText: null,
         cancelCallback: () => {}
       },
-      settingsModal: {
+      publicationSettingsModal: {
         show: false
       },
-      hurrahModal: {
+      publishingHurrahModal: {
+        show: false
+      },
+      publishingChangesModal: {
         show: false
       }
     };
@@ -309,7 +331,9 @@ export default {
       form: this.form,
       savingPost: this.savingPost,
       // we use a function here because of https://github.com/vuejs/vue/issues/7017
-      existingPost: () => this.existingPost
+      existingPost: () => {
+        return this.existingPost ? this.existingPost : null;
+      }
     };
   },
   created() {
@@ -380,6 +404,10 @@ export default {
       }
       return Promise.all(promises)
         .then(results => {
+          if (this.$store.state.postJustPublished === true) {
+            this.$store.commit("postJustPublished", false);
+            this.publishingHurrahModal.show = true;
+          }
           this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
         .catch(error => {
@@ -397,10 +425,6 @@ export default {
           `Received unknown status ${status}. Status MUST be one of the following value: ` +
             Object.values(STATUS_ENUM).join(", ")
         );
-      }
-      if (!this.form.values.current.title.trim()) {
-        alert("A title is required");
-        return Promise.reject("A title is required");
       }
       this.savingPost.state = REQUEST_STATE.PENDING;
       this.savingPost.publicationStatus = status;
@@ -420,8 +444,8 @@ export default {
           .catch(error => {
             this.savingPost.state = REQUEST_STATE.FINISHED_ERROR;
             this.errorMessage = "Sorry, publishing failed: " + error;
-            if (this.settingsModal.show) {
-              this.settingsModal.show = false;
+            if (this.publicationSettingsModal.show) {
+              this.publicationSettingsModal.show = false;
             }
             throw new Error(error);
           });
@@ -432,7 +456,7 @@ export default {
           status
         };
         if (
-          this.getCurrentPublicationStatus() === "DRAFT" &&
+          this.existingPost.status !== "PUBLISHED" &&
           status === "PUBLISHED"
         ) {
           post.publishedAt = new Date();
@@ -445,8 +469,8 @@ export default {
           .catch(error => {
             this.errorMessage = "Sorry, publish operation failed: " + error;
             this.savingPost.state = REQUEST_STATE.FINISHED_ERROR;
-            if (this.settingsModal.show) {
-              this.settingsModal.show = false;
+            if (this.publicationSettingsModal.show) {
+              this.publicationSettingsModal.show = false;
             }
             throw new Error(error);
           });
@@ -477,8 +501,8 @@ export default {
           show: true,
           title: "Some changes have not been saved",
           content: `If you quit now, your last changes will be lost`,
-          cancelText: "Save my changes first",
-          confirmText: "Quit anyway.",
+          cancelText: "Save and quit",
+          confirmText: "Quit without saving",
           confirmCallback: () => {
             this.$router.push({
               name: "postList",
@@ -486,7 +510,13 @@ export default {
             });
           },
           cancelCallback: () => {
-            this.modal.show = false;
+            this.onSaveDraftClick().then(() => {
+              this.modal.show = false;
+              this.$router.push({
+                name: "postList",
+                params: { blogId: this.$route.params.blogId }
+              });
+            });
           }
         };
       } else {
@@ -532,14 +562,25 @@ export default {
     onTitleEnter() {
       this.$refs.ckeditor.$el.focus();
     },
-    onAdvancedPublishClick() {
+    onPublishClick() {
+      // If article is published or re-published from draft, we display a "Hurrah modal".
+      // If we only publish changes on a already published articles, we have a more
+      // sober modal.
+      let publishingChanges = false;
+      if (this.existingPost && this.existingPost.status === "PUBLISHED") {
+        publishingChanges = true;
+      }
       this.form.errors = this.getFormErrors();
       if (Object.keys(this.form.errors).length > 0) {
         return false;
       } else {
         this.savePost(STATUS_ENUM.PUBLISHED).then(() => {
-          this.settingsModal.show = false;
-          this.hurrahModal.show = true;
+          this.publicationSettingsModal.show = false;
+          if (publishingChanges === true) {
+            this.publishingChangesModal.show = true;
+          } else {
+            this.publishingHurrahModal.show = true;
+          }
         });
       }
     },
@@ -566,19 +607,23 @@ export default {
           throw new Error(error);
         });
     },
-    onPublishClick() {
+    /**
+     * At least a title is required to begin publication process.
+     */
+    postFormIsValid() {
+      let isValid = true;
+      if (!this.form.values.current.title.trim()) {
+        alert("A title is required");
+        isValid = false;
+      }
+      return isValid;
+    },
+    onPublicationClick() {
+      if (!this.postFormIsValid()) {
+        return;
+      }
       if (this.mediaLoadingCounter > 0) {
-        this.modal = {
-          show: true,
-          title: "We can't publish now",
-          content: `${this.mediaLoadingCounter} media ${
-            this.mediaLoadingCounter > 1 ? "are" : "is"
-          } currently uploading`,
-          cancelText: "Wait for uploads to complete!",
-          cancelCallback: () => {
-            this.modal.show = false;
-          }
-        };
+        this.showMediaCurrentlyLoadingModal();
       } else {
         if (!this.form.values.initial.slug.trim()) {
           this.form.values.current.slug = createSlug(
@@ -589,16 +634,34 @@ export default {
             }
           );
         }
-        this.settingsModal.show = true;
-
-        //this.savePost(STATUS_ENUM.PUBLISHED);
+        this.publicationSettingsModal.show = true;
       }
     },
     onUnpublishClick() {
       this.savePost(STATUS_ENUM.DRAFT);
     },
     onSaveDraftClick() {
-      this.savePost(STATUS_ENUM.DRAFT);
+      if (!this.postFormIsValid()) {
+        return Promise.reject("Form values are invalid");
+      } else if (this.mediaLoadingCounter > 0) {
+        Promise.reject("Media are currently loading");
+        this.showMediaCurrentlyLoadingModal();
+      } else {
+        return this.savePost(STATUS_ENUM.DRAFT);
+      }
+    },
+    showMediaCurrentlyLoadingModal() {
+      this.modal = {
+        show: true,
+        title: "We can't publish now",
+        content: `${this.mediaLoadingCounter} media ${
+          this.mediaLoadingCounter > 1 ? "are" : "is"
+        } currently uploading`,
+        cancelText: "Wait for uploads to complete!",
+        cancelCallback: () => {
+          this.modal.show = false;
+        }
+      };
     },
     onProofreadClick() {
       this.savePost(STATUS_ENUM.DRAFT).then(() => {
@@ -624,6 +687,7 @@ export default {
           this.lastTimeSaved = Date.now();
           this.existingPost = result.data.createPost;
           // post is created, we are now in UPDATE mode for the form.
+          this.$store.commit("postJustPublished", true);
           this.$router.replace({
             name: "postUpdate",
             params: {
@@ -724,9 +788,6 @@ export default {
     },
     getFormErrors() {
       const errors = {};
-      if (!this.form.values.current.title.trim()) {
-        errors.title = "Title is required";
-      }
       // validate that slug is an url
       if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(this.form.values.current.slug)) {
         errors.slug = "Slug can only contains minusculs dans '-' characters.";
@@ -734,8 +795,6 @@ export default {
       if (!this.form.values.current.slug.trim()) {
         errors.slug = "Slug is required";
       }
-      //// slug regex: ^[a-z](-?[a-z])*$
-      //if ()
       if (!this.form.values.current.teaser.trim()) {
         errors.teaser = "Teaser is required";
       }
@@ -746,18 +805,24 @@ export default {
 </script>
 
 <style>
-.writeForm {
-  background-color: white;
+.post-form-wrapper {
+  padding-top: 30px;
+  padding-bottom: 30px;
 }
 
-.writeForm > form {
+.post-form-wrapper > form {
+  box-shadow: 1px 1px 4px 1px rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
   font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  padding: 0 2rem;
+  padding: 30px;
   margin: auto;
+  margin-bottom: 40px;
   max-width: 940px;
   padding: 2rem 4rem;
+  font-weight: 400;
+  background: white;
 }
-.writeForm textarea#title {
+.post-form-wrapper textarea#title {
   background: transparent;
   font-family: Roslindale, serif;
   text-align: left;
@@ -767,7 +832,7 @@ export default {
   border-color: none;
   outline: none !important;
 }
-.writeForm .ck-content {
+.post-form-wrapper .ck-content {
   padding: 0rem 2rem;
   background: transparent;
   text-align: left;
@@ -786,27 +851,27 @@ export default {
   resize: none; /*remove the resize handle on the bottom right*/
   line-height: 1.8;
 }
-.writeForm .ck-toolbar {
+.post-form-wrapper .ck-toolbar {
   background: white;
   border: none;
 }
-.writeForm .ck-editor__editable p,
-.writeForm .ck-editor__editable li,
-.writeForm .ck-editor__editable a {
+.post-form-wrapper .ck-editor__editable p,
+.post-form-wrapper .ck-editor__editable li,
+.post-form-wrapper .ck-editor__editable a {
   font-size: 21px;
 }
-.writeForm .ck-editor__editable h4 {
+.post-form-wrapper .ck-editor__editable h4 {
   font-size: 28px;
 }
-.writeForm .ck-editor__editable h3 {
+.post-form-wrapper .ck-editor__editable h3 {
   font-size: 34px;
 }
-.writeForm .ck-editor__editable h2 {
+.post-form-wrapper .ck-editor__editable h2 {
   font-size: 40px;
 }
 
 @media screen and (max-width: 768px) {
-  .writeForm form {
+  .post-form-wrapper form {
     padding: 1rem;
   }
 }
@@ -830,21 +895,5 @@ button.ck-block-toolbar-button:hover {
 
 .ck-block-toolbar-button .ck.ck-icon {
   font-size: 2em !important;
-}
-
-.settings-modal .modal-close {
-  background: black;
-  top: 40px;
-}
-
-.settings-modal .modal-card {
-  width: 99vw;
-  padding: 40px;
-  height: 100%;
-}
-
-.settings-modal .modal-card-body {
-  border-radius: 5px;
-  padding: 40px;
 }
 </style>

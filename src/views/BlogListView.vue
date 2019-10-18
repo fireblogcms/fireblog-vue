@@ -17,7 +17,7 @@
           <header style="padding: 0 1rem 2rem 1rem">
             <div class="columns">
               <div class="column">
-                <h1 style="padding-bottom:2rem;" class="title is-1">
+                <h1 style="padding-bottom:2rem;" class="title is-2 is-uppercase">
                   <img
                     height="70"
                     style="position:relative;top:25px;padding-right:1rem"
@@ -27,12 +27,12 @@
                 </h1>
               </div>
               <div class="column">
-                <BulmaButtonLink
-                  class="is-primary is-large main-call-to-action"
-                  :to="{name:'blogCreate'}"
+                <button
+                  class="button is-primary is-box-shadowed is-large main-call-to-action"
+                  @click="$router.push({name:'blogCreate'})"
                 >
                   <img width="40" style="margin-right:10px" src="/images/book.png" /> CREATE A NEW BLOG
-                </BulmaButtonLink>
+                </button>
               </div>
             </div>
           </header>
@@ -45,10 +45,10 @@
               :key="edge.node._id"
               @click="onRowClick(edge, $event)"
             >
-              <h2 class="title is-2" style="color:white;">{{ edge.node.name }}</h2>
+              <h2 class="title is-2;" style="color:white;">{{ edge.node.name }}</h2>
               <div
                 @click.stop="onSettingsClick(edge.node, $event)"
-                style="min-width:100px"
+                style="min-width:100px;font-weight:300"
                 class="button is-medium is-outlined settings"
               >Settings</div>
             </div>

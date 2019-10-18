@@ -1,16 +1,11 @@
 export default ({ slug, locale }) => [
   {
-    id: "getAllPosts",
-    label: "Get all posts",
+    id: "getAllPublishedPosts",
+    label: "Get all published posts",
     snippet: `
 {
   posts {
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-      startCursor
-      endCursor
-    } 
+    totalCount
     edges {
       cursor
       node {
@@ -63,14 +58,6 @@ export default ({ slug, locale }) => [
           name
           email
           name
-        }
-        posts {
-          edges {
-            node {
-              title
-              teaser
-            }
-          }
         }
       }
     }
