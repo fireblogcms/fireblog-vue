@@ -21,13 +21,15 @@
               <strong>Teaser</strong>
               <div
                 class="field-help"
-              >a short introductory for your post that stimulates readers interest.</div>
+              >a short introductory for your post that stimulates readers interest. 250 characters max.</div>
             </label>
             <div class="control">
+              <!-- limited to 250 because of facebook, twitter and co preview card limitation -->
               <textarea
+                maxlength="250"
                 v-model="form.values.current.teaser"
                 class="textarea is-medium"
-                placeholder="Accroche"
+                placeholder="Teaser"
               ></textarea>
             </div>
             <p class="help is-danger" v-if="form.errors.teaser">{{form.errors.teaser}}</p>
@@ -53,8 +55,8 @@
         <div class="column">
           <div class="post-preview-wrapper">
             <div class="field-help">
-              <label class="label">Post sharing preview</label>
-              Approximative preview of how your post will appear when sharing its link on other websites like Twitter, Facebook etc:
+              <label class="label">Post card preview</label>
+              Approximation of how your post will appear when sharing its link on other websites like Twitter, Facebook etc:
             </div>
             <div class="post-preview">
               <div

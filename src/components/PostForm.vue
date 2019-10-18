@@ -643,10 +643,7 @@ export default {
         // pre-fill teaser fied with the first sentence of the text.
         if (!this.form.values.initial.teaser.trim()) {
           this.form.values.current.teaser = striptags(
-            this.form.values.current.content.substr(
-              0,
-              this.form.values.current.content.indexOf(".") + 1
-            )
+            this.form.values.current.content.substr(0, 250)
           );
         }
         this.publicationSettingsModal.show = true;

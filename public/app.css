@@ -47,11 +47,6 @@ video {
   height: 4px !important;
 }
 
-#app a {
-  text-decoration: underline;
-  color: #333;
-}
-
 #app .is-box-shadowed {
   box-shadow: 0px 4px 5px rgba(229, 229, 229, 1);
 }
@@ -60,18 +55,6 @@ video {
   font-weight: 400;
 }
 
-#app .button {
-  font-weight: 400;
-}
-
-#app .title {
-  font-weight: 400;
-}
-
 #app .container.is-small {
   max-width: 800px;
-}
-
-#app #profile-dropdown a {
-  text-decoration: none;
 }
