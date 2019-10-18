@@ -86,7 +86,7 @@
         </template>
         <template class="has-text-centered" #footer>
           <button
-            @click="$router.push({name: 'postList'})"
+            @click="publishingHurrahModal.show = false"
             class="button is-primary is-large"
           >Okay !</button>
         </template>
@@ -103,7 +103,7 @@
         </template>
         <template class="has-text-centered" #footer>
           <button
-            @click="$router.push({name: 'postList'})"
+            @click="publishingChangesModal.show = false"
             class="button is-primary is-large"
           >Okay !</button>
         </template>
@@ -120,13 +120,14 @@
       </span>
 
       <span
-        class="item button"
-        style="border:0;color:rgba(0,0,0, 0.5);font-size:14px;position:relative;top:2px"
+        v-if="initDataState === 'FINISHED_OK'"
+        class="item"
+        style="color:rgba(0,0,0, 0.6);font-size:14px;"
       >
         <em>
           {{getCurrentPublicationStatus()}}
           <span
-            v-if="lastTimeSaved"
+            v-if="getCurrentPublicationStatus() === 'DRAFT' && lastTimeSaved"
           >- saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</span>
         </em>
       </span>
