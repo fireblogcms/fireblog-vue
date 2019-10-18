@@ -52,10 +52,10 @@
               >Write your first post in this blog !</h2>
               <div class="has-text-centered">
                 <div style="margin:2rem">
-                  <BulmaButtonLink
-                    class="is-large is-primary"
-                    :to="{name: 'postCreate', params:{blogId:$route.params.blogId}}"
-                  >Write</BulmaButtonLink>
+                  <button
+                    class="button is-large is-primary is-box-shadowed"
+                    @click="$router.push({name: 'postCreate', params:{blogId:$route.params.blogId}})"
+                  >WRITE</button>
                 </div>
               </div>
             </LayoutBody>
@@ -182,7 +182,6 @@ import gql from "graphql-tag";
 import AppLoader from "../components/AppLoader";
 import { REQUEST_STATE } from "../utils/helpers";
 import AppError from "../components/AppError";
-import BulmaButtonLink from "../components/BulmaButtonLink";
 import LayoutBody from "../components/LayoutBody";
 import LayoutList from "../components/LayoutList";
 import striptags from "striptags";
@@ -251,7 +250,6 @@ export default {
     AppError,
     LayoutBody,
     LayoutList,
-    BulmaButtonLink,
     BulmaModal,
     IconBack
   },

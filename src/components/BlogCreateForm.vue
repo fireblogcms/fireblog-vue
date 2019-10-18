@@ -13,7 +13,7 @@
         <div class="section">
           <div class="content has-text-centered">
             <!-- special text if this is the very first blog :) -->
-            <template v-if="first">
+            <template v-if="isMyFirstBlog">
               <h2>Glad to see you here, {{ user.name }} 🤗</h2>
               <h2 style="font-weight:200;">
                 Let's create your first blog.
@@ -25,8 +25,8 @@
               </h2>
             </template>
 
-            <!-- text is this is not the first blog -->
-            <template v-if="!first">
+            <!-- text is this is not the my first blog -->
+            <template v-if="!isMyFirstBlog">
               <h2>Which is your blog name ?</h2>
             </template>
             <br />
@@ -72,7 +72,11 @@
             <br />
 
             <div class="buttons are-medium is-centered">
-              <a class="button is-outlined" @click="$router.push('/')">CANCEL</a>
+              <button
+                v-if="!isMyFirstBlog"
+                class="button is-outlined"
+                @click="$router.push('/')"
+              >CANCEL</button>
               <button class="button is-primary" @click="onCreateClick">CREATE MY BLOG</button>
             </div>
 
@@ -120,7 +124,7 @@ export default {
     LayoutBody
   },
   props: {
-    first: {
+    isMyFirstBlog: {
       type: Boolean
     }
   },

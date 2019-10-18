@@ -1,6 +1,6 @@
 <template>
   <DefaultLayout>
-    <div class="container">
+    <div class="container is-small">
       <BlogCreateForm />
     </div>
   </DefaultLayout>
@@ -17,3 +17,4 @@ export default {
   }
 };
 </script>
+

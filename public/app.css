@@ -60,14 +60,18 @@ video {
   font-weight: 400;
 }
 
-#app a {
-  font-weight: 400;
-}
-
 #app .button {
   font-weight: 400;
 }
 
 #app .title {
   font-weight: 400;
+}
+
+#app .container.is-small {
+  max-width: 800px;
+}
+
+#app #profile-dropdown a {
+  text-decoration: none;
 }

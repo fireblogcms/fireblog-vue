@@ -6,8 +6,8 @@
 
     <!-- if this is the fiirs blog, display form to create a blog -->
     <template v-if="initDataState === 'FINISHED_OK' && blogs &&  blogs.edges.length === 0">
-      <div class="section container">
-        <BlogCreateForm :first="true" />
+      <div class="container is-small">
+        <BlogCreateForm :isMyFirstBlog="true" />
       </div>
     </template>
     <!-- else, display the blog list -->
@@ -65,7 +65,6 @@ import BlogCreateForm from "../components/BlogCreateForm";
 import DefaultLayout from "../layouts/DefaultLayout";
 import AppLoader from "../components/AppLoader";
 import gql from "graphql-tag";
-import BulmaButtonLink from "../components/BulmaButtonLink";
 import { REQUEST_STATE } from "../utils/helpers";
 import AppError from "../components/AppError";
 import logger from "../utils/logger";
@@ -93,7 +92,6 @@ const meWithMyBlogsQuery = gql`
 export default {
   components: {
     AppError,
-    BulmaButtonLink,
     BlogCreateForm,
     DefaultLayout,
     AppLoader
