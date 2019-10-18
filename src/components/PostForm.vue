@@ -113,7 +113,7 @@
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
       <span @click="onBackToPostsClick" style="cursor:pointer" class="item tag is-medium">
-        <em style="text-decoration:underline">
+        <em>
           <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
           <IconBack />posts
         </em>

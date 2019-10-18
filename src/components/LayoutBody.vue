@@ -10,6 +10,6 @@
   background: white;
   border-radius: 6px;
   margin: auto;
-  padding: 40px;
+  padding-top: 20px;
 }
 </style>
