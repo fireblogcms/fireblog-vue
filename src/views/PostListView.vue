@@ -156,7 +156,7 @@
             <p>
               <strong>DANGER !</strong>
               <br />This action cannot be undone.
-              <strong>{{deleteModal.post.title}}</strong> will be deleted forever.
+              <strong>{{deleteModal.post && deleteModal.post.title}}</strong> will be deleted forever.
             </p>
           </div>
         </div>
