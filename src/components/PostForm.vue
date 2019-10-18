@@ -95,6 +95,7 @@
             style="padding:30px;"
             class="title is-3 has-text-centered"
           >Your changes have been published !</h1>
+          <img style="border-radius:5px" :src="getRandomHurrahGif()" />
         </div>
       </template>
       <template class="has-text-centered" #footer>
@@ -256,10 +257,10 @@ const getExistingPostQuery = gql`
 `;
 
 const randomHurraGifs = [
-  "https://media.giphy.com/media/3kD2Eciolhy4VOzjRV/giphy.gif",
-  "https://media.giphy.com/media/sRHX9qwNKQaQB48RAM/giphy.gif",
   "https://media.giphy.com/media/7IW6Jnw29TYmgkuu3M/giphy.gif",
-  "https://media.giphy.com/media/Wq2xnn2ZnwiTtoD6Qk/giphy.gif"
+  "https://media.giphy.com/media/Wq2xnn2ZnwiTtoD6Qk/giphy.gif",
+  "http://giphygifs.s3.amazonaws.com/media/7vfhdCIn13zm8/giphy.gif",
+  "https://media.giphy.com/media/9MImM8x3OFnQ9DaQwb/giphy.gif"
 ];
 
 const OPERATION_TYPE = {
