@@ -10,7 +10,12 @@
       <div class="modal-card-body">
         <slot name="body" />
       </div>
-      <footer v-if="this.$slots.footer" style="justify-content: center;" class="modal-card-foot">
+      <footer
+        v-if="this.$slots.footer"
+        style="justify-content: center;"
+        class="modal-card-foot"
+        :class="{'is-white': allWhite}"
+      >
         <slot name="footer">
           <button @click="onCloseClick" class="button">Close</button>
         </slot>
@@ -28,6 +33,10 @@ export default {
       default: null
     },
     fullscreen: {
+      type: Boolean,
+      default: false
+    },
+    whiteFooter: {
       type: Boolean,
       default: false
     },
@@ -61,5 +70,9 @@ export default {
 }
 .bulma-modal .modal-background {
   background-color: rgba(10, 10, 10, 0.4);
+}
+.bulma-modal .modal-card-foot.is-white {
+  background-color: white;
+  border: 0;
 }
 </style>

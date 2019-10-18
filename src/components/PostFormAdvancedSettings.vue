@@ -26,7 +26,7 @@
             <div class="control">
               <textarea
                 v-model="form.values.current.teaser"
-                class="textarea is-large"
+                class="textarea is-medium"
                 placeholder="Accroche"
               ></textarea>
             </div>
@@ -42,7 +42,7 @@
             <div class="control">
               <input
                 v-model="form.values.current.slug"
-                class="input is-large"
+                class="input is-medium"
                 type="text"
                 placeholder="slug"
               />
@@ -52,7 +52,7 @@
         </div>
         <div class="column">
           <div class="post-preview-wrapper">
-            <div class="field-help has-text-centered">
+            <div class="field-help">
               <label class="label">Post sharing preview</label>
               Approximative preview of how your post will appear when sharing its link on other websites like Twitter, Facebook etc:
             </div>

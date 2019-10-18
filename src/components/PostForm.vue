@@ -72,7 +72,7 @@
     </BulmaModal>
 
     <!-- HURRAH MODAL -->
-    <BulmaModal class="hurrah-modal" v-model="publishingHurrahModal.show">
+    <BulmaModal class="hurrah-modal" v-model="publishingHurrahModal.show" :whiteFooter="true">
       <template #body>
         <div class="has-text-centered">
           <h1 class="title is-1 has-text-centered">Hurrah ! Your post have been published !</h1>
@@ -87,7 +87,11 @@
       </template>
     </BulmaModal>
 
-    <BulmaModal class="publishing-changes-modal" v-model="publishingChangesModal.show">
+    <BulmaModal
+      class="publishing-changes-modal"
+      v-model="publishingChangesModal.show"
+      :whiteFooter="true"
+    >
       <template #title></template>
       <template #body>
         <div class="has-text-centered">
@@ -210,6 +214,7 @@ import {
   graphQLErrorsContainsCode
 } from "../utils/helpers";
 import { richPreviewLinksAuthorizedDomains } from "../../config";
+import striptags from "striptags";
 
 const PostResponseFragment = gql`
   fragment PostResponse on Post {
@@ -259,8 +264,7 @@ const getExistingPostQuery = gql`
 const randomHurraGifs = [
   "https://media.giphy.com/media/7IW6Jnw29TYmgkuu3M/giphy.gif",
   "https://media.giphy.com/media/Wq2xnn2ZnwiTtoD6Qk/giphy.gif",
-  "http://giphygifs.s3.amazonaws.com/media/7vfhdCIn13zm8/giphy.gif",
-  "https://media.giphy.com/media/9MImM8x3OFnQ9DaQwb/giphy.gif"
+  "http://giphygifs.s3.amazonaws.com/media/7vfhdCIn13zm8/giphy.gif"
 ];
 
 const OPERATION_TYPE = {
@@ -550,7 +554,7 @@ export default {
     onContentInput(value) {
       this.form.values.current.content = value;
     },
-    onEditorReady() {
+    onEditorReady(editor) {
       const element = document.querySelector(
         ".ck-block-toolbar-button .ck-tooltip__text"
       );
@@ -623,6 +627,7 @@ export default {
       if (!this.postFormIsValid()) {
         return;
       }
+
       if (this.mediaLoadingCounter > 0) {
         this.showMediaCurrentlyLoadingModal();
       } else {
@@ -633,6 +638,15 @@ export default {
               replacement: "-",
               lower: true
             }
+          );
+        }
+        // pre-fill teaser fied with the first sentence of the text.
+        if (!this.form.values.initial.teaser.trim()) {
+          this.form.values.current.teaser = striptags(
+            this.form.values.current.content.substr(
+              0,
+              this.form.values.current.content.indexOf(".") + 1
+            )
           );
         }
         this.publicationSettingsModal.show = true;
@@ -836,6 +850,7 @@ export default {
   outline: none !important;
 }
 .post-form-wrapper .ck-content {
+  color: #222;
   padding: 0rem 2rem;
   background: transparent;
   text-align: left;
