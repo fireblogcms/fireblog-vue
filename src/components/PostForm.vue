@@ -51,6 +51,7 @@
     </BulmaModal>
 
     <!-- PUBLISH MODAL -->
+
     <BulmaModal
       class="publication-settings-modal"
       :fullscreen="true"
@@ -403,6 +404,10 @@ export default {
       }
       return Promise.all(promises)
         .then(results => {
+          if (this.$store.state.postJustPublished === true) {
+            this.$store.commit("postJustPublished", false);
+            this.publishingHurrahModal.show = true;
+          }
           this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
         .catch(error => {
@@ -682,6 +687,7 @@ export default {
           this.lastTimeSaved = Date.now();
           this.existingPost = result.data.createPost;
           // post is created, we are now in UPDATE mode for the form.
+          this.$store.commit("postJustPublished", true);
           this.$router.replace({
             name: "postUpdate",
             params: {
