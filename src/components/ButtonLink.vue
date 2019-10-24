@@ -10,21 +10,21 @@ export default {
     to: {
       // router link, as an object. example : {name: 'PodCreate'}
       type: Object,
-      required: true
+      required: true,
     },
     type: {
       type: String,
-      default: "primary"
-    }
+      default: 'primary',
+    },
   },
   computed: {
     classes() {
       return {
-        "btn_get seo_btn": this.type === "primary",
-        btn_get: this.type === "secondary"
+        'btn_get seo_btn': this.type === 'primary',
+        btn_get: this.type === 'secondary',
       };
-    }
-  }
+    },
+  },
 };
 </script>
 

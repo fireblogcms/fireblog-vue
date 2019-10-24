@@ -2,24 +2,24 @@
   <img :style="style" src="/images/left-arrow.svg" />
 </template>
 
-<script >
+<script>
 export default {
   props: {
     height: {
-      type: String
+      type: String,
     },
     margin: {
-      type: String
-    }
+      type: String,
+    },
   },
   computed: {
     style() {
       const style = {
-        height: this.height ? this.height : "10px",
-        margin: this.margin ? this.margin : "0 8px"
+        height: this.height ? this.height : '10px',
+        margin: this.margin ? this.margin : '0 8px',
       };
       return style;
-    }
-  }
+    },
+  },
 };
 </script>

@@ -1,7 +1,7 @@
 export default ({ slug, locale }) => [
   {
-    id: "getAllPublishedPosts",
-    label: "Get all published posts",
+    id: 'getAllPublishedPosts',
+    label: 'Get all published posts',
     snippet: `
 {
   posts {
@@ -24,11 +24,11 @@ export default ({ slug, locale }) => [
     }
   }
 }
-`
+`,
   },
   {
-    id: "getSinglePostBySlug",
-    label: "Get a single post by slug",
+    id: 'getSinglePostBySlug',
+    label: 'Get a single post by slug',
     snippet: `
 {
   post(slug: "${slug}") {
@@ -44,11 +44,11 @@ export default ({ slug, locale }) => [
     }
   }
 }
-    `
+    `,
   },
   {
-    id: "getBlogWithPosts",
-    label: "Get blog informations",
+    id: 'getBlogWithPosts',
+    label: 'Get blog informations',
     snippet: `
     {
       blog {
@@ -62,6 +62,6 @@ export default ({ slug, locale }) => [
       }
     }
       
-  `
-  }
+  `,
+  },
 ];

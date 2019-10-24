@@ -1,10 +1,13 @@
 <template>
   <div>
     <AppLoader v-if="initDataState === 'PENDING'" />
-    <AppError v-if="errorMessage">{{errorMessage}}</AppError>
-    <div v-if="initDataState === REQUEST_STATE.FINISHED_OK" class="post-form-wrapper">
+    <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
+    <div
+      v-if="initDataState === REQUEST_STATE.FINISHED_OK"
+      class="post-form-wrapper"
+    >
       <!-- debug form values -->
-      <pre v-if="false">{{form}}</pre>
+      <pre v-if="false">{{ form }}</pre>
 
       <!-- FORM -->
       <form @submit.prevent>
@@ -16,13 +19,13 @@
           placeholder="Title"
           type="text"
           id="title"
-          :disabled="savingDraftState ===  REQUEST_STATE.PENDING"
+          :disabled="savingDraftState === REQUEST_STATE.PENDING"
           :value="form.values.initial.title"
           @input="onTitleInput"
         ></textarea-autosize>
         <ckeditor
           class="content"
-          :disabled="savingDraftState ===  REQUEST_STATE.PENDING"
+          :disabled="savingDraftState === REQUEST_STATE.PENDING"
           ref="ckeditor"
           :value="form.values.initial.content"
           :editor="editor"
@@ -34,19 +37,23 @@
     </div>
 
     <BulmaModal v-model="modal.show">
-      <template #title>{{modal.title}}</template>
-      <template #body>{{modal.content}}</template>
+      <template #title>{{ modal.title }}</template>
+      <template #body>{{ modal.content }}</template>
       <template #footer>
         <div
           v-if="modal.confirmText && modal.confirmCallback"
           @click="modal.confirmCallback"
           class="button is-danger"
-        >{{modal.confirmText}}</div>
+        >
+          {{ modal.confirmText }}
+        </div>
         <div
           v-if="modal.cancelText && modal.cancelCallback"
           @click="modal.cancelCallback"
           class="button is-primary"
-        >{{modal.cancelText}}</div>
+        >
+          {{ modal.cancelText }}
+        </div>
       </template>
     </BulmaModal>
 
@@ -72,10 +79,16 @@
     </BulmaModal>
 
     <!-- HURRAH MODAL -->
-    <BulmaModal class="hurrah-modal" v-model="publishingHurrahModal.show" :whiteFooter="true">
+    <BulmaModal
+      class="hurrah-modal"
+      v-model="publishingHurrahModal.show"
+      :whiteFooter="true"
+    >
       <template #body>
         <div class="has-text-centered">
-          <h1 class="title is-1 has-text-centered">Hurrah ! Your post have been published !</h1>
+          <h1 class="title is-1 has-text-centered">
+            Hurrah ! Your post have been published !
+          </h1>
           <img style="border-radius:5px" :src="getRandomHurrahGif()" />
         </div>
       </template>
@@ -83,7 +96,9 @@
         <button
           @click="publishingHurrahModal.show = false"
           class="button is-primary is-large"
-        >Okay !</button>
+        >
+          Okay !
+        </button>
       </template>
     </BulmaModal>
 
@@ -95,10 +110,9 @@
       <template #title></template>
       <template #body>
         <div class="has-text-centered">
-          <h1
-            style="padding:30px;"
-            class="title is-3 has-text-centered"
-          >Your changes have been published !</h1>
+          <h1 style="padding:30px;" class="title is-3 has-text-centered">
+            Your changes have been published !
+          </h1>
           <img style="border-radius:5px" :src="getRandomHurrahGif()" />
         </div>
       </template>
@@ -106,15 +120,24 @@
         <button
           @click="publishingChangesModal.show = false"
           class="button is-primary is-large"
-        >Okay !</button>
+        >
+          Okay !
+        </button>
       </template>
     </BulmaModal>
 
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
-      <span @click="onBackToPostsClick" style="cursor:pointer" class="item tag is-medium">
+      <span
+        @click="onBackToPostsClick"
+        style="cursor:pointer"
+        class="item tag is-medium"
+      >
         <em>
-          <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
+          <img
+            style="position:relative;height:20px !important;top:4px;"
+            src="/images/book.png"
+          />
           <IconBack />posts
         </em>
       </span>
@@ -125,10 +148,11 @@
         style="color:rgba(0,0,0, 0.6);font-size:14px;"
       >
         <em>
-          {{getCurrentPublicationStatus()}}
+          {{ getCurrentPublicationStatus() }}
           <span
             v-if="getCurrentPublicationStatus() === 'DRAFT' && lastTimeSaved"
-          >- saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</span>
+            >- saved at {{ lastTimeSaved | moment('HH:mm:ss') }}</span
+          >
         </em>
       </span>
     </portal>
@@ -140,7 +164,11 @@
         v-if="getCurrentPublicationStatus() === 'DRAFT'"
         @click="onSaveDraftClick()"
         class="button is-outlined item"
-        :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'DRAFT' }"
+        :class="{
+          'is-loading':
+            savingPost.state === 'PENDING' &&
+            savingPost.publicationStatus === 'DRAFT',
+        }"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
       >
@@ -152,25 +180,41 @@
         @click="onUnpublishClick()"
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
         class="button is-outlined item"
-        :class="{'is-loading':  savingPost.state === 'PENDING' && savingPost.publicationStatus === 'DRAFT' }"
+        :class="{
+          'is-loading':
+            savingPost.state === 'PENDING' &&
+            savingPost.publicationStatus === 'DRAFT',
+        }"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
-      >UNPUBLISH</button>
+      >
+        UNPUBLISH
+      </button>
 
       <button
         @click="onPublicationClick()"
         v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
         class="button is-outlined item is-primary"
-        :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED' }"
+        :class="{
+          'is-loading':
+            savingPost.state === 'PENDING' &&
+            savingPost.publicationStatus === 'PUBLISHED',
+        }"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
-      >PUBLICATION</button>
+      >
+        PUBLICATION
+      </button>
 
       <button
         @click="onPublicationClick()"
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
         class="button item is-outlined is-primary"
-        :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
+        :class="{
+          'is-loading':
+            savingPost.state === 'PENDING' &&
+            savingPost.publicationStatus === 'PUBLISHED',
+        }"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
       >
@@ -192,17 +236,17 @@
 </template>
 
 <script>
-import AppLoader from "../components/AppLoader";
-import Editor from "@ckeditor/ckeditor5-build-balloon-block";
-import CKEditor from "@ckeditor/ckeditor5-vue";
-import gql from "graphql-tag";
-import AppError from "./AppError";
-import logger from "../utils/logger";
-import BulmaModal from "./BulmaModal";
-import IconBack from "./IconBack";
-import PostFormAdvancedSettings from "./PostFormAdvancedSettings";
-import apolloClient from "../utils/apolloClient";
-import { ckeditorCloudinaryDirectUploadAdapterPlugin } from "../utils/ckeditorCloudinaryDirectUploadAdapter";
+import AppLoader from '../components/AppLoader';
+import Editor from '@ckeditor/ckeditor5-build-balloon-block';
+import CKEditor from '@ckeditor/ckeditor5-vue';
+import gql from 'graphql-tag';
+import AppError from './AppError';
+import logger from '../utils/logger';
+import BulmaModal from './BulmaModal';
+import IconBack from './IconBack';
+import PostFormAdvancedSettings from './PostFormAdvancedSettings';
+import apolloClient from '../utils/apolloClient';
+import { ckeditorCloudinaryDirectUploadAdapterPlugin } from '../utils/ckeditorCloudinaryDirectUploadAdapter';
 import {
   REQUEST_STATE,
   getUser,
@@ -210,10 +254,10 @@ import {
   formInitData,
   createSlug,
   ckeditorIframelyMediaProvider,
-  graphQLErrorsContainsCode
-} from "../utils/helpers";
-import { richPreviewLinksAuthorizedDomains } from "../../config";
-import striptags from "striptags";
+  graphQLErrorsContainsCode,
+} from '../utils/helpers';
+import { richPreviewLinksAuthorizedDomains } from '../../config';
+import striptags from 'striptags';
 
 const PostResponseFragment = gql`
   fragment PostResponse on Post {
@@ -261,27 +305,27 @@ const getExistingPostQuery = gql`
 `;
 
 const randomHurraGifs = [
-  "https://media.giphy.com/media/7IW6Jnw29TYmgkuu3M/giphy.gif",
-  "https://media.giphy.com/media/Wq2xnn2ZnwiTtoD6Qk/giphy.gif",
-  "http://giphygifs.s3.amazonaws.com/media/7vfhdCIn13zm8/giphy.gif"
+  'https://media.giphy.com/media/7IW6Jnw29TYmgkuu3M/giphy.gif',
+  'https://media.giphy.com/media/Wq2xnn2ZnwiTtoD6Qk/giphy.gif',
+  'http://giphygifs.s3.amazonaws.com/media/7vfhdCIn13zm8/giphy.gif',
 ];
 
 const OPERATION_TYPE = {
-  CREATE: "CREATE",
-  UPDATE: "UPDATE"
+  CREATE: 'CREATE',
+  UPDATE: 'UPDATE',
 };
 
 const STATUS_ENUM = {
-  PUBLISHED: "PUBLISHED",
-  DRAFT: "DRAFT",
-  BIN: "BIN"
+  PUBLISHED: 'PUBLISHED',
+  DRAFT: 'DRAFT',
+  BIN: 'BIN',
 };
 
 const initialFormValues = {
-  title: "",
-  content: "",
-  slug: "",
-  teaser: ""
+  title: '',
+  content: '',
+  slug: '',
+  teaser: '',
 };
 
 export default {
@@ -291,11 +335,11 @@ export default {
     AppError,
     BulmaModal,
     IconBack,
-    PostFormAdvancedSettings
+    PostFormAdvancedSettings,
   },
   data() {
     return {
-      hello: "world",
+      hello: 'world',
       initDataState: REQUEST_STATE.NOT_STARTED,
       publishPostState: REQUEST_STATE.NOT_STARTED,
       unpublishPostState: REQUEST_STATE.NOT_STARTED,
@@ -307,7 +351,7 @@ export default {
       errorMessage: null,
       savingPost: {
         state: REQUEST_STATE.NOT_STARTED,
-        publicationStatus: null
+        publicationStatus: null,
       },
       form: formInitData({ initialFormValues }),
       modal: {
@@ -317,17 +361,17 @@ export default {
         confirmText: null,
         confirmCallback: () => {},
         cancelText: null,
-        cancelCallback: () => {}
+        cancelCallback: () => {},
       },
       publicationSettingsModal: {
-        show: false
+        show: false,
       },
       publishingHurrahModal: {
-        show: false
+        show: false,
       },
       publishingChangesModal: {
-        show: false
-      }
+        show: false,
+      },
     };
   },
   provide() {
@@ -337,13 +381,13 @@ export default {
       // we use a function here because of https://github.com/vuejs/vue/issues/7017
       existingPost: () => {
         return this.existingPost ? this.existingPost : null;
-      }
+      },
     };
   },
   created() {
     this.initData();
     window.onbeforeunload = function(e) {
-      return "Are you sure you want to quit ?";
+      return 'Are you sure you want to quit ?';
     };
     this.REQUEST_STATE = REQUEST_STATE;
     this.OPERATION_TYPE = OPERATION_TYPE;
@@ -360,25 +404,25 @@ export default {
               state === REQUEST_STATE.FINISHED_ERROR
             )
               this.mediaLoadingCounter = this.mediaLoadingCounter - 1;
-          }
-        })
+          },
+        }),
       ],
       toolbar: [
-        "bold",
-        "italic",
-        "link",
-        "heading",
-        "blockQuote",
-        "bulletedList"
+        'bold',
+        'italic',
+        'link',
+        'heading',
+        'blockQuote',
+        'bulletedList',
       ],
-      blockToolbar: ["imageUpload", "mediaEmbed"],
+      blockToolbar: ['imageUpload', 'mediaEmbed'],
       image: {
-        toolbar: ["imageTextAlternative"]
+        toolbar: ['imageTextAlternative'],
       },
       mediaEmbed: {
         previewsInData: false,
-        providers: [ckeditorIframelyMediaProvider()]
-      }
+        providers: [ckeditorIframelyMediaProvider()],
+      },
     };
   },
   mounted() {
@@ -420,12 +464,12 @@ export default {
     window.onbeforeunload = null;
   },
   watch: {
-    "form.values": {
+    'form.values': {
       deep: true,
       handler() {
         this.changesDetected = this.detectChanges().changesDetected;
-      }
-    }
+      },
+    },
   },
   methods: {
     initData() {
@@ -436,71 +480,71 @@ export default {
         promises.push(this.getExistingPost());
       }
       return Promise.all(promises)
-        .then(results => {
+        .then((results) => {
           if (this.$store.state.postJustPublished === true) {
-            this.$store.commit("postJustPublished", false);
+            this.$store.commit('postJustPublished', false);
             this.publishingHurrahModal.show = true;
           }
           this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
-        .catch(error => {
+        .catch((error) => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           throw new Error(error);
         });
     },
     getCurrentPublicationStatus() {
-      return this.existingPost ? this.existingPost.status : "DRAFT";
+      return this.existingPost ? this.existingPost.status : 'DRAFT';
     },
     savePost(status) {
       this.errorMessage = null;
       if (!STATUS_ENUM[status]) {
         throw new Error(
           `Received unknown status ${status}. Status MUST be one of the following value: ` +
-            Object.values(STATUS_ENUM).join(", ")
+            Object.values(STATUS_ENUM).join(', '),
         );
       }
       this.savingPost.state = REQUEST_STATE.PENDING;
       this.savingPost.publicationStatus = status;
-      if (this.getCurrentOperation() === "CREATE") {
+      if (this.getCurrentOperation() === 'CREATE') {
         const newPost = {
           ...this.preparePostFromCurrentFormValues(),
-          status
+          status,
         };
-        if (status === "PUBLISHED") {
+        if (status === 'PUBLISHED') {
           newPost.publishedAt = new Date();
         }
         return this.createPost(newPost)
-          .then(result => {
+          .then((result) => {
             this.savingPost.state = REQUEST_STATE.FINISHED_OK;
             return result;
           })
-          .catch(error => {
+          .catch((error) => {
             this.savingPost.state = REQUEST_STATE.FINISHED_ERROR;
-            this.errorMessage = "Sorry, publishing failed: " + error;
+            this.errorMessage = 'Sorry, publishing failed: ' + error;
             if (this.publicationSettingsModal.show) {
               this.publicationSettingsModal.show = false;
             }
             throw new Error(error);
           });
       }
-      if (this.getCurrentOperation() === "UPDATE") {
+      if (this.getCurrentOperation() === 'UPDATE') {
         const post = {
           ...this.preparePostFromCurrentFormValues(),
-          status
+          status,
         };
         if (
-          this.existingPost.status !== "PUBLISHED" &&
-          status === "PUBLISHED"
+          this.existingPost.status !== 'PUBLISHED' &&
+          status === 'PUBLISHED'
         ) {
           post.publishedAt = new Date();
         }
         return this.updatePost(post)
-          .then(result => {
+          .then((result) => {
             this.savingPost.state = REQUEST_STATE.FINISHED_OK;
             return result;
           })
-          .catch(error => {
-            this.errorMessage = "Sorry, publish operation failed: " + error;
+          .catch((error) => {
+            this.errorMessage = 'Sorry, publish operation failed: ' + error;
             this.savingPost.state = REQUEST_STATE.FINISHED_ERROR;
             if (this.publicationSettingsModal.show) {
               this.publicationSettingsModal.show = false;
@@ -515,53 +559,53 @@ export default {
           show: true,
           title: "We haven' finished uploading your media",
           content: `${this.mediaLoadingCounter} media ${
-            this.mediaLoadingCounter > 1 ? "are" : "is"
+            this.mediaLoadingCounter > 1 ? 'are' : 'is'
           } currently uploading`,
-          cancelText: "Wait for uploads to complete!",
-          confirmText: "Quit anyway",
+          cancelText: 'Wait for uploads to complete!',
+          confirmText: 'Quit anyway',
           confirmCallback: () => {
             this.$router.push({
-              name: "postList",
-              params: { blogId: this.$route.params.blogId }
+              name: 'postList',
+              params: { blogId: this.$route.params.blogId },
             });
           },
           cancelCallback: () => {
             this.modal.show = false;
-          }
+          },
         };
       } else if (this.changesDetected) {
         this.modal = {
           show: true,
-          title: "Some changes have not been saved",
+          title: 'Some changes have not been saved',
           content: `If you quit now, your last changes will be lost`,
-          cancelText: "Save and quit",
-          confirmText: "Quit without saving",
+          cancelText: 'Save and quit',
+          confirmText: 'Quit without saving',
           confirmCallback: () => {
             this.$router.push({
-              name: "postList",
-              params: { blogId: this.$route.params.blogId }
+              name: 'postList',
+              params: { blogId: this.$route.params.blogId },
             });
           },
           cancelCallback: () => {
             this.onSaveDraftClick().then(() => {
               this.modal.show = false;
               this.$router.push({
-                name: "postList",
-                params: { blogId: this.$route.params.blogId }
+                name: 'postList',
+                params: { blogId: this.$route.params.blogId },
               });
             });
-          }
+          },
         };
       } else {
         this.$router.push({
-          name: "postList",
-          params: { blogId: this.$route.params.blogId }
+          name: 'postList',
+          params: { blogId: this.$route.params.blogId },
         });
       }
     },
     detectChanges() {
       const modifiedValues = {};
-      Object.keys(this.form.values.initial).forEach(key => {
+      Object.keys(this.form.values.initial).forEach((key) => {
         if (this.form.values.initial[key] !== this.form.values.current[key]) {
           modifiedValues[key] = true;
         } else {
@@ -571,9 +615,9 @@ export default {
       return {
         modifiedValues,
         changesDetected:
-          Object.values(modifiedValues).filter(v => v === true).length > 0
+          Object.values(modifiedValues).filter((v) => v === true).length > 0
             ? true
-            : false
+            : false,
       };
     },
     onTitleInput(value) {
@@ -584,9 +628,9 @@ export default {
     },
     onEditorReady(editor) {
       const element = document.querySelector(
-        ".ck-block-toolbar-button .ck-tooltip__text"
+        '.ck-block-toolbar-button .ck-tooltip__text',
       );
-      const toolTip = "Add media";
+      const toolTip = 'Add media';
       element.innerHTML = toolTip;
       element.innerText = toolTip;
     },
@@ -600,7 +644,7 @@ export default {
       // If we only publish changes on a already published articles, we have a more
       // sober modal.
       let publishingChanges = false;
-      if (this.existingPost && this.existingPost.status === "PUBLISHED") {
+      if (this.existingPost && this.existingPost.status === 'PUBLISHED') {
         publishingChanges = true;
       }
       this.form.errors = this.getFormErrors();
@@ -629,14 +673,14 @@ export default {
       return apolloClient
         .query({
           query: getExistingPostQuery,
-          variables: { _id: this.$route.params.postId }
+          variables: { _id: this.$route.params.postId },
         })
-        .then(result => {
+        .then((result) => {
           this.existingPost = result.data.post;
           this.prepareFormValuesFromPost(this.existingPost);
         })
-        .catch(error => {
-          this.errorMessage = "En error occured while loading post";
+        .catch((error) => {
+          this.errorMessage = 'En error occured while loading post';
           throw new Error(error);
         });
     },
@@ -646,7 +690,7 @@ export default {
     postFormIsValid() {
       let isValid = true;
       if (!this.form.values.current.title.trim()) {
-        alert("A title is required");
+        alert('A title is required');
         isValid = false;
       }
       return isValid;
@@ -663,15 +707,15 @@ export default {
           this.form.values.current.slug = createSlug(
             this.form.values.current.title,
             {
-              replacement: "-",
-              lower: true
-            }
+              replacement: '-',
+              lower: true,
+            },
           );
         }
         // pre-fill teaser fied with the first sentence of the text.
         if (!this.form.values.initial.teaser.trim()) {
           this.form.values.current.teaser = striptags(
-            this.form.values.current.content.substr(0, 250)
+            this.form.values.current.content.substr(0, 250),
           );
         }
         this.publicationSettingsModal.show = true;
@@ -682,9 +726,9 @@ export default {
     },
     onSaveDraftClick() {
       if (!this.postFormIsValid()) {
-        return Promise.reject("Form values are invalid");
+        return Promise.reject('Form values are invalid');
       } else if (this.mediaLoadingCounter > 0) {
-        Promise.reject("Media are currently loading");
+        Promise.reject('Media are currently loading');
         this.showMediaCurrentlyLoadingModal();
       } else {
         return this.savePost(STATUS_ENUM.DRAFT);
@@ -695,17 +739,17 @@ export default {
         show: true,
         title: "We can't publish now",
         content: `${this.mediaLoadingCounter} media ${
-          this.mediaLoadingCounter > 1 ? "are" : "is"
+          this.mediaLoadingCounter > 1 ? 'are' : 'is'
         } currently uploading`,
-        cancelText: "Wait for uploads to complete!",
+        cancelText: 'Wait for uploads to complete!',
         cancelCallback: () => {
           this.modal.show = false;
-        }
+        },
       };
     },
     onProofreadClick() {
       this.savePost(STATUS_ENUM.DRAFT).then(() => {
-        this.$router.newTab({ name: "postProofread" });
+        this.$router.newTab({ name: 'postProofread' });
       });
     },
     async createPost(post) {
@@ -717,30 +761,30 @@ export default {
         post.author = user._id;
       }
       post.blog = this.$route.params.blogId;
-      post.locale = blog.contentDefaultLocale.replace("-", "_");
+      post.locale = blog.contentDefaultLocale.replace('-', '_');
       return apolloClient
         .mutate({
           mutation: createPostQuery,
-          variables: { post }
+          variables: { post },
         })
-        .then(result => {
+        .then((result) => {
           this.lastTimeSaved = Date.now();
           this.existingPost = result.data.createPost;
           // post is created, we are now in UPDATE mode for the form.
-          if (this.existingPost.status === "PUBLISHED") {
-            this.$store.commit("postJustPublished", true);
+          if (this.existingPost.status === 'PUBLISHED') {
+            this.$store.commit('postJustPublished', true);
           }
           this.$router.replace({
-            name: "postUpdate",
+            name: 'postUpdate',
             params: {
               blogId: this.$route.params.blogId,
-              postId: result.data.createPost._id
-            }
+              postId: result.data.createPost._id,
+            },
           });
           return result;
         })
-        .catch(error => {
-          this.errorMessage = "😞Sorry, an error occured while creating post.";
+        .catch((error) => {
+          this.errorMessage = '😞Sorry, an error occured while creating post.';
           throw new Error(error);
         });
     },
@@ -752,17 +796,17 @@ export default {
         .mutate({
           mutation: updatePostQuery,
           variables: {
-            post
-          }
+            post,
+          },
         })
-        .then(result => {
+        .then((result) => {
           this.lastTimeSaved = Date.now();
           this.existingPost = result.data.updatePost;
           this.changesDetected = false;
           return result;
         })
-        .catch(error => {
-          this.errorMessage = "😞Sorry, an error occured updating post";
+        .catch((error) => {
+          this.errorMessage = '😞Sorry, an error occured updating post';
           throw new Error(error);
         });
     },
@@ -772,13 +816,13 @@ export default {
       if (this.getCurrentOperation() === OPERATION_TYPE.CREATE) {
         const newPost = {
           ...this.preparePostFromCurrentFormValues(),
-          status: "DRAFT"
+          status: 'DRAFT',
         };
         this.createPost(newPost)
           .then(() => {
             this.savingDraftState = REQUEST_STATE.FINISHED_OK;
           })
-          .catch(error => {
+          .catch((error) => {
             this.savingDraftState = REQUEST_STATE.FINISHED_ERROR;
             throw new Error(error);
           });
@@ -787,17 +831,17 @@ export default {
       if (this.getCurrentOperation() === OPERATION_TYPE.UPDATE) {
         const post = {
           ...this.preparePostFromCurrentFormValues(),
-          status: "DRAFT",
-          _id: this.$route.params.postId
+          status: 'DRAFT',
+          _id: this.$route.params.postId,
         };
         this.prepareFormValuesFromPost(post);
         this.updatePost(post)
           .then(() => {
             this.savingDraftState = REQUEST_STATE.FINISHED_OK;
           })
-          .catch(error => {
+          .catch((error) => {
             this.savingDraftState = REQUEST_STATE.FINISHED_ERROR;
-            this.errorMessage = "Sorry, an error occured while saving draft.";
+            this.errorMessage = 'Sorry, an error occured while saving draft.';
             throw new Error(error);
           });
       }
@@ -805,12 +849,12 @@ export default {
     prepareFormValuesFromPost(post) {
       // initial
       this.form.values.initial.title = post.title;
-      this.form.values.initial.content = post.content ? post.content : "";
-      this.form.values.initial.slug = post.slug ? post.slug : "";
-      this.form.values.initial.teaser = post.teaser ? post.teaser : "";
-      this.form.values.initial.image = post.image ? post.image : "";
+      this.form.values.initial.content = post.content ? post.content : '';
+      this.form.values.initial.slug = post.slug ? post.slug : '';
+      this.form.values.initial.teaser = post.teaser ? post.teaser : '';
+      this.form.values.initial.image = post.image ? post.image : '';
       this.form.values.current = {
-        ...this.form.values.initial
+        ...this.form.values.initial,
       };
     },
     // Prepare a post object from form form.values
@@ -820,7 +864,7 @@ export default {
         content: this.form.values.current.content,
         slug: this.form.values.current.slug,
         teaser: this.form.values.current.teaser,
-        image: this.form.values.current.image
+        image: this.form.values.current.image,
       };
     },
     getRandomHurrahGif() {
@@ -835,14 +879,14 @@ export default {
         errors.slug = "Slug can only contains minusculs dans '-' characters.";
       }
       if (!this.form.values.current.slug.trim()) {
-        errors.slug = "Slug is required";
+        errors.slug = 'Slug is required';
       }
       if (!this.form.values.current.teaser.trim()) {
-        errors.teaser = "Teaser is required";
+        errors.teaser = 'Teaser is required';
       }
       return errors;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -855,7 +899,7 @@ export default {
 .post-form-wrapper > form {
   box-shadow: 1px 1px 4px 1px rgba(0, 0, 0, 0.05);
   border-radius: 6px;
-  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   padding: 30px;
   margin: auto;
   margin-bottom: 40px;
@@ -923,7 +967,7 @@ export default {
  * Replace "P" paragraph icon to a "+" to add media
  */
 button.ck-block-toolbar-button {
-  background-image: url("/images/editor-button-plus.svg") !important;
+  background-image: url('/images/editor-button-plus.svg') !important;
   background-repeat: no-repeat !important;
   cursor: pointer !important;
 }

@@ -1,6 +1,6 @@
-import apolloClient from "./apolloClient";
-import gql from "graphql-tag";
-import Router from "../router";
+import apolloClient from './apolloClient';
+import gql from 'graphql-tag';
+import Router from '../router';
 
 const uploadQuery = gql`
   mutation uploadQuery($file: Upload!, $blogId: ID!) {
@@ -30,7 +30,7 @@ class ckeditorGraphQLUploadAdapter {
     // make sure we have a blogId param at this point.
     if (!Router.currentRoute.params.blogId) {
       throw new Error(
-        "ckeditorUploadAdapter : No blog Id detected in the current url, aborting upload !"
+        'ckeditorUploadAdapter : No blog Id detected in the current url, aborting upload !',
       );
     }
 
@@ -38,30 +38,30 @@ class ckeditorGraphQLUploadAdapter {
     // apollo-upload-client package allow us to send this File Object directly
     // as a variable of our mutation and streams the file to our resolver :
     // @see https://github.com/jaydenseric/graphql-multipart-request-spec
-    return this.loader.file.then(file => {
+    return this.loader.file.then((file) => {
       return apolloClient
         .mutate({
           mutation: uploadQuery,
           context: {
             fetchOptions: {
               useUpload: true,
-              onProgress: progressEvent => {
+              onProgress: (progressEvent) => {
                 this.loader.uploadTotal = progressEvent.total;
                 this.loader.uploaded = progressEvent.loaded;
-              }
-            }
+              },
+            },
           },
           // put file in a folder named after the blog Id.
           variables: {
             file,
-            blogId: Router.currentRoute.params.blogId
-          }
+            blogId: Router.currentRoute.params.blogId,
+          },
         })
-        .then(result => {
+        .then((result) => {
           // is the default url to use to display our uploaded image.
           // Here it is possible to return different srcset if needed.
           return {
-            default: result.data.upload.url
+            default: result.data.upload.url,
           };
         });
     });
@@ -69,12 +69,12 @@ class ckeditorGraphQLUploadAdapter {
 
   // Aborts the upload process.
   abort() {
-    alert("aborted");
+    alert('aborted');
   }
 }
 
 export function ckeditorGraphQLUploadAdapterPlugin(editor) {
-  editor.plugins.get("FileRepository").createUploadAdapter = loader => {
+  editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
     // Configure the URL to the upload script in your back-end here!
     return new ckeditorGraphQLUploadAdapter(loader);
   };
