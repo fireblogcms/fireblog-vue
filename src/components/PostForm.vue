@@ -2,7 +2,7 @@
   <div>
     <AppLoader v-if="initDataState === 'PENDING'" />
     <AppError v-if="errorMessage">{{errorMessage}}</AppError>
-    <div v-if="initDataState === REQUEST_STATE.FINISHED_OK" class="post-form-wrapper" @keyup.ctrl.s="onKeyPress">
+    <div v-if="initDataState === REQUEST_STATE.FINISHED_OK" class="post-form-wrapper">
       <!-- debug form values -->
       <pre v-if="false">{{form}}</pre>
 
