@@ -1,7 +1,7 @@
-import createAuth0Client from "@auth0/auth0-spa-js";
-import apolloClient from "./apolloClient";
-import gql from "graphql-tag";
-import logger from "./logger";
+import createAuth0Client from '@auth0/auth0-spa-js';
+import apolloClient from './apolloClient';
+import gql from 'graphql-tag';
+import logger from './logger';
 
 export let auth0 = null;
 
@@ -25,7 +25,7 @@ export async function auth0Client() {
       //    API must check the access token is valid.
       //responseType: "id_token token",
       // request all openid fields (sub, ssi, etc) + email + full profile data
-      scope: "openid email profile"
+      scope: 'openid email profile',
     });
     return auth0;
   } else {
@@ -34,11 +34,11 @@ export async function auth0Client() {
 }
 
 export function syncAuth0UserWithServer({ auth0Id, email, name, picture }) {
-  logger.info("debug:syncAuth0UserWithServer()", {
+  logger.info('debug:syncAuth0UserWithServer()', {
     auth0Id,
     email,
     name,
-    picture
+    picture,
   });
   return apolloClient.mutate({
     mutation: gql`
@@ -53,7 +53,7 @@ export function syncAuth0UserWithServer({ auth0Id, email, name, picture }) {
       }
     `,
     variables: {
-      user: { auth0Id, email, name, picture }
-    }
+      user: { auth0Id, email, name, picture },
+    },
   });
 }

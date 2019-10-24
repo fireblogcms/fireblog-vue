@@ -1,6 +1,6 @@
 <template>
   <DefaultLayout>
-    <AppError v-if="errorMessage">{{errorMessage}}</AppError>
+    <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
 
     <template v-if="initDataState === 'PENDING'">
       <AppLoader>Loading profile</AppLoader>
@@ -27,27 +27,27 @@
 </template>
 
 <script>
-import DefaultLayout from "@/layouts/DefaultLayout";
-import apolloClient from "../utils/apolloClient";
-import LayoutBody from "../components/LayoutBody";
-import AppLoader from "../components/AppLoader";
-import AppError from "../components/AppError";
-import { REQUEST_STATE } from "../utils/helpers";
-import gql from "graphql-tag";
-import logger from "../utils/logger";
+import DefaultLayout from '@/layouts/DefaultLayout';
+import apolloClient from '../utils/apolloClient';
+import LayoutBody from '../components/LayoutBody';
+import AppLoader from '../components/AppLoader';
+import AppError from '../components/AppError';
+import { REQUEST_STATE } from '../utils/helpers';
+import gql from 'graphql-tag';
+import logger from '../utils/logger';
 
 export default {
   components: {
     DefaultLayout,
     LayoutBody,
     AppLoader,
-    AppError
+    AppError,
   },
   data() {
     return {
       initDataState: REQUEST_STATE.NOT_STARTED,
       errorMessage: null,
-      me: null
+      me: null,
     };
   },
   methods: {
@@ -58,9 +58,9 @@ export default {
         .then(() => {
           this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
-        .catch(error => {
+        .catch((error) => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
-          this.errorMessage = "Sorry, an error occured while loading page.";
+          this.errorMessage = 'Sorry, an error occured while loading page.';
           throw new Error(error);
         });
     },
@@ -78,21 +78,21 @@ export default {
                 picture
               }
             }
-          `
+          `,
         })
-        .then(result => {
+        .then((result) => {
           this.me = result.data.me;
           return result;
         })
-        .catch(error => {
+        .catch((error) => {
           this.errorMessage =
-            "Sorry, an error occured while fetching your profile.";
+            'Sorry, an error occured while fetching your profile.';
           throw new Error(error);
         });
-    }
+    },
   },
   created() {
     this.initData();
-  }
+  },
 };
 </script>

@@ -5,15 +5,15 @@
 </template>
 
 <script>
-import PostForm from "@/components/PostForm";
-import DefaultLayout from "@/layouts/DefaultLayout";
-import gql from "graphql-tag";
+import PostForm from '@/components/PostForm';
+import DefaultLayout from '@/layouts/DefaultLayout';
+import gql from 'graphql-tag';
 
 export default {
-  name: "PostFormView",
+  name: 'PostFormView',
   components: {
     PostForm,
-    DefaultLayout
-  }
+    DefaultLayout,
+  },
 };
 </script>

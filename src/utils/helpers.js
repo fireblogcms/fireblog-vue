@@ -1,12 +1,12 @@
-import apolloClient from "./apolloClient";
-import gql from "graphql-tag";
-import slug from "slug";
+import apolloClient from './apolloClient';
+import gql from 'graphql-tag';
+import slug from 'slug';
 
 export const REQUEST_STATE = {
-  NOT_STARTED: "NOT_STARTED",
-  PENDING: "PENDING",
-  FINISHED_OK: "FINISHED_OK",
-  FINISHED_ERROR: "FINISHED_ERROR"
+  NOT_STARTED: 'NOT_STARTED',
+  PENDING: 'PENDING',
+  FINISHED_OK: 'FINISHED_OK',
+  FINISHED_ERROR: 'FINISHED_ERROR',
 };
 
 export function getCloudinaryBlogFolderPath(blogId) {
@@ -15,10 +15,10 @@ export function getCloudinaryBlogFolderPath(blogId) {
 
 export function cloudinaryUploadImage({ file, folder, options = {} }) {
   if (!file) {
-    throw new Error("cloudinaryUploadImage(): missing file argument");
+    throw new Error('cloudinaryUploadImage(): missing file argument');
   }
   if (!folder) {
-    throw new Error("cloudinaryUploadImage(): missing folder argument");
+    throw new Error('cloudinaryUploadImage(): missing folder argument');
   }
   const cloudName = process.env.VUE_APP_CLOUDINARY_CLOUD_NAME;
   const unsignedUploadPreset =
@@ -30,20 +30,20 @@ export function cloudinaryUploadImage({ file, folder, options = {} }) {
     options.onRequestStateChange({
       state: REQUEST_STATE.NOT_STARTED,
       xhr,
-      file: null
+      file: null,
     });
   }
   return new Promise((resolve, reject) => {
     var formData = new FormData();
 
-    xhr.open("POST", uploadUrl, true);
+    xhr.open('POST', uploadUrl, true);
     // Hookup an event listener to update the upload progress bar
-    xhr.upload.addEventListener("progress", event => {
+    xhr.upload.addEventListener('progress', (event) => {
       if (options.onProgress)
         options.onProgress({
           total: event.total,
           loaded: event.loaded,
-          percentage: (event.loaded * 100) / event.total
+          percentage: (event.loaded * 100) / event.total,
         });
     });
 
@@ -53,13 +53,13 @@ export function cloudinaryUploadImage({ file, folder, options = {} }) {
         // Successful upload, resolve the promise with the new image
         var response = JSON.parse(xhr.responseText);
         const images = {
-          default: response.secure_url
+          default: response.secure_url,
         };
         if (options.onRequestStateChange) {
           options.onRequestStateChange({
             state: REQUEST_STATE.FINISHED_OK,
             file,
-            xhr
+            xhr,
           });
         }
         resolve(images);
@@ -68,18 +68,18 @@ export function cloudinaryUploadImage({ file, folder, options = {} }) {
           options.onRequestStateChange({
             state: REQUEST_STATE.FINISHED_ERROR,
             file,
-            xhr
+            xhr,
           });
         }
         // Unsuccessful request, reject the promise
-        reject("Upload failed");
+        reject('Upload failed');
       }
     };
 
     // Setup the form data to be sent in the request
-    formData.append("upload_preset", unsignedUploadPreset);
-    formData.append("folder", folder);
-    formData.append("file", file);
+    formData.append('upload_preset', unsignedUploadPreset);
+    formData.append('folder', folder);
+    formData.append('file', file);
     xhr.send(formData);
   });
 }
@@ -90,8 +90,8 @@ export function cloudinaryUploadImage({ file, folder, options = {} }) {
 export function createSlug(value, options) {
   return slug(value, {
     ...options,
-    replacement: "-",
-    lower: true
+    replacement: '-',
+    lower: true,
   });
 }
 
@@ -112,18 +112,18 @@ export function getUser() {
             picture
           }
         }
-      `
+      `,
     })
-    .then(result => {
+    .then((result) => {
       if (result.data.me === null) {
-        throw new Error("No logged in user found");
+        throw new Error('No logged in user found');
       }
       return result.data.me;
     });
 }
 
 export function graphQLErrorsContainsCode(graphQLErrors, errorCode) {
-  const result = graphQLErrors.some(error => {
+  const result = graphQLErrors.some((error) => {
     if (
       error.extensions &&
       error.extensions.code &&
@@ -157,10 +157,10 @@ export function getBlog(id) {
         }
       `,
       variables: {
-        _id: id
-      }
+        _id: id,
+      },
     })
-    .then(r => {
+    .then((r) => {
       cache.id = r.data.blog;
       return r.data.blog;
     });
@@ -188,25 +188,25 @@ export function getPost(id) {
         }
       `,
       variables: {
-        _id: id
-      }
+        _id: id,
+      },
     })
-    .then(r => {
+    .then((r) => {
       cache.id = r.data.post;
       return r.data.post;
     });
 }
 
-export const parseHeaders = rawHeaders => {
+export const parseHeaders = (rawHeaders) => {
   const headers = new Headers();
   // Replace instances of \r\n and \n followed by at least one space or horizontal tab with a space
   // https://tools.ietf.org/html/rfc7230#section-3.2
-  const preProcessedHeaders = rawHeaders.replace(/\r?\n[\t ]+/g, " ");
-  preProcessedHeaders.split(/\r?\n/).forEach(line => {
-    const parts = line.split(":");
+  const preProcessedHeaders = rawHeaders.replace(/\r?\n[\t ]+/g, ' ');
+  preProcessedHeaders.split(/\r?\n/).forEach((line) => {
+    const parts = line.split(':');
     const key = parts.shift().trim();
     if (key) {
-      const value = parts.join(":").trim();
+      const value = parts.join(':').trim();
       headers.append(key, value);
     }
   });
@@ -220,30 +220,30 @@ export const uploadFetch = (url, options) =>
       const opts = {
         status: xhr.status,
         statusText: xhr.statusText,
-        headers: parseHeaders(xhr.getAllResponseHeaders() || "")
+        headers: parseHeaders(xhr.getAllResponseHeaders() || ''),
       };
       opts.url =
-        "responseURL" in xhr
+        'responseURL' in xhr
           ? xhr.responseURL
-          : opts.headers.get("X-Request-URL");
-      const body = "response" in xhr ? xhr.response : xhr.responseText;
+          : opts.headers.get('X-Request-URL');
+      const body = 'response' in xhr ? xhr.response : xhr.responseText;
       resolve(new Response(body, opts));
     };
     xhr.onerror = () => {
-      reject(new TypeError("Network request failed"));
+      reject(new TypeError('Network request failed'));
     };
     xhr.ontimeout = () => {
-      reject(new TypeError("Network request failed"));
+      reject(new TypeError('Network request failed'));
     };
     xhr.open(options.method, url, true);
 
-    Object.keys(options.headers).forEach(key => {
+    Object.keys(options.headers).forEach((key) => {
       xhr.setRequestHeader(key, options.headers[key]);
     });
 
     if (xhr.upload) {
-      xhr.upload.onprogress = progress => {
-        console.log("progression", progress);
+      xhr.upload.onprogress = (progress) => {
+        console.log('progression', progress);
       };
       //xhr.upload.onprogress = options.onProgress;
     }
@@ -270,22 +270,22 @@ export function formInitData({ initialFormValues }) {
     errors: {},
     values: {
       initial: {
-        ...initialFormValues
+        ...initialFormValues,
       },
       current: {
-        ...initialFormValues
-      }
-    }
+        ...initialFormValues,
+      },
+    },
   };
 }
 
 export function ckeditorIframelyMediaProvider() {
   return {
     // hint: this is just for previews. Get actual HTML codes by making API calls from your CMS
-    name: "iframely previews",
+    name: 'iframely previews',
     // Let iframely handle all links.
     url: /.+/,
-    html: match => {
+    html: (match) => {
       const url = match[0];
       var iframeUrl = `//cdn.iframe.ly/api/iframe?app=1&api_key=${
         process.env.VUE_APP_IFRAMELY_API_KEY
@@ -296,13 +296,13 @@ export function ckeditorIframelyMediaProvider() {
         // If you need, set maxwidth and other styles for 'iframely-embed' class - it's yours to customize
         '<div class="iframely-embed">' +
         '<div class="iframely-responsive">' +
-        "loading ..." +
+        'loading ...' +
         `<iframe src="${iframeUrl}" ` +
         'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>' +
-        "</iframe>" +
-        "</div>" +
-        "</div>"
+        '</iframe>' +
+        '</div>' +
+        '</div>'
       );
-    }
+    },
   };
 }

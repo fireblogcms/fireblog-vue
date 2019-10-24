@@ -16,17 +16,17 @@ export default {
   props: {
     items: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     itemUniqueKey: {
       type: Function,
-      default: (item, index) => index
+      default: (item, index) => index,
     },
     onRowClick: {
       type: Function,
-      default: () => {}
-    }
-  }
+      default: () => {},
+    },
+  },
 };
 </script>
 
