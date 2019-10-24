@@ -398,9 +398,19 @@ export default {
 
       event.preventDefault();
 
-      if (type !== "keyup") return;
+      if (type !== "keydown") return;
 
-      this.onSaveDraftClick()
+      // dates is to throttle (if you spam ctrl + s it will works once per second)
+      if (this.lastTimeSaved && Date.now() - this.lastTimeSaved < 1000) return;
+      // timeout is to debounce (if you keep down ctrl + s it will save only once)
+      if (this.timeoutSaving) clearTimeout(this.timeoutSaving)
+      this.timeoutSaving = setTimeout(
+        () => {
+          this.lastTimeSaved = Date.now();
+          this.onSaveDraftClick()
+        },
+        200,
+      )
     };
 
     window.addEventListener("keydown", this.onKeyPress);
