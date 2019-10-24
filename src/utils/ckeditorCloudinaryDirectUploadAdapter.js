@@ -1,5 +1,5 @@
-import Router from "../router";
-import { REQUEST_STATE, getCloudinaryBlogFolderPath } from "./helpers";
+import Router from '../router';
+import { REQUEST_STATE, getCloudinaryBlogFolderPath } from './helpers';
 
 /**
  * Upload an image directly from ckEditor to Cloudinary servers with an XMLHttpRequest
@@ -22,7 +22,7 @@ class ckeditorCloudinaryDirectUploadAdapter {
       options.onRequestStateChange({
         state: REQUEST_STATE.NOT_STARTED,
         xhr: this.xhr,
-        file: null
+        file: null,
       });
     }
   }
@@ -34,28 +34,28 @@ class ckeditorCloudinaryDirectUploadAdapter {
       // Each image is uploaded in a folder name after the blog Id, so
       // make sure we have a blogId param at this point.
       throw new Error(
-        "ckeditorUploadAdapter : No blog Id detected in the current url, aborting upload !"
+        'ckeditorUploadAdapter : No blog Id detected in the current url, aborting upload !',
       );
     }
 
     // this.loader.file is a File object : https://developer.mozilla.org/en-US/docs/Web/API/File
     // This promise is resolved when file has been uploaded.
-    return this.loader.file.then(file => {
+    return this.loader.file.then((file) => {
       if (this.options.onRequestStateChange) {
         if (this.options.onRequestStateChange) {
           this.options.onRequestStateChange({
             state: REQUEST_STATE.PENDING,
             xhr: this.xhr,
-            file
+            file,
           });
         }
       }
       return new Promise((resolve, reject) => {
         var formData = new FormData();
 
-        this.xhr.open("POST", this.uploadUrl, true);
+        this.xhr.open('POST', this.uploadUrl, true);
         // Hookup an event listener to update the upload progress bar
-        this.xhr.upload.addEventListener("progress", event => {
+        this.xhr.upload.addEventListener('progress', (event) => {
           this.loader.uploadTotal = event.total;
           this.loader.uploaded = event.loaded;
         });
@@ -66,13 +66,13 @@ class ckeditorCloudinaryDirectUploadAdapter {
             // Successful upload, resolve the promise with the new image
             var response = JSON.parse(this.xhr.responseText);
             const images = {
-              default: response.secure_url
+              default: response.secure_url,
             };
             if (this.options.onRequestStateChange) {
               this.options.onRequestStateChange({
                 state: REQUEST_STATE.FINISHED_OK,
                 file: file,
-                xhr: this.xhr
+                xhr: this.xhr,
               });
             }
             resolve(images);
@@ -80,18 +80,18 @@ class ckeditorCloudinaryDirectUploadAdapter {
             this.options.onRequestStateChange({
               state: REQUEST_STATE.FINISHED_ERROR,
               file: file,
-              xhr: this.xhr
+              xhr: this.xhr,
             });
             // Unsuccessful request, reject the promise
-            reject("Upload failed");
+            reject('Upload failed');
           }
         };
 
         // Setup the form data to be sent in the request
         const folder = getCloudinaryBlogFolderPath(blogId);
-        formData.append("upload_preset", this.unsignedUploadPreset);
-        formData.append("folder", folder);
-        formData.append("file", file);
+        formData.append('upload_preset', this.unsignedUploadPreset);
+        formData.append('folder', folder);
+        formData.append('file', file);
         this.xhr.send(formData);
       });
     });
@@ -99,12 +99,14 @@ class ckeditorCloudinaryDirectUploadAdapter {
 
   // Aborts the upload process.
   abort() {
-    alert("aborted");
+    alert('aborted');
   }
 }
 
-export const ckeditorCloudinaryDirectUploadAdapterPlugin = options => editor => {
-  editor.plugins.get("FileRepository").createUploadAdapter = loader => {
+export const ckeditorCloudinaryDirectUploadAdapterPlugin = (options) => (
+  editor,
+) => {
+  editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
     return new ckeditorCloudinaryDirectUploadAdapter(loader, options);
   };
 };

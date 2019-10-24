@@ -2,22 +2,31 @@
   <DefaultLayout>
     <AppLoader v-if="initDataState === 'PENDING'">Loading blogs</AppLoader>
 
-    <AppError v-if="errorMessage">{{errorMessage}}</AppError>
+    <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
 
     <!-- if this is the fiirs blog, display form to create a blog -->
-    <template v-if="initDataState === 'FINISHED_OK' && blogs &&  blogs.edges.length === 0">
+    <template
+      v-if="
+        initDataState === 'FINISHED_OK' && blogs && blogs.edges.length === 0
+      "
+    >
       <div class="container is-small">
         <BlogCreateForm :isMyFirstBlog="true" />
       </div>
     </template>
     <!-- else, display the blog list -->
-    <template v-if="initDataState === 'FINISHED_OK' && blogs && blogs.edges.length > 0">
+    <template
+      v-if="initDataState === 'FINISHED_OK' && blogs && blogs.edges.length > 0"
+    >
       <div class="container">
         <div class="animated fadeIn">
           <header style="padding: 0 1rem 2rem 1rem">
             <div class="columns">
               <div class="column">
-                <h1 style="padding-bottom:2rem;" class="title is-2 is-uppercase">
+                <h1
+                  style="padding-bottom:2rem;"
+                  class="title is-2 is-uppercase"
+                >
                   <img
                     height="70"
                     style="position:relative;top:25px;padding-right:1rem"
@@ -29,9 +38,14 @@
               <div class="column">
                 <button
                   class="button is-primary is-box-shadowed is-large main-call-to-action"
-                  @click="$router.push({name:'blogCreate'})"
+                  @click="$router.push({ name: 'blogCreate' })"
                 >
-                  <img width="40" style="margin-right:10px" src="/images/book.png" /> CREATE A NEW BLOG
+                  <img
+                    width="40"
+                    style="margin-right:10px"
+                    src="/images/book.png"
+                  />
+                  CREATE A NEW BLOG
                 </button>
               </div>
             </div>
@@ -47,14 +61,18 @@
             >
               <div class="blog-infos">
                 <h2 class="title">{{ edge.node.name }}</h2>
-                <h3 class="subtitle" v-if="edge.node.description">{{edge.node.description}}</h3>
+                <h3 class="subtitle" v-if="edge.node.description">
+                  {{ edge.node.description }}
+                </h3>
               </div>
 
               <div
                 @click.stop="onSettingsClick(edge.node, $event)"
                 style="min-width:100px;font-weight:300"
                 class="button is-medium is-outlined settings"
-              >Settings</div>
+              >
+                Settings
+              </div>
             </div>
           </div>
         </div>
@@ -64,15 +82,15 @@
 </template>
 
 <script>
-import apolloClient from "../utils/apolloClient";
-import BlogCreateForm from "../components/BlogCreateForm";
-import DefaultLayout from "../layouts/DefaultLayout";
-import AppLoader from "../components/AppLoader";
-import gql from "graphql-tag";
-import { REQUEST_STATE } from "../utils/helpers";
-import AppError from "../components/AppError";
-import logger from "../utils/logger";
-import gradient from "random-gradient";
+import apolloClient from '../utils/apolloClient';
+import BlogCreateForm from '../components/BlogCreateForm';
+import DefaultLayout from '../layouts/DefaultLayout';
+import AppLoader from '../components/AppLoader';
+import gql from 'graphql-tag';
+import { REQUEST_STATE } from '../utils/helpers';
+import AppError from '../components/AppError';
+import logger from '../utils/logger';
+import gradient from 'random-gradient';
 
 const meWithMyBlogsQuery = gql`
   query meWithMyBlogsQuery {
@@ -98,13 +116,13 @@ export default {
     AppError,
     BlogCreateForm,
     DefaultLayout,
-    AppLoader
+    AppLoader,
   },
   data() {
     return {
       blogs: null,
       error: null,
-      initDataState: REQUEST_STATE.NOT_STARTED
+      initDataState: REQUEST_STATE.NOT_STARTED,
     };
   },
   methods: {
@@ -114,14 +132,14 @@ export default {
         .then(() => {
           this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
-        .catch(error => {
+        .catch((error) => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           throw new Error(error);
         });
     },
     blogCardStyles(edge, index) {
       const styles = {
-        backgroundSize: "cover"
+        backgroundSize: 'cover',
       };
       if (edge.node.image) {
         styles.backgroundImage = `url(${edge.node.image})`;
@@ -131,19 +149,19 @@ export default {
       return styles;
     },
     buildLinkToPostList(item) {
-      return { name: "postList", params: { blogId: item.node._id } };
+      return { name: 'postList', params: { blogId: item.node._id } };
     },
     getBlogs() {
       this.errorMessage = null;
       return apolloClient
         .query({ query: meWithMyBlogsQuery })
-        .then(result => {
+        .then((result) => {
           this.blogs = result.data.me.blogs;
           return this.blogs;
         })
-        .catch(error => {
+        .catch((error) => {
           this.errorMessage =
-            "Sorry, an error occured while fetching blog:" + error;
+            'Sorry, an error occured while fetching blog:' + error;
           throw new Error(error);
         });
     },
@@ -152,16 +170,16 @@ export default {
     },
     onSettingsClick(blog) {
       this.$router.push({
-        name: "blogSettings",
+        name: 'blogSettings',
         params: {
-          blogId: blog._id
-        }
+          blogId: blog._id,
+        },
       });
-    }
+    },
   },
   created() {
     this.initData();
-  }
+  },
 };
 </script>
 
@@ -215,11 +233,10 @@ export default {
   position: absolute;
   top: 20px;
   right: 20px;
-  background: url("/images/icon-settings.svg") no-repeat white 10px;
+  background: url('/images/icon-settings.svg') no-repeat white 10px;
   background-size: 20px;
   border-radius: 4px;
   box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.1);
   color: #333;
 }
 </style>
-

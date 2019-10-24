@@ -1,7 +1,13 @@
 <template>
-  <div :class="{ 'is-active': value, 'fullscreen': fullscreen }" class="bulma-modal modal">
+  <div
+    :class="{ 'is-active': value, fullscreen: fullscreen }"
+    class="bulma-modal modal"
+  >
     <div @click="onCloseClick" class="modal-background"></div>
-    <div :class="{[animation]: animation ? true : false}" class="modal-card animated">
+    <div
+      :class="{ [animation]: animation ? true : false }"
+      class="modal-card animated"
+    >
       <header v-if="this.$slots.title" class="modal-card-head">
         <p class="modal-card-title">
           <slot name="title" />
@@ -14,14 +20,18 @@
         v-if="this.$slots.footer"
         style="justify-content: center;"
         class="modal-card-foot"
-        :class="{'is-white': whiteFooter}"
+        :class="{ 'is-white': whiteFooter }"
       >
         <slot name="footer">
           <button @click="onCloseClick" class="button">Close</button>
         </slot>
       </footer>
     </div>
-    <button @click="onCloseClick" class="modal-close is-large" aria-label="close"></button>
+    <button
+      @click="onCloseClick"
+      class="modal-close is-large"
+      aria-label="close"
+    ></button>
   </div>
 </template>
 
@@ -30,31 +40,31 @@ export default {
   props: {
     animation: {
       type: [String, null],
-      default: null
+      default: null,
     },
     fullscreen: {
       type: Boolean,
-      default: false
+      default: false,
     },
     whiteFooter: {
       type: Boolean,
-      default: false
+      default: false,
     },
     value: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
-      showModal: false
+      showModal: false,
     };
   },
   methods: {
     onCloseClick() {
-      this.$emit("input", false);
-    }
-  }
+      this.$emit('input', false);
+    },
+  },
 };
 </script>
 

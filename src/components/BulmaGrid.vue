@@ -11,7 +11,11 @@ Example :
 <template>
   <div>
     <div class="columns" v-for="(column, rowIndex) in columns" :key="rowIndex">
-      <div v-for="(item, index) in column" :key="itemKey(item, index)" :class="columnClasses">
+      <div
+        v-for="(item, index) in column"
+        :key="itemKey(item, index)"
+        :class="columnClasses"
+      >
         <slot :item="item" :index="index"></slot>
       </div>
     </div>
@@ -23,20 +27,20 @@ export default {
   props: {
     itemsByRow: {
       type: Number,
-      default: 4
+      default: 4,
     },
     itemKey: {
       type: Function,
-      default: (item, index) => index
+      default: (item, index) => index,
     },
     items: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   computed: {
     columnClasses() {
-      return "column is-" + 12 / this.itemsByRow;
+      return 'column is-' + 12 / this.itemsByRow;
     },
     columns() {
       let columnIndex = 0;
@@ -48,7 +52,7 @@ export default {
         columns[columnIndex].push(this.items[itemIndex]);
       }
       return columns;
-    }
-  }
+    },
+  },
 };
 </script>
