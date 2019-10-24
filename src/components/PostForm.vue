@@ -380,10 +380,6 @@ export default {
         providers: [ckeditorIframelyMediaProvider()]
       }
     };
-    // hotkeys("ctrl+s,command+s", (event, handler) => {
-    //   // this.onSaveDraftClick();
-    //   event.preventDefault();
-    // });
   },
   mounted() {
     this.onKeyPress = (event) => {
@@ -680,10 +676,6 @@ export default {
       } else {
         return this.savePost(STATUS_ENUM.DRAFT);
       }
-    },
-    onKeyPress(e) {
-      e.preventDefault();
-      console.log(e);
     },
     showMediaCurrentlyLoadingModal() {
       this.modal = {
