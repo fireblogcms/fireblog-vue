@@ -26,7 +26,6 @@
     "bulma": "^0.7.4",
     "graphql": "^14.4.1",
     "graphql-tag": "^2.10.1",
-    "hotkeys-js": "^3.7.1",
     "lodash.difference": "^4.5.0",
     "path": "^0.12.7",
     "portal-vue": "^2.1.5",

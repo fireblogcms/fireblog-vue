@@ -2,7 +2,7 @@
   <div>
     <AppLoader v-if="initDataState === 'PENDING'" />
     <AppError v-if="errorMessage">{{errorMessage}}</AppError>
-    <div v-if="initDataState === REQUEST_STATE.FINISHED_OK" class="post-form-wrapper">
+    <div v-if="initDataState === REQUEST_STATE.FINISHED_OK" class="post-form-wrapper" @keyup.ctrl.s="onKeyPress">
       <!-- debug form values -->
       <pre v-if="false">{{form}}</pre>
 
@@ -197,7 +197,6 @@ import Editor from "@ckeditor/ckeditor5-build-balloon-block";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import gql from "graphql-tag";
 import AppError from "./AppError";
-import hotkeys from "hotkeys-js";
 import logger from "../utils/logger";
 import BulmaModal from "./BulmaModal";
 import IconBack from "./IconBack";
@@ -381,15 +380,35 @@ export default {
         providers: [ckeditorIframelyMediaProvider()]
       }
     };
-    hotkeys("ctrl+s,command+s", (event, handler) => {
-      // this.onSaveDraftClick();
+    // hotkeys("ctrl+s,command+s", (event, handler) => {
+    //   // this.onSaveDraftClick();
+    //   event.preventDefault();
+    // });
+  },
+  mounted() {
+    this.onKeyPress = (event) => {
+      const {
+        metaKey,
+        key,
+        ctrlKey,
+        type,
+      } = event;
+      if (key !== "s") return;
+      if (navigator.platform.includes("Mac") && !metaKey) return;
+      if (!ctrlKey) return;
+
       event.preventDefault();
-    });
+
+      if (type !== "keyup") return;
+
+      this.onSaveDraftClick()
+    };
+
+    window.addEventListener("keydown", this.onKeyPress);
   },
   beforeDestroy() {
+    window.removeEventListener("keydown", this.onKeyPress);
     window.onbeforeunload = null;
-    hotkeys.unbind("ctrl+s");
-    hotkeys.unbind("command+s");
   },
   watch: {
     "form.values": {
@@ -661,6 +680,10 @@ export default {
       } else {
         return this.savePost(STATUS_ENUM.DRAFT);
       }
+    },
+    onKeyPress(e) {
+      e.preventDefault();
+      console.log(e);
     },
     showMediaCurrentlyLoadingModal() {
       this.modal = {
