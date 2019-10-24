@@ -390,8 +390,11 @@ export default {
         type,
       } = event;
       if (key !== "s") return;
-      if (navigator.platform.includes("Mac") && !metaKey) return;
-      if (!ctrlKey) return;
+
+      const isMac = navigator.platform.includes("Mac")
+
+      if (isMac && !metaKey) return;
+      if (!isMac && !ctrlKey) return;
 
       event.preventDefault();
 
