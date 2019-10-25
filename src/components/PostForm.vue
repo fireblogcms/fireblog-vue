@@ -427,40 +427,33 @@ export default {
   },
   mounted() {
     this.onKeyPress = (event) => {
-      const {
-        metaKey,
-        key,
-        ctrlKey,
-        type,
-      } = event;
-      if (key !== "s") return;
+      const { metaKey, key, ctrlKey, type } = event;
+      if (key !== 's') return;
 
-      const isMac = navigator.platform.includes("Mac")
+      const isMac = navigator.platform.includes('Mac');
 
       if (isMac && !metaKey) return;
       if (!isMac && !ctrlKey) return;
 
       event.preventDefault();
 
-      if (type !== "keydown") return;
+      if (type !== 'keydown') return;
 
       // dates is to throttle (if you spam ctrl + s it will works once per second)
       if (this.lastTimeSaved && Date.now() - this.lastTimeSaved < 1000) return;
       // timeout is to debounce (if you keep down ctrl + s it will save only once)
-      if (this.timeoutSaving) clearTimeout(this.timeoutSaving)
-      this.timeoutSaving = setTimeout(
-        () => {
-          this.lastTimeSaved = Date.now();
-          this.onSaveDraftClick()
-        },
-        200,
-      )
+      if (this.timeoutSaving) clearTimeout(this.timeoutSaving);
+      this.timeoutSaving = setTimeout(() => {
+        this.lastTimeSaved = Date.now();
+        if (this.existingPost.status === 'PUBLISHED') this.onPublicationClick();
+        else this.onSaveDraftClick();
+      }, 200);
     };
 
-    window.addEventListener("keydown", this.onKeyPress);
+    window.addEventListener('keydown', this.onKeyPress);
   },
   beforeDestroy() {
-    window.removeEventListener("keydown", this.onKeyPress);
+    window.removeEventListener('keydown', this.onKeyPress);
     window.onbeforeunload = null;
   },
   watch: {
