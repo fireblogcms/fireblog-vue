@@ -166,7 +166,7 @@
 
                           <p
                             style="padding-top:10px"
-                            v-if="item.node.teaser.trim()"
+                            v-if="item.node.teaser && item.node.teaser.trim()"
                           >
                             {{ striptags(item.node.teaser.substr(0, 200)) }}
                           </p>
