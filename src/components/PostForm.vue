@@ -241,7 +241,6 @@ import Editor from '@ckeditor/ckeditor5-build-balloon-block';
 import CKEditor from '@ckeditor/ckeditor5-vue';
 import gql from 'graphql-tag';
 import AppError from './AppError';
-import hotkeys from 'hotkeys-js';
 import logger from '../utils/logger';
 import BulmaModal from './BulmaModal';
 import IconBack from './IconBack';
@@ -425,15 +424,37 @@ export default {
         providers: [ckeditorIframelyMediaProvider()],
       },
     };
-    hotkeys('ctrl+s,command+s', (event, handler) => {
-      // this.onSaveDraftClick();
+  },
+  mounted() {
+    this.onKeyPress = (event) => {
+      const { metaKey, key, ctrlKey, type } = event;
+      if (key !== 's') return;
+
+      const isMac = navigator.platform.includes('Mac');
+
+      if (isMac && !metaKey) return;
+      if (!isMac && !ctrlKey) return;
+
       event.preventDefault();
-    });
+
+      if (type !== 'keydown') return;
+
+      // dates is to throttle (if you spam ctrl + s it will works once per second)
+      if (this.lastTimeSaved && Date.now() - this.lastTimeSaved < 1000) return;
+      // timeout is to debounce (if you keep down ctrl + s it will save only once)
+      if (this.timeoutSaving) clearTimeout(this.timeoutSaving);
+      this.timeoutSaving = setTimeout(() => {
+        this.lastTimeSaved = Date.now();
+        if (this.existingPost.status === 'PUBLISHED') this.onPublicationClick();
+        else this.onSaveDraftClick();
+      }, 200);
+    };
+
+    window.addEventListener('keydown', this.onKeyPress);
   },
   beforeDestroy() {
+    window.removeEventListener('keydown', this.onKeyPress);
     window.onbeforeunload = null;
-    hotkeys.unbind('ctrl+s');
-    hotkeys.unbind('command+s');
   },
   watch: {
     'form.values': {
