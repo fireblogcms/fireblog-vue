@@ -445,7 +445,8 @@ export default {
       if (this.timeoutSaving) clearTimeout(this.timeoutSaving);
       this.timeoutSaving = setTimeout(() => {
         this.lastTimeSaved = Date.now();
-        if (this.existingPost.status === 'PUBLISHED') this.onPublicationClick();
+        if (this.existingPost && this.existingPost.status === 'PUBLISHED')
+          this.onPublicationClick();
         else this.onSaveDraftClick();
       }, 200);
     };
