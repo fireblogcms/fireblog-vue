@@ -122,6 +122,41 @@ export function getUser() {
     });
 }
 
+/**
+ * Get all users with their roles from a given blog.
+ * @param {String} blogId the blog identifier.
+ * @return {Array<{ _id, name, email, provider, roles: Array<String> }>}
+ */
+export async function getBlogUsers(blogId) {
+  const { data, errors } = await apolloClient.query({
+    query: gql`
+      query getBlogRoles($id: ID!) {
+        blog(_id: $id) {
+          users {
+            _id
+            email
+            name
+            provider
+            roles
+          }
+        }
+      }
+    `,
+    variables: {
+      id: blogId,
+    },
+  });
+
+  if (errors) {
+    const error = new Error('Error while requestion blog roles');
+    error.from = errors;
+    throw error;
+  }
+
+  const { users = [] } = data.blog;
+  return users;
+}
+
 export function graphQLErrorsContainsCode(graphQLErrors, errorCode) {
   const result = graphQLErrors.some((error) => {
     if (

@@ -2007,6 +2007,11 @@ builtin-status-codes@^3.0.0:
   resolved "https://registry.yarnpkg.com/builtin-status-codes/-/builtin-status-codes-3.0.0.tgz#85982878e21b98e1c66425e03d0174788f569ee8"
   integrity sha1-hZgoeOIbmOHGZCXgPQF0eI9Wnug=
 
+bulma-tooltip@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/bulma-tooltip/-/bulma-tooltip-3.0.2.tgz#2cf0abab1de2eba07f9d84eb7f07a8a88819ea92"
+  integrity sha512-CsT3APjhlZScskFg38n8HYL8oYNUHQtcu4sz6ERarxkUpBRbk9v0h/5KAvXeKapVSn2dp9l7bOGit5SECP8EWQ==
+
 bulma@^0.7.4:
   version "0.7.5"
   resolved "https://registry.yarnpkg.com/bulma/-/bulma-0.7.5.tgz#35066c37f82c088b68f94450be758fc00a967208"
@@ -4096,6 +4101,11 @@ fresh@0.5.2:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.5.2.tgz#3d8cadd90d976569fa835ab1f8e4b23a105605a7"
   integrity sha1-PYyt2Q2XZWn6g1qx+OSyOhBWBac=
+
+from-form-submit@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/from-form-submit/-/from-form-submit-0.2.1.tgz#f4b913e871bce25ab9b2101046efd4ee2cdc10eb"
+  integrity sha512-OpF6RB3AKDIosY0g2FiD4mq2QbVGY8G4lkxWfNmAM4/tNEz2ofKPhsyoIHtIUInTXFVUpXEYXsVgA3cTfBgr5Q==
 
 from2@^2.1.0:
   version "2.3.0"
