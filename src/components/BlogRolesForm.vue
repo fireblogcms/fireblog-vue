@@ -61,6 +61,12 @@
                   Add user
                 </button>
               </div>
+              <div
+                class="has-text-danger no-user"
+                v-if="noUsersForEmailMessage"
+              >
+                No user found for this email.
+              </div>
             </div>
           </form>
 
@@ -157,6 +163,7 @@ export default {
       removeUserState: REQUEST_STATE.NOT_STARTED,
       searchUsersByEmailState: REQUEST_STATE.NOT_STARTED,
       addUserState: REQUEST_STATE.NOT_STARTED,
+      noUsersForEmailMessage: false,
       errorMessage: null,
       appMessage: null,
     };
@@ -262,6 +269,8 @@ export default {
       if (!email || email.trim().length === 0) return;
 
       try {
+        this.noUsersForEmailMessage = false;
+        this.usersMatchingEmail = [];
         this.searchUsersByEmailState = REQUEST_STATE.PENDING;
         const { data } = await apolloClient.query({
           query: usersByEmailRequest,
@@ -273,6 +282,11 @@ export default {
         const users = data.users.edges
           .map(({ node }) => node)
           .filter(({ _id }) => !this.users.find((user) => user._id === _id));
+
+        if (users.length === 0) {
+          this.noUsersForEmailMessage = true;
+          return;
+        }
 
         if (users.length === 1) {
           return this.addUser(users[0]);
@@ -371,5 +385,11 @@ export default {
 .add-user-card form > .label {
   margin: 0;
   margin-right: 1em;
+}
+
+.no-user {
+  margin-left: 2em;
+  display: flex;
+  align-items: center;
 }
 </style>
