@@ -43,12 +43,55 @@
         </tbody>
       </table>
 
-      <h4 class="title is-4">Add an user</h4>
-      <div>
-        <form @submit.prevent="onAddUser">
-          <input type="email" name="email" placeholder="email" />
-          <button type="submit">Add user</button>
-        </form>
+      <div class="add-user-card">
+        <div>
+          <form @submit.prevent="onAddUser" class="form">
+            <label class="label">Add an user by its email address: </label>
+            <div class="field has-addons">
+              <div class="control">
+                <input
+                  type="email"
+                  name="email"
+                  class="input"
+                  placeholder="email"
+                />
+              </div>
+              <div class="control">
+                <button type="submit" class="button is-primary">
+                  Add user
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <div class="choose-user" v-if="usersMatchingEmail.length > 0">
+            <p class="help">
+              This email is matching multiples users in fireblog.<br />
+              You have to choose which user to add from their provider (google,
+              github, etc.) by clicking on it.
+            </p>
+            <div class="users-list">
+              <div
+                v-for="user in usersMatchingEmail"
+                :key="user._id"
+                class="user-item"
+                @click.prevent="addUser(user)"
+              >
+                <div
+                  :style="`background-image: url(${user.picture});`"
+                  class="avatar image is-48x48 is-rounded"
+                />
+                <div class="button is-primary is-48x48">
+                  +
+                </div>
+                <div class="info">
+                  <span class="name">{{ user.name }}</span>
+                  <span class="provider">{{ user.provider }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </LayoutBody>
   </div>
@@ -91,6 +134,7 @@ const usersByEmailRequest = gql`
           provider
           email
           name
+          picture
         }
       }
     }
@@ -107,9 +151,12 @@ export default {
   data() {
     return {
       users: [],
+      usersMatchingEmail: [],
       initDataState: REQUEST_STATE.NOT_STARTED,
       toggleRoleState: REQUEST_STATE.NOT_STARTED,
       removeUserState: REQUEST_STATE.NOT_STARTED,
+      searchUsersByEmailState: REQUEST_STATE.NOT_STARTED,
+      addUserState: REQUEST_STATE.NOT_STARTED,
       errorMessage: null,
       appMessage: null,
     };
@@ -127,6 +174,7 @@ export default {
       } catch (error) {
         this.errorMessage = error;
         this.initDataState = REQUEST_STATE.FINISHED_ERROR;
+        throw new Error(error);
       }
     },
     async removeUser(user) {
@@ -150,6 +198,7 @@ export default {
       } catch (error) {
         this.errorMessage = error;
         this.removeUserState = REQUEST_STATE.FINISHED_ERROR;
+        throw new Error(error);
       }
     },
     async toggleRole(user, role) {
@@ -180,51 +229,147 @@ export default {
       } catch (error) {
         this.errorMessage = error;
         this.toggleRoleState = REQUEST_STATE.FINISHED_ERROR;
+        throw new Error(error);
       }
     },
     async addUser(user) {
-      const { blogId } = this.$route.params;
-      const { _id: userId } = user;
+      this.addUserState = REQUEST_STATE.PENDING;
 
-      // TODO: request state
-      // TODO: try/catch
+      try {
+        const { blogId } = this.$route.params;
+        const { _id: userId } = user;
 
-      await apolloClient.mutate({
-        mutation: addRoleToBlogRequest,
-        variables: {
-          blogId,
-          userId,
-          role: 'EDITOR',
-        },
-      });
+        await apolloClient.mutate({
+          mutation: addRoleToBlogRequest,
+          variables: {
+            blogId,
+            userId,
+            role: 'EDITOR',
+          },
+        });
 
-      this.users.push({ ...user, roles: ['EDITOR'] });
+        this.users.push({ ...user, roles: ['EDITOR'] });
+        this.usersMatchingEmail = [];
+        this.addUserState = REQUEST_STATE.FINISHED_OK;
+      } catch (error) {
+        this.errorMessage = error;
+        this.addUserState = REQUEST_STATE.FINISHED_ERROR;
+        throw new Error(error);
+      }
     },
     async onAddUser(event) {
       const { email } = fromEvent(event);
       if (!email || email.trim().length === 0) return;
 
-      // TODO: request state
-      // TODO: try/catch
-      const { data } = await apolloClient.query({
-        query: usersByEmailRequest,
-        variables: {
-          email,
-        },
-      });
+      try {
+        this.searchUsersByEmailState = REQUEST_STATE.PENDING;
+        const { data } = await apolloClient.query({
+          query: usersByEmailRequest,
+          variables: {
+            email,
+          },
+        });
 
-      const users = data.users.edges
-        .map(({ node }) => node)
-        .filter(({ _id }) => !this.users.find((user) => user._id === _id));
+        const users = data.users.edges
+          .map(({ node }) => node)
+          .filter(({ _id }) => !this.users.find((user) => user._id === _id));
 
-      if (users.length === 1) {
-        return this.addUser(users[0]);
+        if (users.length === 1) {
+          return this.addUser(users[0]);
+        }
+
+        this.usersMatchingEmail = users;
+        this.searchUsersByEmailState = REQUEST_STATE.FINISHED_OK;
+      } catch (error) {
+        this.errorMessage = error;
+        this.searchUsersByEmailState = REQUEST_STATE.FINISHED_ERROR;
+        throw new Error(error);
       }
-
-      // TODO: prints users and the root have to choose one
     },
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.user-item {
+  display: flex;
+  align-items: center;
+  margin-right: 1em;
+  cursor: pointer;
+  border: 1px solid #e0e0e0;
+  padding: 1em 1.5em;
+  border-radius: 4px;
+  min-width: 15em;
+}
+
+.user-item:hover {
+  box-shadow: 1px 1px 10px -7px black;
+}
+
+.user-item > .image,
+.user-item > .button {
+  margin-right: 10px;
+  border-radius: 100%;
+  width: 48px;
+  height: 48px;
+}
+
+.user-item:hover > .image {
+  display: none;
+}
+
+.user-item:hover > .button {
+  display: flex;
+}
+
+.user-item > .image {
+  background-position: center;
+  background-size: contain;
+}
+
+.user-item > .button {
+  display: none;
+  font-size: 2em;
+  box-shadow: 2px 4px 10px -7px black;
+  margin-right: 8px;
+}
+
+.user-item > .info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-item > .info > .provider {
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.users-list {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 2em;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.choose-user .help {
+  margin-top: 2em;
+  text-align: center;
+}
+
+.add-user-card {
+  margin-top: 4em;
+}
+
+.add-user-card form {
+  display: flex;
+  align-items: center;
+}
+
+.add-user-card form > .label {
+  margin: 0;
+  margin-right: 1em;
+}
+</style>
