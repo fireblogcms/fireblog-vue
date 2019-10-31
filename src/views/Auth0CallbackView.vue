@@ -44,17 +44,7 @@ export default {
       const auth0 = await auth0Client();
       auth0
         .handleRedirectCallback()
-        .then(async (r) => {
-          return auth0.getUser();
-        })
-        .then((user) => {
-          return syncAuth0UserWithServer({
-            auth0Id: user.sub,
-            email: user.email,
-            name: user.name,
-            picture: user.picture ? user.picture : null,
-          });
-        })
+        .then(() => syncAuth0UserWithServer())
         .then(() => {
           this.initDataState = REQUEST_STATE.FINISHED_OK;
           this.$router.push('/');
