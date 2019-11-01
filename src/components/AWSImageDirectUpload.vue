@@ -1,5 +1,5 @@
 <template>
-  <div class="cloudinary-image-direct-upload">
+  <div class="aws-image-direct-upload">
     <img
       v-if="displayImageWhenUploaded && uploadingState !== 'PENDING'"
       class="image"
@@ -37,11 +37,7 @@
 </template>
 
 <script>
-import {
-  cloudinaryUploadImage,
-  getCloudinaryBlogFolderPath,
-  REQUEST_STATE,
-} from '../utils/helpers';
+import { awsUploadImage, REQUEST_STATE } from '../utils/helpers';
 export default {
   props: {
     displayImageWhenUploaded: {
@@ -68,9 +64,8 @@ export default {
       this.uploadingState = REQUEST_STATE.PENDING;
       this.$emit('onUploadingStateChange', this.uploadingState);
       this.errorMessage = null;
-      cloudinaryUploadImage({
+      awsUploadImage({
         file: this.file,
-        folder: getCloudinaryBlogFolderPath(this.$route.params.blogId),
         options: {
           onProgress: ({ total, loaded, percentage }) => {
             this.$emit('onProgress', { total, loaded, percentage });

@@ -246,7 +246,7 @@ import BulmaModal from './BulmaModal';
 import IconBack from './IconBack';
 import PostFormAdvancedSettings from './PostFormAdvancedSettings';
 import apolloClient from '../utils/apolloClient';
-import { ckeditorCloudinaryDirectUploadAdapterPlugin } from '../utils/ckeditorCloudinaryDirectUploadAdapter';
+import { ckeditorAWSDirectUploadAdapterPlugin } from '../utils/ckeditorAWSDirectUploadAdapter';
 import {
   REQUEST_STATE,
   getUser,
@@ -394,7 +394,7 @@ export default {
     this.editor = Editor;
     this.editorConfig = {
       extraPlugins: [
-        ckeditorCloudinaryDirectUploadAdapterPlugin({
+        ckeditorAWSDirectUploadAdapterPlugin({
           onRequestStateChange: ({ state, file }) => {
             if (state === REQUEST_STATE.PENDING) {
               this.mediaLoadingCounter = this.mediaLoadingCounter + 1;

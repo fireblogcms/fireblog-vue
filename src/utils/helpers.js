@@ -1,4 +1,5 @@
 import apolloClient from './apolloClient';
+import Router from '../router';
 import gql from 'graphql-tag';
 import slug from 'slug';
 
@@ -9,21 +10,39 @@ export const REQUEST_STATE = {
   FINISHED_ERROR: 'FINISHED_ERROR',
 };
 
-export function getCloudinaryBlogFolderPath(blogId) {
-  return `${process.env.VUE_APP_CLOUDINARY_ROOT_FOLDER}/BLOGS/${blogId}`;
-}
-
-export function cloudinaryUploadImage({ file, folder, options = {} }) {
+export async function awsUploadImage({ file, options = {} }) {
   if (!file) {
-    throw new Error('cloudinaryUploadImage(): missing file argument');
+    throw new Error('awsUploadImage(): missing file argument');
   }
-  if (!folder) {
-    throw new Error('cloudinaryUploadImage(): missing folder argument');
-  }
-  const cloudName = process.env.VUE_APP_CLOUDINARY_CLOUD_NAME;
-  const unsignedUploadPreset =
-    process.env.VUE_APP_CLOUDINARY_UNSIGNED_UPLOAD_PRESET;
-  const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+
+  const { blogId, postId } = Router.currentRoute.params;
+  const signedPostGraph = await apolloClient.query({
+    query: gql`
+      query getSignedPost(
+        $fileName: String!
+        $blogId: String!
+        $postId: String!
+      ) {
+        signedPost(fileName: $fileName, blogId: $blogId, postId: $postId) {
+          acl
+          key
+          date
+          signature
+          url
+          algorithm
+          credential
+          publicUrl
+          policy
+        }
+      }
+    `,
+    variables: {
+      fileName: file.name,
+      blogId,
+      postId,
+    },
+  });
+
   const xhr = new XMLHttpRequest();
 
   if (options.onRequestStateChange) {
@@ -34,9 +53,6 @@ export function cloudinaryUploadImage({ file, folder, options = {} }) {
     });
   }
   return new Promise((resolve, reject) => {
-    var formData = new FormData();
-
-    xhr.open('POST', uploadUrl, true);
     // Hookup an event listener to update the upload progress bar
     xhr.upload.addEventListener('progress', (event) => {
       if (options.onProgress)
@@ -48,12 +64,11 @@ export function cloudinaryUploadImage({ file, folder, options = {} }) {
     });
 
     // Hookup a listener to listen for when the request state changes
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-        // Successful upload, resolve the promise with the new image
-        var response = JSON.parse(xhr.responseText);
+    xhr.addEventListener(
+      'load',
+      (e) => {
         const images = {
-          default: response.secure_url,
+          default: signedPost.publicUrl,
         };
         if (options.onRequestStateChange) {
           options.onRequestStateChange({
@@ -63,7 +78,12 @@ export function cloudinaryUploadImage({ file, folder, options = {} }) {
           });
         }
         resolve(images);
-      } else if (xhr.status !== 200) {
+      },
+      false,
+    );
+    xhr.addEventListener(
+      'error',
+      () => {
         if (options.onRequestStateChange) {
           options.onRequestStateChange({
             state: REQUEST_STATE.FINISHED_ERROR,
@@ -71,16 +91,25 @@ export function cloudinaryUploadImage({ file, folder, options = {} }) {
             xhr,
           });
         }
-        // Unsuccessful request, reject the promise
         reject('Upload failed');
-      }
-    };
+      },
+      false,
+    );
 
     // Setup the form data to be sent in the request
-    formData.append('upload_preset', unsignedUploadPreset);
-    formData.append('folder', folder);
-    formData.append('file', file);
-    xhr.send(formData);
+    const { signedPost } = signedPostGraph.data;
+    var fd = new FormData();
+    fd.append('acl', signedPost.acl);
+    fd.append('key', signedPost.key);
+    fd.append('x-amz-date', signedPost.date);
+    fd.append('x-amz-credential', signedPost.credential);
+    fd.append('x-amz-algorithm', signedPost.algorithm);
+    fd.append('x-amz-signature', signedPost.signature);
+    fd.append('Policy', signedPost.policy);
+    fd.append('file', file);
+
+    xhr.open('POST', signedPost.url, true);
+    xhr.send(fd);
   });
 }
 
