@@ -30,11 +30,11 @@ class ckeditorAWSDirectUploadAdapter {
     // this.loader.file is a File object : https://developer.mozilla.org/en-US/docs/Web/API/File
     // This promise is resolved when file has been uploaded.
     return this.loader.file.then(async (file) => {
-      const { postId } = Router.currentRoute.params;
+      const { blogId } = Router.currentRoute.params;
       const uploadLink = await apolloClient.query({
         query: gql`
-          mutation CreateUploadLink($fileName: String!, $postId: String!) {
-            createUploadLink(fileName: $fileName, postId: $postId) {
+          mutation CreateUploadLink($fileName: String!, $blogId: String!) {
+            createUploadLink(fileName: $fileName, blogId: $blogId) {
               url
               aws {
                 url
@@ -51,7 +51,7 @@ class ckeditorAWSDirectUploadAdapter {
         `,
         variables: {
           fileName: file.name,
-          postId,
+          blogId,
         },
       });
       const { url, aws } = uploadLink.data.createUploadLink;

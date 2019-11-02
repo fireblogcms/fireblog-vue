@@ -15,11 +15,11 @@ export async function awsUploadImage({ file, options = {} }) {
     throw new Error('awsUploadImage(): missing file argument');
   }
 
-  const { postId } = Router.currentRoute.params;
+  const { blogId } = Router.currentRoute.params;
   const uploadLink = await apolloClient.query({
     query: gql`
-      mutation CreateUploadLink($fileName: String!, $postId: String!) {
-        createUploadLink(fileName: $fileName, postId: $postId) {
+      mutation CreateUploadLink($fileName: String!, $blogId: String!) {
+        createUploadLink(fileName: $fileName, blogId: $blogId) {
           url
           aws {
             url
@@ -36,7 +36,7 @@ export async function awsUploadImage({ file, options = {} }) {
     `,
     variables: {
       fileName: file.name,
-      postId,
+      blogId,
     },
   });
   const { url, aws } = uploadLink.data.createUploadLink;

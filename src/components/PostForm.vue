@@ -396,10 +396,6 @@ export default {
       extraPlugins: [
         ckeditorAWSDirectUploadAdapterPlugin({
           onRequestStateChange: ({ state, file }) => {
-            if (this.getCurrentOperation() === OPERATION_TYPE.CREATE) {
-              this.errorMessage = 'The post must be save before upload image';
-              throw new Error(error);
-            }
             if (state === REQUEST_STATE.PENDING) {
               this.mediaLoadingCounter = this.mediaLoadingCounter + 1;
             }
@@ -677,7 +673,7 @@ export default {
           this.prepareFormValuesFromPost(this.existingPost);
         })
         .catch((error) => {
-          this.errorMessage = 'An error occured while loading post';
+          this.errorMessage = 'En error occured while loading post';
           throw new Error(error);
         });
     },
@@ -695,11 +691,6 @@ export default {
     onPublicationClick() {
       if (!this.postFormIsValid()) {
         return;
-      }
-
-      if (this.getCurrentOperation() === OPERATION_TYPE.CREATE) {
-        this.errorMessage = 'The post must be save as draft before publish it';
-        throw new Error(error);
       }
 
       if (this.mediaLoadingCounter > 0) {
