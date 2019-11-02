@@ -16,19 +16,21 @@ export async function awsUploadImage({ file, options = {} }) {
   }
 
   const { postId } = Router.currentRoute.params;
-  const signedPostGraph = await apolloClient.query({
+  const uploadLink = await apolloClient.query({
     query: gql`
-      query getSignedPost($fileName: String!, $postId: String!) {
-        signedPost(fileName: $fileName, postId: $postId) {
-          acl
-          key
-          date
-          signature
+      mutation CreateUploadLink($fileName: String!, $postId: String!) {
+        createUploadLink(fileName: $fileName, postId: $postId) {
           url
-          algorithm
-          credential
-          publicUrl
-          policy
+          uploadInfo {
+            url
+            acl
+            key
+            date
+            signature
+            algorithm
+            credential
+            policy
+          }
         }
       }
     `,
@@ -37,6 +39,7 @@ export async function awsUploadImage({ file, options = {} }) {
       postId,
     },
   });
+  const { url, uploadInfo } = uploadLink.data.createUploadLink;
 
   const xhr = new XMLHttpRequest();
 
@@ -63,7 +66,7 @@ export async function awsUploadImage({ file, options = {} }) {
       'load',
       (e) => {
         const images = {
-          default: signedPost.publicUrl,
+          default: url,
         };
         if (options.onRequestStateChange) {
           options.onRequestStateChange({
@@ -92,18 +95,17 @@ export async function awsUploadImage({ file, options = {} }) {
     );
 
     // Setup the form data to be sent in the request
-    const { signedPost } = signedPostGraph.data;
     var fd = new FormData();
-    fd.append('acl', signedPost.acl);
-    fd.append('key', signedPost.key);
-    fd.append('x-amz-date', signedPost.date);
-    fd.append('x-amz-credential', signedPost.credential);
-    fd.append('x-amz-algorithm', signedPost.algorithm);
-    fd.append('x-amz-signature', signedPost.signature);
-    fd.append('Policy', signedPost.policy);
+    fd.append('acl', uploadInfo.acl);
+    fd.append('key', uploadInfo.key);
+    fd.append('x-amz-date', uploadInfo.date);
+    fd.append('x-amz-credential', uploadInfo.credential);
+    fd.append('x-amz-algorithm', uploadInfo.algorithm);
+    fd.append('x-amz-signature', uploadInfo.signature);
+    fd.append('Policy', uploadInfo.policy);
     fd.append('file', file);
 
-    xhr.open('POST', signedPost.url, true);
+    xhr.open('POST', uploadInfo.url, true);
     xhr.send(fd);
   });
 }
