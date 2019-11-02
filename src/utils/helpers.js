@@ -1,4 +1,5 @@
 import apolloClient from './apolloClient';
+import Router from '../router';
 import gql from 'graphql-tag';
 import slug from 'slug';
 
@@ -9,21 +10,37 @@ export const REQUEST_STATE = {
   FINISHED_ERROR: 'FINISHED_ERROR',
 };
 
-export function getCloudinaryBlogFolderPath(blogId) {
-  return `${process.env.VUE_APP_CLOUDINARY_ROOT_FOLDER}/BLOGS/${blogId}`;
-}
-
-export function cloudinaryUploadImage({ file, folder, options = {} }) {
+export async function awsUploadImage({ file, options = {} }) {
   if (!file) {
-    throw new Error('cloudinaryUploadImage(): missing file argument');
+    throw new Error('awsUploadImage(): missing file argument');
   }
-  if (!folder) {
-    throw new Error('cloudinaryUploadImage(): missing folder argument');
-  }
-  const cloudName = process.env.VUE_APP_CLOUDINARY_CLOUD_NAME;
-  const unsignedUploadPreset =
-    process.env.VUE_APP_CLOUDINARY_UNSIGNED_UPLOAD_PRESET;
-  const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+
+  const { blogId } = Router.currentRoute.params;
+  const uploadLink = await apolloClient.query({
+    query: gql`
+      mutation CreateUploadLink($fileName: String!, $blogId: String!) {
+        createUploadLink(fileName: $fileName, blogId: $blogId) {
+          url
+          aws {
+            url
+            acl
+            key
+            date
+            signature
+            algorithm
+            credential
+            policy
+          }
+        }
+      }
+    `,
+    variables: {
+      fileName: file.name,
+      blogId,
+    },
+  });
+  const { url, aws } = uploadLink.data.createUploadLink;
+
   const xhr = new XMLHttpRequest();
 
   if (options.onRequestStateChange) {
@@ -34,9 +51,6 @@ export function cloudinaryUploadImage({ file, folder, options = {} }) {
     });
   }
   return new Promise((resolve, reject) => {
-    var formData = new FormData();
-
-    xhr.open('POST', uploadUrl, true);
     // Hookup an event listener to update the upload progress bar
     xhr.upload.addEventListener('progress', (event) => {
       if (options.onProgress)
@@ -48,12 +62,11 @@ export function cloudinaryUploadImage({ file, folder, options = {} }) {
     });
 
     // Hookup a listener to listen for when the request state changes
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-        // Successful upload, resolve the promise with the new image
-        var response = JSON.parse(xhr.responseText);
+    xhr.addEventListener(
+      'load',
+      (e) => {
         const images = {
-          default: response.secure_url,
+          default: url,
         };
         if (options.onRequestStateChange) {
           options.onRequestStateChange({
@@ -63,7 +76,12 @@ export function cloudinaryUploadImage({ file, folder, options = {} }) {
           });
         }
         resolve(images);
-      } else if (xhr.status !== 200) {
+      },
+      false,
+    );
+    xhr.addEventListener(
+      'error',
+      () => {
         if (options.onRequestStateChange) {
           options.onRequestStateChange({
             state: REQUEST_STATE.FINISHED_ERROR,
@@ -71,16 +89,24 @@ export function cloudinaryUploadImage({ file, folder, options = {} }) {
             xhr,
           });
         }
-        // Unsuccessful request, reject the promise
         reject('Upload failed');
-      }
-    };
+      },
+      false,
+    );
 
     // Setup the form data to be sent in the request
-    formData.append('upload_preset', unsignedUploadPreset);
-    formData.append('folder', folder);
-    formData.append('file', file);
-    xhr.send(formData);
+    var fd = new FormData();
+    fd.append('acl', aws.acl);
+    fd.append('key', aws.key);
+    fd.append('x-amz-date', aws.date);
+    fd.append('x-amz-credential', aws.credential);
+    fd.append('x-amz-algorithm', aws.algorithm);
+    fd.append('x-amz-signature', aws.signature);
+    fd.append('Policy', aws.policy);
+    fd.append('file', file);
+
+    xhr.open('POST', aws.url, true);
+    xhr.send(fd);
   });
 }
 

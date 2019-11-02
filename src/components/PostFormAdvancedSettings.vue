@@ -8,7 +8,7 @@
             <label>
               <strong>Featured image</strong>
             </label>
-            <CloudinaryImageDirectUpload
+            <AWSImageDirectUpload
               :displayImageWhenUploaded="false"
               @onUploadingStateChange="onUploadingStateChange"
               :initialImage="form.values.initial.image"
@@ -116,13 +116,13 @@
 </template>
 
 <script>
-import CloudinaryImageDirectUpload from './CloudinaryImageDirectUpload';
+import AWSImageDirectUpload from './AWSImageDirectUpload';
 import { REQUEST_STATE } from '../utils/helpers';
 
 export default {
   inject: ['form', 'existingPost', 'savingPost'],
   components: {
-    CloudinaryImageDirectUpload,
+    AWSImageDirectUpload,
   },
   data() {
     const data = {
