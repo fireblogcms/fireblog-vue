@@ -15,15 +15,11 @@ export async function awsUploadImage({ file, options = {} }) {
     throw new Error('awsUploadImage(): missing file argument');
   }
 
-  const { blogId, postId } = Router.currentRoute.params;
+  const { postId } = Router.currentRoute.params;
   const signedPostGraph = await apolloClient.query({
     query: gql`
-      query getSignedPost(
-        $fileName: String!
-        $blogId: String!
-        $postId: String!
-      ) {
-        signedPost(fileName: $fileName, blogId: $blogId, postId: $postId) {
+      query getSignedPost($fileName: String!, $postId: String!) {
+        signedPost(fileName: $fileName, postId: $postId) {
           acl
           key
           date
@@ -38,7 +34,6 @@ export async function awsUploadImage({ file, options = {} }) {
     `,
     variables: {
       fileName: file.name,
-      blogId,
       postId,
     },
   });

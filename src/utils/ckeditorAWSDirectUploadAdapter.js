@@ -30,15 +30,11 @@ class ckeditorAWSDirectUploadAdapter {
     // this.loader.file is a File object : https://developer.mozilla.org/en-US/docs/Web/API/File
     // This promise is resolved when file has been uploaded.
     return this.loader.file.then(async (file) => {
-      const { blogId, postId } = Router.currentRoute.params;
+      const { postId } = Router.currentRoute.params;
       const signedPostGraph = await apolloClient.query({
         query: gql`
-          query getSignedPost(
-            $fileName: String!
-            $blogId: String!
-            $postId: String!
-          ) {
-            signedPost(fileName: $fileName, blogId: $blogId, postId: $postId) {
+          query getSignedPost($fileName: String!, $postId: String!) {
+            signedPost(fileName: $fileName, postId: $postId) {
               acl
               key
               date
@@ -53,7 +49,6 @@ class ckeditorAWSDirectUploadAdapter {
         `,
         variables: {
           fileName: file.name,
-          blogId,
           postId,
         },
       });
