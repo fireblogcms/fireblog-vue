@@ -21,7 +21,7 @@ export async function awsUploadImage({ file, options = {} }) {
       mutation CreateUploadLink($fileName: String!, $postId: String!) {
         createUploadLink(fileName: $fileName, postId: $postId) {
           url
-          uploadInfo {
+          aws {
             url
             acl
             key
@@ -39,7 +39,7 @@ export async function awsUploadImage({ file, options = {} }) {
       postId,
     },
   });
-  const { url, uploadInfo } = uploadLink.data.createUploadLink;
+  const { url, aws } = uploadLink.data.createUploadLink;
 
   const xhr = new XMLHttpRequest();
 
@@ -96,16 +96,16 @@ export async function awsUploadImage({ file, options = {} }) {
 
     // Setup the form data to be sent in the request
     var fd = new FormData();
-    fd.append('acl', uploadInfo.acl);
-    fd.append('key', uploadInfo.key);
-    fd.append('x-amz-date', uploadInfo.date);
-    fd.append('x-amz-credential', uploadInfo.credential);
-    fd.append('x-amz-algorithm', uploadInfo.algorithm);
-    fd.append('x-amz-signature', uploadInfo.signature);
-    fd.append('Policy', uploadInfo.policy);
+    fd.append('acl', aws.acl);
+    fd.append('key', aws.key);
+    fd.append('x-amz-date', aws.date);
+    fd.append('x-amz-credential', aws.credential);
+    fd.append('x-amz-algorithm', aws.algorithm);
+    fd.append('x-amz-signature', aws.signature);
+    fd.append('Policy', aws.policy);
     fd.append('file', file);
 
-    xhr.open('POST', uploadInfo.url, true);
+    xhr.open('POST', aws.url, true);
     xhr.send(fd);
   });
 }

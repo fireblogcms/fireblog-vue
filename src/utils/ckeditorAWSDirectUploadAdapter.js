@@ -36,7 +36,7 @@ class ckeditorAWSDirectUploadAdapter {
           mutation CreateUploadLink($fileName: String!, $postId: String!) {
             createUploadLink(fileName: $fileName, postId: $postId) {
               url
-              uploadInfo {
+              aws {
                 url
                 acl
                 key
@@ -54,7 +54,7 @@ class ckeditorAWSDirectUploadAdapter {
           postId,
         },
       });
-      const { url, uploadInfo } = uploadLink.data.createUploadLink;
+      const { url, aws } = uploadLink.data.createUploadLink;
 
       if (this.options.onRequestStateChange) {
         if (this.options.onRequestStateChange) {
@@ -107,16 +107,16 @@ class ckeditorAWSDirectUploadAdapter {
 
         // Setup the form data to be sent in the request
         var fd = new FormData();
-        fd.append('acl', uploadInfo.acl);
-        fd.append('key', uploadInfo.key);
-        fd.append('x-amz-date', uploadInfo.date);
-        fd.append('x-amz-credential', uploadInfo.credential);
-        fd.append('x-amz-algorithm', uploadInfo.algorithm);
-        fd.append('x-amz-signature', uploadInfo.signature);
-        fd.append('Policy', uploadInfo.policy);
+        fd.append('acl', aws.acl);
+        fd.append('key', aws.key);
+        fd.append('x-amz-date', aws.date);
+        fd.append('x-amz-credential', aws.credential);
+        fd.append('x-amz-algorithm', aws.algorithm);
+        fd.append('x-amz-signature', aws.signature);
+        fd.append('Policy', aws.policy);
         fd.append('file', file);
 
-        this.xhr.open('POST', uploadInfo.url, true);
+        this.xhr.open('POST', aws.url, true);
         this.xhr.send(fd);
       });
     });
