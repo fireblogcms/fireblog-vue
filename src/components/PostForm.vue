@@ -673,7 +673,7 @@ export default {
           this.prepareFormValuesFromPost(this.existingPost);
         })
         .catch((error) => {
-          this.errorMessage = 'En error occured while loading post';
+          this.errorMessage = 'An error occured while loading post';
           throw new Error(error);
         });
     },
