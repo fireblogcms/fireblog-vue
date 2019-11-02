@@ -4,6 +4,7 @@ import router from './router';
 import store from './store';
 import VueTextareaAutosize from 'vue-textarea-autosize';
 import 'bulma/css/bulma.css';
+import 'bulma-tooltip';
 import PortalVue from 'portal-vue';
 import vClickOutside from 'v-click-outside';
 import 'animate.css/animate.min.css';

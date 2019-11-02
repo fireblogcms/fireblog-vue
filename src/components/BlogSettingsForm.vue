@@ -9,6 +9,7 @@
       class="container"
       v-if="initDataState === 'FINISHED_OK'"
     >
+      <h2 class="subtitle is-2">Settings</h2>
       <form @submit.prevent="onFormSubmit">
         <div class="field">
           <label class="label">Name</label>
