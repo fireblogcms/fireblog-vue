@@ -68,6 +68,7 @@
 
               <div
                 @click.stop="onSettingsClick(edge.node, $event)"
+                v-if="edge.node.roles.includes('ROOT')"
                 style="min-width:100px;font-weight:300"
                 class="button is-medium is-outlined settings"
               >
@@ -104,6 +105,7 @@ const meWithMyBlogsQuery = gql`
             description
             createdAt
             updatedAt
+            roles
           }
         }
       }

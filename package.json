@@ -8,7 +8,7 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "deploy:staging": "git checkout dev;git push;git checkout staging;git merge dev;git push;git checkout dev",
-    "deploy:master": "git checkout dev;git push;git checkout master;git merge dev;git push;git checkout dev"
+    "deploy:master": "git checkout staging;git pull;git checkout master;git pull;git merge staging;git push;git checkout dev"
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.2.2",
@@ -24,6 +24,8 @@
     "apollo-link-http": "^1.5.15",
     "apollo-upload-client": "^11.0.0",
     "bulma": "^0.7.4",
+    "bulma-tooltip": "^3.0.2",
+    "from-form-submit": "^0.2.1",
     "graphql": "^14.4.1",
     "graphql-tag": "^2.10.1",
     "lodash.difference": "^4.5.0",

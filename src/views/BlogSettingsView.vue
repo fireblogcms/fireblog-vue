@@ -16,12 +16,14 @@
     <!-- END TOPBAR LEFT BUTTONS -->
 
     <BlogSettingsForm />
+    <BlogRolesForm />
   </DefaultLayout>
 </template>
 
 <script>
 import DefaultLayout from '../layouts/DefaultLayout';
 import BlogSettingsForm from '../components/BlogSettingsForm';
+import BlogRolesForm from '../components/BlogRolesForm';
 import IconBack from '../components/IconBack';
 import { REQUEST_STATE } from '../utils/helpers';
 
@@ -30,6 +32,7 @@ export default {
     DefaultLayout,
     IconBack,
     BlogSettingsForm,
+    BlogRolesForm,
   },
 };
 </script>
