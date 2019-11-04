@@ -402,8 +402,9 @@ export default {
             if (
               state === REQUEST_STATE.FINISHED_OK ||
               state === REQUEST_STATE.FINISHED_ERROR
-            )
+            ) {
               this.mediaLoadingCounter = this.mediaLoadingCounter - 1;
+            }
           },
         }),
       ],

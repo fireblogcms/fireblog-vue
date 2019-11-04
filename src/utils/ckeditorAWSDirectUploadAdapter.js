@@ -10,12 +10,43 @@ import { REQUEST_STATE } from './helpers';
  * an article if a image is not 100% uploaded will result in loss of this image)
  */
 class ckeditorAWSDirectUploadAdapter {
-  constructor(loader, options) {
-    // The file loader instance to use during the upload. It sounds scary but do not
-    // worry — the loader will be passed into the adapter later on in this guide.
+  constructor(loader, options, editor) {
     this.loader = loader;
     this.xhr = new XMLHttpRequest();
     this.options = options;
+
+    editor.model.document.once('change:data', (eventInfo, batch) => {
+      let imageOperation;
+      for (
+        let operationIndex = 0;
+        !imageOperation && operationIndex < batch.operations.length;
+        operationIndex += 1
+      ) {
+        const operation = batch.operations[operationIndex];
+        if (operation.type === 'insert' && operation.nodes) {
+          if (operation.nodes._nodes.find((node) => node.name === 'image')) {
+            imageOperation = operation;
+          }
+        }
+      }
+
+      if (!imageOperation) return;
+
+      // 1. the added image can be found in "nodeAfter", dunno why yet
+      //    but we will accept this and take it as granted!
+      // 2. if there is no sibling, then we are in the document end
+      // 3. if we are in the document end we should add an empty paragraph
+      if (!imageOperation.position.nodeAfter.nextSibling) {
+        editor.model.change((writer) => {
+          writer.insertElement(
+            'paragraph',
+            imageOperation.position.root,
+            'end',
+          );
+        });
+      }
+    });
+
     if (options.onRequestStateChange) {
       options.onRequestStateChange({
         state: REQUEST_STATE.NOT_STARTED,
@@ -130,6 +161,6 @@ class ckeditorAWSDirectUploadAdapter {
 
 export const ckeditorAWSDirectUploadAdapterPlugin = (options) => (editor) => {
   editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-    return new ckeditorAWSDirectUploadAdapter(loader, options);
+    return new ckeditorAWSDirectUploadAdapter(loader, options, editor);
   };
 };
