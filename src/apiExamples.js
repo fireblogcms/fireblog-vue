@@ -54,10 +54,15 @@ export default ({ slug, locale }) => [
       blog {
         name
         description
-        owner {
+        owners {
           name
           email
+          picture
+        }
+        editors {
           name
+          email
+          picture
         }
       }
     }
