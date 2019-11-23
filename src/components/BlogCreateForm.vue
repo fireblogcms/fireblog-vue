@@ -5,7 +5,7 @@
     </template>
 
     <template v-if="initDataState === 'FINISHED_ERROR'">
-      <div class="notification is-danger">{{initStateError}}</div>
+      <div class="notification is-danger">{{ initStateError }}</div>
     </template>
 
     <template v-if="initDataState === 'FINISHED_OK'">
@@ -17,34 +17,45 @@
               <h2>Glad to see you here, {{ user.name }} 🤗</h2>
               <h2 style="font-weight:200;">
                 Let's create your first blog.
-                <br />Give it a name, or let
-                <a
-                  ref="randomNameLink"
-                  @click.prevent="onGenerateCLick"
-                >us suggest a nice one for you</a>
               </h2>
             </template>
 
-            <!-- text is this is not the my first blog -->
-            <template v-if="!isMyFirstBlog">
-              <h2>Which is your blog name ?</h2>
-            </template>
             <br />
 
             <div class="field">
+              <label class="label is-large">Which is your blog's name ?</label>
               <div class="control">
                 <input
                   v-model="inputs.name"
                   class="input is-large"
-                  :class="{'is-danger': formErrors.name}"
+                  :class="{ 'is-danger': formErrors.name }"
                   type="text"
                   maxlength="250"
                   placeholder="Blog's Name"
                 />
               </div>
-              <p class="help is-danger" v-if="formErrors.name">{{formErrors.name}}</p>
+              <p class="help is-danger" v-if="formErrors.name">
+                {{ formErrors.name }}
+              </p>
             </div>
 
+            <div class="field">
+              <div class="control has-text-centered">
+                <label class="label is-large">What is your blog about ?</label>
+                <textarea
+                  v-model="inputs.description"
+                  class="input is-large textarea"
+                  :class="{ 'is-danger': formErrors.description }"
+                  type="text"
+                  maxlength="250"
+                ></textarea>
+              </div>
+              <p class="help is-danger" v-if="formErrors.description">
+                {{ formErrors.description }}
+              </p>
+            </div>
+
+            <!--
             <div class="field">
               <h2>
                 <br />In which language will you write by default ?
@@ -52,7 +63,7 @@
               <div class="control">
                 <div
                   class="select is-large is-fullwidth"
-                  :class="{'is-danger': formErrors.blogContentDefaultLocale}"
+                  :class="{ 'is-danger': formErrors.blogContentDefaultLocale }"
                 >
                   <select v-model="inputs.blogContentDefaultLocale">
                     <option value>Select a language</option>
@@ -61,15 +72,19 @@
                       :value="language.code"
                       v-for="language in languageList"
                       :key="language.code"
-                    >{{language.nativeName}} - {{language.englishName}}</option>
+                    >
+                      {{ language.nativeName }} -
+                      {{ language.englishName }}
+                    </option>
                   </select>
                 </div>
                 <p
                   class="has-text-centered help is-danger"
                   v-if="formErrors.blogContentDefaultLocale"
-                >{{formErrors.blogContentDefaultLocale}}</p>
+                >{{ formErrors.blogContentDefaultLocale }}</p>
               </div>
             </div>
+            -->
             <br />
 
             <div class="buttons are-medium is-centered">
@@ -77,8 +92,12 @@
                 v-if="!isMyFirstBlog"
                 class="button is-outlined"
                 @click="$router.push('/')"
-              >CANCEL</button>
-              <button class="button is-primary" @click="onCreateClick">CREATE MY BLOG</button>
+              >
+                CANCEL
+              </button>
+              <button class="button is-primary" @click="onCreateClick">
+                CREATE MY BLOG
+              </button>
             </div>
 
             <!-- Any other Bulma elements you want -->
@@ -197,9 +216,9 @@ export default {
           mutation: createBlogMutation,
           variables: {
             blog: {
-              owner: this.user._id,
               name: this.inputs.name,
-              locale: this.inputs.blogContentDefaultLocale.replace("-", "_")
+              description: this.inputs.description
+              //locale: this.inputs.blogContentDefaultLocale.replace('-', '_'),
             }
           }
         })
