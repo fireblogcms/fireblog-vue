@@ -2,22 +2,31 @@
   <DefaultLayout>
     <AppLoader v-if="initDataState === 'PENDING'">Loading blogs</AppLoader>
 
-    <AppError v-if="errorMessage">{{errorMessage}}</AppError>
+    <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
 
     <!-- if this is the fiirs blog, display form to create a blog -->
-    <template v-if="initDataState === 'FINISHED_OK' && blogs &&  blogs.edges.length === 0">
+    <template
+      v-if="
+        initDataState === 'FINISHED_OK' && blogs && blogs.edges.length === 0
+      "
+    >
       <div class="container is-small">
         <BlogCreateForm :isMyFirstBlog="true" />
       </div>
     </template>
     <!-- else, display the blog list -->
-    <template v-if="initDataState === 'FINISHED_OK' && blogs && blogs.edges.length > 0">
+    <template
+      v-if="initDataState === 'FINISHED_OK' && blogs && blogs.edges.length > 0"
+    >
       <div class="container">
         <div class="animated fadeIn">
           <header style="padding: 0 1rem 2rem 1rem">
             <div class="columns">
               <div class="column">
-                <h1 style="padding-bottom:2rem;" class="title is-2 is-uppercase">
+                <h1
+                  style="padding-bottom:2rem;"
+                  class="title is-2 is-uppercase"
+                >
                   <img
                     height="70"
                     style="position:relative;top:25px;padding-right:1rem"
@@ -29,9 +38,14 @@
               <div class="column">
                 <button
                   class="button is-primary is-box-shadowed is-large main-call-to-action"
-                  @click="$router.push({name:'blogCreate'})"
+                  @click="$router.push({ name: 'blogCreate' })"
                 >
-                  <img width="40" style="margin-right:10px" src="/images/book.png" /> CREATE A NEW BLOG
+                  <img
+                    width="40"
+                    style="margin-right:10px"
+                    src="/images/book.png"
+                  />
+                  CREATE A NEW BLOG
                 </button>
               </div>
             </div>
@@ -47,14 +61,18 @@
             >
               <div class="blog-infos">
                 <h2 class="title">{{ edge.node.name }}</h2>
-                <h3 class="subtitle" v-if="edge.node.description">{{edge.node.description}}</h3>
+                <h3 class="subtitle" v-if="edge.node.description">
+                  {{ edge.node.description }}
+                </h3>
               </div>
 
               <div
                 @click.stop="onSettingsClick(edge.node, $event)"
                 style="min-width:100px;font-weight:300"
                 class="button is-medium is-outlined settings"
-              >Settings</div>
+              >
+                Settings
+              </div>
             </div>
           </div>
         </div>
@@ -222,4 +240,3 @@ export default {
   color: #333;
 }
 </style>
-
