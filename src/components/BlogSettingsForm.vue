@@ -1,7 +1,8 @@
 <template>
   <div>
-    <pre v-if="false">{{ form }}</pre>
+    <pre v-if="false">{{ generalSettingsForm }}</pre>
     <AppLoader v-if="initDataState === 'PENDING'">Loading blogs</AppLoader>
+
     <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
     <AppMessage v-if="appMessage">{{ appMessage }}</AppMessage>
     <AppPanel
@@ -15,14 +16,14 @@
           <label class="label">Name</label>
           <div class="control">
             <input
-              v-model="form.values.current.name"
+              v-model="generalSettingsForm.values.current.name"
               class="input is-large"
               type="text"
               maxlength="250"
             />
           </div>
-          <p class="help is-danger" v-if="form.errors.name">
-            {{ form.errors.name }}
+          <p class="help is-danger" v-if="generalSettingsForm.errors.name">
+            {{ generalSettingsForm.errors.name }}
           </p>
         </div>
         <div class="field">
@@ -30,7 +31,7 @@
           <div class="control">
             <textarea
               class="textarea is-large"
-              v-model="form.values.current.description"
+              v-model="generalSettingsForm.values.current.description"
               type="text"
             ></textarea>
           </div>
@@ -39,8 +40,10 @@
           <button
             style="margin-top:20px;"
             class="button is-outlined is-primary is-large"
-            :class="{ 'is-loading': savingBlogState === 'PENDING' }"
-            :disabled="savingBlogState === 'PENDING'"
+            :class="{
+              'is-loading': savingGeneralSettingsState === 'PENDING'
+            }"
+            :disabled="savingGeneralSettingsState === 'PENDING'"
             type="submit"
           >
             Save
@@ -48,36 +51,40 @@
         </div>
       </form>
     </AppPanel>
+
     <AppPanel
       style="margin-top:40px;margin-bottom:40px;padding:40px;"
       class="container"
       v-if="initDataState === 'FINISHED_OK'"
     >
       <h2 class="title is-2">Technical settings</h2>
-
-      <div class="field">
-        <label class="label">Static site rebuild webhooks</label>
-        <textarea
-          v-model="form.values.current.staticBuildWebhooks"
-          class="textarea"
-          placeholder="e.g. Hello world"
-        ></textarea>
-        <p class="help">
-          You can specify multiple valid URLs by comma-separating them. Those
-          webooks will each time a build of your static blog is needed.
-        </p>
-      </div>
-      <div>
-        <button
-          style="margin-top:20px;"
-          class="button is-outlined is-primary is-large"
-          :class="{ 'is-loading': savingBlogState === 'PENDING' }"
-          :disabled="savingBlogState === 'PENDING'"
-          type="submit"
-        >
-          Save
-        </button>
-      </div>
+      <form @submit.prevent="onTechnicalSettingsFormSubmit">
+        <div class="field">
+          <label class="label">Static site rebuild webhooks</label>
+          <textarea
+            v-model="technicalSettingsForm.values.current.staticBuildWebhooks"
+            class="textarea"
+            placeholder="e.g. Hello world"
+          ></textarea>
+          <p class="help">
+            You can specify multiple valid URLs by comma-separating them. Those
+            webooks will each time a build of your static blog is needed.
+          </p>
+        </div>
+        <div>
+          <button
+            style="margin-top:20px;"
+            class="button is-outlined is-primary is-large"
+            :class="{
+              'is-loading': savingTechnicalSettingsState === 'PENDING'
+            }"
+            :disabled="savingTechnicalSettingsState === 'PENDING'"
+            type="submit"
+          >
+            Save
+          </button>
+        </div>
+      </form>
     </AppPanel>
   </div>
 </template>
@@ -91,9 +98,12 @@ import AppMessage from "../components/AppMessage";
 import apolloClient from "../utils/apolloClient";
 import gql from "graphql-tag";
 
-const initialFormValues = {
+const initialGeneralSettingsFormValues = {
   name: "",
-  description: "",
+  description: ""
+};
+
+const initialTechnicalSettingsFormValues = {
   staticBuildWebhooks: []
 };
 
@@ -109,8 +119,14 @@ export default {
     return {
       blog: null,
       initDataState: REQUEST_STATE.NOT_STARTED,
-      savingBlogState: REQUEST_STATE.NOT_STARTED,
-      form: formInitData({ initialFormValues }),
+      savingGeneralSettingsState: REQUEST_STATE.NOT_STARTED,
+      savingTechnicalSettingsState: REQUEST_STATE.NOT_STARTED,
+      generalSettingsForm: formInitData({
+        initialFormValues: initialGeneralSettingsFormValues
+      }),
+      technicalSettingsForm: formInitData({
+        initialFormValues: initialTechnicalSettingsFormValues
+      }),
       errorMessage: null,
       appMessage: null
     };
@@ -119,14 +135,13 @@ export default {
     this.initData();
   },
   methods: {
-    validateForm() {
-      this.form.errors = {};
-      if (!this.form.values.current.name.trim()) {
-        this.form.errors.name = "Field name is required";
+    validateGeneralSettingsForm() {
+      this.generalSettingsForm.errors = {};
+      if (!this.generalSettingsForm.values.current.name.trim()) {
+        this.generalSettingsForm.errors.name = "Field name is required";
       }
     },
     updateBlog(blog) {
-      this.savingBlogState = REQUEST_STATE.PENDING;
       return apolloClient
         .mutate({
           mutation: gql`
@@ -142,42 +157,12 @@ export default {
           }
         })
         .then(result => {
-          this.savingBlogState = REQUEST_STATE.FINISHED_OK;
           return result.data.updateBlog;
         })
         .catch(error => {
-          this.savingBlogState = REQUEST_STATE.FINISHED_ERROR;
           this.errorMessage = error;
           throw new Error(error);
         });
-    },
-    prepareBlogObjectFromInputs() {
-      const blog = {
-        _id: this.$route.params.blogId,
-        name: this.form.values.current.name,
-        description: this.form.values.current.description
-      };
-      const webhooks = [];
-      if (this.form.values.current.staticBuildWebhooks.trim()) {
-        let staticBuildWebhooksArray = this.form.values.current.staticBuildWebhooks.split(
-          ","
-        );
-        //remove extra spaces
-        staticBuildWebhooksArray = staticBuildWebhooksArray.map(webhook =>
-          webhook.trim()
-        );
-        staticBuildWebhooksArray.forEach(webhook => {
-          webhooks.push({
-            name: webhook,
-            url: webhook,
-            onEvents: ["global:staticBuildNeeded"]
-          });
-        });
-        blog.webhooks = webhooks;
-      } else {
-        blog.webhooks = [];
-      }
-      return blog;
     },
     initData() {
       this.errorMessage = null;
@@ -186,11 +171,19 @@ export default {
         .then(blog => {
           this.blog = blog;
           this.initDataState = REQUEST_STATE.FINISHED_OK;
-          this.form = formInitData({
+          this.generalSettingsForm = formInitData({
             initialFormValues: {
-              ...initialFormValues,
+              ...initialGeneralSettingsFormValues,
               name: blog.name,
               description: blog.description,
+              staticBuildWebhooks: blog.webhooks
+                ? blog.webhooks.map(webhook => webhook.url).join(",")
+                : ""
+            }
+          });
+          this.technicalSettingsForm = formInitData({
+            initialFormValues: {
+              ...initialTechnicalSettingsFormValues,
               staticBuildWebhooks: blog.webhooks
                 ? blog.webhooks.map(webhook => webhook.url).join(",")
                 : ""
@@ -204,18 +197,70 @@ export default {
     },
     onGeneralSettingsFormSubmit() {
       this.errorMessage = null;
-      this.validateForm();
-      if (Object.keys(this.form.errors).length > 0) {
-        this.errorMessage = Object.keys(this.form.errors)
-          .map(key => this.form.errors[key])
+      this.validateGeneralSettingsForm();
+      if (Object.keys(this.generalSettingsForm.errors).length > 0) {
+        this.errorMessage = Object.keys(this.generalSettingsForm.errors)
+          .map(key => this.generalSettingsForm.errors[key])
           .join(". ");
         return;
       } else {
-        const blog = this.prepareBlogObjectFromInputs();
-        this.updateBlog(blog).then(updatedBlog => {
-          this.appMessage = `"${updatedBlog.name}" settings have been saved.`;
+        this.savingGeneralSettingsState = REQUEST_STATE.PENDING;
+        const blog = {
+          _id: this.$route.params.blogId,
+          name: this.generalSettingsForm.values.current.name,
+          description: this.generalSettingsForm.values.current.description
+        };
+        this.updateBlog(blog)
+          .then(updatedBlog => {
+            this.savingGeneralSettingsState = REQUEST_STATE.FINISHED_OK;
+            this.appMessage = `"${updatedBlog.name}" general settings have been saved.`;
+          })
+          .catch(e => {
+            this.savingGeneralSettingsState = REQUEST_STATE.FINISHED_ERROR;
+          });
+      }
+    },
+    onTechnicalSettingsFormSubmit() {
+      const webhooks = this.prepareWebhooksValuesForSave();
+      const blog = {
+        _id: this.$route.params.blogId,
+        webhooks
+      };
+      this.savingTechnicalSettingsState = REQUEST_STATE.PENDING;
+      this.updateBlog(blog)
+        .then(updatedBlog => {
+          this.savingTechnicalSettingsState = REQUEST_STATE.FINISHED_OK;
+          this.appMessage = `"${updatedBlog.name}" technical settings have been saved.`;
+        })
+        .catch(e => {
+          this.savingTechnicalSettingsState = REQUEST_STATE.FINISHED_ERROR;
+        });
+    },
+    prepareWebhooksValuesForSave() {
+      const webhooks = [];
+      console.log(
+        "this.technicalSettingsForm.values",
+        this.technicalSettingsForm.values
+      );
+      if (
+        this.technicalSettingsForm.values.current.staticBuildWebhooks.trim()
+      ) {
+        let staticBuildWebhooksArray = this.technicalSettingsForm.values.current.staticBuildWebhooks.split(
+          ","
+        );
+        //remove extra spaces
+        staticBuildWebhooksArray = staticBuildWebhooksArray.map(webhook =>
+          webhook.trim()
+        );
+        staticBuildWebhooksArray.forEach(webhook => {
+          webhooks.push({
+            name: webhook,
+            url: webhook,
+            onEvents: ["global:staticBuildNeeded"]
+          });
         });
       }
+      return webhooks;
     }
   }
 };
