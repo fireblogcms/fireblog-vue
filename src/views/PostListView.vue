@@ -2,7 +2,7 @@
   <DefaultLayout>
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
-      <span class="item tag is-medium">
+      <span class="item tag is-large">
         <router-link class="item" :to="{ name: 'blogList' }">
           <img
             class="is-hidden-mobile"
