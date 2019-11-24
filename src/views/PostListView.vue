@@ -3,7 +3,7 @@
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
       <span class="item tag is-medium">
-        <router-link class="item" :to="{name:'blogList'}">
+        <router-link class="item" :to="{ name: 'blogList' }">
           <img
             class="is-hidden-mobile"
             style="position:relative;height:20px !important;top:4px;"
@@ -15,7 +15,7 @@
     </portal>
     <!-- END TOPBAR LEFT BUTTONS -->
 
-    <AppError v-if="errorMessage">{{errorMessage}}</AppError>
+    <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
     <template v-if="initDataState === 'PENDING'">
       <AppLoader />
     </template>
@@ -30,40 +30,56 @@
                   style="height:70px !important;position:relative;top:20px;padding-right:1rem"
                   src="/images/book.png"
                 />
-                {{blog.name}} : POSTS
+                {{ blog.name }} : POSTS
               </h1>
             </div>
             <div class="column is-4">
               <button
                 class="button is-large is-primary main-call-to-action is-box-shadowed"
                 v-if="!isFirstPost"
-                @click="$router.push({name: 'postCreate', params:{blogId:$route.params.blogId}})"
-              >WRITE NEW POST</button>
+                @click="
+                  $router.push({
+                    name: 'postCreate',
+                    params: { blogId: $route.params.blogId }
+                  })
+                "
+              >
+                WRITE NEW POST
+              </button>
             </div>
           </div>
         </header>
 
         <template v-if="isFirstPost === true">
           <div class="container">
-            <LayoutBody>
-              <h2
-                style="font-weight:200"
-                class="title has-text-centered"
-              >Write your first post in this blog !</h2>
+            <AppPanel>
+              <h2 style="font-weight:200" class="title has-text-centered">
+                Write your first post in this blog !
+              </h2>
               <div class="has-text-centered">
                 <div style="margin:2rem">
                   <button
                     class="button is-large is-primary is-box-shadowed"
-                    @click="$router.push({name: 'postCreate', params:{blogId:$route.params.blogId}})"
-                  >WRITE</button>
+                    @click="
+                      $router.push({
+                        name: 'postCreate',
+                        params: { blogId: $route.params.blogId }
+                      })
+                    "
+                  >
+                    WRITE
+                  </button>
                 </div>
               </div>
-            </LayoutBody>
+            </AppPanel>
           </div>
         </template>
         <template v-if="!isFirstPost">
           <section class="container">
-            <div class="tabs is-boxed is-medium" style="position:relative;margin-bottom:0;">
+            <div
+              class="tabs is-boxed is-medium"
+              style="position:relative;margin-bottom:0;"
+            >
               <ul style="border-bottom:0">
                 <li
                   @click="onStatusClick('PUBLISHED')"
@@ -80,17 +96,30 @@
               </ul>
             </div>
 
-            <LayoutBody style="border-top-left-radius:0;min-height:200px">
+            <AppPanel style="border-top-left-radius:0;min-height:200px">
               <div class="container" style="border-top-left-radius:0;">
                 <AppLoader v-show="postsRequestState === 'PENDING'" />
-                <template v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length === 0">
+                <template
+                  v-if="
+                    postsRequestState === 'FINISHED_OK' &&
+                      posts.edges.length === 0
+                  "
+                >
                   <div class="content section has-text-centered">
                     <p>No post found with {{ activeStatus }} status for now.</p>
                   </div>
                 </template>
-                <template v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length > 0">
-                  <LayoutList :items="posts.edges" :itemUniqueKey="(item) => item.node._id">
-                    <template v-slot="{item}">
+                <template
+                  v-if="
+                    postsRequestState === 'FINISHED_OK' &&
+                      posts.edges.length > 0
+                  "
+                >
+                  <LayoutList
+                    :items="posts.edges"
+                    :itemUniqueKey="item => item.node._id"
+                  >
+                    <template v-slot="{ item }">
                       <div class="columns">
                         <div class="column is-1">
                           <div
@@ -99,26 +128,48 @@
                             class="post-list-image"
                           />
                         </div>
-                        <div @click="onRowClick(item)" class="column is-9 content">
+                        <div
+                          @click="onRowClick(item)"
+                          class="column is-9 content"
+                        >
                           <h2 class="post-list-title">
                             <router-link
                               class="item"
-                              :to="{name:'postUpdate', params:{blogId:$route.params.blogId, postId:item.node._id}}"
-                            >{{ item.node.title + " " }}</router-link>
+                              :to="{
+                                name: 'postUpdate',
+                                params: {
+                                  blogId: $route.params.blogId,
+                                  postId: item.node._id
+                                }
+                              }"
+                              >{{ item.node.title + " " }}</router-link
+                            >
                           </h2>
                           <span
                             style="color:rgba(0, 0, 0, 0.5);"
                             v-if="item.node.status === 'PUBLISHED'"
-                          >published on {{ Number(item.node.publishedAt) | moment("DD MMMM YYYY - HH:mm") }}</span>
+                            >published on
+                            {{
+                              Number(item.node.publishedAt)
+                                | moment("DD MMMM YYYY - HH:mm")
+                            }}</span
+                          >
                           <span
                             style="color:rgba(0, 0, 0, 0.5);"
                             v-if="item.node.status === 'DRAFT'"
-                          >updated on {{ Number(item.node.updatedAt) | moment("DD MMMM YYYY - HH:mm") }}</span>
+                            >updated on
+                            {{
+                              Number(item.node.updatedAt)
+                                | moment("DD MMMM YYYY - HH:mm")
+                            }}</span
+                          >
 
                           <p
                             style="padding-top:10px"
                             v-if="item.node.teaser.trim()"
-                          >{{striptags(item.node.teaser.substr(0, 200))}}</p>
+                          >
+                            {{ striptags(item.node.teaser.substr(0, 200)) }}
+                          </p>
                         </div>
                         <div class="column is-2">
                           <div class="actions">
@@ -134,7 +185,8 @@
                               @click="onDeleteClick(item.node)"
                               style="min-width:100px"
                               class="button is-outlined"
-                            >Delete</span>
+                              >Delete</span
+                            >
                           </div>
                         </div>
                       </div>
@@ -143,32 +195,37 @@
                 </template>
                 <!---->
               </div>
-            </LayoutBody>
+            </AppPanel>
           </section>
         </template>
       </div>
     </template>
     <BulmaModal v-model="deleteModal.show">
-      <template #title>{{deleteModal.title}}</template>
+      <template #title>{{ deleteModal.title }}</template>
       <template #body>
         <div class="message is-danger">
           <div class="message-body">
             <p>
               <strong>DANGER !</strong>
               <br />This action cannot be undone.
-              <strong>{{deleteModal.post && deleteModal.post.title}}</strong> will be deleted forever.
+              <strong>{{ deleteModal.post && deleteModal.post.title }}</strong>
+              will be deleted forever.
             </p>
           </div>
         </div>
       </template>
       <template #footer>
-        <div @click="deleteModal.show = false" class="button is-primary">OUPS NO, CANCEL !</div>
+        <div @click="deleteModal.show = false" class="button is-primary">
+          OUPS NO, CANCEL !
+        </div>
         <div
           @click="onDeleteModalConfirmClick"
           class="button is-danger"
-          :class="{'is-loading':deletePostRequestState === 'PENDING'}"
+          :class="{ 'is-loading': deletePostRequestState === 'PENDING' }"
           :disabled="deletePostRequestState === 'PENDING' ? true : false"
-        >DELETE IT. FOREVER.</div>
+        >
+          DELETE IT. FOREVER.
+        </div>
       </template>
     </BulmaModal>
   </DefaultLayout>
@@ -182,7 +239,7 @@ import gql from "graphql-tag";
 import AppLoader from "../components/AppLoader";
 import { REQUEST_STATE } from "../utils/helpers";
 import AppError from "../components/AppError";
-import LayoutBody from "../components/LayoutBody";
+import AppPanel from "../components/AppPanel";
 import LayoutList from "../components/LayoutList";
 import striptags from "striptags";
 import logger from "../utils/logger";
@@ -248,7 +305,7 @@ export default {
     DefaultLayout,
     AppLoader,
     AppError,
-    LayoutBody,
+    AppPanel,
     LayoutList,
     BulmaModal,
     IconBack
@@ -449,5 +506,3 @@ export default {
   }
 }
 </style>
-
-

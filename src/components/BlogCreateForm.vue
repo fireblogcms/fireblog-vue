@@ -9,7 +9,7 @@
     </template>
 
     <template v-if="initDataState === 'FINISHED_OK'">
-      <LayoutBody>
+      <AppPanel>
         <div class="section">
           <div class="content has-text-centered">
             <!-- special text if this is the very first blog :) -->
@@ -103,7 +103,7 @@
             <!-- Any other Bulma elements you want -->
           </div>
         </div>
-      </LayoutBody>
+      </AppPanel>
     </template>
   </div>
 </template>
@@ -115,7 +115,7 @@ import { getUser } from "../utils/helpers";
 import gql from "graphql-tag";
 import { REQUEST_STATE } from "../utils/helpers";
 import AppLoader from "../components/AppLoader";
-import LayoutBody from "../components/LayoutBody";
+import AppPanel from "../components/AppPanel";
 import logger from "../utils/logger";
 
 const createBlogMutation = gql`
@@ -141,7 +141,7 @@ const languageListQuery = gql`
 export default {
   components: {
     AppLoader,
-    LayoutBody
+    AppPanel
   },
   props: {
     isMyFirstBlog: {

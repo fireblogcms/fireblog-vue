@@ -1,15 +1,16 @@
 <template>
   <div>
-    <pre v-if="false">{{form}}</pre>
+    <pre v-if="false">{{ form }}</pre>
     <AppLoader v-if="initDataState === 'PENDING'">Loading blogs</AppLoader>
-    <AppError v-if="errorMessage">{{errorMessage}}</AppError>
-    <AppMessage v-if="appMessage">{{appMessage}}</AppMessage>
-    <LayoutBody
+    <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
+    <AppMessage v-if="appMessage">{{ appMessage }}</AppMessage>
+    <AppPanel
       style="margin-top:40px;margin-bottom:40px;padding:40px;"
       class="container"
       v-if="initDataState === 'FINISHED_OK'"
     >
-      <form @submit.prevent="onFormSubmit">
+      <h2 class="title is-2">General settings</h2>
+      <form @submit.prevent="onGeneralSettingsFormSubmit">
         <div class="field">
           <label class="label">Name</label>
           <div class="control">
@@ -20,41 +21,69 @@
               maxlength="250"
             />
           </div>
-          <p class="help is-danger" v-if="form.errors.name">{{form.errors.name}}</p>
+          <p class="help is-danger" v-if="form.errors.name">
+            {{ form.errors.name }}
+          </p>
         </div>
         <div class="field">
           <label class="label">Description</label>
           <div class="control">
-            <input class="input is-large" v-model="form.values.current.description" type="text" />
+            <textarea
+              class="textarea is-large"
+              v-model="form.values.current.description"
+              type="text"
+            ></textarea>
           </div>
-        </div>
-        <div class="field">
-          <label class="label">Static site rebuild webhooks</label>
-          <textarea
-            v-model="form.values.current.staticBuildWebhooks"
-            class="textarea"
-            placeholder="e.g. Hello world"
-          ></textarea>
-          <p
-            class="help"
-          >You can specify multiple valid URLs by comma-separating them. Those webooks will each time a build of your static blog is needed.</p>
         </div>
         <div>
           <button
             style="margin-top:20px;"
             class="button is-outlined is-primary is-large"
-            :class="{ 'is-loading': savingBlogState === 'PENDING'}"
+            :class="{ 'is-loading': savingBlogState === 'PENDING' }"
             :disabled="savingBlogState === 'PENDING'"
             type="submit"
-          >Save</button>
+          >
+            Save
+          </button>
         </div>
       </form>
-    </LayoutBody>
+    </AppPanel>
+    <AppPanel
+      style="margin-top:40px;margin-bottom:40px;padding:40px;"
+      class="container"
+      v-if="initDataState === 'FINISHED_OK'"
+    >
+      <h2 class="title is-2">Technical settings</h2>
+
+      <div class="field">
+        <label class="label">Static site rebuild webhooks</label>
+        <textarea
+          v-model="form.values.current.staticBuildWebhooks"
+          class="textarea"
+          placeholder="e.g. Hello world"
+        ></textarea>
+        <p class="help">
+          You can specify multiple valid URLs by comma-separating them. Those
+          webooks will each time a build of your static blog is needed.
+        </p>
+      </div>
+      <div>
+        <button
+          style="margin-top:20px;"
+          class="button is-outlined is-primary is-large"
+          :class="{ 'is-loading': savingBlogState === 'PENDING' }"
+          :disabled="savingBlogState === 'PENDING'"
+          type="submit"
+        >
+          Save
+        </button>
+      </div>
+    </AppPanel>
   </div>
 </template>
 
 <script>
-import LayoutBody from "../components/LayoutBody";
+import AppPanel from "../components/AppPanel";
 import { getBlog, REQUEST_STATE, formInitData } from "../utils/helpers";
 import AppLoader from "../components/AppLoader";
 import AppError from "../components/AppError";
@@ -70,11 +99,11 @@ const initialFormValues = {
 
 export default {
   components: {
-    LayoutBody,
+    AppPanel,
     AppLoader,
     AppError,
     AppMessage,
-    LayoutBody
+    AppPanel
   },
   data() {
     return {
@@ -173,7 +202,7 @@ export default {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
         });
     },
-    onFormSubmit() {
+    onGeneralSettingsFormSubmit() {
       this.errorMessage = null;
       this.validateForm();
       if (Object.keys(this.form.errors).length > 0) {

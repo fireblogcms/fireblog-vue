@@ -1,6 +1,6 @@
 <template>
   <DefaultLayout>
-    <AppError v-if="errorMessage">{{errorMessage}}</AppError>
+    <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
 
     <template v-if="initDataState === 'PENDING'">
       <AppLoader>Loading profile</AppLoader>
@@ -8,7 +8,7 @@
 
     <template v-if="initDataState === 'FINISHED_OK'">
       <div class="container section animated fadeIn">
-        <LayoutBody>
+        <AppPanel>
           <div style="padding:40px">
             <div class="col-md-2">
               <img width="200" :src="me.picture" alt="User's profile picture" />
@@ -20,7 +20,7 @@
               </div>
             </div>
           </div>
-        </LayoutBody>
+        </AppPanel>
       </div>
     </template>
   </DefaultLayout>
@@ -29,7 +29,7 @@
 <script>
 import DefaultLayout from "@/layouts/DefaultLayout";
 import apolloClient from "../utils/apolloClient";
-import LayoutBody from "../components/LayoutBody";
+import AppPanel from "../components/AppPanel";
 import AppLoader from "../components/AppLoader";
 import AppError from "../components/AppError";
 import { REQUEST_STATE } from "../utils/helpers";
@@ -39,7 +39,7 @@ import logger from "../utils/logger";
 export default {
   components: {
     DefaultLayout,
-    LayoutBody,
+    AppPanel,
     AppLoader,
     AppError
   },
