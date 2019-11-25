@@ -733,7 +733,6 @@ export default {
         post.author = user._id;
       }
       post.blog = this.$route.params.blogId;
-      post.locale = blog.contentDefaultLocale.replace("-", "_");
       return apolloClient
         .mutate({
           mutation: createPostQuery,
