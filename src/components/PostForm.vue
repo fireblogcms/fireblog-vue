@@ -729,9 +729,6 @@ export default {
       const blog = await getBlog(this.$route.params.blogId);
       // current user as author by default. But another user might have been defined
       // as the author, so do not override if this is already set.
-      if (!post.author) {
-        post.author = user._id;
-      }
       post.blog = this.$route.params.blogId;
       return apolloClient
         .mutate({
