@@ -7,16 +7,39 @@
     </template>
 
     <template v-if="initDataState === 'FINISHED_OK'">
-      <div class="container section animated fadeIn">
+      <div style="max-width:500px" class="container section animated fadeIn">
         <AppPanel>
-          <div style="padding:40px">
+          <div style="padding:40px" class="has-text-centered">
             <div class="col-md-2">
-              <img width="200" :src="me.picture" alt="User's profile picture" />
+              <img
+                style="border-radius:200px;"
+                width="200"
+                :src="me.picture"
+                alt="User's profile picture"
+              />
             </div>
             <div class="column">
               <div class="content">
-                <h2>identifiant: {{ me.name }}</h2>
-                <p>email: {{ me.email }}</p>
+                <h2>{{ me.name }}</h2>
+                <p>
+                  {{ me.email }}
+                </p>
+                <h2>mes rôles</h2>
+                <ul
+                  class="has-text-left"
+                  v-for="(membership, index) in me.blogsMemberships"
+                  :key="index"
+                >
+                  <li>
+                    {{ membership.blog.name }} :
+                    <em>{{
+                      membership.roles
+                        .map(v => v.replace("_", " "))
+                        .join(",")
+                        .toLowerCase()
+                    }}</em>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
@@ -76,6 +99,12 @@ export default {
                 createdAt
                 updatedAt
                 picture
+                blogsMemberships {
+                  roles
+                  blog {
+                    name
+                  }
+                }
               }
             }
           `
