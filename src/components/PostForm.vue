@@ -2,10 +2,7 @@
   <div>
     <AppLoader v-if="initDataState === 'PENDING'" />
     <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
-    <div
-      v-if="initDataState === REQUEST_STATE.FINISHED_OK"
-      class="post-form-wrapper"
-    >
+    <div v-if="initDataState === REQUEST_STATE.FINISHED_OK" class="post-form-wrapper">
       <!-- debug form values -->
       <pre v-if="false">{{ form }}</pre>
 
@@ -44,16 +41,12 @@
           v-if="modal.confirmText && modal.confirmCallback"
           @click="modal.confirmCallback"
           class="button is-danger"
-        >
-          {{ modal.confirmText }}
-        </div>
+        >{{ modal.confirmText }}</div>
         <div
           v-if="modal.cancelText && modal.cancelCallback"
           @click="modal.cancelCallback"
           class="button is-primary"
-        >
-          {{ modal.cancelText }}
-        </div>
+        >{{ modal.cancelText }}</div>
       </template>
     </BulmaModal>
 
@@ -79,16 +72,10 @@
     </BulmaModal>
 
     <!-- HURRAH MODAL -->
-    <BulmaModal
-      class="hurrah-modal"
-      v-model="publishingHurrahModal.show"
-      :whiteFooter="true"
-    >
+    <BulmaModal class="hurrah-modal" v-model="publishingHurrahModal.show" :whiteFooter="true">
       <template #body>
         <div class="has-text-centered">
-          <h1 class="title is-1 has-text-centered">
-            Hurrah ! Your post have been published !
-          </h1>
+          <h1 class="title is-1 has-text-centered">Hurrah ! Your post have been published !</h1>
           <img style="border-radius:5px" :src="getRandomHurrahGif()" />
         </div>
       </template>
@@ -96,9 +83,7 @@
         <button
           @click="publishingHurrahModal.show = false"
           class="button is-primary is-large"
-        >
-          Okay !
-        </button>
+        >Okay !</button>
       </template>
     </BulmaModal>
 
@@ -110,9 +95,10 @@
       <template #title></template>
       <template #body>
         <div class="has-text-centered">
-          <h1 style="padding:30px;" class="title is-3 has-text-centered">
-            Your changes have been published !
-          </h1>
+          <h1
+            style="padding:30px;"
+            class="title is-3 has-text-centered"
+          >Your changes have been published !</h1>
           <img style="border-radius:5px" :src="getRandomHurrahGif()" />
         </div>
       </template>
@@ -120,24 +106,15 @@
         <button
           @click="publishingChangesModal.show = false"
           class="button is-primary is-large"
-        >
-          Okay !
-        </button>
+        >Okay !</button>
       </template>
     </BulmaModal>
 
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
-      <span
-        @click="onBackToPostsClick"
-        style="cursor:pointer"
-        class="item tag is-large"
-      >
+      <span @click="onBackToPostsClick" style="cursor:pointer" class="item tag is-large">
         <em>
-          <img
-            style="position:relative;height:20px !important;top:4px;"
-            src="/images/book.png"
-          />
+          <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
           <IconBack />posts
         </em>
       </span>
@@ -151,8 +128,7 @@
           {{ getCurrentPublicationStatus() }}
           <span
             v-if="getCurrentPublicationStatus() === 'DRAFT' && lastTimeSaved"
-            >- saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</span
-          >
+          >- saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</span>
         </em>
       </span>
     </portal>
@@ -187,9 +163,7 @@
         }"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
-      >
-        UNPUBLISH
-      </button>
+      >UNPUBLISH</button>
 
       <button
         @click="onPublicationClick()"
@@ -202,9 +176,7 @@
         }"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
-      >
-        PUBLICATION
-      </button>
+      >PUBLICATION</button>
 
       <button
         @click="onPublicationClick()"
@@ -872,6 +844,7 @@ export default {
   margin: auto;
   margin-bottom: 40px;
   max-width: 940px;
+  min-height: 1200px;
   padding: 2rem 4rem;
   font-weight: 400;
   background: white;
