@@ -464,7 +464,7 @@ export default {
           })
           .catch(error => {
             this.savingPost.state = REQUEST_STATE.FINISHED_ERROR;
-            this.errorMessage = "Sorry, publishing failed: " + error;
+            this.errorMessage = "Sorry, post creation failed: " + error;
             if (this.publicationSettingsModal.show) {
               this.publicationSettingsModal.show = false;
             }
