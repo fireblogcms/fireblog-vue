@@ -2,7 +2,8 @@
   <BareLayout>
     <div class="container section">
       <AppError v-if="error">
-        {{ error }}. <br />You can
+        {{ error }}.
+        <br />You can
         <router-link :to="{ name: 'login' }">Retry to login</router-link>
       </AppError>
       <AppPanel v-if="initDataState === 'PENDING'">
@@ -48,12 +49,7 @@ export default {
           return auth0.getUser();
         })
         .then(user => {
-          return syncAuth0UserWithServer({
-            auth0Id: user.sub,
-            email: user.email,
-            name: user.name,
-            picture: user.picture ? user.picture : null
-          });
+          return syncAuth0UserWithServer();
         })
         .then(() => {
           this.initDataState = REQUEST_STATE.FINISHED_OK;

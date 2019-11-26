@@ -33,17 +33,11 @@ export async function auth0Client() {
   }
 }
 
-export function syncAuth0UserWithServer({ auth0Id, email, name, picture }) {
-  logger.info("debug:syncAuth0UserWithServer()", {
-    auth0Id,
-    email,
-    name,
-    picture
-  });
+export function syncAuth0UserWithServer() {
   return apolloClient.mutate({
     mutation: gql`
-      mutation syncAuth0UserWithServer($user: syncAuth0UserInput!) {
-        syncAuth0User(user: $user) {
+      mutation syncAuth0UserWithServer {
+        syncAuth0User {
           _id
           email
           name
@@ -51,9 +45,6 @@ export function syncAuth0UserWithServer({ auth0Id, email, name, picture }) {
           auth0Id
         }
       }
-    `,
-    variables: {
-      user: { auth0Id, email, name, picture }
-    }
+    `
   });
 }
