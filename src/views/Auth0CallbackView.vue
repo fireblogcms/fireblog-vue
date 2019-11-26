@@ -49,6 +49,7 @@ export default {
           return auth0.getUser();
         })
         .then(user => {
+          // copy auth0 user to our database
           return syncAuth0UserWithServer();
         })
         .then(() => {
