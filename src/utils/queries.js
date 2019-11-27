@@ -10,6 +10,7 @@ export const PostFragment = gql`
     teaser
     image
     publishedAt
+    updatedAt
     createdAt
     image
     author {
