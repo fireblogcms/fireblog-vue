@@ -5,7 +5,7 @@
     <AppError v-if="errorMessage">{{errorMessage}}</AppError>
 
     <template v-if="initDataState === 'FINISHED_OK'">
-      <div style="max-width:900px" class="content container section animated fadeIn">
+      <div style="max-width:900px" class="content container section">
         <h1 class="title is-1">{{post.title}}</h1>
         <ckeditor
           :disabled="true"
@@ -108,6 +108,7 @@ export default {
         query: gql`
           query postById($id: ID!) {
             post(_id: $id) {
+              _id
               slug
               title
               content

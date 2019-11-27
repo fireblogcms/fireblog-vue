@@ -88,16 +88,6 @@ const createBlogMutation = gql`
   }
 `;
 
-const languageListQuery = gql`
-  query languageListQuery {
-    locales {
-      code
-      nativeName
-      englishName
-    }
-  }
-`;
-
 export default {
   components: {
     AppLoader,

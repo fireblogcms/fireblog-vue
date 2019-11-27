@@ -15,18 +15,13 @@
       </div>
     </template>
     <!-- else, display the blog list -->
-    <template
-      v-if="initDataState === 'FINISHED_OK' && blogs && blogs.edges.length > 0"
-    >
+    <template v-if="initDataState === 'FINISHED_OK' && blogs && blogs.edges.length > 0">
       <div class="container">
-        <div class="animated fadeIn">
+        <div>
           <header style="padding: 0 1rem 2rem 1rem">
             <div class="columns">
               <div class="column">
-                <h1
-                  style="padding-bottom:2rem;"
-                  class="title is-2 is-uppercase"
-                >
+                <h1 style="padding-bottom:2rem;" class="title is-2 is-uppercase">
                   <img
                     height="70"
                     style="position:relative;top:25px;padding-right:1rem"
@@ -40,11 +35,7 @@
                   class="button is-primary is-box-shadowed is-large main-call-to-action"
                   @click="$router.push({ name: 'blogCreate' })"
                 >
-                  <img
-                    width="40"
-                    style="margin-right:10px"
-                    src="/images/book.png"
-                  />
+                  <img width="40" style="margin-right:10px" src="/images/book.png" />
                   CREATE A NEW BLOG
                 </button>
               </div>
@@ -61,18 +52,14 @@
             >
               <div class="blog-infos">
                 <h2 class="title">{{ edge.node.name }}</h2>
-                <h3 class="subtitle" v-if="edge.node.description">
-                  {{ edge.node.description }}
-                </h3>
+                <h3 class="subtitle" v-if="edge.node.description">{{ edge.node.description }}</h3>
               </div>
 
               <div
                 @click.stop="onSettingsClick(edge.node, $event)"
                 style="min-width:100px;font-weight:300"
                 class="button is-medium is-outlined settings"
-              >
-                Settings
-              </div>
+              >Settings</div>
             </div>
           </div>
         </div>
@@ -95,6 +82,7 @@ import gradient from "random-gradient";
 const meWithMyBlogsQuery = gql`
   query meWithMyBlogsQuery {
     me {
+      _id
       name
       blogs(last: 100) {
         edges {

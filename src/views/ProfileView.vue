@@ -7,7 +7,7 @@
     </template>
 
     <template v-if="initDataState === 'FINISHED_OK'">
-      <div style="max-width:500px" class="container section animated fadeIn">
+      <div style="max-width:500px" class="container section">
         <AppPanel>
           <div style="padding:40px" class="has-text-centered">
             <div class="col-md-2">
@@ -21,9 +21,7 @@
             <div class="column">
               <div class="content">
                 <h2>{{ me.name }}</h2>
-                <p>
-                  {{ me.email }}
-                </p>
+                <p>{{ me.email }}</p>
                 <h2>mes rôles</h2>
                 <ul
                   class="has-text-left"
@@ -32,12 +30,14 @@
                 >
                   <li>
                     {{ membership.blog.name }} :
-                    <em>{{
+                    <em>
+                      {{
                       membership.roles
-                        .map(v => v.replace("_", " "))
-                        .join(",")
-                        .toLowerCase()
-                    }}</em>
+                      .map(v => v.replace("_", " "))
+                      .join(",")
+                      .toLowerCase()
+                      }}
+                    </em>
                   </li>
                 </ul>
               </div>

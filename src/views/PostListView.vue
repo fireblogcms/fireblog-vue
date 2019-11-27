@@ -20,7 +20,7 @@
       <AppLoader />
     </template>
     <template v-if="initDataState === 'FINISHED_OK'">
-      <div class="animated fadeIn">
+      <div>
         <header class="container" style="padding: 0 1rem 2rem 1rem">
           <div class="columns">
             <div class="column">
