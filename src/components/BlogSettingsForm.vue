@@ -1,7 +1,7 @@
 <template>
   <div>
     <pre v-if="false">{{ generalSettingsForm }}</pre>
-    <AppLoader v-if="initDataState === 'PENDING'">Loading blogs</AppLoader>
+    <AppLoader v-if="initDataState === 'PENDING'">Loading</AppLoader>
 
     <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
     <AppMessage v-if="appMessage">{{ appMessage }}</AppMessage>
@@ -10,10 +10,14 @@
       class="container"
       v-if="initDataState === 'FINISHED_OK'"
     >
-      <h2 class="title is-2">General settings</h2>
+      <h2 class="title is-2">
+        {{ $t("views.blogSettings.generalSettingsForm.title") }}
+      </h2>
       <form @submit.prevent="onGeneralSettingsFormSubmit">
         <div class="field">
-          <label class="label">Name</label>
+          <label class="label">
+            {{ $t("views.blogSettings.generalSettingsForm.fields.name.label") }}
+          </label>
           <div class="control">
             <input
               v-model="generalSettingsForm.values.current.name"
@@ -46,7 +50,7 @@
             :disabled="savingGeneralSettingsState === 'PENDING'"
             type="submit"
           >
-            Save
+            {{ $t("views.blogSettings.generalSettingsForm.saveButton") }}
           </button>
         </div>
       </form>
@@ -57,18 +61,29 @@
       class="container"
       v-if="initDataState === 'FINISHED_OK'"
     >
-      <h2 class="title is-2">Technical settings</h2>
+      <h2 class="title is-2">
+        {{ $t("views.blogSettings.technicalSettingsForm.title") }}
+      </h2>
       <form @submit.prevent="onTechnicalSettingsFormSubmit">
         <div class="field">
-          <label class="label">Static site rebuild webhooks</label>
+          <label class="label">
+            {{
+              $t(
+                "views.blogSettings.technicalSettingsForm.fields.webhooks.label"
+              )
+            }}</label
+          >
           <textarea
             v-model="technicalSettingsForm.values.current.staticBuildWebhooks"
             class="textarea"
             placeholder="e.g. Hello world"
           ></textarea>
           <p class="help">
-            You can specify multiple valid URLs by comma-separating them. Those
-            webooks will each time a build of your static blog is needed.
+            {{
+              $t(
+                "views.blogSettings.technicalSettingsForm.fields.webhooks.help"
+              )
+            }}
           </p>
         </div>
         <div>
@@ -81,7 +96,7 @@
             :disabled="savingTechnicalSettingsState === 'PENDING'"
             type="submit"
           >
-            Save
+            {{ $t("views.blogSettings.technicalSettingsForm.saveButton") }}
           </button>
         </div>
       </form>
@@ -138,7 +153,9 @@ export default {
     validateGeneralSettingsForm() {
       this.generalSettingsForm.errors = {};
       if (!this.generalSettingsForm.values.current.name.trim()) {
-        this.generalSettingsForm.errors.name = "Field name is required";
+        this.generalSettingsForm.errors.name = this.$t(
+          "views.blogSettings.generalSettingsForm.fields.name.errors.required"
+        );
       }
     },
     updateBlog(blog) {

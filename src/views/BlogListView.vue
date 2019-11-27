@@ -32,7 +32,7 @@
                     style="position:relative;top:25px;padding-right:1rem"
                     src="/images/books-icon.png"
                   />
-                  My blogs
+                  {{ $t("views.blogList.title") }}
                 </h1>
               </div>
               <div class="column">
@@ -45,7 +45,7 @@
                     style="margin-right:10px"
                     src="/images/book.png"
                   />
-                  CREATE A NEW BLOG
+                  {{ $t("views.blogList.createNewBlogButton") }}
                 </button>
               </div>
             </div>
@@ -71,7 +71,7 @@
                 style="min-width:100px;font-weight:300"
                 class="button is-medium is-outlined settings"
               >
-                Settings
+                {{ $t("views.blogList.settingsButton") }}
               </div>
             </div>
           </div>
