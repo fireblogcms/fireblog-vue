@@ -24,6 +24,7 @@ Vue.config.productionTip = false;
 // Create VueI18n instance with options
 const i18n = new VueI18n({
   locale: navigator.language || navigator.userLanguage, // set locale,
+  // locale: 'en',
   fallbackLocale: "en",
   messages: translations // set locale messages
 });

@@ -9,7 +9,7 @@
             style="position:relative;height:20px !important;top:4px;"
             src="/images/books.webp"
           />
-          <IconBack />My blogs
+          <IconBack />{{ $t("views.postList.backToBlogLink") }}
         </router-link>
       </span>
     </portal>
@@ -30,7 +30,7 @@
                   style="height:70px !important;position:relative;top:20px;padding-right:1rem"
                   src="/images/book.png"
                 />
-                {{ blog.name }} : POSTS
+                {{ blog.name }} : {{ $t("views.postList.title") }}
               </h1>
             </div>
             <div class="column is-4">
@@ -44,7 +44,7 @@
                   })
                 "
               >
-                WRITE NEW POST
+                {{ $t("views.postList.writeNewPostButton") }}
               </button>
             </div>
           </div>
@@ -54,7 +54,7 @@
           <div class="container">
             <AppPanel>
               <h2 style="font-weight:200" class="title has-text-centered">
-                Write your first post in this blog !
+                {{ $t("views.postList.firstBlogSentence") }}
               </h2>
               <div class="has-text-centered">
                 <div style="margin:2rem">
@@ -67,7 +67,7 @@
                       })
                     "
                   >
-                    WRITE
+                    {{ $t("views.postList.firstPostWriteButton") }}
                   </button>
                 </div>
               </div>
@@ -85,13 +85,13 @@
                   @click="onStatusClick('PUBLISHED')"
                   :class="{ 'is-active': activeStatus == 'PUBLISHED' }"
                 >
-                  <a>Published</a>
+                  <a> {{ $t("views.postList.publishedTab") }}</a>
                 </li>
                 <li
                   @click="onStatusClick('DRAFT')"
                   :class="{ 'is-active': activeStatus == 'DRAFT' }"
                 >
-                  <a>Draft</a>
+                  <a> {{ $t("views.postList.draftTab") }} </a>
                 </li>
               </ul>
             </div>
@@ -106,7 +106,12 @@
                   "
                 >
                   <div class="content section has-text-centered">
-                    <p>No post found with {{ activeStatus }} status for now.</p>
+                    <p v-show="activeStatus === 'PUBLISHED'">
+                      {{ $t("views.postList.noPublishedPostFound") }}
+                    </p>
+                    <p v-show="activeStatus === 'DRAFT'">
+                      {{ $t("views.postList.noDraftPostFound") }}
+                    </p>
                   </div>
                 </template>
                 <template
@@ -187,8 +192,9 @@
                               @click="onDeleteClick(item.node)"
                               style="min-width:100px"
                               class="button is-outlined"
-                              >Delete</span
                             >
+                              {{ $t("views.postList.deleteButton") }}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -208,10 +214,11 @@
         <div class="message is-danger">
           <div class="message-body">
             <p>
-              <strong>DANGER !</strong>
-              <br />This action cannot be undone.
-              <strong>{{ deleteModal.post && deleteModal.post.title }}</strong>
-              will be deleted.
+              {{
+                $t("views.postList.deleteModal.content", {
+                  postTitle: deleteModal.post.title
+                })
+              }}.
             </p>
           </div>
         </div>
@@ -396,7 +403,9 @@ export default {
     onDeleteClick(post) {
       this.deleteModal.post = post;
       this.deleteModal.show = true;
-      this.deleteModal.title = `Delete "${post.title}"`;
+      this.deleteModal.title = this.$t("views.postList.deleteModal.title", {
+        postTitle: post.title
+      });
     },
     onUnpublishClick(status) {
       alert("unpublish");

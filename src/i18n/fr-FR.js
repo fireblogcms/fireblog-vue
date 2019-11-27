@@ -1,11 +1,5 @@
 export default {
   "fr-FR": {
-    topbar: {
-      accountMenu: {
-        myAccount: "My account",
-        logout: "Logout"
-      }
-    },
     views: {
       blogList: {
         title: "Mes blogs",
@@ -37,6 +31,32 @@ export default {
           },
           saveButton: "Enregistrer"
         }
+      },
+      postList: {
+        title: "posts",
+        firstBlogSentence:
+          "Il est temps d'écrire le premier article de votre blog!",
+        firstPostWriteButton: "Écrire",
+        writeNewPostButton: "Écrire un nouveau post",
+        publishedTab: "Publiés",
+        draftTab: "Brouillons",
+        noPublishedPostFound: "Aucun post publié pour le moment.",
+        noDraftPostFound: "Aucun brouillon pour le moment.",
+        backToBlogLink: "Mes blogs",
+        deleteButton: "Supprimer",
+        deleteModal: {
+          title: "Supprimer {postTitle}",
+          content:
+            "ATTENTION !\r\n Cette action n'est pas réversible. {postTitle} sera effacé définitivement.",
+          confirmButton: "Supprimer.",
+          cancelButton: "Oups, non, annuler !"
+        }
+      }
+    },
+    topbar: {
+      accountMenu: {
+        myAccount: "Mon compte",
+        logout: "Se déconnecter"
       }
     }
   }

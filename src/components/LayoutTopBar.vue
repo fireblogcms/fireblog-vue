@@ -59,12 +59,12 @@
                     >{{ edge.node.name }}</router-link
                   >
                   <hr class="dropdown-divider" />
-                  <router-link :to="{ name: 'profile' }" class="dropdown-item"
-                    >My account</router-link
-                  >
-                  <router-link :to="{ name: 'logout' }" class="dropdown-item"
-                    >Logout</router-link
-                  >
+                  <router-link :to="{ name: 'profile' }" class="dropdown-item">
+                    {{ $t("topbar.accountMenu.myAccount") }}
+                  </router-link>
+                  <router-link :to="{ name: 'logout' }" class="dropdown-item">
+                    {{ $t("topbar.accountMenu.logout") }}
+                  </router-link>
                 </div>
               </div>
             </div>

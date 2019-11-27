@@ -1,11 +1,5 @@
 export default {
   en: {
-    topbar: {
-      accountMenu: {
-        myAccount: "My account",
-        logout: "Logout"
-      }
-    },
     views: {
       blogList: {
         title: "My blogs",
@@ -39,6 +33,31 @@ export default {
           },
           saveButton: "Save"
         }
+      },
+      postList: {
+        title: "posts",
+        firstBlogSentence: "Write your first post in this blog !",
+        firstPostWriteButton: "Write",
+        writeNewPostButton: "Write new post",
+        publishedTab: "Published",
+        draftTab: "Draft",
+        noPublishedPostFound: "No published post found for now.",
+        noDraftPostFound: "No draft post found.",
+        backToBlogLink: "My blogs",
+        deleteButton: "Delete",
+        deleteModal: {
+          title: "Delete {postTitle}",
+          content:
+            "DANGER !\r\n This action cannot be undone. {postTitle} will be deleted.",
+          confirmButton: "Delete it.",
+          cancelButton: "Oups, no, cancel!"
+        }
+      }
+    },
+    topbar: {
+      accountMenu: {
+        myAccount: "My account",
+        logout: "Logout"
       }
     }
   }
