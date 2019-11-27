@@ -19,9 +19,10 @@
           <div class="field">
             <label>
               <strong>Teaser</strong>
-              <div
-                class="field-help"
-              >a short introductory for your post that stimulates readers interest. 250 characters max.</div>
+              <div class="field-help">
+                a short introductory for your post that stimulates readers
+                interest. 250 characters max.
+              </div>
             </label>
             <div class="control">
               <!-- limited to 250 because of facebook, twitter and co preview card limitation -->
@@ -32,13 +33,17 @@
                 placeholder="Teaser"
               ></textarea>
             </div>
-            <p class="help is-danger" v-if="form.errors.teaser">{{form.errors.teaser}}</p>
+            <p class="help is-danger" v-if="form.errors.teaser">
+              {{ form.errors.teaser }}
+            </p>
           </div>
           <!-- SLUG FIELD -->
           <div class="field">
             <label>
               <strong>Slug</strong>
-              <div class="field-help">used to build a seo-friendly url for your post.</div>
+              <div class="field-help">
+                used to build a seo-friendly url for your post.
+              </div>
             </label>
 
             <div class="control">
@@ -49,26 +54,31 @@
                 placeholder="slug"
               />
             </div>
-            <p class="help is-danger" v-if="form.errors.slug">{{form.errors.slug}}</p>
+            <p class="help is-danger" v-if="form.errors.slug">
+              {{ form.errors.slug }}
+            </p>
           </div>
         </div>
         <div class="column">
           <div class="post-preview-wrapper">
             <div class="field-help">
               <label class="label">Post card preview</label>
-              Approximation of how your post will appear when sharing its link on other websites like Twitter, Facebook etc:
+              Approximation of how your post will appear when sharing its link
+              on other websites like Twitter, Facebook etc:
             </div>
             <div class="post-preview">
               <div
                 v-if="this.form.values.current.image"
                 class="post-preview-image"
-                :style="{backgroundImage: `url(${this.form.values.current.image})`}"
+                :style="{
+                  backgroundImage: `url(${this.form.values.current.image})`
+                }"
               ></div>
               <div class="post-preview-content">
                 <div>
-                  <strong>{{form.values.current.title}}</strong>
+                  <strong>{{ form.values.current.title }}</strong>
                 </div>
-                <div class="content">{{form.values.current.teaser}}</div>
+                <div class="content">{{ form.values.current.teaser }}</div>
               </div>
             </div>
           </div>
@@ -77,21 +87,31 @@
       <div class="columns">
         <div class="column">
           <div class="actions">
-            <button @click="onCancelClick" class="button is-medium">Go back</button>
+            <button @click="onCancelClick" class="button is-medium">
+              Go back
+            </button>
 
             <button
               @click="onPublishClick()"
-              :disabled="savingPost.state === 'PENDING' || uploadingState === 'PENDING'"
-              :class="{ 'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
+              :disabled="
+                savingPost.state === 'PENDING' || uploadingState === 'PENDING'
+              "
+              :class="{
+                'is-loading':
+                  savingPost.state === 'PENDING' &&
+                  savingPost.publicationStatus === 'PUBLISHED'
+              }"
               class="button is-primary is-medium"
               style="margin-left:20px;"
-            >{{getPublishButtonText()}}</button>
+            >
+              {{ getPublishButtonText() }}
+            </button>
           </div>
         </div>
       </div>
     </form>
     <!-- debug form values -->
-    <pre v-if="false">{{form}}</pre>
+    <pre v-if="false">{{ form }}</pre>
   </div>
 </template>
 
@@ -172,5 +192,3 @@ export default {
   padding: 10px;
 }
 </style>
-
-

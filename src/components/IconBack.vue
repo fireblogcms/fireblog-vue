@@ -2,7 +2,7 @@
   <img :style="style" src="/images/left-arrow.svg" />
 </template>
 
-<script >
+<script>
 export default {
   props: {
     height: {

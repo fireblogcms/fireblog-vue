@@ -1,5 +1,8 @@
 <template>
-  <div :style="wrapperStyle()" class="app-loader-wrapper has-text-centered section">
+  <div
+    :style="wrapperStyle()"
+    class="app-loader-wrapper has-text-centered section"
+  >
     <Circle2 style="display:inline-block" />
     <div>
       <slot />
@@ -34,5 +37,3 @@ export default {
   }
 };
 </script>
-
-

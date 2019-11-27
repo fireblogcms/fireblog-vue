@@ -11,18 +11,26 @@
         class="progress is-primary"
         :value="uploadProgress"
         max="100"
-      >{{uploadProgress}}</progress>
+        >{{ uploadProgress }}</progress
+      >
     </div>
     <div class="file is-large is-boxed has-name is-centered">
       <label class="file-label" style="width: 100%">
-        <input class="file-input" type="file" @change="processImage($event)" name="resume" />
+        <input
+          class="file-input"
+          type="file"
+          @change="processImage($event)"
+          name="resume"
+        />
         <span class="file-cta">
           <span class="file-icon">
             <img src="/images/icon-upload.svg" />
           </span>
           <span class="file-label">Upload image</span>
         </span>
-        <span v-if="this.file && false" class="file-name">{{this.file.name}}</span>
+        <span v-if="this.file && false" class="file-name">{{
+          this.file.name
+        }}</span>
       </label>
     </div>
   </div>
@@ -99,4 +107,3 @@ export default {
   color: white;
 }
 </style>
-

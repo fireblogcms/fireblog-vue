@@ -32,10 +32,10 @@
                     {{ membership.blog.name }} :
                     <em>
                       {{
-                      membership.roles
-                      .map(v => v.replace("_", " "))
-                      .join(",")
-                      .toLowerCase()
+                        membership.roles
+                          .map(v => v.replace("_", " "))
+                          .join(",")
+                          .toLowerCase()
                       }}
                     </em>
                   </li>

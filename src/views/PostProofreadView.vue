@@ -2,11 +2,11 @@
   <div class="postProofRead">
     <AppLoader v-if="initDataState === 'PENDING'">Loading post</AppLoader>
 
-    <AppError v-if="errorMessage">{{errorMessage}}</AppError>
+    <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
 
     <template v-if="initDataState === 'FINISHED_OK'">
       <div style="max-width:900px" class="content container section">
-        <h1 class="title is-1">{{post.title}}</h1>
+        <h1 class="title is-1">{{ post.title }}</h1>
         <ckeditor
           :disabled="true"
           ref="ckeditor"

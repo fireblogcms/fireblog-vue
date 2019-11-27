@@ -2,8 +2,7 @@
   <BareLayout>
     <div class="container section">
       <AppError v-if="error">
-        {{ error }}.
-        <br />You can
+        {{ error }}. <br />You can
         <router-link :to="{ name: 'login' }">Retry to login</router-link>
       </AppError>
       <AppPanel v-if="initDataState === 'PENDING'">
