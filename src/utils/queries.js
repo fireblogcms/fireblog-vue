@@ -1,5 +1,34 @@
 import gql from "graphql-tag";
 
+export const PostFragment = gql`
+  fragment PostFragment on Post {
+    _id
+    title
+    content
+    status
+    slug
+    teaser
+    image
+    publishedAt
+    createdAt
+    image
+    author {
+      _id
+      name
+      email
+    }
+  }
+`;
+
+export const createPostQuery = gql`
+  ${PostFragment}
+  mutation createPostQuery($post: CreatePostInput!) {
+    createPost(post: $post) {
+      ...PostFragment
+    }
+  }
+`;
+
 export const getUserQuery = gql`
   query getUserQuery {
     me {
@@ -69,40 +98,21 @@ export const getBlogQuery = gql`
 `;
 
 export const getPostQuery = gql`
+  ${PostFragment}
   query getPostQuery($_id: ID!) {
     post(_id: $_id) {
-      _id
-      slug
-      content
-      publishedAt
-      author {
-        _id
-        name
-        email
-      }
+      ...PostFragment
     }
   }
 `;
 
 export const getPostsByStatusQuery = gql`
   query getPostsByStatusQuery($blog: ID!, $status: PostPublicationStatus!) {
+    ${PostFragment}
     posts(filter: { blog: $blog, status: $status }, last: 100) {
       edges {
         node {
-          _id
-          title
-          updatedAt
-          createdAt
-          publishedAt
-          status
-          content
-          teaser
-          image
-          author {
-            _id
-            name
-            email
-          }
+          ...PostFragment
         }
       }
     }
@@ -113,24 +123,12 @@ export const getPostsByStatusQuery = gql`
  * We need to know if this is the first post for this blog.
  */
 export const getPostsQuery = gql`
+  ${PostFragment}
   query getPostsQuery($blog: ID!, $last: Int) {
     posts(filter: { blog: $blog }, last: $last) {
       edges {
         node {
-          _id
-          title
-          updatedAt
-          createdAt
-          publishedAt
-          status
-          content
-          teaser
-          image
-          author {
-            _id
-            name
-            email
-          }
+          ...PostFragment
         }
       }
     }
@@ -138,11 +136,10 @@ export const getPostsQuery = gql`
 `;
 
 export const deletePostMutation = gql`
+  ${PostFragment}
   mutation deletePostMutation($id: ID!) {
     deletePost(_id: $id) {
-      _id
-      slug
-      title
+      ...PostFragment
     }
   }
 `;
