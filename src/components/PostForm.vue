@@ -300,10 +300,7 @@ export default {
   },
   data() {
     return {
-      hello: "world",
       initDataState: REQUEST_STATE.NOT_STARTED,
-      publishPostState: REQUEST_STATE.NOT_STARTED,
-      unpublishPostState: REQUEST_STATE.NOT_STARTED,
       savingDraftState: REQUEST_STATE.NOT_STARTED,
       changesDetected: false,
       mediaLoadingCounter: 0,
@@ -442,9 +439,6 @@ export default {
           ...this.preparePostFromCurrentFormValues(),
           status
         };
-        if (status === "PUBLISHED") {
-          newPost.publishedAt = new Date();
-        }
         return this.createPost(newPost)
           .then(result => {
             this.savingPost.state = REQUEST_STATE.FINISHED_OK;
@@ -686,24 +680,22 @@ export default {
       });
     },
     async createPost(post) {
-      const user = await getUser();
-      const blog = await getBlog(this.$route.params.blogId);
-      // current user as author by default. But another user might have been defined
-      // as the author, so do not override if this is already set.
       post.blog = this.$route.params.blogId;
       return apolloClient
         .mutate({
           mutation: createPostMutation,
-          variables: { post }
+          variables: {
+            post
+          }
         })
         .then(result => {
           this.lastTimeSaved = Date.now();
-          apolloClient.resetStore();
           this.existingPost = result.data.createPost;
           // post is created, we are now in UPDATE mode for the form.
           if (this.existingPost.status === "PUBLISHED") {
             this.$store.commit("postJustPublished", true);
           }
+          apolloClient.resetStore();
           this.$router.replace({
             name: "postUpdate",
             params: {
