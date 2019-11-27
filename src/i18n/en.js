@@ -106,6 +106,21 @@ export default {
           description:
             "Approximation of how your post will appear when sharing its link on other websites like Twitter, Facebook etc:"
         }
+      },
+      firstPublicationHurralModal: {
+        title: "Hurrah! Your post have been published!",
+        okayButton: "Okay!"
+      },
+      publishChangesHurralModal: {
+        title: "Your changes have been published!",
+        okayButton: "Okay !"
+      },
+      mediaUploadingModal: {
+        title: "We haven' finished uploading your media",
+        content:
+          "one media is currently uploading | {count} media are currently uploading",
+        cancelText: "Wait for uploads to complete!",
+        confirmText: "Quit anyway"
       }
     }
   },

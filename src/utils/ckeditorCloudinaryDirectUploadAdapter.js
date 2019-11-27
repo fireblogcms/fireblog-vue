@@ -99,7 +99,12 @@ class ckeditorCloudinaryDirectUploadAdapter {
 
   // Aborts the upload process.
   abort() {
-    alert("aborted");
+    this.xhr.abort();
+    this.options.onRequestStateChange({
+      state: REQUEST_STATE.ABORTED,
+      xhr: this.xhr,
+      file: null
+    });
   }
 }
 

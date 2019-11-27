@@ -105,6 +105,21 @@ export default {
           description:
             "Une approximation de comment apparaitra votre article lorsque son lien sera partagé sur d'autres sites (Facebook, linkedin, twitter, etc)"
         }
+      },
+      firstPublicationHurralModal: {
+        title: "Hourrah ! Votre post a été publié !",
+        okayButton: "Ok !"
+      },
+      publishChangesHurralModal: {
+        title: "Vos changement ont été publiés !",
+        okayButton: "Ok !"
+      },
+      mediaUploadingModal: {
+        title: "Nous n'avons pas fini d'uploder vos media",
+        content:
+          "Un media est toujours en cours d'upload | {count} media sont actuellement en cours d'upload",
+        cancelText: "Attendre que les uploads soient terminés!",
+        confirmText: "Quitter quand même"
       }
     }
   },

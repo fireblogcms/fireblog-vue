@@ -84,7 +84,7 @@
       <template #body>
         <div class="has-text-centered">
           <h1 class="title is-1 has-text-centered">
-            Hurrah ! Your post have been published !
+            {{ $t("views.postForm.firstPublicationHurralModal.title") }}
           </h1>
           <img style="border-radius:5px" :src="getRandomHurrahGif()" />
         </div>
@@ -94,7 +94,7 @@
           @click="publishingHurrahModal.show = false"
           class="button is-primary is-large"
         >
-          Okay !
+          {{ $t("views.postForm.firstPublicationHurralModal.okayButton") }}
         </button>
       </template>
     </BulmaModal>
@@ -108,7 +108,7 @@
       <template #body>
         <div class="has-text-centered">
           <h1 style="padding:30px;" class="title is-3 has-text-centered">
-            Your changes have been published !
+            {{ $t("views.postForm.publishChangesHurralModal.title") }}
           </h1>
           <img style="border-radius:5px" :src="getRandomHurrahGif()" />
         </div>
@@ -118,7 +118,7 @@
           @click="publishingChangesModal.show = false"
           class="button is-primary is-large"
         >
-          Okay !
+          {{ $t("views.postForm.publishChangesHurralModal.okayButton") }}
         </button>
       </template>
     </BulmaModal>
@@ -357,8 +357,12 @@ export default {
             if (
               state === REQUEST_STATE.FINISHED_OK ||
               state === REQUEST_STATE.FINISHED_ERROR
-            )
+            ) {
               this.mediaLoadingCounter = this.mediaLoadingCounter - 1;
+            }
+            if (state === REQUEST_STATE.ABORTED) {
+              this.mediaLoadingCounter = this.mediaLoadingCounter - 1;
+            }
           }
         })
       ],
@@ -465,7 +469,6 @@ export default {
         return this.updatePost(post)
           .then(result => {
             this.savingPost.state = REQUEST_STATE.FINISHED_OK;
-            apolloClient.resetStore();
             return result;
           })
           .catch(error => {
@@ -482,12 +485,15 @@ export default {
       if (this.mediaLoadingCounter > 0) {
         this.modal = {
           show: true,
-          title: "We haven' finished uploading your media",
-          content: `${this.mediaLoadingCounter} media ${
-            this.mediaLoadingCounter > 1 ? "are" : "is"
-          } currently uploading`,
-          cancelText: "Wait for uploads to complete!",
-          confirmText: "Quit anyway",
+          title: this.$t("views.postForm.mediaUploadingModal.title"),
+          content: this.$tc(
+            "views.postForm.mediaUploadingModal.content",
+            this.mediaLoadingCounter
+          ),
+          cancelText: this.$t("views.postForm.mediaUploadingModal.cancelText"),
+          confirmText: this.$t(
+            "views.postForm.mediaUploadingModal.confirmText"
+          ),
           confirmCallback: () => {
             this.$router.push({
               name: "postList",
@@ -697,7 +703,6 @@ export default {
           if (this.existingPost.status === "PUBLISHED") {
             this.$store.commit("postJustPublished", true);
           }
-          apolloClient.resetStore();
           this.$router.replace({
             name: "postUpdate",
             params: {
