@@ -65,6 +65,12 @@ export default {
       publishChanges: "Publier les changements",
       publishNow: "Publier maintenant",
       publicationCancel: "Annuler",
+      changesNotSavedModal: {
+        title: "Des modifications du post n'ont pas été sauvegardées",
+        content: "Si vous quittez maintenant, vos changement seront perdus.",
+        saveAndQuit: "Sauvegarder et quitter",
+        quitWithoutSaving: "Quitter sans sauvegarder"
+      },
       fields: {
         title: {
           placeholder: "title"

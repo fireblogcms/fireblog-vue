@@ -501,10 +501,14 @@ export default {
       } else if (this.changesDetected) {
         this.modal = {
           show: true,
-          title: "Some changes have not been saved",
-          content: `If you quit now, your last changes will be lost`,
-          cancelText: "Save and quit",
-          confirmText: "Quit without saving",
+          title: this.$t("views.postForm.changesNotSavedModal.title"),
+          content: this.$t("views.postForm.changesNotSavedModal.content"),
+          cancelText: this.$t(
+            "views.postForm.changesNotSavedModal.saveAndQuit"
+          ),
+          confirmText: this.$t(
+            "views.postForm.changesNotSavedModal.quitWithoutSaving"
+          ),
           confirmCallback: () => {
             this.$router.push({
               name: "postList",

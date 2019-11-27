@@ -66,6 +66,12 @@ export default {
       publishChanges: "Publish changes",
       publishNow: "Publish now",
       publicationCancel: "Cancel",
+      changesNotSavedModal: {
+        title: "Some changes have not been saved",
+        content: "If you quit now, your last changes will be lost",
+        saveAndQuit: "Save and quit",
+        quitWithoutSaving: "Quit without saving"
+      },
       fields: {
         title: {
           placeholder: "title"
