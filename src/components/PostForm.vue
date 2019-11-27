@@ -258,53 +258,12 @@ import {
   graphQLErrorsContainsCode
 } from "../utils/helpers";
 import { richPreviewLinksAuthorizedDomains } from "../../config";
-import { getPostsQuery, getPostsByStatusQuery } from "../utils/queries";
+import {
+  createPostMutation,
+  updatePostMutation,
+  getPostQuery
+} from "../utils/queries";
 import striptags from "striptags";
-
-const PostResponseFragment = gql`
-  fragment PostResponse on Post {
-    _id
-    title
-    content
-    status
-    slug
-    teaser
-    publishedAt
-    image
-    author {
-      _id
-      name
-      email
-    }
-  }
-`;
-
-const createPostQuery = gql`
-  ${PostResponseFragment}
-  mutation createPostQuery($post: CreatePostInput!) {
-    createPost(post: $post) {
-      ...PostResponse
-    }
-  }
-`;
-
-const updatePostQuery = gql`
-  ${PostResponseFragment}
-  mutation updatePostQuery($post: UpdatePostInput!) {
-    updatePost(post: $post) {
-      ...PostResponse
-    }
-  }
-`;
-
-const getExistingPostQuery = gql`
-  ${PostResponseFragment}
-  query getExistingPostQuery($_id: ID!) {
-    post(_id: $_id) {
-      ...PostResponse
-    }
-  }
-`;
 
 const randomHurraGifs = [
   "https://media.giphy.com/media/7IW6Jnw29TYmgkuu3M/giphy.gif",
@@ -320,7 +279,7 @@ const OPERATION_TYPE = {
 const STATUS_ENUM = {
   PUBLISHED: "PUBLISHED",
   DRAFT: "DRAFT",
-  BIN: "BIN"
+  DELETED: "DELETED"
 };
 
 const initialFormValues = {
@@ -646,7 +605,7 @@ export default {
     getExistingPost() {
       return apolloClient
         .query({
-          query: getExistingPostQuery,
+          query: getPostQuery,
           variables: { _id: this.$route.params.postId }
         })
         .then(result => {
@@ -734,7 +693,7 @@ export default {
       post.blog = this.$route.params.blogId;
       return apolloClient
         .mutate({
-          mutation: createPostQuery,
+          mutation: createPostMutation,
           variables: { post }
         })
         .then(result => {
@@ -765,7 +724,7 @@ export default {
       }
       return apolloClient
         .mutate({
-          mutation: updatePostQuery,
+          mutation: updatePostMutation,
           variables: {
             post
           }

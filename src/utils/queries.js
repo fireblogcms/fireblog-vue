@@ -20,15 +20,6 @@ export const PostFragment = gql`
   }
 `;
 
-export const createPostQuery = gql`
-  ${PostFragment}
-  mutation createPostQuery($post: CreatePostInput!) {
-    createPost(post: $post) {
-      ...PostFragment
-    }
-  }
-`;
-
 export const getUserQuery = gql`
   query getUserQuery {
     me {
@@ -107,8 +98,8 @@ export const getPostQuery = gql`
 `;
 
 export const getPostsByStatusQuery = gql`
+  ${PostFragment}
   query getPostsByStatusQuery($blog: ID!, $status: PostPublicationStatus!) {
-    ${PostFragment}
     posts(filter: { blog: $blog, status: $status }, last: 100) {
       edges {
         node {
@@ -150,6 +141,24 @@ export const createBlogMutation = gql`
       _id
       name
       description
+    }
+  }
+`;
+
+export const createPostMutation = gql`
+  ${PostFragment}
+  mutation createPostMutation($post: CreatePostInput!) {
+    createPost(post: $post) {
+      ...PostFragment
+    }
+  }
+`;
+
+export const updatePostMutation = gql`
+  ${PostFragment}
+  mutation updatePostMutation($post: UpdatePostInput!) {
+    updatePost(post: $post) {
+      ...PostFragment
     }
   }
 `;
