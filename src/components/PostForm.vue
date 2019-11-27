@@ -514,6 +514,7 @@ export default {
         return this.updatePost(post)
           .then(result => {
             this.savingPost.state = REQUEST_STATE.FINISHED_OK;
+            apolloClient.resetStore();
             return result;
           })
           .catch(error => {
