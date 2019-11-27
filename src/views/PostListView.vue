@@ -208,7 +208,7 @@
         </template>
       </div>
     </template>
-    <BulmaModal v-model="deleteModal.show">
+    <BulmaModal v-if="deleteModal.show" v-model="deleteModal.show">
       <template #title>{{ deleteModal.title }}</template>
       <template #body>
         <div class="message is-danger">
@@ -225,7 +225,7 @@
       </template>
       <template #footer>
         <div @click="deleteModal.show = false" class="button is-primary">
-          OUPS NO, CANCEL !
+          {{ $t("views.postList.deleteModal.cancelButton") }}
         </div>
         <div
           @click="onDeleteModalConfirmClick"
@@ -233,7 +233,7 @@
           :class="{ 'is-loading': deletePostRequestState === 'PENDING' }"
           :disabled="deletePostRequestState === 'PENDING' ? true : false"
         >
-          DELETE IT.
+          {{ $t("views.postList.deleteModal.confirmButton") }}
         </div>
       </template>
     </BulmaModal>
@@ -279,7 +279,8 @@ export default {
       deleteModal: {
         show: false,
         title: null,
-        data: null
+        data: null,
+        post: null
       },
       blog: null,
       posts: null,
@@ -353,7 +354,7 @@ export default {
           return result;
         });
     },
-    getPosts(status) {
+    getPosts(status, fetchPolicy = "cache-first") {
       this.postsRequestState = REQUEST_STATE.PENDING;
       return apolloClient
         .query({
@@ -361,7 +362,8 @@ export default {
           variables: {
             blog: this.$route.params.blogId,
             status: status
-          }
+          },
+          fetchPolicy
         })
         .then(result => {
           this.postsRequestState = REQUEST_STATE.FINISHED_OK;
@@ -384,7 +386,7 @@ export default {
         .then(result => {
           this.deletePostRequestState = REQUEST_STATE.FINISHED_OK;
           const post = result.data.deletePost;
-          return this.getPosts(this.activeStatus);
+          return this.getPosts(this.activeStatus, "network-only");
         })
         .then(r => {
           this.deleteModal.show = false;
