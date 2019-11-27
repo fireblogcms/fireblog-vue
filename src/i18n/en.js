@@ -1,4 +1,9 @@
 export default {
+  dictionnary: {
+    draft: "draft",
+    published: "published",
+    deleted: "deleted"
+  },
   views: {
     blogList: {
       title: "My blogs",
@@ -50,6 +55,51 @@ export default {
           "DANGER !\r\n This action cannot be undone. {postTitle} will be deleted.",
         confirmButton: "Delete it.",
         cancelButton: "Oups, no, cancel!"
+      },
+      updatedOn: "updated on {date}",
+      publishedOn: "published on {date}"
+    },
+    postForm: {
+      saveDraft: "Save draft",
+      publication: "Publication",
+      unpublish: "Unpublish",
+      publishChanges: "Publish changes",
+      publishNow: "Publish now",
+      publicationCancel: "Cancel",
+      fields: {
+        title: {
+          placeholder: "title"
+        },
+        content: {
+          placeholder: "content"
+        },
+        featuredImage: {
+          label: "Featured image"
+        },
+        teaser: {
+          label: "Teaser",
+          help:
+            "a short introductory for your post that stimulates readers interest. 250 characters max.",
+          errors: {
+            required: "Teaser field is required."
+          }
+        },
+        slug: {
+          label: "slug",
+          help: "used to build a seo-friendly url for your post.",
+          errors: {
+            invalidCharacters:
+              "Slug can only contains minuscules and '-' characters.",
+            required: "Slug field is required"
+          }
+        }
+      },
+      previews: {
+        general: {
+          name: "Post card preview",
+          description:
+            "Approximation of how your post will appear when sharing its link on other websites like Twitter, Facebook etc:"
+        }
       }
     }
   },

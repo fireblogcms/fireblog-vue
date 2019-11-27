@@ -1,4 +1,9 @@
 export default {
+  dictionnary: {
+    draft: "Brouillon",
+    published: "Publié",
+    deleted: "supprimé"
+  },
   views: {
     blogList: {
       title: "Mes blogs",
@@ -49,6 +54,51 @@ export default {
           "ATTENTION !\r\n Cette action n'est pas réversible. {postTitle} sera effacé définitivement.",
         confirmButton: "Supprimer.",
         cancelButton: "Oups, non, annuler !"
+      },
+      updatedOn: "mis à jour le {date}",
+      publishedOn: "publié le {date}"
+    },
+    postForm: {
+      saveDraft: "Sauvegarder le brouillon",
+      publication: "Publication",
+      unpublish: "Dépublier",
+      publishChanges: "Publier les changements",
+      publishNow: "Publier maintenant",
+      publicationCancel: "Annuler",
+      fields: {
+        title: {
+          placeholder: "title"
+        },
+        content: {
+          placeholder: "content"
+        },
+        featuredImage: {
+          label: "Image à la une"
+        },
+        teaser: {
+          label: "Accroche",
+          help:
+            "Un texte court et percutant pour donner envie à vos lecteurs de lire votre billet. 250 characters max.",
+          errors: {
+            required: "Le champ accroche est obligatoire."
+          }
+        },
+        slug: {
+          label: "slug",
+          help: "Utilisé pour construire une url SEO-friendly pour votre post",
+          errors: {
+            invalidCharacters:
+              "Le slug peut seulement contenir des minuscules et le caractère '-'",
+            required: "Le champ slug est obligatoire"
+          }
+        }
+      },
+      previews: {
+        general: {
+          name: "Prévisualiation",
+          description:
+            "Une approximation de comment apparaitra votre article lorsque son lien sera partagé sur d'autres sites (Facebook, linkedin, twitter, etc)"
+        }
       }
     }
   },

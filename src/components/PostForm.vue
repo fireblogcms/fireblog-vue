@@ -169,7 +169,7 @@
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
       >
-        SAVE DRAFT
+        {{ $t("views.postForm.saveDraft").toUpperCase() }}
         <span class="animated bounce" v-if="changesDetected">*</span>
       </button>
 
@@ -185,7 +185,7 @@
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
       >
-        UNPUBLISH
+        {{ $t("views.postForm.unpublish").toUpperCase() }}
       </button>
 
       <button
@@ -200,7 +200,7 @@
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
       >
-        PUBLICATION
+        {{ $t("views.postForm.publication").toUpperCase() }}
       </button>
 
       <button
@@ -215,7 +215,7 @@
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
       >
-        PUBLISH CHANGES
+        {{ $t("views.postForm.publishChanges").toUpperCase() }}
         <span class="animated bounce" v-if="changesDetected">*</span>
       </button>
 
@@ -418,7 +418,9 @@ export default {
         });
     },
     getCurrentPublicationStatus() {
-      return this.existingPost ? this.existingPost.status : "DRAFT";
+      let status = this.existingPost ? this.existingPost.status : "DRAFT";
+      status = this.$t(`dictionnary.${status.toLowerCase()}`).toUpperCase();
+      return status;
     },
     savePost(status) {
       this.errorMessage = null;
@@ -794,13 +796,15 @@ export default {
       const errors = {};
       // validate that slug is an url
       if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(this.form.values.current.slug)) {
-        errors.slug = "Slug can only contains minusculs dans '-' characters.";
+        errors.slug = this.$t(
+          "views.postForm.fields.slug.errors.invalidCharacters"
+        );
       }
       if (!this.form.values.current.slug.trim()) {
-        errors.slug = "Slug is required";
+        errors.slug = this.$t("views.postForm.fields.slug.errors.required");
       }
       if (!this.form.values.current.teaser.trim()) {
-        errors.teaser = "Teaser is required";
+        errors.teaser = this.$t("views.postForm.fields.teaser.errors.required");
       }
       return errors;
     }

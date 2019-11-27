@@ -6,7 +6,9 @@
           <!-- IMAGE UPLOAD FIELD -->
           <div class="field">
             <label>
-              <strong>Featured image</strong>
+              <strong>
+                {{ $t("views.postForm.fields.featuredImage.label") }}
+              </strong>
             </label>
             <CloudinaryImageDirectUpload
               :displayImageWhenUploaded="false"
@@ -18,10 +20,9 @@
           <!-- TEASER FIELD -->
           <div class="field">
             <label>
-              <strong>Teaser</strong>
+              <strong> {{ $t("views.postForm.fields.teaser.label") }}</strong>
               <div class="field-help">
-                a short introductory for your post that stimulates readers
-                interest. 250 characters max.
+                {{ $t("views.postForm.fields.teaser.help") }}
               </div>
             </label>
             <div class="control">
@@ -40,9 +41,9 @@
           <!-- SLUG FIELD -->
           <div class="field">
             <label>
-              <strong>Slug</strong>
+              <strong> {{ $t("views.postForm.fields.slug.label") }}</strong>
               <div class="field-help">
-                used to build a seo-friendly url for your post.
+                {{ $t("views.postForm.fields.slug.help") }}
               </div>
             </label>
 
@@ -62,9 +63,10 @@
         <div class="column">
           <div class="post-preview-wrapper">
             <div class="field-help">
-              <label class="label">Post card preview</label>
-              Approximation of how your post will appear when sharing its link
-              on other websites like Twitter, Facebook etc:
+              <label class="label">
+                {{ $t("views.postForm.previews.general.name") }}
+              </label>
+              {{ $t("views.postForm.previews.general.description") }}
             </div>
             <div class="post-preview">
               <div
@@ -88,7 +90,7 @@
         <div class="column">
           <div class="actions">
             <button @click="onCancelClick" class="button is-medium">
-              Go back
+              {{ $t("views.postForm.publicationCancel") }}
             </button>
 
             <button
@@ -143,8 +145,8 @@ export default {
     },
     getPublishButtonText() {
       return this.existingPost() && this.existingPost().status === "PUBLISHED"
-        ? "PUBLISH CHANGES"
-        : "PUBLISH NOW";
+        ? this.$t("views.postForm.publishChanges")
+        : this.$t("views.postForm.publishNow");
     },
     onUploadingStateChange(state) {
       this.uploadingState = state;

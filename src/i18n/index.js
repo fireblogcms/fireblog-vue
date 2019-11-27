@@ -12,7 +12,8 @@ const messages = {
 
 // Create VueI18n instance with options
 export default new VueI18n({
-  locale: navigator.language || navigator.userLanguage,
+  //locale: navigator.language || navigator.userLanguage,
+  locale: "en",
   fallbackLocale: "en",
   messages // set locale messages
 });

@@ -154,20 +154,24 @@
                             style="color:rgba(0, 0, 0, 0.5);"
                             v-if="item.node.status === 'PUBLISHED'"
                           >
-                            published on
                             {{
-                              Number(item.node.publishedAt)
-                                | moment("DD MMMM YYYY - HH:mm")
+                              $t("views.postList.publishedOn", {
+                                date: moment(
+                                  Number(item.node.publishedAt)
+                                ).format("DD MMMM YYYY - HH:mm")
+                              })
                             }}
                           </span>
                           <span
                             style="color:rgba(0, 0, 0, 0.5);"
                             v-if="item.node.status === 'DRAFT'"
                           >
-                            updated on
                             {{
-                              Number(item.node.updatedAt)
-                                | moment("DD MMMM YYYY - HH:mm")
+                              $t("views.postList.updatedOn", {
+                                date: moment(
+                                  Number(item.node.updatedAt)
+                                ).format("DD MMMM YYYY - HH:mm")
+                              })
                             }}
                           </span>
 
@@ -247,6 +251,7 @@ import IconBack from "../components/IconBack";
 import gql from "graphql-tag";
 import AppLoader from "../components/AppLoader";
 import { REQUEST_STATE } from "../utils/helpers";
+import moment from "moment";
 import {
   getPostsQuery,
   getPostsByStatusQuery,
@@ -290,6 +295,7 @@ export default {
     };
   },
   created() {
+    this.moment = moment;
     this.striptags = striptags;
     this.initData();
   },
