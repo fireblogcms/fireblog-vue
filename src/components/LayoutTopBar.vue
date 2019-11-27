@@ -76,13 +76,14 @@
     <!-- GRAPHQL API DOCUMENTATION -->
     <BulmaModal class="api-modal" v-model="showApiModal">
       <template #title>
-        GRAPHQL API
+        {{ $t("apiModal.title") }}
         <a
           :href="blogApiUrl"
           target="_blank"
           class="button is-info is-pulled-right"
-          >Open GraphQL Explorer</a
         >
+          {{ $t("apiModal.openGraphQLExplorer") }}
+        </a>
       </template>
       <template #body>
         <h2 class="title is-4">GraphQL endpoint</h2>
@@ -108,8 +109,9 @@
               :href="`${blogApiUrl}?query=${encodeURI(example.snippet)}`"
               target="_blank"
               class="is-pulled-right button is-primary"
-              >Try it !</a
             >
+              {{ $t("apiModal.tryItButton") }}
+            </a>
           </h2>
           <pre class="locale-graphql"><code>{{example.snippet}}</code></pre>
         </div>

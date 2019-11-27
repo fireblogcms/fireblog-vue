@@ -58,5 +58,13 @@ export default {
       myAccount: "My account",
       logout: "Logout"
     }
+  },
+  apiModal: {
+    title: "GRAPHQL API",
+    tryItButton: "Try it!",
+    openGraphQLExplorer: "Open GraphQL explorer",
+    getAllPublishedPosts: "Get all published posts",
+    getASinglePostBySlug: "Get a single post by slug",
+    GetBlogInformations: "Get blog informations"
   }
 };

@@ -1,7 +1,9 @@
+import i18n from "./i18n/index";
+
 export default ({ slug, locale }) => [
   {
     id: "getAllPublishedPosts",
-    label: "Get all published posts",
+    label: i18n.t("apiModal.getAllPublishedPosts"),
     snippet: `
 {
   posts {
@@ -28,7 +30,7 @@ export default ({ slug, locale }) => [
   },
   {
     id: "getSinglePostBySlug",
-    label: "Get a single post by slug",
+    label: i18n.t("apiModal.getASinglePostBySlug"),
     snippet: `
 {
   post(slug: "${slug}") {
@@ -47,8 +49,8 @@ export default ({ slug, locale }) => [
     `
   },
   {
-    id: "getBlogWithPosts",
-    label: "Get blog informations",
+    id: "getBlogIinformations",
+    label: i18n.t("apiModal.GetBlogInformations"),
     snippet: `
     {
       blog {
@@ -61,7 +63,6 @@ export default ({ slug, locale }) => [
         }
       }
     }
-      
   `
   }
 ];
