@@ -28,10 +28,7 @@
               class="dropdown is-right"
               :class="{ 'is-active': dropdownMenuActive }"
             >
-              <div
-                class="dropdown-trigger"
-                @click="dropdownMenuActive = !dropdownMenuActive"
-              >
+              <div class="dropdown-trigger" @click="dropdownMenuActive = !dropdownMenuActive">
                 <div class aria-haspopup="true">
                   <span>
                     <img
@@ -56,15 +53,10 @@
                       params: { blogId: edge.node._id }
                     }"
                     class="dropdown-item"
-                    >{{ edge.node.name }}</router-link
-                  >
+                  >{{ edge.node.name }}</router-link>
                   <hr class="dropdown-divider" />
-                  <router-link :to="{ name: 'profile' }" class="dropdown-item"
-                    >My account</router-link
-                  >
-                  <router-link :to="{ name: 'logout' }" class="dropdown-item"
-                    >Logout</router-link
-                  >
+                  <router-link :to="{ name: 'profile' }" class="dropdown-item">My account</router-link>
+                  <router-link :to="{ name: 'logout' }" class="dropdown-item">Logout</router-link>
                 </div>
               </div>
             </div>
@@ -81,19 +73,13 @@
           :href="blogApiUrl"
           target="_blank"
           class="button is-info is-pulled-right"
-          >Open GraphQL Explorer</a
-        >
+        >Open GraphQL Explorer</a>
       </template>
       <template #body>
         <h2 class="title is-4">GraphQL endpoint</h2>
         <div class="field">
           <div class="control">
-            <input
-              readonly="true"
-              class="input"
-              type="text"
-              :value="blogApiUrl"
-            />
+            <input readonly="true" class="input" type="text" :value="blogApiUrl" />
           </div>
         </div>
         <div
@@ -108,8 +94,7 @@
               :href="`${blogApiUrl}?query=${encodeURI(example.snippet)}`"
               target="_blank"
               class="is-pulled-right button is-primary"
-              >Try it !</a
-            >
+            >Try it !</a>
           </h2>
           <pre class="locale-graphql"><code>{{example.snippet}}</code></pre>
         </div>
@@ -157,51 +142,18 @@ export default {
     async initData() {
       this.initDataState = REQUEST_STATE.PENDING;
       const promises = [];
-      promises.push(this.getMeWithMyBlogs());
+      promises.push(getUser());
       // if we are inside a blog, fetch blog informations.
       if (["postList", "postCreate", "postUpdate"].includes(this.$route.name)) {
         promises.push(getBlog(this.$route.params.blogId));
       }
       Promise.all(promises)
-        .then(() => {
+        .then(([user]) => {
+          this.me = user;
           this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
         .catch(error => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
-          throw new Error(error);
-        });
-    },
-    getMeWithMyBlogs() {
-      return apolloClient
-        .query({
-          query: gql`
-            query meWithMyBlogsQuery {
-              me {
-                name
-                email
-                picture
-                blogs(last: 100) {
-                  edges {
-                    node {
-                      _id
-                      name
-                      description
-                      createdAt
-                      updatedAt
-                      contentDefaultLocale
-                    }
-                  }
-                }
-              }
-            }
-          `
-        })
-        .then(result => {
-          this.me = result.data.me;
-        })
-        .catch(error => {
-          this.errorMessage =
-            "An error occured while fetching user information";
           throw new Error(error);
         });
     },

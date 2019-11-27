@@ -98,7 +98,11 @@ export function createSlug(value, options) {
 /**
  * Get full user from our database.
  */
+let userCache = null;
 export function getUser() {
+  if (userCache) {
+    return Promise.resolve(userCache);
+  }
   return apolloClient
     .query({
       query: gql`
@@ -110,6 +114,25 @@ export function getUser() {
             createdAt
             updatedAt
             picture
+            blogsMemberships {
+              roles
+              blog {
+                _id
+                name
+              }
+            }
+            blogs(last: 100) {
+              edges {
+                node {
+                  _id
+                  name
+                  description
+                  createdAt
+                  updatedAt
+                  contentDefaultLocale
+                }
+              }
+            }
           }
         }
       `

@@ -15,9 +15,7 @@
             <!-- special text if this is the very first blog :) -->
             <template v-if="isMyFirstBlog">
               <h2>Glad to see you here, {{ user.name }} 🤗</h2>
-              <h2 style="font-weight:200;">
-                Let's create your first blog.
-              </h2>
+              <h2 style="font-weight:200;">Let's create your first blog.</h2>
             </template>
 
             <br />
@@ -34,9 +32,7 @@
                   placeholder="Blog's Name"
                 />
               </div>
-              <p class="help is-danger" v-if="formErrors.name">
-                {{ formErrors.name }}
-              </p>
+              <p class="help is-danger" v-if="formErrors.name">{{ formErrors.name }}</p>
             </div>
 
             <div class="field">
@@ -50,41 +46,9 @@
                   maxlength="250"
                 ></textarea>
               </div>
-              <p class="help is-danger" v-if="formErrors.description">
-                {{ formErrors.description }}
-              </p>
+              <p class="help is-danger" v-if="formErrors.description">{{ formErrors.description }}</p>
             </div>
 
-            <!--
-            <div class="field">
-              <h2>
-                <br />In which language will you write by default ?
-              </h2>
-              <div class="control">
-                <div
-                  class="select is-large is-fullwidth"
-                  :class="{ 'is-danger': formErrors.blogContentDefaultLocale }"
-                >
-                  <select v-model="inputs.blogContentDefaultLocale">
-                    <option value>Select a language</option>
-                    <option
-                      class="has-text-centered"
-                      :value="language.code"
-                      v-for="language in languageList"
-                      :key="language.code"
-                    >
-                      {{ language.nativeName }} -
-                      {{ language.englishName }}
-                    </option>
-                  </select>
-                </div>
-                <p
-                  class="has-text-centered help is-danger"
-                  v-if="formErrors.blogContentDefaultLocale"
-                >{{ formErrors.blogContentDefaultLocale }}</p>
-              </div>
-            </div>
-            -->
             <br />
 
             <div class="buttons are-medium is-centered">
@@ -92,12 +56,8 @@
                 v-if="!isMyFirstBlog"
                 class="button is-outlined"
                 @click="$router.push('/')"
-              >
-                CANCEL
-              </button>
-              <button class="button is-primary" @click="onCreateClick">
-                CREATE MY BLOG
-              </button>
+              >CANCEL</button>
+              <button class="button is-primary" @click="onCreateClick">CREATE MY BLOG</button>
             </div>
 
             <!-- Any other Bulma elements you want -->
@@ -169,21 +129,10 @@ export default {
     async initData() {
       this.initStateError = null;
       this.initDataState = REQUEST_STATE.PENDING;
-      Promise.all([getUser(), this.getLanguageList()])
-        .then(([user, languageListResult]) => {
-          const languages = languageListResult.data.locales;
+      Promise.all([getUser()])
+        .then(([user]) => {
           this.initDataState = REQUEST_STATE.FINISHED_OK;
           this.user = user;
-          this.languageList = Object.keys(languages).map(i => {
-            return {
-              code: languages[i].code,
-              englishName: languages[i].englishName,
-              nativeName: languages[i].nativeName
-            };
-          });
-          // set browser language by default
-          this.inputs.blogContentDefaultLocale =
-            navigator.language || navigator.userLanguage;
         })
         .catch(error => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
@@ -191,18 +140,10 @@ export default {
           throw new Error(error);
         });
     },
-    getLanguageList() {
-      return apolloClient.query({
-        query: languageListQuery
-      });
-    },
     getFormErrors() {
       const errors = [];
       if (!this.inputs.name.trim()) {
         errors["name"] = "Name is required";
-      }
-      if (!this.inputs.blogContentDefaultLocale.trim()) {
-        errors["blogContentDefaultLocale"] = "Language is required";
       }
       return errors;
     },
@@ -218,12 +159,10 @@ export default {
             blog: {
               name: this.inputs.name,
               description: this.inputs.description
-              //locale: this.inputs.blogContentDefaultLocale.replace('-', '_'),
             }
           }
         })
         .then(result => {
-          logger.info("result", result);
           this.$router.push({
             name: "postList",
             params: { blogId: result.data.createBlog._id }
