@@ -98,11 +98,8 @@ export function createSlug(value, options) {
 /**
  * Get full user from our database.
  */
-let userCache = null;
+
 export function getUser() {
-  if (userCache) {
-    return Promise.resolve(userCache);
-  }
   return apolloClient
     .query({
       query: gql`
