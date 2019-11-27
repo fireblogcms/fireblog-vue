@@ -43,7 +43,9 @@
                     params: { blogId: $route.params.blogId }
                   })
                 "
-              >WRITE NEW POST</button>
+              >
+                WRITE NEW POST
+              </button>
             </div>
           </div>
         </header>
@@ -51,10 +53,9 @@
         <template v-if="isFirstPost === true">
           <div class="container">
             <AppPanel>
-              <h2
-                style="font-weight:200"
-                class="title has-text-centered"
-              >Write your first post in this blog !</h2>
+              <h2 style="font-weight:200" class="title has-text-centered">
+                Write your first post in this blog !
+              </h2>
               <div class="has-text-centered">
                 <div style="margin:2rem">
                   <button
@@ -65,7 +66,9 @@
                         params: { blogId: $route.params.blogId }
                       })
                     "
-                  >WRITE</button>
+                  >
+                    WRITE
+                  </button>
                 </div>
               </div>
             </AppPanel>
@@ -73,7 +76,10 @@
         </template>
         <template v-if="!isFirstPost">
           <section class="container">
-            <div class="tabs is-boxed is-medium" style="position:relative;margin-bottom:0;">
+            <div
+              class="tabs is-boxed is-medium"
+              style="position:relative;margin-bottom:0;"
+            >
               <ul style="border-bottom:0">
                 <li
                   @click="onStatusClick('PUBLISHED')"
@@ -109,7 +115,10 @@
                       posts.edges.length > 0
                   "
                 >
-                  <LayoutList :items="posts.edges" :itemUniqueKey="item => item.node._id">
+                  <LayoutList
+                    :items="posts.edges"
+                    :itemUniqueKey="item => item.node._id"
+                  >
                     <template v-slot="{ item }">
                       <div class="columns">
                         <div class="column is-1">
@@ -119,7 +128,10 @@
                             class="post-list-image"
                           />
                         </div>
-                        <div @click="onRowClick(item)" class="column is-9 content">
+                        <div
+                          @click="onRowClick(item)"
+                          class="column is-9 content"
+                        >
                           <h2 class="post-list-title">
                             <router-link
                               class="item"
@@ -130,7 +142,8 @@
                                   postId: item.node._id
                                 }
                               }"
-                            >{{ item.node.title + " " }}</router-link>
+                              >{{ item.node.title + " " }}</router-link
+                            >
                           </h2>
                           <span
                             style="color:rgba(0, 0, 0, 0.5);"
@@ -138,8 +151,8 @@
                           >
                             published on
                             {{
-                            Number(item.node.publishedAt)
-                            | moment("DD MMMM YYYY - HH:mm")
+                              Number(item.node.publishedAt)
+                                | moment("DD MMMM YYYY - HH:mm")
                             }}
                           </span>
                           <span
@@ -148,15 +161,17 @@
                           >
                             updated on
                             {{
-                            Number(item.node.updatedAt)
-                            | moment("DD MMMM YYYY - HH:mm")
+                              Number(item.node.updatedAt)
+                                | moment("DD MMMM YYYY - HH:mm")
                             }}
                           </span>
 
                           <p
                             style="padding-top:10px"
                             v-if="item.node.teaser.trim()"
-                          >{{ striptags(item.node.teaser.substr(0, 200)) }}</p>
+                          >
+                            {{ striptags(item.node.teaser.substr(0, 200)) }}
+                          </p>
                         </div>
                         <div class="column is-2">
                           <div class="actions">
@@ -172,7 +187,8 @@
                               @click="onDeleteClick(item.node)"
                               style="min-width:100px"
                               class="button is-outlined"
-                            >Delete</span>
+                              >Delete</span
+                            >
                           </div>
                         </div>
                       </div>
@@ -201,13 +217,17 @@
         </div>
       </template>
       <template #footer>
-        <div @click="deleteModal.show = false" class="button is-primary">OUPS NO, CANCEL !</div>
+        <div @click="deleteModal.show = false" class="button is-primary">
+          OUPS NO, CANCEL !
+        </div>
         <div
           @click="onDeleteModalConfirmClick"
           class="button is-danger"
           :class="{ 'is-loading': deletePostRequestState === 'PENDING' }"
           :disabled="deletePostRequestState === 'PENDING' ? true : false"
-        >DELETE IT.</div>
+        >
+          DELETE IT.
+        </div>
       </template>
     </BulmaModal>
   </DefaultLayout>
@@ -220,67 +240,18 @@ import IconBack from "../components/IconBack";
 import gql from "graphql-tag";
 import AppLoader from "../components/AppLoader";
 import { REQUEST_STATE } from "../utils/helpers";
+import {
+  getPostsQuery,
+  getPostsByStatusQuery,
+  getBlogQuery,
+  deletePostMutation
+} from "../utils/queries";
 import AppError from "../components/AppError";
 import AppPanel from "../components/AppPanel";
 import LayoutList from "../components/LayoutList";
 import striptags from "striptags";
 import logger from "../utils/logger";
 import BulmaModal from "../components/BulmaModal";
-
-const postsQuery = gql`
-  query postsQuery($blog: ID!, $status: PostPublicationStatus!) {
-    posts(locale: "fr", filter: { blog: $blog, status: $status }, last: 100) {
-      edges {
-        node {
-          _id
-          title
-          updatedAt
-          createdAt
-          publishedAt
-          status
-          content
-          teaser
-          image
-        }
-      }
-    }
-  }
-`;
-
-const blogQuery = gql`
-  query blogQuery($_id: ID!) {
-    blog(_id: $_id) {
-      name
-      description
-    }
-  }
-`;
-
-/**
- * We need to know if this is the first post for this blog.
- */
-const allPostsQuery = gql`
-  query allPostsQuery($blog: ID!) {
-    posts(filter: { blog: $blog }, last: 1) {
-      edges {
-        node {
-          _id
-          title
-        }
-      }
-    }
-  }
-`;
-
-const deletePostMutation = gql`
-  mutation deletePostMutation($id: ID!) {
-    deletePost(_id: $id) {
-      slug
-      _id
-      title
-    }
-  }
-`;
 
 export default {
   components: {
@@ -349,8 +320,8 @@ export default {
       this.errorMessage = null;
       return apolloClient
         .query({
-          query: allPostsQuery,
-          variables: { blog: this.$route.params.blogId }
+          query: getPostsQuery,
+          variables: { blog: this.$route.params.blogId, last: 1 }
         })
         .then(result => {
           this.isFirstPost =
@@ -365,7 +336,7 @@ export default {
     getBlog() {
       return apolloClient
         .query({
-          query: blogQuery,
+          query: getBlogQuery,
           variables: {
             _id: this.$route.params.blogId
           }
@@ -379,7 +350,7 @@ export default {
       this.postsRequestState = REQUEST_STATE.PENDING;
       return apolloClient
         .query({
-          query: postsQuery,
+          query: getPostsByStatusQuery,
           variables: {
             blog: this.$route.params.blogId,
             status: status

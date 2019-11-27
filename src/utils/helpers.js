@@ -1,6 +1,11 @@
 import apolloClient from "./apolloClient";
-import gql from "graphql-tag";
 import slug from "slug";
+import {
+  getUserQuery,
+  getBlogQuery,
+  getMyBlogsQuery,
+  getPostQuery
+} from "./queries";
 
 export const REQUEST_STATE = {
   NOT_STARTED: "NOT_STARTED",
@@ -102,37 +107,7 @@ export function createSlug(value, options) {
 export function getUser() {
   return apolloClient
     .query({
-      query: gql`
-        query getUser {
-          me {
-            _id
-            name
-            email
-            createdAt
-            updatedAt
-            picture
-            blogsMemberships {
-              roles
-              blog {
-                _id
-                name
-              }
-            }
-            blogs(last: 100) {
-              edges {
-                node {
-                  _id
-                  name
-                  description
-                  createdAt
-                  updatedAt
-                  contentDefaultLocale
-                }
-              }
-            }
-          }
-        }
-      `
+      query: getUserQuery
     })
     .then(result => {
       if (result.data.me === null) {
@@ -154,65 +129,38 @@ export function graphQLErrorsContainsCode(graphQLErrors, errorCode) {
   return result;
 }
 
-export function getBlog(id) {
-  const cache = {};
-  if (cache.id) {
-    return Promise.resolve(cache.id);
-  }
+export function getMyBlogs() {
   return apolloClient
     .query({
-      query: gql`
-        query loadBlogQuery($_id: ID!) {
-          blog(_id: $_id) {
-            _id
-            contentDefaultLocale
-            description
-            name
-            webhooks {
-              name
-              onEvents
-              url
-            }
-          }
-        }
-      `,
+      query: getMyBlogsQuery
+    })
+    .then(r => {
+      return r.data.me.blogs;
+    });
+}
+
+export function getBlog(id) {
+  return apolloClient
+    .query({
+      query: getBlogQuery,
       variables: {
         _id: id
       }
     })
     .then(r => {
-      cache.id = r.data.blog;
       return r.data.blog;
     });
 }
 
 export function getPost(id) {
-  const cache = {};
-  if (cache.id) {
-    return Promise.resolve(cache.id);
-  }
   return apolloClient
     .query({
-      query: gql`
-        query getPostQuery($_id: ID!) {
-          post(_id: $_id) {
-            _id
-            slug
-            content
-            publishedAt
-            author {
-              name
-              email
-            }
-          }
-        }
-      `,
+      query: getPostQuery,
       variables: {
         _id: id
       }
     })
     .then(r => {
-      cache.id = r.data.post;
       return r.data.post;
     });
 }

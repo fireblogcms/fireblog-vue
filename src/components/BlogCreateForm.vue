@@ -32,7 +32,9 @@
                   placeholder="Blog's Name"
                 />
               </div>
-              <p class="help is-danger" v-if="formErrors.name">{{ formErrors.name }}</p>
+              <p class="help is-danger" v-if="formErrors.name">
+                {{ formErrors.name }}
+              </p>
             </div>
 
             <div class="field">
@@ -46,7 +48,9 @@
                   maxlength="250"
                 ></textarea>
               </div>
-              <p class="help is-danger" v-if="formErrors.description">{{ formErrors.description }}</p>
+              <p class="help is-danger" v-if="formErrors.description">
+                {{ formErrors.description }}
+              </p>
             </div>
 
             <br />
@@ -56,8 +60,12 @@
                 v-if="!isMyFirstBlog"
                 class="button is-outlined"
                 @click="$router.push('/')"
-              >CANCEL</button>
-              <button class="button is-primary" @click="onCreateClick">CREATE MY BLOG</button>
+              >
+                CANCEL
+              </button>
+              <button class="button is-primary" @click="onCreateClick">
+                CREATE MY BLOG
+              </button>
             </div>
 
             <!-- Any other Bulma elements you want -->
@@ -71,22 +79,16 @@
 <script>
 import { generate } from "../utils/fantasyName.js";
 import apolloClient from "../utils/apolloClient";
-import { getUser } from "../utils/helpers";
+import { getUser, REQUEST_STATE } from "../utils/helpers";
 import gql from "graphql-tag";
-import { REQUEST_STATE } from "../utils/helpers";
+import {
+  getMyBlogsQuery,
+  getUserQuery,
+  createBlogMutation
+} from "../utils/queries";
 import AppLoader from "../components/AppLoader";
 import AppPanel from "../components/AppPanel";
 import logger from "../utils/logger";
-
-const createBlogMutation = gql`
-  mutation createBlog($blog: CreateBlogInput!) {
-    createBlog(blog: $blog) {
-      name
-      description
-      _id
-    }
-  }
-`;
 
 export default {
   components: {
@@ -151,14 +153,8 @@ export default {
               description: this.inputs.description
             }
           },
-          update: (store, { data: { submitComment } }) => {
-            // Read the data from our cache for this query.
-            const data = store.readQuery({ query: CommentAppQuery });
-            // Add our comment from the mutation to the end.
-            data.comments = [...data.comments, submitComment];
-            // Write our data back to the cache.
-            store.writeQuery({ query: CommentAppQuery, data });
-          }
+          // refetch also "getUser" to update blogs list in account dropdown menu.
+          refetchQueries: [{ query: getMyBlogsQuery }, { query: getUserQuery }]
         })
         .then(result => {
           this.$router.push({
