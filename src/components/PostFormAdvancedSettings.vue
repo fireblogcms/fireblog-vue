@@ -10,12 +10,19 @@
                 {{ $t("views.postForm.fields.featuredImage.label") }}
               </strong>
             </label>
+            <AwsImageDirectUpload
+              @onUploadingStateChange="onUploadingStateChange"
+              :initialImage="form.values.initial.image"
+              @onUploaded="onUploaded"
+            />
+            <!--
             <CloudinaryImageDirectUpload
               :displayImageWhenUploaded="false"
               @onUploadingStateChange="onUploadingStateChange"
               :initialImage="form.values.initial.image"
               @onUploaded="onUploaded"
             />
+            -->
           </div>
           <!-- TEASER FIELD -->
           <div class="field">
@@ -118,13 +125,13 @@
 </template>
 
 <script>
-import CloudinaryImageDirectUpload from "./CloudinaryImageDirectUpload";
+import AwsImageDirectUpload from "./AwsImageDirectUpload";
 import { REQUEST_STATE } from "../utils/helpers";
 
 export default {
   inject: ["form", "existingPost", "savingPost"],
   components: {
-    CloudinaryImageDirectUpload
+    AwsImageDirectUpload
   },
   data() {
     const data = {
@@ -134,8 +141,8 @@ export default {
     return data;
   },
   methods: {
-    onUploaded(result) {
-      this.form.values.current.image = result.default;
+    onUploaded(fileUrl) {
+      this.form.values.current.image = fileUrl;
     },
     onCancelClick() {
       this.$emit("onCancelClick");

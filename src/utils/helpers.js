@@ -1,4 +1,5 @@
 import apolloClient from "./apolloClient";
+import { createUploadPolicyMutation } from "./queries";
 import slug from "slug";
 import {
   getUserQuery,
@@ -274,4 +275,19 @@ export function ckeditorIframelyMediaProvider() {
       );
     }
   };
+}
+
+export function S3GenerateUploadPolicy(filename) {
+  return apolloClient
+    .mutate({
+      mutation: createUploadPolicyMutation,
+      variables: {
+        filename
+      }
+    })
+    .then(result => {
+      const policy = result.data.createUploadPolicy;
+      policy.fields = JSON.parse(policy.fields);
+      return policy;
+    });
 }

@@ -163,3 +163,13 @@ export const updatePostMutation = gql`
     }
   }
 `;
+
+export const createUploadPolicyMutation = gql`
+  mutation($filename: String!) {
+    createUploadPolicy(filename: $filename) {
+      uploadUrl
+      fileUrl
+      fields
+    }
+  }
+`;
