@@ -4,7 +4,7 @@
       <div class="columns">
         <div class="column">
           <!-- IMAGE UPLOAD FIELD -->
-          <div class="field">
+          <div class="field featured-image">
             <label>
               <strong>{{ $t("views.postForm.fields.featuredImage.label") }}</strong>
             </label>
@@ -23,6 +23,8 @@
             />
             -->
           </div>
+        </div>
+        <div class="column">
           <!-- TEASER FIELD -->
           <div class="field">
             <label>
@@ -58,6 +60,7 @@
             <p class="help is-danger" v-if="form.errors.slug">{{ form.errors.slug }}</p>
           </div>
         </div>
+        <!--
         <div class="column">
           <div class="post-preview-wrapper">
             <div class="field-help">
@@ -80,8 +83,9 @@
               </div>
             </div>
           </div>
-        </div>
+        </div>-->
       </div>
+      <!--
       <div class="columns">
         <div class="column">
           <div class="actions">
@@ -106,6 +110,7 @@
           </div>
         </div>
       </div>
+      -->
     </form>
     <!-- debug form values -->
     <pre v-if="false">{{ form }}</pre>
@@ -145,6 +150,7 @@ export default {
     },
     onUploadingStateChange(state) {
       this.uploadingState = state;
+      this.$emit("onUploadingStateChange", state);
     }
   }
 };
@@ -163,6 +169,7 @@ export default {
   display: flex;
   justify-content: center;
 }
+
 .post-preview-help {
   max-width: 500px;
 }

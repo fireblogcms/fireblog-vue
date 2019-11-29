@@ -1,5 +1,6 @@
 <template>
   <div>
+    <portal-target name="overlay"></portal-target>
     <LayoutTopBar />
     <!-- error messages -->
 

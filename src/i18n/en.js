@@ -2,7 +2,8 @@ export default {
   dictionnary: {
     draft: "draft",
     published: "published",
-    deleted: "deleted"
+    deleted: "deleted",
+    close: "close"
   },
   views: {
     blogList: {

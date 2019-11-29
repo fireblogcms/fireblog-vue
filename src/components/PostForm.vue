@@ -50,7 +50,7 @@
     <!-- PUBLISH MODAL -->
 
     <BulmaModal
-      class="publication-settings-modal"
+      class="publication-settings-modal animated zoomIn"
       :fullscreen="true"
       v-model="publicationSettingsModal.show"
     >
@@ -62,14 +62,31 @@
             :savingPost="savingPost"
             @onCancelClick="publicationSettingsModal.show = false"
             @onPublishClick="onPublishClick"
+            @onUploadingStateChange="state => uploadingState = state"
           />
         </div>
       </template>
-      <template class="has-text-centered" #footer></template>
+      <template #title>
+        <div>
+          <button
+            class="button is-primary is-pulled-right"
+            @click="onPublishClick"
+            :disabled="savingPost.state === 'PENDING' || uploadingState === 'PENDING'"
+            :class="{'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
+          >PUBLISH NOW</button>
+          <button
+            style="margin-right:20px;"
+            @click="publicationSettingsModal.show = false"
+            class="button is-pulled-right"
+          >CANCEL</button>
+        </div>
+      </template>
+      <template #footer />
     </BulmaModal>
 
     <!-- HURRAH MODAL -->
     <BulmaModal class="hurrah-modal" v-model="publishingHurrahModal.show" :whiteFooter="true">
+      <template #title></template>
       <template #body>
         <div class="has-text-centered">
           <h1
@@ -279,6 +296,7 @@ export default {
     return {
       initDataState: REQUEST_STATE.NOT_STARTED,
       savingDraftState: REQUEST_STATE.NOT_STARTED,
+      uploadingState: REQUEST_STATE.NOT_STARTED,
       changesDetected: false,
       mediaLoadingCounter: 0,
       lastTimeSaved: null,
@@ -404,7 +422,6 @@ export default {
     },
     getCurrentPublicationStatus() {
       let status = this.existingPost ? this.existingPost.status : "DRAFT";
-      status = this.$t(`dictionnary.${status.toLowerCase()}`).toUpperCase();
       return status;
     },
     savePost(status) {
