@@ -48,7 +48,6 @@
     </BulmaModal>
 
     <!-- PUBLISH MODAL -->
-
     <BulmaModal
       class="publication-settings-modal animated zoomIn"
       :fullscreen="true"
@@ -68,8 +67,9 @@
       </template>
       <template #title>
         <div>
+          <span class="title is-2">PUBLICATION</span>
           <button
-            class="button is-primary is-pulled-right"
+            class="button is-primary is-pulled-right is-large"
             @click="onPublishClick"
             :disabled="savingPost.state === 'PENDING' || uploadingState === 'PENDING'"
             :class="{'is-loading': savingPost.state === 'PENDING' && savingPost.publicationStatus === 'PUBLISHED'}"
@@ -77,7 +77,7 @@
           <button
             style="margin-right:20px;"
             @click="publicationSettingsModal.show = false"
-            class="button is-pulled-right"
+            class="button is-pulled-right is-large"
           >CANCEL</button>
         </div>
       </template>
@@ -86,12 +86,11 @@
 
     <!-- HURRAH MODAL -->
     <BulmaModal class="hurrah-modal" v-model="publishingHurrahModal.show" :whiteFooter="true">
-      <template #title></template>
+      <template #title>
+        <div class="has-text-centered">{{ $t("views.postForm.firstPublicationHurralModal.title") }}</div>
+      </template>
       <template #body>
         <div class="has-text-centered">
-          <h1
-            class="title is-1 has-text-centered"
-          >{{ $t("views.postForm.firstPublicationHurralModal.title") }}</h1>
           <img style="border-radius:5px" :src="getRandomHurrahGif()" />
         </div>
       </template>
@@ -103,18 +102,12 @@
       </template>
     </BulmaModal>
 
-    <BulmaModal
-      class="publishing-changes-modal"
-      v-model="publishingChangesModal.show"
-      :whiteFooter="true"
-    >
-      <template #title></template>
+    <BulmaModal class="publishing-changes-modal" v-model="publishingChangesModal.show">
+      <template #title>
+        <div class="has-text-centered">{{ $t("views.postForm.publishChangesHurralModal.title") }}</div>
+      </template>
       <template #body>
         <div class="has-text-centered">
-          <h1
-            style="padding:30px;"
-            class="title is-3 has-text-centered"
-          >{{ $t("views.postForm.publishChangesHurralModal.title") }}</h1>
           <img style="border-radius:5px" :src="getRandomHurrahGif()" />
         </div>
       </template>

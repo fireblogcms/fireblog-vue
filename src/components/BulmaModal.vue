@@ -61,13 +61,17 @@ export default {
 <style>
 .bulma-modal.fullscreen .modal-content,
 .bulma-modal.fullscreen .modal-card {
-  width: 95vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   border-radius: 6px;
 }
 
+.bulma-modal.fullscreen .modal-card-title {
+  padding: 0px 10px;
+}
+
 .bulma-modal.fullscreen .modal-card-body {
-  padding: 40px;
+  padding: 40px 0;
 }
 
 .bulma-modal.fullscreen .modal-close {
@@ -76,7 +80,7 @@ export default {
 .bulma-modal.fullscreen .modal-background {
   background: white;
 }
-.bulma-modal .modal-card-foot.is-white {
+.bulma-modal .modal-card-foot {
   background-color: white;
   border: 0;
 }
