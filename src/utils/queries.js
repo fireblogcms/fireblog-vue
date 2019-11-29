@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 
-export const PostFragment = gql`
-  fragment PostFragment on Post {
+export const FullPostFragment = gql`
+  fragment FullPostFragment on Post {
     _id
     title
     content
@@ -90,21 +90,21 @@ export const getBlogQuery = gql`
 `;
 
 export const getPostQuery = gql`
-  ${PostFragment}
+  ${FullPostFragment}
   query getPostQuery($_id: ID!) {
     post(_id: $_id) {
-      ...PostFragment
+      ...FullPostFragment
     }
   }
 `;
 
 export const getPostsByStatusQuery = gql`
-  ${PostFragment}
+  ${FullPostFragment}
   query getPostsByStatusQuery($blog: ID!, $status: PostPublicationStatus!) {
     posts(filter: { blog: $blog, status: $status }, last: 100) {
       edges {
         node {
-          ...PostFragment
+          ...FullPostFragment
         }
       }
     }
@@ -115,12 +115,12 @@ export const getPostsByStatusQuery = gql`
  * We need to know if this is the first post for this blog.
  */
 export const getPostsQuery = gql`
-  ${PostFragment}
+  ${FullPostFragment}
   query getPostsQuery($blog: ID!, $last: Int) {
     posts(filter: { blog: $blog }, last: $last) {
       edges {
         node {
-          ...PostFragment
+          ...FullPostFragment
         }
       }
     }
@@ -128,10 +128,10 @@ export const getPostsQuery = gql`
 `;
 
 export const deletePostMutation = gql`
-  ${PostFragment}
+  ${FullPostFragment}
   mutation deletePostMutation($id: ID!) {
     deletePost(_id: $id) {
-      ...PostFragment
+      ...FullPostFragment
     }
   }
 `;
@@ -147,19 +147,19 @@ export const createBlogMutation = gql`
 `;
 
 export const createPostMutation = gql`
-  ${PostFragment}
+  ${FullPostFragment}
   mutation createPostMutation($post: CreatePostInput!) {
     createPost(post: $post) {
-      ...PostFragment
+      ...FullPostFragment
     }
   }
 `;
 
 export const updatePostMutation = gql`
-  ${PostFragment}
+  ${FullPostFragment}
   mutation updatePostMutation($post: UpdatePostInput!) {
     updatePost(post: $post) {
-      ...PostFragment
+      ...FullPostFragment
     }
   }
 `;
@@ -170,6 +170,17 @@ export const createUploadPolicyMutation = gql`
       uploadUrl
       fileUrl
       fields
+    }
+  }
+`;
+
+export const deleteBlogMutation = gql`
+  mutation($_id: ID!) {
+    deleteBlog(_id: $_id) {
+      name
+      status
+      description
+      deletedAt
     }
   }
 `;
