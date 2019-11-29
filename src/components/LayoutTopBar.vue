@@ -72,7 +72,7 @@
     </div>
 
     <!-- GRAPHQL API DOCUMENTATION -->
-    <BulmaModal :fullscreen="true" class="api-modal animated zoomIn" v-model="showApiModal">
+    <BulmaModal class="api-modal animated zoomIn" v-model="showApiModal">
       <template #title>
         {{ $t("apiModal.title") }}
         <a
@@ -89,27 +89,29 @@
         >{{ $t("dictionnary.close") }}</button>
       </template>
       <template #body>
-        <h2 class="title is-4">GraphQL endpoint</h2>
-        <div class="field">
-          <div class="control">
-            <input readonly="true" class="input" type="text" :value="blogApiUrl" />
+        <div class="container">
+          <h2 class="title is-4">GraphQL endpoint</h2>
+          <div class="field">
+            <div class="control">
+              <input readonly="true" class="input" type="text" :value="blogApiUrl" />
+            </div>
           </div>
-        </div>
-        <div
-          ref="apiModal"
-          :id="`example-${example.id}`"
-          v-for="example in apiModalExampleList"
-          :key="example.id"
-        >
-          <h2 style="margin-top:20px" class="title is-4">
-            {{ example.label }}
-            <a
-              :href="`${blogApiUrl}?query=${encodeURI(example.snippet)}`"
-              target="_blank"
-              class="is-pulled-right button is-info is-outlined"
-            >{{ $t("apiModal.tryItButton") }}</a>
-          </h2>
-          <pre class="locale-graphql"><code>{{example.snippet}}</code></pre>
+          <div
+            ref="apiModal"
+            :id="`example-${example.id}`"
+            v-for="example in apiModalExampleList"
+            :key="example.id"
+          >
+            <h2 style="margin-top:20px" class="title is-4">
+              {{ example.label }}
+              <a
+                :href="`${blogApiUrl}?query=${encodeURI(example.snippet)}`"
+                target="_blank"
+                class="is-pulled-right button is-info is-outlined"
+              >{{ $t("apiModal.tryItButton") }}</a>
+            </h2>
+            <pre class="locale-graphql"><code>{{example.snippet}}</code></pre>
+          </div>
         </div>
       </template>
     </BulmaModal>

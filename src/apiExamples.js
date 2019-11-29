@@ -56,11 +56,6 @@ export default ({ slug, locale }) => [
       blog {
         name
         description
-        owner {
-          name
-          email
-          name
-        }
       }
     }
   `

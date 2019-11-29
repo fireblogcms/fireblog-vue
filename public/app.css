@@ -27,6 +27,7 @@ video {
   src: url("/fonts/RoslindaleDisplayCondensed-Bold-Testing");
 }
 
+/*
 .button {
   border: none;
   padding: 0.5rem;
@@ -36,6 +37,7 @@ video {
   border-radius: 10px;
   outline: none;
 }
+*/
 
 .animated.fadeIn {
   animation-duration: 0.2s;
