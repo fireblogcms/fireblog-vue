@@ -6,11 +6,9 @@
           <!-- IMAGE UPLOAD FIELD -->
           <div class="field">
             <label>
-              <strong>
-                {{ $t("views.postForm.fields.featuredImage.label") }}
-              </strong>
+              <strong>{{ $t("views.postForm.fields.featuredImage.label") }}</strong>
             </label>
-            <AwsImageDirectUpload
+            <S3ImageUpload
               @onUploadingStateChange="onUploadingStateChange"
               :initialImage="form.values.initial.image"
               @onUploaded="onUploaded"
@@ -27,10 +25,8 @@
           <!-- TEASER FIELD -->
           <div class="field">
             <label>
-              <strong> {{ $t("views.postForm.fields.teaser.label") }}</strong>
-              <div class="field-help">
-                {{ $t("views.postForm.fields.teaser.help") }}
-              </div>
+              <strong>{{ $t("views.postForm.fields.teaser.label") }}</strong>
+              <div class="field-help">{{ $t("views.postForm.fields.teaser.help") }}</div>
             </label>
             <div class="control">
               <!-- limited to 250 because of facebook, twitter and co preview card limitation -->
@@ -41,17 +37,13 @@
                 placeholder="Teaser"
               ></textarea>
             </div>
-            <p class="help is-danger" v-if="form.errors.teaser">
-              {{ form.errors.teaser }}
-            </p>
+            <p class="help is-danger" v-if="form.errors.teaser">{{ form.errors.teaser }}</p>
           </div>
           <!-- SLUG FIELD -->
           <div class="field">
             <label>
-              <strong> {{ $t("views.postForm.fields.slug.label") }}</strong>
-              <div class="field-help">
-                {{ $t("views.postForm.fields.slug.help") }}
-              </div>
+              <strong>{{ $t("views.postForm.fields.slug.label") }}</strong>
+              <div class="field-help">{{ $t("views.postForm.fields.slug.help") }}</div>
             </label>
 
             <div class="control">
@@ -62,17 +54,13 @@
                 placeholder="slug"
               />
             </div>
-            <p class="help is-danger" v-if="form.errors.slug">
-              {{ form.errors.slug }}
-            </p>
+            <p class="help is-danger" v-if="form.errors.slug">{{ form.errors.slug }}</p>
           </div>
         </div>
         <div class="column">
           <div class="post-preview-wrapper">
             <div class="field-help">
-              <label class="label">
-                {{ $t("views.postForm.previews.general.name") }}
-              </label>
+              <label class="label">{{ $t("views.postForm.previews.general.name") }}</label>
               {{ $t("views.postForm.previews.general.description") }}
             </div>
             <div class="post-preview">
@@ -96,9 +84,10 @@
       <div class="columns">
         <div class="column">
           <div class="actions">
-            <button @click="onCancelClick" class="button is-medium">
-              {{ $t("views.postForm.publicationCancel") }}
-            </button>
+            <button
+              @click="onCancelClick"
+              class="button is-medium"
+            >{{ $t("views.postForm.publicationCancel") }}</button>
 
             <button
               @click="onPublishClick()"
@@ -112,9 +101,7 @@
               }"
               class="button is-primary is-medium"
               style="margin-left:20px;"
-            >
-              {{ getPublishButtonText() }}
-            </button>
+            >{{ getPublishButtonText() }}</button>
           </div>
         </div>
       </div>
@@ -125,13 +112,13 @@
 </template>
 
 <script>
-import AwsImageDirectUpload from "./AwsImageDirectUpload";
+import S3ImageUpload from "./S3ImageUpload";
 import { REQUEST_STATE } from "../utils/helpers";
 
 export default {
   inject: ["form", "existingPost", "savingPost"],
   components: {
-    AwsImageDirectUpload
+    S3ImageUpload
   },
   data() {
     const data = {

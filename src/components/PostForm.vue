@@ -2,10 +2,7 @@
   <div>
     <AppLoader v-if="initDataState === 'PENDING'" />
     <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
-    <div
-      v-if="initDataState === REQUEST_STATE.FINISHED_OK"
-      class="post-form-wrapper"
-    >
+    <div v-if="initDataState === REQUEST_STATE.FINISHED_OK" class="post-form-wrapper">
       <!-- FORM -->
       <form @submit.prevent>
         <textarea-autosize
@@ -41,16 +38,12 @@
           v-if="modal.confirmText && modal.confirmCallback"
           @click="modal.confirmCallback"
           class="button is-danger"
-        >
-          {{ modal.confirmText }}
-        </div>
+        >{{ modal.confirmText }}</div>
         <div
           v-if="modal.cancelText && modal.cancelCallback"
           @click="modal.cancelCallback"
           class="button is-primary"
-        >
-          {{ modal.cancelText }}
-        </div>
+        >{{ modal.cancelText }}</div>
       </template>
     </BulmaModal>
 
@@ -76,16 +69,12 @@
     </BulmaModal>
 
     <!-- HURRAH MODAL -->
-    <BulmaModal
-      class="hurrah-modal"
-      v-model="publishingHurrahModal.show"
-      :whiteFooter="true"
-    >
+    <BulmaModal class="hurrah-modal" v-model="publishingHurrahModal.show" :whiteFooter="true">
       <template #body>
         <div class="has-text-centered">
-          <h1 class="title is-1 has-text-centered">
-            {{ $t("views.postForm.firstPublicationHurralModal.title") }}
-          </h1>
+          <h1
+            class="title is-1 has-text-centered"
+          >{{ $t("views.postForm.firstPublicationHurralModal.title") }}</h1>
           <img style="border-radius:5px" :src="getRandomHurrahGif()" />
         </div>
       </template>
@@ -93,9 +82,7 @@
         <button
           @click="publishingHurrahModal.show = false"
           class="button is-primary is-large"
-        >
-          {{ $t("views.postForm.firstPublicationHurralModal.okayButton") }}
-        </button>
+        >{{ $t("views.postForm.firstPublicationHurralModal.okayButton") }}</button>
       </template>
     </BulmaModal>
 
@@ -107,9 +94,10 @@
       <template #title></template>
       <template #body>
         <div class="has-text-centered">
-          <h1 style="padding:30px;" class="title is-3 has-text-centered">
-            {{ $t("views.postForm.publishChangesHurralModal.title") }}
-          </h1>
+          <h1
+            style="padding:30px;"
+            class="title is-3 has-text-centered"
+          >{{ $t("views.postForm.publishChangesHurralModal.title") }}</h1>
           <img style="border-radius:5px" :src="getRandomHurrahGif()" />
         </div>
       </template>
@@ -117,24 +105,15 @@
         <button
           @click="publishingChangesModal.show = false"
           class="button is-primary is-large"
-        >
-          {{ $t("views.postForm.publishChangesHurralModal.okayButton") }}
-        </button>
+        >{{ $t("views.postForm.publishChangesHurralModal.okayButton") }}</button>
       </template>
     </BulmaModal>
 
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
-      <span
-        @click="onBackToPostsClick"
-        style="cursor:pointer"
-        class="item tag is-large"
-      >
+      <span @click="onBackToPostsClick" style="cursor:pointer" class="item tag is-large">
         <em>
-          <img
-            style="position:relative;height:20px !important;top:4px;"
-            src="/images/book.png"
-          />
+          <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
           <IconBack />posts
         </em>
       </span>
@@ -148,8 +127,7 @@
           {{ getCurrentPublicationStatus() }}
           <span
             v-if="getCurrentPublicationStatus() === 'DRAFT' && lastTimeSaved"
-            >- saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</span
-          >
+          >- saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</span>
         </em>
       </span>
     </portal>
@@ -170,7 +148,10 @@
         type="submit"
       >
         {{ $t("views.postForm.saveDraft").toUpperCase() }}
-        <span class="animated bounce" v-if="changesDetected">*</span>
+        <span
+          class="animated bounce"
+          v-if="changesDetected"
+        >*</span>
       </button>
 
       <button
@@ -184,9 +165,7 @@
         }"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
-      >
-        {{ $t("views.postForm.unpublish").toUpperCase() }}
-      </button>
+      >{{ $t("views.postForm.unpublish").toUpperCase() }}</button>
 
       <button
         @click="onPublicationClick()"
@@ -199,9 +178,7 @@
         }"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
-      >
-        {{ $t("views.postForm.publication").toUpperCase() }}
-      </button>
+      >{{ $t("views.postForm.publication").toUpperCase() }}</button>
 
       <button
         @click="onPublicationClick()"
@@ -216,7 +193,10 @@
         type="submit"
       >
         {{ $t("views.postForm.publishChanges").toUpperCase() }}
-        <span class="animated bounce" v-if="changesDetected">*</span>
+        <span
+          class="animated bounce"
+          v-if="changesDetected"
+        >*</span>
       </button>
 
       <!--
@@ -244,7 +224,7 @@ import BulmaModal from "./BulmaModal";
 import IconBack from "./IconBack";
 import PostFormAdvancedSettings from "./PostFormAdvancedSettings";
 import apolloClient from "../utils/apolloClient";
-import { ckeditorCloudinaryDirectUploadAdapterPlugin } from "../utils/ckeditorCloudinaryDirectUploadAdapter";
+import { ckeditorS3UploadAdapterPlugin } from "../utils/ckeditorS3UploadAdapterPlugin";
 import {
   REQUEST_STATE,
   getUser,
@@ -349,7 +329,7 @@ export default {
     this.editor = Editor;
     this.editorConfig = {
       extraPlugins: [
-        ckeditorCloudinaryDirectUploadAdapterPlugin({
+        ckeditorS3UploadAdapterPlugin({
           onRequestStateChange: ({ state, file }) => {
             if (state === REQUEST_STATE.PENDING) {
               this.mediaLoadingCounter = this.mediaLoadingCounter + 1;

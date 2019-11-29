@@ -291,3 +291,44 @@ export function S3GenerateUploadPolicy(filename) {
       return policy;
     });
 }
+
+export function S3Upload({
+  file,
+  onProgress = () => {},
+  onUploadStart = () => {}
+}) {
+  return S3GenerateUploadPolicy(file.name)
+    .then(uploadPolicy => {
+      return new Promise((resolve, reject) => {
+        const formData = new FormData();
+
+        Object.keys(uploadPolicy.fields).forEach(key => {
+          formData.append(key, uploadPolicy.fields[key]);
+        });
+        // Actual file has to be appended last.
+        formData.append("file", file);
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", uploadPolicy.uploadUrl, true);
+
+        xhr.upload.onprogress = event => {
+          const percentage = (event.loaded / event.total) * 100;
+          onProgress({ loaded: event.loaded, total: event.total, percentage });
+        };
+
+        xhr.onload = () => {
+          resolve({ fileUrl: uploadPolicy.fileUrl, uploadPolicy });
+        };
+
+        xhr.onerror = error => {
+          reject(error);
+        };
+
+        xhr.send(formData);
+        onUploadStart({ xhr, uploadPolicy });
+      });
+    })
+    .catch(e => {
+      console.log("fetch policy error: ", e);
+    });
+}
