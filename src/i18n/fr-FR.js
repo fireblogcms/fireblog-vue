@@ -35,6 +35,10 @@ export default {
           }
         },
         saveButton: "Enregistrer"
+      },
+      dangerZone: {
+        title: "Zone dangereuse",
+        deleteBlog: "Supprimer ce blog"
       }
     },
     postList: {

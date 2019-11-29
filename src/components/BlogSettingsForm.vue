@@ -10,14 +10,10 @@
       class="container"
       v-if="initDataState === 'FINISHED_OK'"
     >
-      <h2 class="title is-2">
-        {{ $t("views.blogSettings.generalSettingsForm.title") }}
-      </h2>
+      <h2 class="title is-2">{{ $t("views.blogSettings.generalSettingsForm.title") }}</h2>
       <form @submit.prevent="onGeneralSettingsFormSubmit">
         <div class="field">
-          <label class="label">
-            {{ $t("views.blogSettings.generalSettingsForm.fields.name.label") }}
-          </label>
+          <label class="label">{{ $t("views.blogSettings.generalSettingsForm.fields.name.label") }}</label>
           <div class="control">
             <input
               v-model="generalSettingsForm.values.current.name"
@@ -26,9 +22,10 @@
               maxlength="250"
             />
           </div>
-          <p class="help is-danger" v-if="generalSettingsForm.errors.name">
-            {{ generalSettingsForm.errors.name }}
-          </p>
+          <p
+            class="help is-danger"
+            v-if="generalSettingsForm.errors.name"
+          >{{ generalSettingsForm.errors.name }}</p>
         </div>
         <div class="field">
           <label class="label">Description</label>
@@ -49,9 +46,7 @@
             }"
             :disabled="savingGeneralSettingsState === 'PENDING'"
             type="submit"
-          >
-            {{ $t("views.blogSettings.generalSettingsForm.saveButton") }}
-          </button>
+          >{{ $t("views.blogSettings.generalSettingsForm.saveButton") }}</button>
         </div>
       </form>
     </AppPanel>
@@ -61,18 +56,16 @@
       class="container"
       v-if="initDataState === 'FINISHED_OK'"
     >
-      <h2 class="title is-2">
-        {{ $t("views.blogSettings.technicalSettingsForm.title") }}
-      </h2>
+      <h2 class="title is-2">{{ $t("views.blogSettings.technicalSettingsForm.title") }}</h2>
       <form @submit.prevent="onTechnicalSettingsFormSubmit">
         <div class="field">
           <label class="label">
             {{
-              $t(
-                "views.blogSettings.technicalSettingsForm.fields.webhooks.label"
-              )
-            }}</label
-          >
+            $t(
+            "views.blogSettings.technicalSettingsForm.fields.webhooks.label"
+            )
+            }}
+          </label>
           <textarea
             v-model="technicalSettingsForm.values.current.staticBuildWebhooks"
             class="textarea"
@@ -80,9 +73,9 @@
           ></textarea>
           <p class="help">
             {{
-              $t(
-                "views.blogSettings.technicalSettingsForm.fields.webhooks.help"
-              )
+            $t(
+            "views.blogSettings.technicalSettingsForm.fields.webhooks.help"
+            )
             }}
           </p>
         </div>
@@ -95,11 +88,17 @@
             }"
             :disabled="savingTechnicalSettingsState === 'PENDING'"
             type="submit"
-          >
-            {{ $t("views.blogSettings.technicalSettingsForm.saveButton") }}
-          </button>
+          >{{ $t("views.blogSettings.technicalSettingsForm.saveButton") }}</button>
         </div>
       </form>
+    </AppPanel>
+
+    <AppPanel
+      class="container"
+      style="margin-top:40px;margin-bottom:40px;padding:40px;border: solid red 1px;background:rgba(255,0,0,0.1)"
+    >
+      <h2 class="title is-2">{{ $t("views.blogSettings.dangerZone.title") }}</h2>
+      <button class="button is-danger is-large">{{$t('views.blogSettings.dangerZone.deleteBlog')}}</button>
     </AppPanel>
   </div>
 </template>
