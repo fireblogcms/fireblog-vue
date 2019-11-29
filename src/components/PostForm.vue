@@ -330,6 +330,7 @@ export default {
     this.editorConfig = {
       extraPlugins: [
         ckeditorS3UploadAdapterPlugin({
+          blogId: this.$route.params.blogId,
           onRequestStateChange: ({ state, file }) => {
             if (state === REQUEST_STATE.PENDING) {
               this.mediaLoadingCounter = this.mediaLoadingCounter + 1;

@@ -165,8 +165,8 @@ export const updatePostMutation = gql`
 `;
 
 export const createUploadPolicyMutation = gql`
-  mutation($filename: String!) {
-    createUploadPolicy(filename: $filename) {
+  mutation($file: FileInput!, $blogId: ID!) {
+    createUploadPolicy(file: $file, blogId: $blogId) {
       uploadUrl
       fileUrl
       fields

@@ -277,12 +277,26 @@ export function ckeditorIframelyMediaProvider() {
   };
 }
 
-export function S3GenerateUploadPolicy(filename) {
+export function S3GenerateUploadPolicy(file, blogId) {
+  const requiredFileKeys = ["name", "size", "type"];
+  requiredFileKeys.forEach(key => {
+    if (!file[key]) {
+      throw new Error(`${key} is missing for file argument.`);
+    }
+  });
+  if (!blogId) {
+    throw new Error("S3GenerateUploadPolicy: blogId is mandatory");
+  }
   return apolloClient
     .mutate({
       mutation: createUploadPolicyMutation,
       variables: {
-        filename
+        blogId,
+        file: {
+          name: file.name,
+          size: file.size,
+          type: file.type
+        }
       }
     })
     .then(result => {
@@ -294,10 +308,11 @@ export function S3GenerateUploadPolicy(filename) {
 
 export function S3Upload({
   file,
+  blogId,
   onProgress = () => {},
   onUploadStart = () => {}
 }) {
-  return S3GenerateUploadPolicy(file.name)
+  return S3GenerateUploadPolicy(file, blogId)
     .then(uploadPolicy => {
       return new Promise((resolve, reject) => {
         const formData = new FormData();

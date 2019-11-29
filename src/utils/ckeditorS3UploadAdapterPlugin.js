@@ -1,4 +1,5 @@
 import { REQUEST_STATE, S3Upload } from "./helpers";
+import Router from "../router";
 
 /**
  * Upload an image directly from ckEditor to Cloudinary servers with an XMLHttpRequest
@@ -25,8 +26,17 @@ class ckeditorS3UploadAdapter {
 
   // Starts the upload process.
   upload() {
+    if (!this.options.blogId) {
+      // Each image is uploaded attached to blog Id, so
+      // make sure we have a blogId param at this point.
+      throw new Error(
+        "ckeditorUploadAdapter : No blog Id detected in the current url, aborting upload !"
+      );
+    }
+    const blogId = this.options.blogId;
     return this.loader.file.then(file => {
       return S3Upload({
+        blogId,
         file,
         onUploadStart: ({ xhr }) => {
           this.xhr = xhr;

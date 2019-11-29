@@ -35,6 +35,10 @@ import { REQUEST_STATE, S3Upload } from "../utils/helpers";
 
 export default {
   props: {
+    blogId: {
+      type: String,
+      required: true
+    },
     initialImage: {
       type: String,
       default: null
@@ -64,6 +68,7 @@ export default {
       };
 
       return S3Upload({
+        blogId: this.blogId,
         file: this.file,
         onProgress
       })

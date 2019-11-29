@@ -9,6 +9,7 @@
               <strong>{{ $t("views.postForm.fields.featuredImage.label") }}</strong>
             </label>
             <S3ImageUpload
+              :blogId="$route.params.blogId"
               @onUploadingStateChange="onUploadingStateChange"
               :initialImage="form.values.initial.image"
               @onUploaded="onUploaded"
