@@ -25,12 +25,16 @@ class ckeditorS3UploadAdapter {
 
   // Starts the upload process.
   upload() {
-    console.log("this.loader", this.loader.file);
     return this.loader.file.then(file => {
       return S3Upload({
         file,
         onUploadStart: ({ xhr }) => {
           this.xhr = xhr;
+          // Hookup an event listener to update the upload progress bar
+          this.xhr.upload.addEventListener("progress", event => {
+            this.loader.uploadTotal = event.total;
+            this.loader.uploaded = event.loaded;
+          });
         }
       })
         .then(({ fileUrl }) => {
