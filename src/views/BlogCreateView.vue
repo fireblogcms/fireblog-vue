@@ -1,6 +1,8 @@
 <template>
-  <DefaultLayout class="container is-small">
-    <BlogCreateForm />
+  <DefaultLayout>
+    <div class="container is-small">
+      <BlogCreateForm />
+    </div>
   </DefaultLayout>
 </template>
 
