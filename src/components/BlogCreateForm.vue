@@ -144,11 +144,10 @@ export default {
               name: this.inputs.name,
               description: this.inputs.description
             }
-          },
-          // refetch also "getUser" to update blogs list in account dropdown menu.
-          refetchQueries: [{ query: getMyBlogsQuery }, { query: getUserQuery }]
+          }
         })
-        .then(result => {
+        .then(async result => {
+          await apolloClient.resetStore();
           this.$router.push({
             name: "postList",
             params: { blogId: result.data.createBlog._id }

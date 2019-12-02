@@ -687,22 +687,10 @@ export default {
           mutation: createPostMutation,
           variables: {
             post
-          },
-          refetchQueries: [
-            {
-              query: getPostsQuery,
-              variables: { blog: this.$route.params.blogId }
-            },
-            {
-              query: getPostsByStatusQuery,
-              variables: {
-                blog: this.$route.params.blogId,
-                status: post.status
-              }
-            }
-          ]
+          }
         })
-        .then(result => {
+        .then(async result => {
+          await apolloClient.resetStore();
           this.existingPost = result.data.createPost;
           this.lastTimeSaved = this.existingPost.updatedAt;
           // post is created, we are now in UPDATE mode for the form.
@@ -732,29 +720,10 @@ export default {
           mutation: updatePostMutation,
           variables: {
             post
-          },
-          refetchQueries: [
-            {
-              query: getPostsQuery,
-              variables: { blog: this.$route.params.blogId }
-            },
-            {
-              query: getPostsByStatusQuery,
-              variables: {
-                blog: this.$route.params.blogId,
-                status: "PUBLISHED"
-              }
-            },
-            {
-              query: getPostsByStatusQuery,
-              variables: {
-                blog: this.$route.params.blogId,
-                status: "DRAFT"
-              }
-            }
-          ]
+          }
         })
-        .then(result => {
+        .then(async result => {
+          await apolloClient.resetStore();
           this.existingPost = result.data.updatePost;
           this.lastTimeSaved = this.existingPost.updatedAt;
           this.changesDetected = false;

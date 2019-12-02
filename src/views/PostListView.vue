@@ -369,7 +369,8 @@ export default {
           mutation: deletePostMutation,
           variables: { id: post._id }
         })
-        .then(result => {
+        .then(async result => {
+          await apolloClient.resetStore();
           this.deletePostRequestState = REQUEST_STATE.FINISHED_OK;
           const post = result.data.deletePost;
           return this.getPosts(this.activeStatus, "network-only");

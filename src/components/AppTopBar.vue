@@ -72,13 +72,13 @@
     </div>
 
     <!-- GRAPHQL API DOCUMENTATION -->
-    <BulmaModal class="api-modal animated zoomIn" v-model="showApiModal">
+    <BulmaModal :fullscreen="true" class="api-modal animated zoomIn" v-model="showApiModal">
       <template #title>
-        {{ $t("apiModal.title") }}
+        <span class="title is-2">{{ $t("apiModal.title") }}</span>
         <a
           :href="blogApiUrl"
           target="_blank"
-          class="button is-primary is-pulled-right is-outlined"
+          class="button is-primary is-pulled-right"
         >{{ $t("apiModal.openGraphQLExplorer") }}</a>
         <button
           :href="blogApiUrl"
@@ -107,7 +107,7 @@
               <a
                 :href="`${blogApiUrl}?query=${encodeURI(example.snippet)}`"
                 target="_blank"
-                class="is-pulled-right button is-info is-outlined"
+                class="is-pulled-right button is-info"
               >{{ $t("apiModal.tryItButton") }}</a>
             </h2>
             <pre class="locale-graphql"><code>{{example.snippet}}</code></pre>

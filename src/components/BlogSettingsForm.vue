@@ -218,10 +218,10 @@ export default {
           `,
           variables: {
             blog
-          },
-          refetchQueries: [{ query: getMyBlogsQuery }, { query: getUserQuery }]
+          }
         })
-        .then(result => {
+        .then(async result => {
+          await apolloClient.resetStore();
           return result.data.updateBlog;
         })
         .catch(error => {
@@ -318,7 +318,8 @@ export default {
               _id: this.$route.params.blogId
             }
           })
-          .then(() => {
+          .then(async () => {
+            await apolloClient.resetStore();
             this.deleteBlogState = REQUEST_STATE.FINISHED_OK;
             this.$router.push({ name: "blogList" });
           })

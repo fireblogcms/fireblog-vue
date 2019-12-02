@@ -57,7 +57,8 @@ class ckeditorGraphQLUploadAdapter {
             blogId: Router.currentRoute.params.blogId
           }
         })
-        .then(result => {
+        .then(async result => {
+          await apolloClient.resetStore();
           // is the default url to use to display our uploaded image.
           // Here it is possible to return different srcset if needed.
           return {
