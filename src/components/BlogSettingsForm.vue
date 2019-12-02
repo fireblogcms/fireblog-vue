@@ -149,7 +149,11 @@ import AppMessage from "../components/AppMessage";
 import apolloClient from "../utils/apolloClient";
 import gql from "graphql-tag";
 import BulmaModal from "./BulmaModal";
-import { deleteBlogMutation } from "../utils/queries";
+import {
+  deleteBlogMutation,
+  getMyBlogsQuery,
+  getUserQuery
+} from "../utils/queries";
 
 const initialGeneralSettingsFormValues = {
   name: "",
@@ -214,7 +218,8 @@ export default {
           `,
           variables: {
             blog
-          }
+          },
+          refetchQueries: [{ query: getMyBlogsQuery }, { query: getUserQuery }]
         })
         .then(result => {
           return result.data.updateBlog;

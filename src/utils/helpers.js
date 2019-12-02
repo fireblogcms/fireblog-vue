@@ -7,7 +7,6 @@ import {
   getMyBlogsQuery,
   getPostQuery
 } from "./queries";
-import store from "../store";
 
 export const REQUEST_STATE = {
   NOT_STARTED: "NOT_STARTED",
@@ -108,9 +107,6 @@ export function createSlug(value, options) {
  */
 
 export function getUser() {
-  if (store.state.user) {
-    return Promise.resolve(store.state.user);
-  }
   return apolloClient
     .query({
       query: getUserQuery
@@ -119,7 +115,6 @@ export function getUser() {
       if (result.data.me === null) {
         throw new Error("No logged in user found");
       }
-      store.commit("user", result.data.me);
       return result.data.me;
     });
 }

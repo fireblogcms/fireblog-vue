@@ -244,11 +244,13 @@ import {
   ckeditorIframelyMediaProvider,
   graphQLErrorsContainsCode
 } from "../utils/helpers";
-import { richPreviewLinksAuthorizedDomains } from "../../config";
+
 import {
   createPostMutation,
   updatePostMutation,
-  getPostQuery
+  getPostQuery,
+  getPostsQuery,
+  getPostsByStatusQuery
 } from "../utils/queries";
 import striptags from "striptags";
 
@@ -685,7 +687,20 @@ export default {
           mutation: createPostMutation,
           variables: {
             post
-          }
+          },
+          refetchQueries: [
+            {
+              query: getPostsQuery,
+              variables: { blog: this.$route.params.blogId }
+            },
+            {
+              query: getPostsByStatusQuery,
+              variables: {
+                blog: this.$route.params.blogId,
+                status: post.status
+              }
+            }
+          ]
         })
         .then(result => {
           this.existingPost = result.data.createPost;
@@ -717,7 +732,27 @@ export default {
           mutation: updatePostMutation,
           variables: {
             post
-          }
+          },
+          refetchQueries: [
+            {
+              query: getPostsQuery,
+              variables: { blog: this.$route.params.blogId }
+            },
+            {
+              query: getPostsByStatusQuery,
+              variables: {
+                blog: this.$route.params.blogId,
+                status: "PUBLISHED"
+              }
+            },
+            {
+              query: getPostsByStatusQuery,
+              variables: {
+                blog: this.$route.params.blogId,
+                status: "DRAFT"
+              }
+            }
+          ]
         })
         .then(result => {
           this.existingPost = result.data.updatePost;

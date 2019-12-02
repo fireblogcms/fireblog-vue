@@ -2,7 +2,7 @@
   <div id="app">
     <AppTopBar v-show="TopbarIsVisible()" />
     <portal-target name="notifications"></portal-target>
-    <router-view />
+    <router-view :key="$route.fullPath" />
   </div>
 </template>
 

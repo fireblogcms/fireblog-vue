@@ -1,5 +1,7 @@
 import gql from "graphql-tag";
 
+import { postsPerPage } from "../config";
+
 export const FullPostFragment = gql`
   fragment FullPostFragment on Post {
     _id
@@ -37,7 +39,7 @@ export const getUserQuery = gql`
           name
         }
       }
-      blogs(last: 100) {
+      blogs(last: ${postsPerPage}) {
         edges {
           node {
             _id
@@ -58,7 +60,7 @@ export const getMyBlogsQuery = gql`
     me {
       _id
       name
-      blogs(last: 100) {
+      blogs(last: ${postsPerPage}) {
         edges {
           node {
             _id
@@ -101,7 +103,7 @@ export const getPostQuery = gql`
 export const getPostsByStatusQuery = gql`
   ${FullPostFragment}
   query getPostsByStatusQuery($blog: ID!, $status: PostPublicationStatus!) {
-    posts(filter: { blog: $blog, status: $status }, last: 100) {
+    posts(filter: { blog: $blog, status: $status }, last: ${postsPerPage}) {
       edges {
         node {
           ...FullPostFragment
@@ -116,8 +118,8 @@ export const getPostsByStatusQuery = gql`
  */
 export const getPostsQuery = gql`
   ${FullPostFragment}
-  query getPostsQuery($blog: ID!, $last: Int) {
-    posts(filter: { blog: $blog }, last: $last) {
+  query getPostsQuery($blog: ID!) {
+    posts(filter: { blog: $blog }, last: ${postsPerPage}) {
       edges {
         node {
           ...FullPostFragment
