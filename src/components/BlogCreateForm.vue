@@ -57,7 +57,12 @@
                 class="button is-outlined"
                 @click="$router.push('/')"
               >CANCEL</button>
-              <button class="button is-primary" @click="onCreateClick">CREATE MY BLOG</button>
+              <button
+                :disabled="savingBlogState === 'PENDING'"
+                :class="{'is-loading': savingBlogState === 'PENDING'}"
+                class="button is-primary"
+                @click="onCreateClick"
+              >CREATE MY BLOG</button>
             </div>
 
             <!-- Any other Bulma elements you want -->
@@ -98,6 +103,7 @@ export default {
       formErrors: [],
       initDataState: REQUEST_STATE.NOT_STARTED,
       initStateError: null,
+      savingBlogState: REQUEST_STATE.NOT_STARTED,
       user: null,
       languageList: null,
       inputs: {
@@ -136,6 +142,7 @@ export default {
       if (Object.keys(this.formErrors).length > 0) {
         return false;
       }
+      this.savingBlogState = REQUEST_STATE.PENDING;
       apolloClient
         .mutate({
           mutation: createBlogMutation,
@@ -148,12 +155,14 @@ export default {
         })
         .then(async result => {
           await apolloClient.resetStore();
+          this.savingBlogState = REQUEST_STATE.FINISHED_OK;
           this.$router.push({
             name: "postList",
             params: { blogId: result.data.createBlog._id }
           });
         })
         .catch(error => {
+          this.savingBlogState = REQUEST_STATE.FINISHED_ERROR;
           this.errors.push(
             "Blog created failed with following message: " + error
           );
