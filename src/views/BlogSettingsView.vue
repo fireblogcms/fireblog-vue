@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <DefaultLayout>
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
       <span class="item tag is-large">
@@ -16,18 +16,20 @@
     <!-- END TOPBAR LEFT BUTTONS -->
 
     <BlogSettingsForm />
-  </div>
+  </DefaultLayout>
 </template>
 
 <script>
 import BlogSettingsForm from "../components/BlogSettingsForm";
 import IconBack from "../components/IconBack";
 import { REQUEST_STATE } from "../utils/helpers";
+import DefaultLayout from "../layouts/DefaultLayout";
 
 export default {
   components: {
     IconBack,
-    BlogSettingsForm
+    BlogSettingsForm,
+    DefaultLayout
   }
 };
 </script>

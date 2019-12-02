@@ -1,17 +1,19 @@
 <template>
-  <div class="section container">
+  <DefaultLayout class="section container">
     <AppLoader>Logging out ...</AppLoader>
-  </div>
+  </DefaultLayout>
 </template>
 
 <script>
 import { auth0Client } from "../utils/auth";
 import AppLoader from "../components/AppLoader";
 import { REQUEST_STATE } from "../utils/helpers";
+import DefaultLayout from "../layouts/DefaultLayout";
 
 export default {
   components: {
-    AppLoader
+    AppLoader,
+    DefaultLayout
   },
   data() {
     return {

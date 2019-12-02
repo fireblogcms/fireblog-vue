@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <DefaultLayout>
     <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
 
     <template v-if="initDataState === 'PENDING'">
@@ -46,7 +46,7 @@
         </AppPanel>
       </div>
     </template>
-  </div>
+  </DefaultLayout>
 </template>
 
 <script>
@@ -57,12 +57,14 @@ import AppError from "../components/AppError";
 import { REQUEST_STATE, getUser } from "../utils/helpers";
 import gql from "graphql-tag";
 import logger from "../utils/logger";
+import DefaultLayout from "../layouts/DefaultLayout";
 
 export default {
   components: {
     AppPanel,
     AppLoader,
-    AppError
+    AppError,
+    DefaultLayout
   },
   data() {
     return {

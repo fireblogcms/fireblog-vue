@@ -107,7 +107,7 @@
         >{{$t('views.blogSettings.dangerZone.deleteBlog')}}</button>
       </AppPanel>
 
-      <BulmaModal class="api-modal animated zoomIn" v-model="showDeleteBlogModal">
+      <BulmaModal class="api-modal" v-model="showDeleteBlogModal">
         <template #title>
           Detele
           <em>{{blog.name}}</em>

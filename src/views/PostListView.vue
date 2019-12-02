@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <DefaultLayout>
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
       <span class="item tag is-large">
@@ -222,12 +222,12 @@
         >{{ $t("views.postList.deleteModal.confirmButton") }}</div>
       </template>
     </BulmaModal>
-  </div>
+  </DefaultLayout>
 </template>
 
 <script>
 import apolloClient from "../utils/apolloClient";
-
+import DefaultLayout from "../layouts/DefaultLayout";
 import IconBack from "../components/IconBack";
 import gql from "graphql-tag";
 import AppLoader from "../components/AppLoader";
@@ -253,7 +253,8 @@ export default {
     AppPanel,
     AppList,
     BulmaModal,
-    IconBack
+    IconBack,
+    DefaultLayout
   },
   data() {
     return {

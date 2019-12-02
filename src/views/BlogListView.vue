@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <DefaultLayout>
     <AppLoader v-if="initDataState === 'PENDING'">Loading blogs</AppLoader>
 
     <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
@@ -65,13 +65,13 @@
         </div>
       </div>
     </template>
-  </div>
+  </DefaultLayout>
 </template>
 
 <script>
 import apolloClient from "../utils/apolloClient";
 import BlogCreateForm from "../components/BlogCreateForm";
-
+import DefaultLayout from "../layouts/DefaultLayout";
 import AppLoader from "../components/AppLoader";
 import gql from "graphql-tag";
 import { REQUEST_STATE } from "../utils/helpers";
@@ -82,6 +82,7 @@ import { getMyBlogs } from "../utils/helpers";
 
 export default {
   components: {
+    DefaultLayout,
     AppError,
     BlogCreateForm,
     AppLoader

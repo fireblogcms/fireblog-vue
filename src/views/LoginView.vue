@@ -1,17 +1,18 @@
 <template>
-  <div>
+  <DefaultLayout>
     <AppLoader>Logging ...</AppLoader>
-  </div>
+  </DefaultLayout>
 </template>
 
 <script>
 import AppLoader from "../components/AppLoader";
-
+import DefaultLayout from "../layouts/DefaultLayout";
 import { auth0Client } from "../utils/auth";
 
 export default {
   components: {
-    AppLoader
+    AppLoader,
+    DefaultLayout
   },
   async created() {
     const auth0 = await auth0Client();

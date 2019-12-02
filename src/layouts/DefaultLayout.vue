@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <router-view :key="$route.fullPath" />
+    <AppTopBar v-show="TopbarIsVisible()" />
+    <portal-target name="notifications"></portal-target>
+    <slot />
   </div>
 </template>
 

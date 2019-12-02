@@ -1,15 +1,17 @@
 <template>
-  <div class="container is-small">
+  <DefaultLayout class="container is-small">
     <BlogCreateForm />
-  </div>
+  </DefaultLayout>
 </template>
 
 <script>
 import BlogCreateForm from "../components/BlogCreateForm";
+import DefaultLayout from "../layouts/DefaultLayout";
 
 export default {
   components: {
-    BlogCreateForm
+    BlogCreateForm,
+    DefaultLayout
   }
 };
 </script>
