@@ -1,5 +1,5 @@
 <template>
-  <DefaultLayout>
+  <div>
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
       <span class="item tag is-large">
@@ -113,7 +113,7 @@
                       posts.edges.length > 0
                   "
                 >
-                  <LayoutList :items="posts.edges" :itemUniqueKey="item => item.node._id">
+                  <AppList :items="posts.edges" :itemUniqueKey="item => item.node._id">
                     <template v-slot="{ item }">
                       <div class="columns">
                         <div class="column is-1">
@@ -185,7 +185,7 @@
                         </div>
                       </div>
                     </template>
-                  </LayoutList>
+                  </AppList>
                 </template>
                 <!---->
               </div>
@@ -222,12 +222,12 @@
         >{{ $t("views.postList.deleteModal.confirmButton") }}</div>
       </template>
     </BulmaModal>
-  </DefaultLayout>
+  </div>
 </template>
 
 <script>
 import apolloClient from "../utils/apolloClient";
-import DefaultLayout from "../layouts/DefaultLayout";
+
 import IconBack from "../components/IconBack";
 import gql from "graphql-tag";
 import AppLoader from "../components/AppLoader";
@@ -241,18 +241,17 @@ import {
 } from "../utils/queries";
 import AppError from "../components/AppError";
 import AppPanel from "../components/AppPanel";
-import LayoutList from "../components/LayoutList";
+import AppList from "../components/AppList";
 import striptags from "striptags";
 import logger from "../utils/logger";
 import BulmaModal from "../components/BulmaModal";
 
 export default {
   components: {
-    DefaultLayout,
     AppLoader,
     AppError,
     AppPanel,
-    LayoutList,
+    AppList,
     BulmaModal,
     IconBack
   },

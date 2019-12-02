@@ -1,19 +1,17 @@
 <template>
-  <BareLayout>
-    <div class="container section">
-      <AppError v-if="error">
-        {{ error }}. <br />You can
-        <router-link :to="{ name: 'login' }">Retry to login</router-link>
-      </AppError>
-      <AppPanel v-if="initDataState === 'PENDING'">
-        <AppLoader>Signing in ...</AppLoader>
-      </AppPanel>
-    </div>
-  </BareLayout>
+  <div class="container section">
+    <AppError v-if="error">
+      {{ error }}.
+      <br />You can
+      <router-link :to="{ name: 'login' }">Retry to login</router-link>
+    </AppError>
+    <AppPanel v-if="initDataState === 'PENDING'">
+      <AppLoader>Signing in ...</AppLoader>
+    </AppPanel>
+  </div>
 </template>
 
 <script>
-import BareLayout from "../layouts/BareLayout";
 import AppLoader from "../components/AppLoader";
 import { auth0Client, syncAuth0UserWithServer } from "../utils/auth";
 import { REQUEST_STATE } from "../utils/helpers";
@@ -24,7 +22,6 @@ import logger from "../utils/logger";
 
 export default {
   components: {
-    BareLayout,
     AppLoader,
     AppPanel,
     AppError

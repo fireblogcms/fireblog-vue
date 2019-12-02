@@ -5,12 +5,15 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    user: null,
-    postJustPublished: false
+    postJustPublished: false,
+    user: null
   },
   mutations: {
     postJustPublished(state, value) {
       state.postJustPublished = value;
+    },
+    user(state, value) {
+      state.user = value;
     }
   }
 });

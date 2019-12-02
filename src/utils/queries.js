@@ -177,6 +177,7 @@ export const createUploadPolicyMutation = gql`
 export const deleteBlogMutation = gql`
   mutation($_id: ID!) {
     deleteBlog(_id: $_id) {
+      _id
       name
       status
       description

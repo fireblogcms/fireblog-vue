@@ -1,5 +1,5 @@
 <template>
-  <DefaultLayout>
+  <div>
     <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
 
     <template v-if="initDataState === 'PENDING'">
@@ -32,10 +32,10 @@
                     {{ membership.blog.name }} :
                     <em>
                       {{
-                        membership.roles
-                          .map(v => v.replace("_", " "))
-                          .join(",")
-                          .toLowerCase()
+                      membership.roles
+                      .map(v => v.replace("_", " "))
+                      .join(",")
+                      .toLowerCase()
                       }}
                     </em>
                   </li>
@@ -46,22 +46,20 @@
         </AppPanel>
       </div>
     </template>
-  </DefaultLayout>
+  </div>
 </template>
 
 <script>
-import DefaultLayout from "@/layouts/DefaultLayout";
 import apolloClient from "../utils/apolloClient";
 import AppPanel from "../components/AppPanel";
 import AppLoader from "../components/AppLoader";
 import AppError from "../components/AppError";
-import { REQUEST_STATE } from "../utils/helpers";
+import { REQUEST_STATE, getUser } from "../utils/helpers";
 import gql from "graphql-tag";
 import logger from "../utils/logger";
 
 export default {
   components: {
-    DefaultLayout,
     AppPanel,
     AppLoader,
     AppError
@@ -77,45 +75,14 @@ export default {
     initData() {
       this.errors = [];
       this.initDataState = REQUEST_STATE.PENDING;
-      return Promise.all([this.getProfile()])
-        .then(() => {
+      return getUser()
+        .then(user => {
+          this.me = user;
           this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
         .catch(error => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           this.errorMessage = "Sorry, an error occured while loading page.";
-          throw new Error(error);
-        });
-    },
-    getProfile() {
-      return apolloClient
-        .query({
-          query: gql`
-            query profileQuery {
-              me {
-                _id
-                name
-                email
-                createdAt
-                updatedAt
-                picture
-                blogsMemberships {
-                  roles
-                  blog {
-                    name
-                  }
-                }
-              }
-            }
-          `
-        })
-        .then(result => {
-          this.me = result.data.me;
-          return result;
-        })
-        .catch(error => {
-          this.errorMessage =
-            "Sorry, an error occured while fetching your profile.";
           throw new Error(error);
         });
     }

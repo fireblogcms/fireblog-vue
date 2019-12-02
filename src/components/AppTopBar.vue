@@ -156,14 +156,8 @@ export default {
   methods: {
     async initData() {
       this.initDataState = REQUEST_STATE.PENDING;
-      const promises = [];
-      promises.push(getUser());
-      // if we are inside a blog, fetch blog informations.
-      if (["postList", "postCreate", "postUpdate"].includes(this.$route.name)) {
-        promises.push(getBlog(this.$route.params.blogId));
-      }
-      Promise.all(promises)
-        .then(([user]) => {
+      getUser()
+        .then(user => {
           this.me = user;
           this.initDataState = REQUEST_STATE.FINISHED_OK;
         })

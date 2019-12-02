@@ -1,9 +1,28 @@
 <template>
   <div id="app">
-    <!--
-    $route.fullPath ensure our "created" hooks 
-    are triggered on each page change
-    -->
-    <router-view :key="$route.fullPath" />
+    <AppTopBar v-show="TopbarIsVisible()" />
+    <portal-target name="notifications"></portal-target>
+    <router-view />
   </div>
 </template>
+
+<script>
+import AppTopBar from "@/components/AppTopBar";
+
+export default {
+  components: {
+    AppTopBar
+  },
+  methods: {
+    TopbarIsVisible() {
+      let visible = true;
+      const hideForRoutes = ["auth0Callback"];
+      if (hideForRoutes.includes(this.$route.name)) {
+        visible = false;
+      }
+      return visible;
+    }
+  }
+};
+</script>
+
