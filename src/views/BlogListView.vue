@@ -36,7 +36,7 @@
                   @click="$router.push({ name: 'blogCreate' })"
                 >
                   <img width="40" style="margin-right:10px" src="/images/book.png" />
-                  {{ $t("views.blogList.createNewBlogButton") }}
+                  {{ $t("views.blogList.createNewBlogButton").toUpperCase() }}
                 </button>
               </div>
             </div>

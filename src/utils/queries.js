@@ -23,6 +23,22 @@ export const FullPostFragment = gql`
   }
 `;
 
+export const FullBlogFragment = gql`
+  fragment FullBlogFragment on Blog {
+    _id
+    contentDefaultLocale
+    description
+    name
+    updatedAt
+    createdAt
+    webhooks {
+      name
+      onEvents
+      url
+    }
+  }
+`;
+
 export const getUserQuery = gql`
   query getUserQuery {
     me {
@@ -56,6 +72,7 @@ export const getUserQuery = gql`
 `;
 
 export const getMyBlogsQuery = gql`
+  ${FullBlogFragment}
   query myBlogsQuery {
     me {
       _id
@@ -63,11 +80,7 @@ export const getMyBlogsQuery = gql`
       blogs(last: ${postsPerPage}) {
         edges {
           node {
-            _id
-            name
-            description
-            createdAt
-            updatedAt
+            ...FullBlogFragment
           }
         }
       }
@@ -76,17 +89,10 @@ export const getMyBlogsQuery = gql`
 `;
 
 export const getBlogQuery = gql`
+  ${FullBlogFragment}
   query getBlogQuery($_id: ID!) {
     blog(_id: $_id) {
-      _id
-      contentDefaultLocale
-      description
-      name
-      webhooks {
-        name
-        onEvents
-        url
-      }
+      ...FullBlogFragment
     }
   }
 `;
@@ -139,11 +145,10 @@ export const deletePostMutation = gql`
 `;
 
 export const createBlogMutation = gql`
+  ${FullBlogFragment}
   mutation createBlogMutation($blog: CreateBlogInput!) {
     createBlog(blog: $blog) {
-      _id
-      name
-      description
+      ...FullBlogFragment
     }
   }
 `;
@@ -177,13 +182,10 @@ export const createUploadPolicyMutation = gql`
 `;
 
 export const deleteBlogMutation = gql`
+  ${FullBlogFragment}
   mutation($_id: ID!) {
     deleteBlog(_id: $_id) {
-      _id
-      name
-      status
-      description
-      deletedAt
+      ...FullBlogFragment
     }
   }
 `;
