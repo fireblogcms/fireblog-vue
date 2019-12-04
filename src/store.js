@@ -6,7 +6,8 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     postJustPublished: false,
-    user: null
+    user: null,
+    notification: null
   },
   mutations: {
     postJustPublished(state, value) {
@@ -14,6 +15,12 @@ export default new Vuex.Store({
     },
     user(state, value) {
       state.user = value;
+    },
+    notification(state, { message, type }) {
+      state.notification = {
+        message,
+        type
+      };
     }
   }
 });

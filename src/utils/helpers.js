@@ -7,6 +7,7 @@ import {
   getMyBlogsQuery,
   getPostQuery
 } from "./queries";
+import Store from "../store";
 
 export const REQUEST_STATE = {
   NOT_STARTED: "NOT_STARTED",
@@ -346,4 +347,8 @@ export function S3Upload({
     .catch(e => {
       console.log("fetch policy error: ", e);
     });
+}
+
+export function appNotification(message, type = "notification") {
+  Store.commit("notification", { message, type });
 }

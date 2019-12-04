@@ -4,7 +4,6 @@
     <AppLoader v-if="initDataState === 'PENDING'">Loading</AppLoader>
 
     <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
-    <AppMessage v-if="appMessage">{{ appMessage }}</AppMessage>
     <template v-if="initDataState === 'FINISHED_OK'">
       <AppPanel
         style="margin-top:40px;margin-bottom:40px;padding:40px;"
@@ -153,10 +152,14 @@
 
 <script>
 import AppPanel from "../components/AppPanel";
-import { getBlog, REQUEST_STATE, formInitData } from "../utils/helpers";
+import {
+  getBlog,
+  REQUEST_STATE,
+  formInitData,
+  appNotification
+} from "../utils/helpers";
 import AppLoader from "../components/AppLoader";
 import AppError from "../components/AppError";
-import AppMessage from "../components/AppMessage";
 import apolloClient from "../utils/apolloClient";
 import gql from "graphql-tag";
 import BulmaModal from "./BulmaModal";
@@ -183,7 +186,6 @@ export default {
     AppPanel,
     AppLoader,
     AppError,
-    AppMessage,
     AppPanel,
     BulmaModal,
     S3ImageUpload
@@ -205,8 +207,7 @@ export default {
       technicalSettingsForm: formInitData({
         initialFormValues: initialTechnicalSettingsFormValues
       }),
-      errorMessage: null,
-      appMessage: null
+      errorMessage: null
     };
   },
   created() {
@@ -295,7 +296,9 @@ export default {
         this.updateBlog(blog)
           .then(updatedBlog => {
             this.savingGeneralSettingsState = REQUEST_STATE.FINISHED_OK;
-            this.appMessage = `"${updatedBlog.name}" general settings have been saved.`;
+            appNotification(
+              `"${updatedBlog.name}" general settings have been saved.`
+            );
           })
           .catch(e => {
             this.savingGeneralSettingsState = REQUEST_STATE.FINISHED_ERROR;
@@ -312,7 +315,9 @@ export default {
       this.updateBlog(blog)
         .then(updatedBlog => {
           this.savingTechnicalSettingsState = REQUEST_STATE.FINISHED_OK;
-          this.appMessage = `"${updatedBlog.name}" technical settings have been saved.`;
+          appNotification(
+            `"${updatedBlog.name}" technical settings have been saved.`
+          );
         })
         .catch(e => {
           this.savingTechnicalSettingsState = REQUEST_STATE.FINISHED_ERROR;

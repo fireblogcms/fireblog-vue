@@ -8,7 +8,7 @@
             style="float:left;cursor:pointer;margin-right:20px;"
             class="image"
           >
-            <img style="width:60px" src="/logo-solo.png" alt="" />
+            <img style="width:60px" src="/logo-solo.png" alt />
           </figure>
           <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
           <portal-target name="topbar-left">
@@ -35,10 +35,7 @@
               class="dropdown is-right"
               :class="{ 'is-active': dropdownMenuActive }"
             >
-              <div
-                class="dropdown-trigger"
-                @click="dropdownMenuActive = !dropdownMenuActive"
-              >
+              <div class="dropdown-trigger" @click="dropdownMenuActive = !dropdownMenuActive">
                 <div class aria-haspopup="true">
                   <span>
                     <img
@@ -63,17 +60,17 @@
                       params: { blogId: edge.node._id }
                     }"
                     class="dropdown-item"
-                    >{{ edge.node.name }}</router-link
-                  >
+                  >{{ edge.node.name }}</router-link>
                   <hr class="dropdown-divider" />
                   <router-link
                     :to="{ name: 'profile' }"
                     class="dropdown-item"
-                    >{{ $t("topbar.accountMenu.myAccount") }}</router-link
-                  >
-                  <router-link :to="{ name: 'logout' }" class="dropdown-item">{{
+                  >{{ $t("topbar.accountMenu.myAccount") }}</router-link>
+                  <router-link :to="{ name: 'logout' }" class="dropdown-item">
+                    {{
                     $t("topbar.accountMenu.logout")
-                  }}</router-link>
+                    }}
+                  </router-link>
                 </div>
               </div>
             </div>
@@ -83,40 +80,28 @@
     </div>
 
     <!-- GRAPHQL API DOCUMENTATION -->
-    <BulmaModal
-      :fullscreen="true"
-      class="api-modal animated zoomIn"
-      v-model="showApiModal"
-    >
+    <BulmaModal :fullscreen="true" class="api-modal animated zoomIn" v-model="showApiModal">
       <template #title>
-        <span class="title is-2">{{ $t("apiModal.title") }}</span>
+        <span class="title is-2">{{ $t("apiModal.title").toUpperCase() }}</span>
         <a
           :href="blogApiUrl"
           target="_blank"
-          class="button is-primary is-pulled-right"
-          >{{ $t("apiModal.openGraphQLExplorer") }}</a
-        >
+          class="button is-primary is-pulled-right is-large"
+        >{{ $t("apiModal.openGraphQLExplorer") }}</a>
         <button
           :href="blogApiUrl"
           target="_blank"
           @click="showApiModal = false"
-          class="button is-pulled-right"
+          class="button is-pulled-right is-large"
           style="margin-right:20px;"
-        >
-          {{ $t("dictionnary.close") }}
-        </button>
+        >{{ $t("dictionnary.close") }}</button>
       </template>
       <template #body>
         <div class="container">
           <h2 class="title is-4">GraphQL endpoint</h2>
           <div class="field">
             <div class="control">
-              <input
-                readonly="true"
-                class="input"
-                type="text"
-                :value="blogApiUrl"
-              />
+              <input readonly="true" class="input" type="text" :value="blogApiUrl" />
             </div>
           </div>
           <div
@@ -131,8 +116,7 @@
                 :href="`${blogApiUrl}?query=${encodeURI(example.snippet)}`"
                 target="_blank"
                 class="is-pulled-right button"
-                >{{ $t("apiModal.tryItButton") }}</a
-              >
+              >{{ $t("apiModal.tryItButton") }}</a>
             </h2>
             <pre class="locale-graphql"><code>{{example.snippet}}</code></pre>
           </div>

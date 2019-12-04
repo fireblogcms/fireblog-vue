@@ -1,5 +1,4 @@
 // @see https://jsfiddle.net/katowulf/3gtDf/
-
 export function generate() {
   let firstWord = randomEl(adjectives);
   firstWord = firstWord[0].toUpperCase() + firstWord.substring(1);
