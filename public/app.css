@@ -48,6 +48,9 @@ video {
 .animated.zoomIn {
   animation-duration: 0.2s;
 }
+.animated.flipInY {
+  animation-duration: 0.5s;
+}
 #app .ck-progress-bar {
   height: 4px !important;
 }
