@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="default-layout">
     <AppTopBar v-show="TopbarIsVisible()" />
     <slot />
   </div>
@@ -24,5 +24,3 @@ export default {
   }
 };
 </script>
-
-

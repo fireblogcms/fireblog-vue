@@ -1,7 +1,10 @@
 <template>
   <div>
     <AppLoader v-if="initDataState === 'PENDING'" />
-    <div v-if="initDataState === REQUEST_STATE.FINISHED_OK" class="post-form-wrapper">
+    <div
+      v-if="initDataState === REQUEST_STATE.FINISHED_OK"
+      class="post-form-wrapper"
+    >
       <!-- FORM -->
       <form @submit.prevent>
         <textarea-autosize
@@ -37,12 +40,16 @@
           v-if="modal.confirmText && modal.confirmCallback"
           @click="modal.confirmCallback"
           class="button is-danger"
-        >{{ modal.confirmText }}</div>
+        >
+          {{ modal.confirmText }}
+        </div>
         <div
           v-if="modal.cancelText && modal.cancelCallback"
           @click="modal.cancelCallback"
           class="button is-primary"
-        >{{ modal.cancelText }}</div>
+        >
+          {{ modal.cancelText }}
+        </div>
       </template>
     </BulmaModal>
 
@@ -78,21 +85,31 @@
                 savingPost.state === 'PENDING' &&
                 savingPost.publicationStatus === 'PUBLISHED'
             }"
-          >PUBLISH NOW</button>
+          >
+            PUBLISH NOW
+          </button>
           <button
             style="margin-right:20px;"
             @click="publicationSettingsModal.show = false"
             class="button is-pulled-right is-large"
-          >CANCEL</button>
+          >
+            CANCEL
+          </button>
         </div>
       </template>
       <template #footer />
     </BulmaModal>
 
     <!-- HURRAH MODAL -->
-    <BulmaModal class="hurrah-modal" v-model="publishingHurrahModal.show" :whiteFooter="true">
+    <BulmaModal
+      class="hurrah-modal"
+      v-model="publishingHurrahModal.show"
+      :whiteFooter="true"
+    >
       <template #title>
-        <div class="has-text-centered">{{ $t("views.postForm.firstPublicationHurralModal.title") }}</div>
+        <div class="has-text-centered">
+          {{ $t("views.postForm.firstPublicationHurralModal.title") }}
+        </div>
       </template>
       <template #body>
         <div class="has-text-centered">
@@ -103,13 +120,20 @@
         <button
           @click="publishingHurrahModal.show = false"
           class="button is-primary is-large"
-        >{{ $t("views.postForm.firstPublicationHurralModal.okayButton") }}</button>
+        >
+          {{ $t("views.postForm.firstPublicationHurralModal.okayButton") }}
+        </button>
       </template>
     </BulmaModal>
 
-    <BulmaModal class="publishing-changes-modal" v-model="publishingChangesModal.show">
+    <BulmaModal
+      class="publishing-changes-modal"
+      v-model="publishingChangesModal.show"
+    >
       <template #title>
-        <div class="has-text-centered">{{ $t("views.postForm.publishChangesHurralModal.title") }}</div>
+        <div class="has-text-centered">
+          {{ $t("views.postForm.publishChangesHurralModal.title") }}
+        </div>
       </template>
       <template #body>
         <div class="has-text-centered">
@@ -120,15 +144,24 @@
         <button
           @click="publishingChangesModal.show = false"
           class="button is-primary is-large"
-        >{{ $t("views.postForm.publishChangesHurralModal.okayButton") }}</button>
+        >
+          {{ $t("views.postForm.publishChangesHurralModal.okayButton") }}
+        </button>
       </template>
     </BulmaModal>
 
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
-      <span @click="onBackToPostsClick" style="cursor:pointer" class="item tag is-large">
+      <span
+        @click="onBackToPostsClick"
+        style="cursor:pointer"
+        class="item tag is-large"
+      >
         <em>
-          <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
+          <img
+            style="position:relative;height:20px !important;top:4px;"
+            src="/images/book.png"
+          />
           <IconBack />posts
         </em>
       </span>
@@ -142,7 +175,8 @@
           {{ getCurrentPublicationStatus() }}
           <span
             v-if="getCurrentPublicationStatus() === 'DRAFT' && lastTimeSaved"
-          >- saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</span>
+            >- saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</span
+          >
         </em>
       </span>
     </portal>
@@ -163,10 +197,7 @@
         type="submit"
       >
         {{ $t("views.postForm.saveDraft").toUpperCase() }}
-        <span
-          class="animated bounce"
-          v-if="changesDetected"
-        >*</span>
+        <span class="animated bounce" v-if="changesDetected">*</span>
       </button>
 
       <button
@@ -180,7 +211,9 @@
         }"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
-      >{{ $t("views.postForm.unpublish").toUpperCase() }}</button>
+      >
+        {{ $t("views.postForm.unpublish").toUpperCase() }}
+      </button>
 
       <button
         @click="onPublicationClick()"
@@ -193,7 +226,9 @@
         }"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
-      >{{ $t("views.postForm.publication").toUpperCase() }}</button>
+      >
+        {{ $t("views.postForm.publication").toUpperCase() }}
+      </button>
 
       <button
         @click="onPublicationClick()"
@@ -208,10 +243,7 @@
         type="submit"
       >
         {{ $t("views.postForm.publishChanges").toUpperCase() }}
-        <span
-          class="animated bounce"
-          v-if="changesDetected"
-        >*</span>
+        <span class="animated bounce" v-if="changesDetected">*</span>
       </button>
 
       <!--

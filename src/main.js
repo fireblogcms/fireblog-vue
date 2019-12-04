@@ -7,7 +7,6 @@ import "bulma/css/bulma.css";
 import PortalVue from "portal-vue";
 import vClickOutside from "v-click-outside";
 import "animate.css/animate.min.css";
-import "vue-loading-overlay/dist/vue-loading.css";
 import VueLazyload from "vue-lazyload";
 import i18n from "./i18n/index";
 
