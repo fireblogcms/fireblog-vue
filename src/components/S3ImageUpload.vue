@@ -56,6 +56,7 @@ export default {
   methods: {
     processImage(event) {
       this.uploadingState = REQUEST_STATE.PENDING;
+      this.$emit("onUploadingStateChange", this.uploadingState);
       this.file = event.target.files[0];
       this.uploadProgress = 0;
       const onProgress = ({ loaded, total, percentage }) => {

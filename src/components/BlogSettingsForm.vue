@@ -41,12 +41,16 @@
             </div>
           </div>
 
-          <S3ImageUpload
-            :blogId="$route.params.blogId"
-            @onUploadingStateChange="onUploadingStateChange"
-            :initialImage="generalSettingsForm.values.initial.image"
-            @onUploaded="onUploaded"
-          />
+          <div class="field">
+            <label class="label">Couverture du blog</label>
+            <S3ImageUpload
+              style="max-width:600px"
+              :blogId="$route.params.blogId"
+              @onUploadingStateChange="onUploadingStateChange"
+              :initialImage="generalSettingsForm.values.initial.image"
+              @onUploaded="onUploaded"
+            />
+          </div>
           <div>
             <button
               style="margin-top:20px;"
@@ -54,7 +58,7 @@
               :class="{
               'is-loading': savingGeneralSettingsState === 'PENDING'
             }"
-              :disabled="savingGeneralSettingsState === 'PENDING'"
+              :disabled="uploadBlogImageState === 'PENDING' || savingGeneralSettingsState === 'PENDING'"
               type="submit"
             >{{ $t("views.blogSettings.generalSettingsForm.saveButton") }}</button>
           </div>
@@ -189,6 +193,7 @@ export default {
       blog: null,
       initDataState: REQUEST_STATE.NOT_STARTED,
       savingGeneralSettingsState: REQUEST_STATE.NOT_STARTED,
+      uploadBlogImageState: REQUEST_STATE.NOT_STARTED,
       savingTechnicalSettingsState: REQUEST_STATE.NOT_STARTED,
       deleteBlogState: REQUEST_STATE.NOT_STARTED,
       showDeleteBlogModal: false,
@@ -208,7 +213,9 @@ export default {
     this.initData();
   },
   methods: {
-    onUploadingStateChange() {},
+    onUploadingStateChange(state) {
+      this.uploadBlogImageState = state;
+    },
     onUploaded(fileUrl) {
       this.generalSettingsForm.values.current.image = fileUrl;
     },
