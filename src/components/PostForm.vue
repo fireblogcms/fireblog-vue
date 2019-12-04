@@ -416,8 +416,8 @@ export default {
       }
     };
     hotkeys("ctrl+s,command+s", (event, handler) => {
-      // this.onSaveDraftClick();
-      event.preventDefault();
+      //this.onSaveDraftClick();
+      //event.preventDefault();
     });
   },
   beforeDestroy() {
