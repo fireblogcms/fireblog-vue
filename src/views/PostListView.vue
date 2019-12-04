@@ -44,7 +44,9 @@
                     params: { blogId: $route.params.blogId }
                   })
                 "
-              >{{ $t("views.postList.writeNewPostButton") }}</button>
+              >
+                {{ $t("views.postList.writeNewPostButton").toUpperCase() }}
+              </button>
             </div>
           </div>
         </header>
@@ -52,10 +54,9 @@
         <template v-if="isFirstPost === true">
           <div class="container">
             <AppPanel>
-              <h2
-                style="font-weight:200"
-                class="title has-text-centered"
-              >{{ $t("views.postList.firstBlogSentence") }}</h2>
+              <h2 style="font-weight:200" class="title has-text-centered">
+                {{ $t("views.postList.firstBlogSentence") }}
+              </h2>
               <div class="has-text-centered">
                 <div style="margin:2rem">
                   <button
@@ -66,7 +67,9 @@
                         params: { blogId: $route.params.blogId }
                       })
                     "
-                  >{{ $t("views.postList.firstPostWriteButton") }}</button>
+                  >
+                    {{ $t("views.postList.firstPostWriteButton") }}
+                  </button>
                 </div>
               </div>
             </AppPanel>
@@ -74,7 +77,10 @@
         </template>
         <template v-if="!isFirstPost">
           <section class="container">
-            <div class="tabs is-boxed is-medium" style="position:relative;margin-bottom:0;">
+            <div
+              class="tabs is-boxed is-medium"
+              style="position:relative;margin-bottom:0;"
+            >
               <ul style="border-bottom:0">
                 <li
                   @click="onStatusClick('PUBLISHED')"
@@ -101,10 +107,12 @@
                   "
                 >
                   <div class="content section has-text-centered">
-                    <p
-                      v-show="activeStatus === 'PUBLISHED'"
-                    >{{ $t("views.postList.noPublishedPostFound") }}</p>
-                    <p v-show="activeStatus === 'DRAFT'">{{ $t("views.postList.noDraftPostFound") }}</p>
+                    <p v-show="activeStatus === 'PUBLISHED'">
+                      {{ $t("views.postList.noPublishedPostFound") }}
+                    </p>
+                    <p v-show="activeStatus === 'DRAFT'">
+                      {{ $t("views.postList.noDraftPostFound") }}
+                    </p>
                   </div>
                 </template>
                 <template
@@ -113,7 +121,10 @@
                       posts.edges.length > 0
                   "
                 >
-                  <AppList :items="posts.edges" :itemUniqueKey="item => item.node._id">
+                  <AppList
+                    :items="posts.edges"
+                    :itemUniqueKey="item => item.node._id"
+                  >
                     <template v-slot="{ item }">
                       <div class="columns">
                         <div class="column is-1">
@@ -123,7 +134,10 @@
                             class="post-list-image"
                           />
                         </div>
-                        <div @click="onRowClick(item)" class="column is-9 content">
+                        <div
+                          @click="onRowClick(item)"
+                          class="column is-9 content"
+                        >
                           <h2 class="post-list-title">
                             <router-link
                               class="item"
@@ -134,18 +148,19 @@
                                   postId: item.node._id
                                 }
                               }"
-                            >{{ item.node.title + " " }}</router-link>
+                              >{{ item.node.title + " " }}</router-link
+                            >
                           </h2>
                           <span
                             style="color:rgba(0, 0, 0, 0.5);"
                             v-if="item.node.status === 'PUBLISHED'"
                           >
                             {{
-                            $t("views.postList.publishedOn", {
-                            date: moment(
-                            Number(item.node.publishedAt)
-                            ).format("DD MMMM YYYY - HH:mm")
-                            })
+                              $t("views.postList.publishedOn", {
+                                date: moment(
+                                  Number(item.node.publishedAt)
+                                ).format("DD MMMM YYYY - HH:mm")
+                              })
                             }}
                           </span>
                           <span
@@ -153,18 +168,20 @@
                             v-if="item.node.status === 'DRAFT'"
                           >
                             {{
-                            $t("views.postList.updatedOn", {
-                            date: moment(
-                            Number(item.node.updatedAt)
-                            ).format("DD MMMM YYYY - HH:mm")
-                            })
+                              $t("views.postList.updatedOn", {
+                                date: moment(
+                                  Number(item.node.updatedAt)
+                                ).format("DD MMMM YYYY - HH:mm")
+                              })
                             }}
                           </span>
 
                           <p
                             style="padding-top:10px"
                             v-if="item.node.teaser.trim()"
-                          >{{ striptags(item.node.teaser.substr(0, 200)) }}</p>
+                          >
+                            {{ striptags(item.node.teaser.substr(0, 200)) }}
+                          </p>
                         </div>
                         <div class="column is-2">
                           <div class="actions">
@@ -180,7 +197,8 @@
                               @click="onDeleteClick(item.node)"
                               style="min-width:100px"
                               class="button is-outlined"
-                            >{{ $t("views.postList.deleteButton") }}</span>
+                              >{{ $t("views.postList.deleteButton") }}</span
+                            >
                           </div>
                         </div>
                       </div>
@@ -201,25 +219,26 @@
           <div class="message-body">
             <p>
               {{
-              $t("views.postList.deleteModal.content", {
-              postTitle: deleteModal.post.title
-              })
+                $t("views.postList.deleteModal.content", {
+                  postTitle: deleteModal.post.title
+                })
               }}.
             </p>
           </div>
         </div>
       </template>
       <template #footer>
-        <div
-          @click="deleteModal.show = false"
-          class="button is-primary"
-        >{{ $t("views.postList.deleteModal.cancelButton") }}</div>
+        <div @click="deleteModal.show = false" class="button is-primary">
+          {{ $t("views.postList.deleteModal.cancelButton") }}
+        </div>
         <div
           @click="onDeleteModalConfirmClick"
           class="button is-danger"
           :class="{ 'is-loading': deletePostRequestState === 'PENDING' }"
           :disabled="deletePostRequestState === 'PENDING' ? true : false"
-        >{{ $t("views.postList.deleteModal.confirmButton") }}</div>
+        >
+          {{ $t("views.postList.deleteModal.confirmButton") }}
+        </div>
       </template>
     </BulmaModal>
   </DefaultLayout>

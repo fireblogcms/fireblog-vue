@@ -3,6 +3,13 @@
     <div class="container">
       <div class="columns">
         <div class="column">
+          <figure
+            @click="onLogoClick"
+            style="float:left;cursor:pointer;margin-right:20px;"
+            class="image"
+          >
+            <img style="width:60px" src="/logo-solo.png" alt="" />
+          </figure>
           <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
           <portal-target name="topbar-left">
             <!--
@@ -123,7 +130,7 @@
               <a
                 :href="`${blogApiUrl}?query=${encodeURI(example.snippet)}`"
                 target="_blank"
-                class="is-pulled-right button is-info"
+                class="is-pulled-right button"
                 >{{ $t("apiModal.tryItButton") }}</a
               >
             </h2>
@@ -171,6 +178,9 @@ export default {
     this.initData();
   },
   methods: {
+    onLogoClick() {
+      this.$router.push("/");
+    },
     async initData() {
       this.initDataState = REQUEST_STATE.PENDING;
       getUser()

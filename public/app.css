@@ -39,6 +39,32 @@ video {
 }
 */
 
+#app .is-primary {
+  background: #735cd9;
+  background: #816cdc;
+  font-weight: 300;
+  transition: background-color 0.3s ease;
+}
+
+#app .button.is-primary:hover {
+  background-color: #9584e1;
+  transition: background-color 0.3s ease;
+}
+
+#app .button.is-primary.is-outlined {
+  background: white;
+  border-radius: 3px;
+  border-color: #563bd1;
+  color: #563bd1;
+}
+
+#app .button.is-primary.is-outlined:hover {
+  background: #6754e2;
+  border-color: #6754e2;
+  color: white;
+  transition: background-color 0.5s ease;
+}
+
 .animated.fadeIn {
   animation-duration: 0.2s;
 }
