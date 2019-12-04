@@ -20,8 +20,9 @@
             </div>
             <div class="column">
               <div class="content">
-                <h2>{{ me.name }}</h2>
-                <p>{{ me.email }}</p>
+                <h2>name: {{ me.name }}</h2>
+                <p>email: {{ me.email }}</p>
+                <!--
                 <h2>mes rôles</h2>
                 <ul
                   class="has-text-left"
@@ -32,14 +33,15 @@
                     {{ membership.blog.name }} :
                     <em>
                       {{
-                      membership.roles
-                      .map(v => v.replace("_", " "))
-                      .join(",")
-                      .toLowerCase()
+                        membership.roles
+                          .map(v => v.replace("_", " "))
+                          .join(",")
+                          .toLowerCase()
                       }}
                     </em>
                   </li>
                 </ul>
+                -->
               </div>
             </div>
           </div>

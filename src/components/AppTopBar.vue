@@ -50,7 +50,7 @@
                   </span>
                 </div>
               </div>
-              <div class="dropdown-menu animated flipInY" role="menu">
+              <div class="dropdown-menu" role="menu">
                 <div class="dropdown-content">
                   <router-link :to="{ name: 'blogList' }" class="dropdown-item">
                     <strong>My blogs</strong>
