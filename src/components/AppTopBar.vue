@@ -10,7 +10,7 @@
           >
             <img style="width:60px" src="/logo-solo.png" alt />
           </figure>
-          <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
+
           <portal-target name="topbar-left">
             <!--
             This component can be located anywhere in your App.
@@ -139,7 +139,6 @@ import logger from "../utils/logger";
 export default {
   components: {
     BulmaModal,
-    AppError,
     ApiButton
   },
   data() {
@@ -148,7 +147,6 @@ export default {
       me: null,
       blog: null,
       dropdownMenuActive: false,
-      errorMessage: null,
       showApiModal: false,
       apiModalExampleList: []
     };

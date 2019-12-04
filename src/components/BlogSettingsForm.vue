@@ -3,7 +3,6 @@
     <pre v-if="false">{{ generalSettingsForm }}</pre>
     <AppLoader v-if="initDataState === 'PENDING'">Loading</AppLoader>
 
-    <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
     <template v-if="initDataState === 'FINISHED_OK'">
       <AppPanel
         style="margin-top:40px;margin-bottom:40px;padding:40px;"
@@ -159,7 +158,6 @@ import {
   appNotification
 } from "../utils/helpers";
 import AppLoader from "../components/AppLoader";
-import AppError from "../components/AppError";
 import apolloClient from "../utils/apolloClient";
 import gql from "graphql-tag";
 import BulmaModal from "./BulmaModal";
@@ -185,7 +183,6 @@ export default {
   components: {
     AppPanel,
     AppLoader,
-    AppError,
     AppPanel,
     BulmaModal,
     S3ImageUpload
@@ -206,8 +203,7 @@ export default {
       }),
       technicalSettingsForm: formInitData({
         initialFormValues: initialTechnicalSettingsFormValues
-      }),
-      errorMessage: null
+      })
     };
   },
   created() {
@@ -241,12 +237,11 @@ export default {
           return result.data.updateBlog;
         })
         .catch(error => {
-          this.errorMessage = error;
+          appNotification(error, "error");
           throw new Error(error);
         });
     },
     initData() {
-      this.errorMessage = null;
       this.initDataState = REQUEST_STATE.PENDING;
       getBlog(this.$route.params.blogId)
         .then(blog => {
@@ -273,17 +268,17 @@ export default {
           });
         })
         .catch(error => {
-          this.errorMessage = error;
+          appNotification(error, "error");
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
         });
     },
     onGeneralSettingsFormSubmit() {
-      this.errorMessage = null;
       this.validateGeneralSettingsForm();
       if (Object.keys(this.generalSettingsForm.errors).length > 0) {
-        this.errorMessage = Object.keys(this.generalSettingsForm.errors)
+        const message = Object.keys(this.generalSettingsForm.errors)
           .map(key => this.generalSettingsForm.errors[key])
           .join(". ");
+        appNotification(message, "error");
         return;
       } else {
         this.savingGeneralSettingsState = REQUEST_STATE.PENDING;
@@ -320,6 +315,7 @@ export default {
           );
         })
         .catch(e => {
+          appNotification(e, "error");
           this.savingTechnicalSettingsState = REQUEST_STATE.FINISHED_ERROR;
         });
     },
@@ -346,6 +342,7 @@ export default {
             this.$router.push({ name: "blogList" });
           })
           .catch(e => {
+            appNotification(e, "error");
             throw new Error(e);
           });
       } else {

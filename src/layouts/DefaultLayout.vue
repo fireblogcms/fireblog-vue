@@ -4,11 +4,16 @@
       v-if="$store.state.notification"
       @click="$store.state.notification = null"
       style="margin-top:40px;"
-      class="container notification is-primary has-text-centered animated flipInX is-outlined"
+      :class="{
+        'is-primary ': $store.state.notification.type === 'notification', 
+        'is-danger': $store.state.notification.type === 'error'
+      }"
+      class="container notification has-text-centered animated flipInX is-outlined"
     >
       <button @click="$store.state.notification = null" class="delete"></button>
       {{$store.state.notification.message}}
     </div>
+
     <portal-target name="notifications"></portal-target>
     <AppTopBar v-show="TopbarIsVisible()" />
     <slot />
