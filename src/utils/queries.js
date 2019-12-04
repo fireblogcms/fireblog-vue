@@ -26,6 +26,7 @@ export const FullPostFragment = gql`
 export const FullBlogFragment = gql`
   fragment FullBlogFragment on Blog {
     _id
+    image
     contentDefaultLocale
     description
     name
@@ -167,6 +168,15 @@ export const updatePostMutation = gql`
   mutation updatePostMutation($post: UpdatePostInput!) {
     updatePost(post: $post) {
       ...FullPostFragment
+    }
+  }
+`;
+
+export const updateBlogMutation = gql`
+  ${FullBlogFragment}
+  mutation updateBlog($blog: UpdateBlogInput!) {
+    updateBlog(blog: $blog) {
+      ...FullBlogFragment
     }
   }
 `;

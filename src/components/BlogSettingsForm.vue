@@ -40,6 +40,13 @@
               ></textarea>
             </div>
           </div>
+
+          <S3ImageUpload
+            :blogId="$route.params.blogId"
+            @onUploadingStateChange="onUploadingStateChange"
+            :initialImage="generalSettingsForm.values.initial.image"
+            @onUploaded="onUploaded"
+          />
           <div>
             <button
               style="margin-top:20px;"
@@ -149,15 +156,18 @@ import AppMessage from "../components/AppMessage";
 import apolloClient from "../utils/apolloClient";
 import gql from "graphql-tag";
 import BulmaModal from "./BulmaModal";
+import S3ImageUpload from "./S3ImageUpload";
 import {
   deleteBlogMutation,
   getMyBlogsQuery,
-  getUserQuery
+  getUserQuery,
+  updateBlogMutation
 } from "../utils/queries";
 
 const initialGeneralSettingsFormValues = {
   name: "",
-  description: ""
+  description: "",
+  image: null
 };
 
 const initialTechnicalSettingsFormValues = {
@@ -171,7 +181,8 @@ export default {
     AppError,
     AppMessage,
     AppPanel,
-    BulmaModal
+    BulmaModal,
+    S3ImageUpload
   },
   data() {
     return {
@@ -197,6 +208,10 @@ export default {
     this.initData();
   },
   methods: {
+    onUploadingStateChange() {},
+    onUploaded(fileUrl) {
+      this.generalSettingsForm.values.current.image = fileUrl;
+    },
     validateGeneralSettingsForm() {
       this.generalSettingsForm.errors = {};
       if (!this.generalSettingsForm.values.current.name.trim()) {
@@ -208,14 +223,7 @@ export default {
     updateBlog(blog) {
       return apolloClient
         .mutate({
-          mutation: gql`
-            mutation updateBlog($blog: UpdateBlogInput!) {
-              updateBlog(blog: $blog) {
-                name
-                description
-              }
-            }
-          `,
+          mutation: updateBlogMutation,
           variables: {
             blog
           }
@@ -241,6 +249,7 @@ export default {
               ...initialGeneralSettingsFormValues,
               name: blog.name,
               description: blog.description,
+              image: blog.image,
               staticBuildWebhooks: blog.webhooks
                 ? blog.webhooks.map(webhook => webhook.url).join(",")
                 : ""
@@ -273,7 +282,8 @@ export default {
         const blog = {
           _id: this.$route.params.blogId,
           name: this.generalSettingsForm.values.current.name,
-          description: this.generalSettingsForm.values.current.description
+          description: this.generalSettingsForm.values.current.description,
+          image: this.generalSettingsForm.values.current.image
         };
         this.updateBlog(blog)
           .then(updatedBlog => {
