@@ -3,7 +3,7 @@
     :style="wrapperStyle()"
     class="app-loader-wrapper has-text-centered section"
   >
-    <Circle2 style="display:inline-block" />
+    <Circle2 background="#9584e1" style="display:inline-block" />
     <div>
       <slot />
     </div>
