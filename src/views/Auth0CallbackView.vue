@@ -1,10 +1,8 @@
 <template>
   <div class="container section">
-    <AppError v-if="error">
-      {{ error }}.
-      <br />You can
+    <div v-if="error">
       <router-link :to="{ name: 'login' }">Retry to login</router-link>
-    </AppError>
+    </div>
     <AppPanel v-if="initDataState === 'PENDING'">
       <AppLoader>Signing in ...</AppLoader>
     </AppPanel>
@@ -16,15 +14,13 @@ import AppLoader from "../components/AppLoader";
 import { auth0Client, syncAuth0UserWithServer } from "../utils/auth";
 import { REQUEST_STATE } from "../utils/helpers";
 import AppPanel from "../components/AppPanel";
-import AppError from "../components/AppError";
 import apolloClient from "../utils/apolloClient";
 import logger from "../utils/logger";
 
 export default {
   components: {
     AppLoader,
-    AppPanel,
-    AppError
+    AppPanel
   },
   data() {
     return {
@@ -37,6 +33,7 @@ export default {
   },
   methods: {
     async initData() {
+      this.error = null;
       this.initDataState = REQUEST_STATE.PENDING;
       const auth0 = await auth0Client();
       auth0
@@ -55,6 +52,7 @@ export default {
         .catch(error => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           this.error = "Sorry, authentication failed";
+          appNotification(this.error, "error");
           throw new Error(error);
         });
     }

@@ -129,11 +129,16 @@
 <script>
 import gql from "graphql-tag";
 import apolloClient from "../utils/apolloClient";
-import { getUser, REQUEST_STATE, getBlog, getPost } from "../utils/helpers";
+import {
+  getUser,
+  REQUEST_STATE,
+  getBlog,
+  getPost,
+  appNotification
+} from "../utils/helpers";
 import apiExamples from "../apiExamples";
 import ApiButton from "../components/ApiButton";
 import BulmaModal from "../components/BulmaModal";
-import AppError from "../components/AppError";
 import logger from "../utils/logger";
 
 export default {
@@ -172,6 +177,7 @@ export default {
         })
         .catch(error => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
+          appNotification(e, "error");
           throw new Error(error);
         });
     },

@@ -49,7 +49,6 @@ export default {
       uploadProgress: 0,
       uploadedImage: null,
       file: null,
-      errorMessage: null,
       uploadingState: REQUEST_STATE.NOT_STARTED
     };
   },
@@ -81,6 +80,7 @@ export default {
         })
         .catch(error => {
           this.uploadingState = REQUEST_STATE.FINISHED_ERROR;
+          appNotifcation("error", error);
           this.$emit("onUploadingStateChange", this.uploadingState);
         });
     }

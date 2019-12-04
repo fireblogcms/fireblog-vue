@@ -2,8 +2,6 @@
   <DefaultLayout>
     <AppLoader v-if="initDataState === 'PENDING'">Loading blogs</AppLoader>
 
-    <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
-
     <!-- if this is the fiirs blog, display form to create a blog -->
     <template
       v-if="
@@ -15,18 +13,13 @@
       </div>
     </template>
     <!-- else, display the blog list -->
-    <template
-      v-if="initDataState === 'FINISHED_OK' && blogs && blogs.edges.length > 0"
-    >
+    <template v-if="initDataState === 'FINISHED_OK' && blogs && blogs.edges.length > 0">
       <div class="container">
         <div>
           <header style="padding: 0 1rem 2rem 1rem">
             <div class="columns">
               <div class="column">
-                <h1
-                  style="padding-bottom:2rem;"
-                  class="title is-2 is-uppercase"
-                >
+                <h1 style="padding-bottom:2rem;" class="title is-2 is-uppercase">
                   <img
                     height="70"
                     style="position:relative;top:25px;padding-right:1rem"
@@ -57,18 +50,14 @@
             >
               <div class="blog-infos">
                 <h2 class="title">{{ edge.node.name }}</h2>
-                <h3 class="subtitle" v-if="edge.node.description">
-                  {{ edge.node.description }}
-                </h3>
+                <h3 class="subtitle" v-if="edge.node.description">{{ edge.node.description }}</h3>
               </div>
 
               <div
                 @click.stop="onSettingsClick(edge.node, $event)"
                 style="min-width:100px;font-weight:300"
                 class="button is-medium is-outlined settings"
-              >
-                {{ $t("views.blogList.settingsButton") }}
-              </div>
+              >{{ $t("views.blogList.settingsButton") }}</div>
             </div>
           </div>
         </div>
@@ -83,8 +72,7 @@ import BlogCreateForm from "../components/BlogCreateForm";
 import DefaultLayout from "../layouts/DefaultLayout";
 import AppLoader from "../components/AppLoader";
 import gql from "graphql-tag";
-import { REQUEST_STATE } from "../utils/helpers";
-import AppError from "../components/AppError";
+import { REQUEST_STATE, appNotification } from "../utils/helpers";
 import logger from "../utils/logger";
 import gradient from "random-gradient";
 import { getMyBlogs } from "../utils/helpers";
@@ -92,14 +80,12 @@ import { getMyBlogs } from "../utils/helpers";
 export default {
   components: {
     DefaultLayout,
-    AppError,
     BlogCreateForm,
     AppLoader
   },
   data() {
     return {
       blogs: null,
-      error: null,
       initDataState: REQUEST_STATE.NOT_STARTED
     };
   },
@@ -130,15 +116,16 @@ export default {
       return { name: "postList", params: { blogId: item.node._id } };
     },
     getBlogs() {
-      this.errorMessage = null;
       return getMyBlogs()
         .then(blogs => {
           this.blogs = blogs;
           return blogs;
         })
         .catch(error => {
-          this.errorMessage =
-            "Sorry, an error occured while fetching blog:" + error;
+          appNotification(
+            "Sorry, an error occured while fetching blog:" + error,
+            "error"
+          );
           throw new Error(error);
         });
     },

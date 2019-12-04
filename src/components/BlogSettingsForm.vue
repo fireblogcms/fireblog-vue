@@ -42,7 +42,7 @@
           <div class="field">
             <label class="label">Couverture du blog</label>
             <S3ImageUpload
-              style="max-width:600px"
+              style="max-width:600px;"
               :blogId="$route.params.blogId"
               @onUploadingStateChange="onUploadingStateChange"
               :initialImage="generalSettingsForm.values.initial.image"

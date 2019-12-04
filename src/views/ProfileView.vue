@@ -1,7 +1,5 @@
 <template>
   <DefaultLayout>
-    <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
-
     <template v-if="initDataState === 'PENDING'">
       <AppLoader>Loading profile</AppLoader>
     </template>
@@ -55,7 +53,6 @@
 import apolloClient from "../utils/apolloClient";
 import AppPanel from "../components/AppPanel";
 import AppLoader from "../components/AppLoader";
-import AppError from "../components/AppError";
 import { REQUEST_STATE, getUser } from "../utils/helpers";
 import gql from "graphql-tag";
 import logger from "../utils/logger";
@@ -65,13 +62,11 @@ export default {
   components: {
     AppPanel,
     AppLoader,
-    AppError,
     DefaultLayout
   },
   data() {
     return {
       initDataState: REQUEST_STATE.NOT_STARTED,
-      errorMessage: null,
       me: null
     };
   },
@@ -86,7 +81,10 @@ export default {
         })
         .catch(error => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
-          this.errorMessage = "Sorry, an error occured while loading page.";
+          appNotification(
+            "Sorry, an error occured while loading page.",
+            "error"
+          );
           throw new Error(error);
         });
     }

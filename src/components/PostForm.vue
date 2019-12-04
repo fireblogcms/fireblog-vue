@@ -1,7 +1,6 @@
 <template>
   <div>
     <AppLoader v-if="initDataState === 'PENDING'" />
-    <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
     <div v-if="initDataState === REQUEST_STATE.FINISHED_OK" class="post-form-wrapper">
       <!-- FORM -->
       <form @submit.prevent>
@@ -233,7 +232,6 @@ import AppLoader from "../components/AppLoader";
 import Editor from "@ckeditor/ckeditor5-build-balloon-block";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import gql from "graphql-tag";
-import AppError from "./AppError";
 import hotkeys from "hotkeys-js";
 import logger from "../utils/logger";
 import BulmaModal from "./BulmaModal";
@@ -248,7 +246,8 @@ import {
   formInitData,
   createSlug,
   ckeditorIframelyMediaProvider,
-  graphQLErrorsContainsCode
+  graphQLErrorsContainsCode,
+  appNotification
 } from "../utils/helpers";
 
 import {
@@ -288,7 +287,6 @@ export default {
   components: {
     ckeditor: CKEditor.component,
     AppLoader,
-    AppError,
     BulmaModal,
     IconBack,
     PostFormAdvancedSettings
@@ -302,7 +300,6 @@ export default {
       mediaLoadingCounter: 0,
       lastTimeSaved: null,
       existingPost: null,
-      errorMessage: null,
       savingPost: {
         state: REQUEST_STATE.NOT_STARTED,
         publicationStatus: null
@@ -426,7 +423,6 @@ export default {
       return status;
     },
     savePost(status) {
-      this.errorMessage = null;
       if (!STATUS_ENUM[status]) {
         throw new Error(
           `Received unknown status ${status}. Status MUST be one of the following value: ` +
@@ -447,7 +443,7 @@ export default {
           })
           .catch(error => {
             this.savingPost.state = REQUEST_STATE.FINISHED_ERROR;
-            this.errorMessage = "Sorry, post creation failed: " + error;
+            appNotification("Sorry, post creation failed: " + error, "error");
             if (this.publicationSettingsModal.show) {
               this.publicationSettingsModal.show = false;
             }
@@ -471,7 +467,7 @@ export default {
             return result;
           })
           .catch(error => {
-            this.errorMessage = "Sorry, publish operation failed: " + error;
+            appNotification("Sorry, post creation failed: " + error, "error");
             this.savingPost.state = REQUEST_STATE.FINISHED_ERROR;
             if (this.publicationSettingsModal.show) {
               this.publicationSettingsModal.show = false;
@@ -614,7 +610,7 @@ export default {
           this.prepareFormValuesFromPost(this.existingPost);
         })
         .catch(error => {
-          this.errorMessage = "En error occured while loading post";
+          appNotification("En error occured while loading post", "error");
           throw new Error(error);
         });
     },
@@ -713,7 +709,10 @@ export default {
           return result;
         })
         .catch(error => {
-          this.errorMessage = "😞Sorry, an error occured while creating post.";
+          appNotification(
+            "😞Sorry, an error occured while creating post.",
+            "error"
+          );
           throw new Error(error);
         });
     },
@@ -736,7 +735,7 @@ export default {
           return result;
         })
         .catch(error => {
-          this.errorMessage = "😞Sorry, an error occured updating post";
+          appNotification("😞Sorry, an error occured updating post", "error");
           throw new Error(error);
         });
     },
@@ -771,7 +770,10 @@ export default {
           })
           .catch(error => {
             this.savingDraftState = REQUEST_STATE.FINISHED_ERROR;
-            this.errorMessage = "Sorry, an error occured while saving draft.";
+            appNotification(
+              "Sorry, an error occured while saving draft.",
+              "error"
+            );
             throw new Error(error);
           });
       }

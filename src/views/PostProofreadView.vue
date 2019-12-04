@@ -2,8 +2,6 @@
   <div class="postProofRead">
     <AppLoader v-if="initDataState === 'PENDING'">Loading post</AppLoader>
 
-    <AppError v-if="errorMessage">{{ errorMessage }}</AppError>
-
     <template v-if="initDataState === 'FINISHED_OK'">
       <div style="max-width:900px" class="content container section">
         <h1 class="title is-1">{{ post.title }}</h1>
@@ -22,7 +20,6 @@
 <script>
 import apolloClient from "../utils/apolloClient";
 import AppLoader from "../components/AppLoader";
-import AppError from "../components/AppError";
 import { REQUEST_STATE } from "../utils/helpers";
 import gql from "graphql-tag";
 import logger from "../utils/logger";
@@ -32,13 +29,11 @@ import CKEditor from "@ckeditor/ckeditor5-vue";
 export default {
   components: {
     AppLoader,
-    AppError,
     ckeditor: CKEditor.component
   },
   data() {
     return {
       initDataState: REQUEST_STATE.NOT_STARTED,
-      errorMessage: null,
       editorConfig: null,
       editor: null,
       post: {
@@ -96,7 +91,8 @@ export default {
         })
         .catch(error => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
-          this.errorMessage = error;
+          appNotification(error, "error");
+          throw new Error(error);
         });
     },
     getPost(id) {
