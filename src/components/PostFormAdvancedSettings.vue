@@ -1,5 +1,6 @@
 <template>
   <div class="root container">
+    {{ formStorageGetValue("postForm", "slug") }}
     <form @submit.prevent>
       <div class="columns">
         <div class="column">
@@ -13,7 +14,7 @@
             <S3ImageUpload
               :blogId="$route.params.blogId"
               @onUploadingStateChange="onUploadingStateChange"
-              :initialImage="$store.state.postForm.values.current.image"
+              :initialImage="formStorageGetValue('postForm', 'image')"
               @onUploaded="onUploaded"
             />
           </div>
@@ -32,16 +33,16 @@
               <textarea
                 maxlength="250"
                 @input="onTeaserInput"
-                :value="$store.state.postForm.values.current.teaser"
+                :value="formStorageGetValue('postForm', 'teaser')"
                 class="textarea is-medium"
                 placeholder="Teaser"
               ></textarea>
             </div>
             <p
               class="help is-danger"
-              v-if="$store.state.postForm.errors.teaser"
+              v-if="formStorageGetError('postForm', 'teaser')"
             >
-              {{ $store.state.postForm.errors.teaser }}
+              {{ formStorageGetError("postForm", "teaser") }}
             </p>
           </div>
           <!-- SLUG FIELD -->
@@ -56,14 +57,17 @@
             <div class="control">
               <input
                 @input="onSlugInput"
-                :value="$store.state.postForm.values.current.slug"
+                :value="formStorageGetValue('postForm', 'slug')"
                 class="input is-medium"
                 type="text"
                 placeholder="slug"
               />
             </div>
-            <p class="help is-danger" v-if="$store.state.postForm.errors.slug">
-              {{ $store.state.postForm.errors.slug }}
+            <p
+              class="help is-danger"
+              v-if="formStorageGetError('postForm', 'slug')"
+            >
+              {{ formStorageGetError("postForm", "slug") }}
             </p>
           </div>
         </div>
@@ -94,13 +98,18 @@
       </div>
     </form>
     <!-- debug form values -->
-    <pre v-if="false">{{ form }}</pre>
+    <pre v-if="true">{{ $store.state.forms.postForm }}</pre>
   </div>
 </template>
 
 <script>
 import S3ImageUpload from "./S3ImageUpload";
-import { REQUEST_STATE } from "../utils/helpers";
+import {
+  REQUEST_STATE,
+  formStorageGetValue,
+  formStorageGetError,
+  formStorageUpdate
+} from "../utils/helpers";
 
 export default {
   components: {
@@ -113,9 +122,13 @@ export default {
     };
     return data;
   },
+  created() {
+    this.formStorageGetError = formStorageGetError;
+    this.formStorageGetValue = formStorageGetValue;
+  },
   methods: {
     onUploaded(fileUrl) {
-      this.$store.commit("postFormUpdate", {
+      formStorageUpdate("postForm", {
         type: "current",
         name: "image",
         value: fileUrl
@@ -128,14 +141,14 @@ export default {
       this.$emit("onPublishClick");
     },
     onTeaserInput(event) {
-      this.$store.commit("postFormUpdate", {
+      formStorageUpdate("postForm", {
         type: "current",
         name: "teaser",
         value: event.target.value
       });
     },
     onSlugInput(event) {
-      this.$store.commit("postFormUpdate", {
+      formStorageUpdate("postForm", {
         type: "current",
         name: "slug",
         value: event.target.value

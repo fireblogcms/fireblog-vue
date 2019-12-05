@@ -236,18 +236,45 @@ export const uploadFetch = (url, options) =>
  *    Those are the values we want to submit..
  * @param {*} param0
  */
-export function formInitData({ initialFormValues }) {
+export function formInitData({ initialValues }) {
   return {
     errors: {},
     values: {
       initial: {
-        ...initialFormValues
+        ...initialValues
       },
       current: {
-        ...initialFormValues
+        ...initialValues
       }
     }
   };
+}
+
+export function formStorageCreate(formId, { initialValues }) {
+  Store.commit("formCreate", {
+    formId,
+    form: formInitData({ initialValues })
+  });
+}
+
+export function formStorageUpdate(formId, { type, name, value }) {
+  Store.commit("formUpdate", { formId, type, name, value });
+}
+
+export function formStorageGetValue(formId, name) {
+  return Store.state.forms[formId].values.current[name];
+}
+
+export function formStorageGetAllValues(formId) {
+  return Store.state.forms[formId].values;
+}
+
+export function formStorageGetError(formId, name) {
+  return Store.state.forms[formId].errors[name];
+}
+
+export function formStorageGetAllErrors(formId) {
+  return Store.state.forms[formId].errors;
 }
 
 export function ckeditorIframelyMediaProvider() {

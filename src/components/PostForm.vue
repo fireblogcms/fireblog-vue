@@ -5,7 +5,7 @@
       v-if="initDataState === REQUEST_STATE.FINISHED_OK"
       class="post-form-wrapper"
     >
-      <pre v-if="false">{{ $store.state.postForm }}</pre>
+      <pre v-if="true">{{ $store.state.forms }}</pre>
       <form @submit.prevent>
         <textarea-autosize
           maxlength="250"
@@ -17,7 +17,7 @@
           id="title"
           :disabled="savingDraftState === REQUEST_STATE.PENDING"
           @input="onTitleInput"
-          :value="$store.state.postForm.values.current.title"
+          :value="formStorageGetValue('postForm', 'title')"
         ></textarea-autosize>
         <ckeditor
           class="content"
@@ -25,7 +25,7 @@
           ref="ckeditor"
           :editor="editor"
           @input="onContentInput"
-          :value="$store.state.postForm.values.current.content"
+          :value="formStorageGetValue('postForm', 'content')"
           @ready="onEditorReady"
           :config="editorConfig"
         ></ckeditor>
@@ -278,7 +278,12 @@ import {
   createSlug,
   ckeditorIframelyMediaProvider,
   graphQLErrorsContainsCode,
-  appNotification
+  appNotification,
+  formStorageCreate,
+  formStorageUpdate,
+  formStorageGetValue,
+  formStorageGetAllErrors,
+  formStorageGetAllValues
 } from "../utils/helpers";
 
 import {
@@ -358,9 +363,13 @@ export default {
     };
   },
   created() {
-    // store postForm values and errors in vuex store, to share easily form state
-    // with child components
-    this.$store.commit("postForm", formInitData({ initialFormValues }));
+    this.formStorageGetValue = formStorageGetValue;
+    this.formStorageGetAllValues = formStorageGetAllValues;
+    // store our form values in Vuex store.
+    formStorageCreate("postForm", {
+      initialValues: initialFormValues
+    });
+
     this.initData();
     window.onbeforeunload = function(e) {
       return "Are you sure you want to quit ?";
@@ -416,9 +425,10 @@ export default {
     hotkeys.unbind("command+s");
   },
   watch: {
-    "$store.state.postForm.values.current": {
+    "$store.state.forms.postForm.current.values": {
       deep: true,
       handler() {
+        console.log("coucou du watch !!");
         this.changesDetected = this.detectChanges().changesDetected;
       }
     }
@@ -579,14 +589,15 @@ export default {
       };
     },
     onTitleInput(value) {
-      this.$store.commit("postFormUpdate", {
+      formStorageUpdate("postForm", {
         type: "current",
         name: "title",
         value: value
       });
+      this.$forceUpdate();
     },
     onContentInput(value) {
-      this.$store.commit("postFormUpdate", {
+      formStorageUpdate("postForm", {
         type: "current",
         name: "content",
         value: value
@@ -613,8 +624,8 @@ export default {
       if (this.existingPost && this.existingPost.status === "PUBLISHED") {
         publishingChanges = true;
       }
-      this.validatePostForm();
-      if (Object.keys(this.$store.state.postForm.errors).length > 0) {
+      const errors = this.validatePostForm();
+      if (Object.keys(errors).length > 0) {
         return false;
       } else {
         this.savePost(STATUS_ENUM.PUBLISHED).then(() => {
@@ -655,12 +666,15 @@ export default {
      */
     postFormIsValid() {
       let isValid = true;
-      if (!this.$store.state.postForm.values.current.title.trim()) {
+      if (!formStorageGetValue("postForm", "title").trim()) {
         appNotification("A title is required", "error");
         isValid = false;
       }
       return isValid;
     },
+    /**
+     * Open publication modal, this is not the final publish operation.
+     */
     onPublicationClick() {
       if (!this.postFormIsValid()) {
         return;
@@ -668,30 +682,26 @@ export default {
       if (this.mediaLoadingCounter > 0) {
         this.showMediaCurrentlyLoadingModal();
       } else {
-        if (
-          this.$store.state.postForm.values.current.slug.trim().length === 0
-        ) {
+        if (formStorageGetValue("postForm", "slug").trim().length === 0) {
           const slugSuggestion = createSlug(
-            this.$store.state.postForm.values.current.title,
+            formStorageGetValue("postForm", "title"),
             {
               replacement: "-",
               lower: true
             }
           );
-          this.$store.commit("postFormUpdate", {
+          formStorageUpdate("postForm", {
             type: "current",
             name: "slug",
             value: slugSuggestion
           });
         }
         // pre-fill teaser fied with the first sentence of the text.
-        if (
-          this.$store.state.postForm.values.current.teaser.trim().length === 0
-        ) {
+        if (formStorageGetValue("postForm", "teaser").trim().length === 0) {
           const teaserSuggestion = striptags(
-            this.$store.state.postForm.values.current.content.substr(0, 250)
+            formStorageGetValue("postForm", "content").substr(0, 250)
           );
-          this.$store.commit("postFormUpdate", {
+          formStorageUpdate("postForm", {
             type: "current",
             name: "teaser",
             value: teaserSuggestion
@@ -837,16 +847,19 @@ export default {
         teaser: post.teaser ? post.teaser : "",
         image: post.image ? post.image : ""
       };
-      this.$store.commit("postForm", formInitData({ initialFormValues }));
+      // store our form values in Vuex store.
+      formStorageCreate("postForm", {
+        initialValues: initialFormValues
+      });
     },
     // Prepare a post object from form form.values
     preparePostFromCurrentFormValues() {
       return {
-        title: this.$store.state.postForm.values.current.title,
-        content: this.$store.state.postForm.values.current.content,
-        slug: this.$store.state.postForm.values.current.slug,
-        teaser: this.$store.state.postForm.values.current.teaser,
-        image: this.$store.state.postForm.values.current.image
+        title: formStorageGetValue("postForm", "title"),
+        content: formStorageGetValue("postForm", "content"),
+        slug: formStorageGetValue("postForm", "slug"),
+        teaser: formStorageGetValue("postForm", "teaser"),
+        image: formStorageGetValue("postForm", "image")
       };
     },
     getRandomHurrahGif() {
@@ -856,44 +869,44 @@ export default {
     },
     validatePostForm() {
       // @FIXME : fix this direct store mutation
-      this.$store.state.postForm.errors = {};
+      //this.$store.state.postForm.errors = {};
       // validate that slug is an url
       if (
         !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(
-          this.$store.state.postForm.values.current.slug
+          formStorageGetValue("postForm", "slug")
         )
       ) {
         let message = this.$t(
           "views.postForm.fields.slug.errors.invalidCharacters"
         );
-        this.$store.commit("postFormUpdate", {
+        formStorageUpdate("postForm", {
           type: "error",
           name: "slug",
           value: message
         });
         appNotification(message, "error");
       }
-      if (!this.$store.state.postForm.values.current.slug.trim()) {
+      if (!formStorageGetValue("postForm", "slug").trim()) {
         let message = this.$t(
           "views.postForm.fields.slug.errors.invalidCharacters"
         );
-        this.$store.commit("postFormUpdate", {
+        formStorageUpdate("postForm", {
           type: "error",
           name: "slug",
           value: message
         });
         appNotification(message, "error");
       }
-      if (!this.$store.state.postForm.values.current.teaser.trim()) {
+      if (!formStorageGetValue("postForm", "teaser").trim()) {
         let message = this.$t("views.postForm.fields.teaser.errors.required");
-        this.$store.commit("postFormUpdate", {
+        formStorageUpdate("postForm", {
           type: "error",
           name: "teaser",
           value: message
         });
         appNotification(message, "error");
       }
-      return this.$store.state.postForm.errors;
+      return formStorageGetAllErrors("postForm");
     }
   }
 };

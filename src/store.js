@@ -7,9 +7,20 @@ export default new Vuex.Store({
   state: {
     postJustPublished: false,
     notification: null,
-    postForm: null
+    postForm: null,
+    forms: {}
   },
   mutations: {
+    formCreate(state, { formId, form }) {
+      state.forms[formId] = form;
+    },
+    formUpdate(state, { formId, type, name, value }) {
+      if (type === "error") {
+        state.forms[formId].errors[name] = value;
+      } else {
+        state.forms[formId].values[type][name] = value;
+      }
+    },
     postJustPublished(state, value) {
       state.postJustPublished = value;
     },
