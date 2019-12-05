@@ -240,7 +240,6 @@ export function formInitData({ initialFormValues }) {
   return {
     errors: {},
     values: {
-      error: {},
       initial: {
         ...initialFormValues
       },

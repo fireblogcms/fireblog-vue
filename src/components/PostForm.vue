@@ -5,6 +5,7 @@
       v-if="initDataState === REQUEST_STATE.FINISHED_OK"
       class="post-form-wrapper"
     >
+      <pre v-if="false">{{ $store.state.postForm }}</pre>
       <form @submit.prevent>
         <textarea-autosize
           maxlength="250"
@@ -423,7 +424,7 @@ export default {
     hotkeys.unbind("command+s");
   },
   watch: {
-    "form.values": {
+    "$store.state.postForm.values.current": {
       deep: true,
       handler() {
         this.changesDetected = this.detectChanges().changesDetected;
@@ -834,6 +835,7 @@ export default {
           });
       }
     },
+    // @TODO = refactor how we update the store for a shorter syntax.
     prepareFormValuesFromPost(post) {
       //title
       this.$store.commit("postFormUpdate", {
