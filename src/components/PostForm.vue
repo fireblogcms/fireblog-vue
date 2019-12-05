@@ -5,7 +5,6 @@
       v-if="initDataState === REQUEST_STATE.FINISHED_OK"
       class="post-form-wrapper"
     >
-      <!-- FORM -->
       <form @submit.prevent>
         <textarea-autosize
           maxlength="250"
@@ -16,16 +15,16 @@
           type="text"
           id="title"
           :disabled="savingDraftState === REQUEST_STATE.PENDING"
-          :value="form.values.initial.title"
           @input="onTitleInput"
+          :value="$store.state.postForm.values.current.title"
         ></textarea-autosize>
         <ckeditor
           class="content"
           :disabled="savingDraftState === REQUEST_STATE.PENDING"
           ref="ckeditor"
-          :value="form.values.initial.content"
           :editor="editor"
           @input="onContentInput"
+          :value="$store.state.postForm.values.current.content"
           @ready="onEditorReady"
           :config="editorConfig"
         ></ckeditor>
@@ -62,7 +61,6 @@
       <template #body>
         <div class="container">
           <PostFormAdvancedSettings
-            :postForm="form"
             :existingPost="existingPost"
             :savingPost="savingPost"
             @onCancelClick="publicationSettingsModal.show = false"
@@ -309,10 +307,12 @@ const STATUS_ENUM = {
 };
 
 const initialFormValues = {
+  test: "",
   title: "",
   content: "",
   slug: "",
-  teaser: ""
+  teaser: "",
+  image: null
 };
 
 export default {
@@ -336,7 +336,6 @@ export default {
         state: REQUEST_STATE.NOT_STARTED,
         publicationStatus: null
       },
-      form: formInitData({ initialFormValues }),
       modal: {
         show: false,
         title: null,
@@ -359,15 +358,16 @@ export default {
   },
   provide() {
     return {
-      form: this.form,
       savingPost: this.savingPost,
-      // we use a function here because of https://github.com/vuejs/vue/issues/7017
       existingPost: () => {
         return this.existingPost ? this.existingPost : null;
       }
     };
   },
   created() {
+    // store postForm values and errors in vuex store, to share easily form state
+    // with child components
+    this.$store.commit("postForm", formInitData({ initialFormValues }));
     this.initData();
     window.onbeforeunload = function(e) {
       return "Are you sure you want to quit ?";
@@ -431,6 +431,13 @@ export default {
     }
   },
   methods: {
+    onTextInput(event) {
+      this.$store.commit("postFormUpdate", {
+        type: "current",
+        name: "test",
+        value: event.target.value
+      });
+    },
     initData() {
       this.initDataState = REQUEST_STATE.PENDING;
       const promises = [];
@@ -567,8 +574,11 @@ export default {
     },
     detectChanges() {
       const modifiedValues = {};
-      Object.keys(this.form.values.initial).forEach(key => {
-        if (this.form.values.initial[key] !== this.form.values.current[key]) {
+      Object.keys(this.$store.state.postForm.values.initial).forEach(key => {
+        if (
+          this.$store.state.postForm.values.initial[key] !==
+          this.$store.state.postForm.values.current[key]
+        ) {
           modifiedValues[key] = true;
         } else {
           modifiedValues[key] = false;
@@ -583,10 +593,18 @@ export default {
       };
     },
     onTitleInput(value) {
-      this.form.values.current.title = value;
+      this.$store.commit("postFormUpdate", {
+        type: "current",
+        name: "title",
+        value: value
+      });
     },
     onContentInput(value) {
-      this.form.values.current.content = value;
+      this.$store.commit("postFormUpdate", {
+        type: "current",
+        name: "content",
+        value: value
+      });
     },
     onEditorReady(editor) {
       const element = document.querySelector(
@@ -651,7 +669,7 @@ export default {
      */
     postFormIsValid() {
       let isValid = true;
-      if (!this.form.values.current.title.trim()) {
+      if (!this.$store.state.postForm.values.current.title.trim()) {
         alert("A title is required");
         isValid = false;
       }
@@ -661,24 +679,37 @@ export default {
       if (!this.postFormIsValid()) {
         return;
       }
-
       if (this.mediaLoadingCounter > 0) {
         this.showMediaCurrentlyLoadingModal();
       } else {
-        if (!this.form.values.initial.slug.trim()) {
-          this.form.values.current.slug = createSlug(
-            this.form.values.current.title,
+        if (
+          this.$store.state.postForm.values.current.slug.trim().length === 0
+        ) {
+          const slugSuggestion = createSlug(
+            this.$store.state.postForm.values.current.title,
             {
               replacement: "-",
               lower: true
             }
           );
+          this.$store.commit("postFormUpdate", {
+            type: "current",
+            name: "slug",
+            value: slugSuggestion
+          });
         }
         // pre-fill teaser fied with the first sentence of the text.
-        if (!this.form.values.initial.teaser.trim()) {
-          this.form.values.current.teaser = striptags(
-            this.form.values.current.content.substr(0, 250)
+        if (
+          this.$store.state.postForm.values.current.teaser.trim().length === 0
+        ) {
+          const teaserSuggestion = striptags(
+            this.$store.state.postForm.values.current.content.substr(0, 250)
           );
+          this.$store.commit("postFormUpdate", {
+            type: "current",
+            name: "teaser",
+            value: teaserSuggestion
+          });
         }
         this.publicationSettingsModal.show = true;
       }
@@ -811,24 +842,65 @@ export default {
       }
     },
     prepareFormValuesFromPost(post) {
-      // initial
-      this.form.values.initial.title = post.title;
-      this.form.values.initial.content = post.content ? post.content : "";
-      this.form.values.initial.slug = post.slug ? post.slug : "";
-      this.form.values.initial.teaser = post.teaser ? post.teaser : "";
-      this.form.values.initial.image = post.image ? post.image : "";
-      this.form.values.current = {
-        ...this.form.values.initial
-      };
+      this.$store.commit("postFormUpdate", {
+        type: "initial",
+        name: "title",
+        value: post.title ? post.title : ""
+      });
+      this.$store.commit("postFormUpdate", {
+        type: "current",
+        name: "title",
+        value: post.title ? post.title : ""
+      });
+      this.$store.commit("postFormUpdate", {
+        type: "initial",
+        name: "content",
+        value: post.content ? post.content : ""
+      });
+      this.$store.commit("postFormUpdate", {
+        type: "current",
+        name: "content",
+        value: post.content ? post.content : ""
+      });
+      this.$store.commit("postFormUpdate", {
+        type: "initial",
+        name: "slug",
+        value: post.slug ? post.slug : ""
+      });
+      this.$store.commit("postFormUpdate", {
+        type: "current",
+        name: "content",
+        value: post.slug ? post.content : ""
+      });
+      this.$store.commit("postFormUpdate", {
+        type: "initial",
+        name: "teaser",
+        value: post.teaser ? post.teaser : ""
+      });
+      this.$store.commit("postFormUpdate", {
+        type: "current",
+        name: "teaser",
+        value: post.teaser ? post.teaser : ""
+      });
+      this.$store.commit("postFormUpdate", {
+        type: "initial",
+        name: "image",
+        value: post.image ? post.image : null
+      });
+      this.$store.commit("postFormUpdate", {
+        type: "current",
+        name: "image",
+        value: post.image ? post.image : null
+      });
     },
     // Prepare a post object from form form.values
     preparePostFromCurrentFormValues() {
       return {
-        title: this.form.values.current.title,
-        content: this.form.values.current.content,
-        slug: this.form.values.current.slug,
-        teaser: this.form.values.current.teaser,
-        image: this.form.values.current.image
+        title: this.$store.state.postForm.values.current.title,
+        content: this.$store.state.postForm.values.current.content,
+        slug: this.$store.state.postForm.values.current.slug,
+        teaser: this.$store.state.postForm.values.current.teaser,
+        image: this.$store.state.postForm.values.current.image
       };
     },
     getRandomHurrahGif() {

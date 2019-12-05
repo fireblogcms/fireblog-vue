@@ -6,22 +6,16 @@
           <!-- IMAGE UPLOAD FIELD -->
           <div class="field featured-image">
             <label>
-              <strong>{{ $t("views.postForm.fields.featuredImage.label") }}</strong>
+              <strong>{{
+                $t("views.postForm.fields.featuredImage.label")
+              }}</strong>
             </label>
             <S3ImageUpload
               :blogId="$route.params.blogId"
               @onUploadingStateChange="onUploadingStateChange"
-              :initialImage="form.values.initial.image"
+              :initialImage="$store.state.postForm.values.current.image"
               @onUploaded="onUploaded"
             />
-            <!--
-            <CloudinaryImageDirectUpload
-              :displayImageWhenUploaded="false"
-              @onUploadingStateChange="onUploadingStateChange"
-              :initialImage="form.values.initial.image"
-              @onUploaded="onUploaded"
-            />
-            -->
           </div>
         </div>
         <div class="column">
@@ -29,35 +23,48 @@
           <div class="field">
             <label>
               <strong>{{ $t("views.postForm.fields.teaser.label") }}</strong>
-              <div class="field-help">{{ $t("views.postForm.fields.teaser.help") }}</div>
+              <div class="field-help">
+                {{ $t("views.postForm.fields.teaser.help") }}
+              </div>
             </label>
             <div class="control">
               <!-- limited to 250 because of facebook, twitter and co preview card limitation -->
               <textarea
                 maxlength="250"
-                v-model="form.values.current.teaser"
+                @input="onTeaserInput"
+                :value="$store.state.postForm.values.current.teaser"
                 class="textarea is-medium"
                 placeholder="Teaser"
               ></textarea>
             </div>
-            <p class="help is-danger" v-if="form.errors.teaser">{{ form.errors.teaser }}</p>
+            <p
+              class="help is-danger"
+              v-if="$store.state.postForm.errors.teaser"
+            >
+              {{ $store.state.postForm.errors.teaser }}
+            </p>
           </div>
           <!-- SLUG FIELD -->
           <div class="field">
             <label>
               <strong>{{ $t("views.postForm.fields.slug.label") }}</strong>
-              <div class="field-help">{{ $t("views.postForm.fields.slug.help") }}</div>
+              <div class="field-help">
+                {{ $t("views.postForm.fields.slug.help") }}
+              </div>
             </label>
 
             <div class="control">
               <input
-                v-model="form.values.current.slug"
+                @input="onSlugInput"
+                :value="$store.state.postForm.values.current.slug"
                 class="input is-medium"
                 type="text"
                 placeholder="slug"
               />
             </div>
-            <p class="help is-danger" v-if="form.errors.slug">{{ form.errors.slug }}</p>
+            <p class="help is-danger" v-if="$store.state.postForm.errors.slug">
+              {{ $store.state.postForm.errors.slug }}
+            </p>
           </div>
         </div>
         <!--
@@ -122,7 +129,7 @@ import S3ImageUpload from "./S3ImageUpload";
 import { REQUEST_STATE } from "../utils/helpers";
 
 export default {
-  inject: ["form", "existingPost", "savingPost"],
+  inject: ["existingPost", "savingPost"],
   components: {
     S3ImageUpload
   },
@@ -135,13 +142,31 @@ export default {
   },
   methods: {
     onUploaded(fileUrl) {
-      this.form.values.current.image = fileUrl;
+      this.$store.commit("postFormUpdate", {
+        type: "current",
+        name: "image",
+        value: fileUrl
+      });
     },
     onCancelClick() {
       this.$emit("onCancelClick");
     },
     onPublishClick() {
       this.$emit("onPublishClick");
+    },
+    onTeaserInput(event) {
+      this.$store.commit("postFormUpdate", {
+        type: "current",
+        name: "teaser",
+        value: event.target.value
+      });
+    },
+    onSlugInput(event) {
+      this.$store.commit("postFormUpdate", {
+        type: "current",
+        name: "slug",
+        value: event.target.value
+      });
     },
     getPublishButtonText() {
       return this.existingPost() && this.existingPost().status === "PUBLISHED"

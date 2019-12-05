@@ -230,16 +230,17 @@ export const uploadFetch = (url, options) =>
 
 /**
  * Helper to handle correctly form values in Vue component
- * 1 - initialFormValues are the value loaded initially for the form. They never
- *  change during the lifetime of the form.
- * 2 - current values are the user modified values. This are the values we want
- *  to submit to our API.
+ * 1) initialFormValues are the value loaded initially for the form. They never
+ *    change during the lifetime of the form.
+ * 2) "current" values are the one entered or modified by the user.
+ *    Those are the values we want to submit..
  * @param {*} param0
  */
 export function formInitData({ initialFormValues }) {
   return {
     errors: {},
     values: {
+      errors: {},
       initial: {
         ...initialFormValues
       },

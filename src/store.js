@@ -6,21 +6,24 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     postJustPublished: false,
-    me: null,
-    notification: null
+    notification: null,
+    postForm: null
   },
   mutations: {
     postJustPublished(state, value) {
       state.postJustPublished = value;
-    },
-    me(state, value) {
-      state.me = value;
     },
     notification(state, { message, type }) {
       state.notification = {
         message,
         type
       };
+    },
+    postForm(state, value) {
+      state.postForm = value;
+    },
+    postFormUpdate(state, { type, name, value }) {
+      state.postForm.values[type][name] = value;
     }
   }
 });
