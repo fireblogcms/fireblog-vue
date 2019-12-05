@@ -376,6 +376,12 @@ export function S3Upload({
     });
 }
 
-export function appNotification(message, type = "notification") {
-  Store.commit("notification", { message, type });
+export function appNotification(
+  message,
+  type = "info",
+  options = {
+    persistAfterRouteChange: false
+  }
+) {
+  Store.commit("notification", { message, type, options });
 }

@@ -32,7 +32,9 @@
                   placeholder="Blog's Name"
                 />
               </div>
-              <p class="help is-danger" v-if="formErrors.name">{{ formErrors.name }}</p>
+              <p class="help is-danger" v-if="formErrors.name">
+                {{ formErrors.name }}
+              </p>
             </div>
 
             <div class="field">
@@ -46,7 +48,9 @@
                   maxlength="250"
                 ></textarea>
               </div>
-              <p class="help is-danger" v-if="formErrors.description">{{ formErrors.description }}</p>
+              <p class="help is-danger" v-if="formErrors.description">
+                {{ formErrors.description }}
+              </p>
             </div>
 
             <br />
@@ -56,13 +60,17 @@
                 v-if="!isMyFirstBlog"
                 class="button is-outlined"
                 @click="$router.push('/')"
-              >CANCEL</button>
+              >
+                CANCEL
+              </button>
               <button
                 :disabled="savingBlogState === 'PENDING'"
-                :class="{'is-loading': savingBlogState === 'PENDING'}"
+                :class="{ 'is-loading': savingBlogState === 'PENDING' }"
                 class="button is-primary"
                 @click="onCreateClick"
-              >CREATE MY BLOG</button>
+              >
+                CREATE MY BLOG
+              </button>
             </div>
 
             <!-- Any other Bulma elements you want -->

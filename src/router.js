@@ -13,6 +13,7 @@ import AccessTokenErrorView from "./views/AccessTokenErrorView.vue";
 import LogoutView from "./views/LogoutView";
 import LoginView from "./views/LoginView";
 import { auth0Client } from "./utils/auth";
+import Store from "./store";
 
 Vue.use(Router);
 
@@ -125,6 +126,18 @@ router.beforeEach(async (to, from, next) => {
     await auth0.loginWithRedirect({
       redirect_uri: `${process.env.VUE_APP_BASE_URL}/auth0-callback`
     });
+  }
+});
+
+router.afterEach((to, from, next) => {
+  // clear notification on route Change, unless persistAfterRouteChange is requested..
+  if (Store.state.notification) {
+    if (
+      Store.state.notification.options &&
+      !Store.state.notification.options.persistAfterRouteChange
+    ) {
+      Store.commit("notification", null);
+    }
   }
 });
 

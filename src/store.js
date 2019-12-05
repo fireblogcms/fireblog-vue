@@ -11,12 +11,11 @@ export default new Vuex.Store({
     forms: {}
   },
   mutations: {
-    title(state, value) {
-      state.title = value;
-    },
+    // @see formStorageCreate()
     formCreate(state, { formId, form }) {
       Vue.set(state.forms, formId, form);
     },
+    // @see formStorageUpdate()
     formUpdate(state, { formId, type, name, value }) {
       if (type === "error") {
         state.forms[formId].errors[name] = value;
@@ -24,14 +23,13 @@ export default new Vuex.Store({
         state.forms[formId].values[type][name] = value;
       }
     },
+    // we display a special message the first a post is published.
     postJustPublished(state, value) {
       state.postJustPublished = value;
     },
-    notification(state, { message, type }) {
-      state.notification = {
-        message,
-        type
-      };
+    // @see appNotification() function
+    notification(state, args) {
+      state.notification = args;
     }
   }
 });

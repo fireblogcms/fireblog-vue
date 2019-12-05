@@ -4,13 +4,16 @@
     @click="$store.state.notification = null"
     style="margin-top:40px;"
     :class="{
-        'is-primary ': $store.state.notification.type === 'notification', 
-        'is-danger': $store.state.notification.type === 'error'
-      }"
+      'is-primary ': $store.state.notification.type === 'info',
+      'is-danger': $store.state.notification.type === 'error'
+    }"
     class="container notification has-text-centered animated flipInX"
   >
-    <button @click="$store.state.notification = null" class="delete"></button>
-    {{$store.state.notification.message}}
+    <button
+      @click="$store.commit('notification', null)"
+      class="delete"
+    ></button>
+    {{ $store.state.notification.message }}
   </div>
 </template>
 

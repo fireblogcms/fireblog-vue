@@ -219,10 +219,10 @@ export default {
       deleteBlogConfirmName: "",
       deleteBlogConfirmError: false,
       generalSettingsForm: formInitData({
-        initialFormValues: initialGeneralSettingsFormValues
+        initialValues: initialGeneralSettingsFormValues
       }),
       technicalSettingsForm: formInitData({
-        initialFormValues: initialTechnicalSettingsFormValues
+        initialValues: initialTechnicalSettingsFormValues
       })
     };
   },
@@ -268,7 +268,7 @@ export default {
           this.blog = blog;
           this.initDataState = REQUEST_STATE.FINISHED_OK;
           this.generalSettingsForm = formInitData({
-            initialFormValues: {
+            initialValues: {
               ...initialGeneralSettingsFormValues,
               name: blog.name,
               description: blog.description,
@@ -279,7 +279,7 @@ export default {
             }
           });
           this.technicalSettingsForm = formInitData({
-            initialFormValues: {
+            initialValues: {
               ...initialTechnicalSettingsFormValues,
               staticBuildWebhooks: blog.webhooks
                 ? blog.webhooks.map(webhook => webhook.url).join(",")
@@ -331,7 +331,9 @@ export default {
         .then(updatedBlog => {
           this.savingTechnicalSettingsState = REQUEST_STATE.FINISHED_OK;
           appNotification(
-            `"${updatedBlog.name}" technical settings have been saved.`
+            `"${updatedBlog.name}" technical settings have been saved.`,
+            "info",
+            { persistAfterRouteChange: true }
           );
         })
         .catch(e => {
