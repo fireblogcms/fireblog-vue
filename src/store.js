@@ -11,8 +11,11 @@ export default new Vuex.Store({
     forms: {}
   },
   mutations: {
+    title(state, value) {
+      state.title = value;
+    },
     formCreate(state, { formId, form }) {
-      state.forms[formId] = form;
+      Vue.set(state.forms, formId, form);
     },
     formUpdate(state, { formId, type, name, value }) {
       if (type === "error") {
@@ -29,16 +32,6 @@ export default new Vuex.Store({
         message,
         type
       };
-    },
-    postForm(state, value) {
-      state.postForm = value;
-    },
-    postFormUpdate(state, { type, name, value }) {
-      if (type === "error") {
-        state.postForm.errors[name] = value;
-      } else {
-        state.postForm.values[type][name] = value;
-      }
     }
   }
 });

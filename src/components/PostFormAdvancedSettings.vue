@@ -1,6 +1,5 @@
 <template>
   <div class="root container">
-    {{ formStorageGetValue("postForm", "slug") }}
     <form @submit.prevent>
       <div class="columns">
         <div class="column">
@@ -98,7 +97,7 @@
       </div>
     </form>
     <!-- debug form values -->
-    <pre v-if="true">{{ $store.state.forms.postForm }}</pre>
+    <pre v-if="false">{{ $store.state.forms.postForm }}</pre>
   </div>
 </template>
 

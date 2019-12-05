@@ -5,7 +5,7 @@
       v-if="initDataState === REQUEST_STATE.FINISHED_OK"
       class="post-form-wrapper"
     >
-      <pre v-if="true">{{ $store.state.forms }}</pre>
+      <pre v-if="false">{{ formStorageGetAllValues("postForm") }}</pre>
       <form @submit.prevent>
         <textarea-autosize
           maxlength="250"
@@ -425,10 +425,9 @@ export default {
     hotkeys.unbind("command+s");
   },
   watch: {
-    "$store.state.forms.postForm.current.values": {
+    "$store.state.forms.postForm.values.current": {
       deep: true,
       handler() {
-        console.log("coucou du watch !!");
         this.changesDetected = this.detectChanges().changesDetected;
       }
     }
@@ -570,16 +569,18 @@ export default {
     },
     detectChanges() {
       const modifiedValues = {};
-      Object.keys(this.$store.state.postForm.values.initial).forEach(key => {
-        if (
-          this.$store.state.postForm.values.initial[key] !==
-          this.$store.state.postForm.values.current[key]
-        ) {
-          modifiedValues[key] = true;
-        } else {
-          modifiedValues[key] = false;
+      Object.keys(this.$store.state.forms.postForm.values.initial).forEach(
+        key => {
+          if (
+            this.$store.state.forms.postForm.values.initial[key] !==
+            this.$store.state.forms.postForm.values.current[key]
+          ) {
+            modifiedValues[key] = true;
+          } else {
+            modifiedValues[key] = false;
+          }
         }
-      });
+      );
       return {
         modifiedValues,
         changesDetected:
@@ -594,7 +595,6 @@ export default {
         name: "title",
         value: value
       });
-      this.$forceUpdate();
     },
     onContentInput(value) {
       formStorageUpdate("postForm", {
@@ -837,7 +837,6 @@ export default {
           });
       }
     },
-    // @TODO = refactor how we update the store for a shorter syntax.
     prepareFormValuesFromPost(post) {
       let initialFormValues = {
         title: post.title ? post.title : "",
