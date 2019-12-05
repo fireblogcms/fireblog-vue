@@ -431,13 +431,6 @@ export default {
     }
   },
   methods: {
-    onTextInput(event) {
-      this.$store.commit("postFormUpdate", {
-        type: "current",
-        name: "test",
-        value: event.target.value
-      });
-    },
     initData() {
       this.initDataState = REQUEST_STATE.PENDING;
       const promises = [];
@@ -627,8 +620,8 @@ export default {
       if (this.existingPost && this.existingPost.status === "PUBLISHED") {
         publishingChanges = true;
       }
-      this.form.errors = this.getFormErrors();
-      if (Object.keys(this.form.errors).length > 0) {
+      this.validatePostForm();
+      if (Object.keys(this.$store.state.postForm.errors).length > 0) {
         return false;
       } else {
         this.savePost(STATUS_ENUM.PUBLISHED).then(() => {
@@ -670,7 +663,7 @@ export default {
     postFormIsValid() {
       let isValid = true;
       if (!this.$store.state.postForm.values.current.title.trim()) {
-        alert("A title is required");
+        appNotification("A title is required", "error");
         isValid = false;
       }
       return isValid;
@@ -842,6 +835,7 @@ export default {
       }
     },
     prepareFormValuesFromPost(post) {
+      //title
       this.$store.commit("postFormUpdate", {
         type: "initial",
         name: "title",
@@ -852,6 +846,7 @@ export default {
         name: "title",
         value: post.title ? post.title : ""
       });
+      // content
       this.$store.commit("postFormUpdate", {
         type: "initial",
         name: "content",
@@ -862,6 +857,7 @@ export default {
         name: "content",
         value: post.content ? post.content : ""
       });
+      // slug
       this.$store.commit("postFormUpdate", {
         type: "initial",
         name: "slug",
@@ -869,9 +865,10 @@ export default {
       });
       this.$store.commit("postFormUpdate", {
         type: "current",
-        name: "content",
-        value: post.slug ? post.content : ""
+        name: "slug",
+        value: post.slug ? post.slug : ""
       });
+      // teaser
       this.$store.commit("postFormUpdate", {
         type: "initial",
         name: "teaser",
@@ -882,6 +879,7 @@ export default {
         name: "teaser",
         value: post.teaser ? post.teaser : ""
       });
+      // image
       this.$store.commit("postFormUpdate", {
         type: "initial",
         name: "image",
@@ -908,21 +906,46 @@ export default {
         Math.floor(Math.floor(Math.random() * randomHurraGifs.length))
       ];
     },
-    getFormErrors() {
-      const errors = {};
+    validatePostForm() {
+      // @FIXME : fix this direct store mutation
+      this.$store.state.postForm.errors = {};
       // validate that slug is an url
-      if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(this.form.values.current.slug)) {
-        errors.slug = this.$t(
+      if (
+        !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(
+          this.$store.state.postForm.values.current.slug
+        )
+      ) {
+        let message = this.$t(
           "views.postForm.fields.slug.errors.invalidCharacters"
         );
+        this.$store.commit("postFormUpdate", {
+          type: "error",
+          name: "slug",
+          value: message
+        });
+        appNotification(message, "error");
       }
-      if (!this.form.values.current.slug.trim()) {
-        errors.slug = this.$t("views.postForm.fields.slug.errors.required");
+      if (!this.$store.state.postForm.values.current.slug.trim()) {
+        let message = this.$t(
+          "views.postForm.fields.slug.errors.invalidCharacters"
+        );
+        this.$store.commit("postFormUpdate", {
+          type: "error",
+          name: "slug",
+          value: message
+        });
+        appNotification(message, "error");
       }
-      if (!this.form.values.current.teaser.trim()) {
-        errors.teaser = this.$t("views.postForm.fields.teaser.errors.required");
+      if (!this.$store.state.postForm.values.current.teaser.trim()) {
+        let message = this.$t("views.postForm.fields.teaser.errors.required");
+        this.$store.commit("postFormUpdate", {
+          type: "error",
+          name: "teaser",
+          value: message
+        });
+        appNotification(message, "error");
       }
-      return errors;
+      return this.$store.state.postForm.errors;
     }
   }
 };

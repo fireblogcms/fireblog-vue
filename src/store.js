@@ -23,7 +23,11 @@ export default new Vuex.Store({
       state.postForm = value;
     },
     postFormUpdate(state, { type, name, value }) {
-      state.postForm.values[type][name] = value;
+      if (type === "error") {
+        state.postForm.errors[name] = value;
+      } else {
+        state.postForm.values[type][name] = value;
+      }
     }
   }
 });
