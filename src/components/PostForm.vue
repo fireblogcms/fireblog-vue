@@ -753,7 +753,7 @@ export default {
         .then(async result => {
           await apolloClient.resetStore();
           this.existingPost = result.data.createPost;
-          this.lastTimeSaved = this.existingPost.updatedAt;
+          this.lastTimeSaved = Math.floor(this.existingPost.updatedAt / 1000);
           // post is created, we are now in UPDATE mode for the form.
           if (this.existingPost.status === "PUBLISHED") {
             this.$store.commit("postJustPublished", true);
@@ -789,7 +789,7 @@ export default {
         .then(async result => {
           await apolloClient.resetStore();
           this.existingPost = result.data.updatePost;
-          this.lastTimeSaved = this.existingPost.updatedAt;
+          this.lastTimeSaved = Math.floor(this.existingPost.updatedAt / 1000);
           this.changesDetected = false;
           return result;
         })
