@@ -28,7 +28,7 @@
               </div>
             </label>
             <div class="control">
-              <!-- limited to 250 because of facebook, twitter and co preview card limitation -->
+              <!-- limited to 250 because of google, facebook, twitter and co preview card limitation -->
               <textarea
                 maxlength="250"
                 @input="onTeaserInput"

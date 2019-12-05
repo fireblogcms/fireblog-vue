@@ -22,7 +22,7 @@
                 v-model="generalSettingsForm.values.current.name"
                 class="input is-large"
                 type="text"
-                maxlength="250"
+                maxlength="100"
               />
             </div>
             <p class="help is-danger" v-if="generalSettingsForm.errors.name">
@@ -30,12 +30,13 @@
             </p>
           </div>
           <div class="field">
-            <label class="label">Description</label>
+            <label class="label">Description (250 characters max)</label>
             <div class="control">
               <textarea
                 class="textarea is-large"
                 v-model="generalSettingsForm.values.current.description"
                 type="text"
+                maxlength="250"
               ></textarea>
             </div>
           </div>
