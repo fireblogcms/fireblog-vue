@@ -92,32 +92,6 @@
           </div>
         </div>-->
       </div>
-      <!--
-      <div class="columns">
-        <div class="column">
-          <div class="actions">
-            <button
-              @click="onCancelClick"
-              class="button is-medium"
-            >{{ $t("views.postForm.publicationCancel") }}</button>
-
-            <button
-              @click="onPublishClick()"
-              :disabled="
-                savingPost.state === 'PENDING' || uploadingState === 'PENDING'
-              "
-              :class="{
-                'is-loading':
-                  savingPost.state === 'PENDING' &&
-                  savingPost.publicationStatus === 'PUBLISHED'
-              }"
-              class="button is-primary is-medium"
-              style="margin-left:20px;"
-            >{{ getPublishButtonText() }}</button>
-          </div>
-        </div>
-      </div>
-      -->
     </form>
     <!-- debug form values -->
     <pre v-if="false">{{ form }}</pre>
@@ -129,7 +103,6 @@ import S3ImageUpload from "./S3ImageUpload";
 import { REQUEST_STATE } from "../utils/helpers";
 
 export default {
-  inject: ["existingPost", "savingPost"],
   components: {
     S3ImageUpload
   },
@@ -167,11 +140,6 @@ export default {
         name: "slug",
         value: event.target.value
       });
-    },
-    getPublishButtonText() {
-      return this.existingPost() && this.existingPost().status === "PUBLISHED"
-        ? this.$t("views.postForm.publishChanges")
-        : this.$t("views.postForm.publishNow");
     },
     onUploadingStateChange(state) {
       this.uploadingState = state;

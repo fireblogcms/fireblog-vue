@@ -357,14 +357,6 @@ export default {
       }
     };
   },
-  provide() {
-    return {
-      savingPost: this.savingPost,
-      existingPost: () => {
-        return this.existingPost ? this.existingPost : null;
-      }
-    };
-  },
   created() {
     // store postForm values and errors in vuex store, to share easily form state
     // with child components
@@ -837,61 +829,15 @@ export default {
     },
     // @TODO = refactor how we update the store for a shorter syntax.
     prepareFormValuesFromPost(post) {
-      //title
-      this.$store.commit("postFormUpdate", {
-        type: "initial",
-        name: "title",
-        value: post.title ? post.title : ""
-      });
-      this.$store.commit("postFormUpdate", {
-        type: "current",
-        name: "title",
-        value: post.title ? post.title : ""
-      });
-      // content
-      this.$store.commit("postFormUpdate", {
-        type: "initial",
-        name: "content",
-        value: post.content ? post.content : ""
-      });
-      this.$store.commit("postFormUpdate", {
-        type: "current",
-        name: "content",
-        value: post.content ? post.content : ""
-      });
-      // slug
-      this.$store.commit("postFormUpdate", {
-        type: "initial",
-        name: "slug",
-        value: post.slug ? post.slug : ""
-      });
-      this.$store.commit("postFormUpdate", {
-        type: "current",
-        name: "slug",
-        value: post.slug ? post.slug : ""
-      });
-      // teaser
-      this.$store.commit("postFormUpdate", {
-        type: "initial",
-        name: "teaser",
-        value: post.teaser ? post.teaser : ""
-      });
-      this.$store.commit("postFormUpdate", {
-        type: "current",
-        name: "teaser",
-        value: post.teaser ? post.teaser : ""
-      });
-      // image
-      this.$store.commit("postFormUpdate", {
-        type: "initial",
-        name: "image",
-        value: post.image ? post.image : null
-      });
-      this.$store.commit("postFormUpdate", {
-        type: "current",
-        name: "image",
-        value: post.image ? post.image : null
-      });
+      let initialFormValues = {
+        title: post.title ? post.title : "",
+        content: post.content ? post.content : "",
+        slug: post.slug ? post.slug : "",
+        title: post.title ? post.title : "",
+        teaser: post.teaser ? post.teaser : "",
+        image: post.image ? post.image : ""
+      };
+      this.$store.commit("postForm", formInitData({ initialFormValues }));
     },
     // Prepare a post object from form form.values
     preparePostFromCurrentFormValues() {
