@@ -1,8 +1,8 @@
-# BlogStation Administration
+# fireblog back-office
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/02aabb46-5198-4549-8640-58fcfdc6b7e9/deploy-status)](https://app.netlify.com/sites/blog-vue/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/a7a00840-fd9c-4d4c-97d1-d3c2de4903b0/deploy-status)](https://app.netlify.com/sites/fireblog-app-staging/deploys)
 
-First create and fill a `.env.local` file..
+First create and fill a `.env.local` file.ÒÒ
 
 ## Project setup
 
