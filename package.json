@@ -7,8 +7,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "deploy:staging": "git checkout dev;git push;git checkout staging;git merge dev;git push;git checkout dev",
-    "deploy:master": "git checkout dev;git push;git checkout master;git merge dev;git push;git checkout dev"
+    "deploy:staging": "git checkout master;git push;git checkout staging;git merge master;git push;git checkout master",
+    "deploy:production": "git checkout master;git push;git checkout production;git merge master;git push;git checkout master"
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.2.2",
