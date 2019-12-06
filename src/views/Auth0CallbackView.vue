@@ -1,7 +1,7 @@
 <template>
   <div class="container section">
-    <div v-if="error">
-      <router-link :to="{ name: 'login' }">Retry to login</router-link>
+    <div class="has-text-centered" v-if="error">
+      <router-link :to="{ name: 'logout' }">Retry to login</router-link>
     </div>
     <AppPanel v-if="initDataState === 'PENDING'">
       <AppLoader>Signing in ...</AppLoader>
@@ -11,8 +11,9 @@
 
 <script>
 import AppLoader from "../components/AppLoader";
+
 import { auth0Client, syncAuth0UserWithServer } from "../utils/auth";
-import { REQUEST_STATE } from "../utils/helpers";
+import { REQUEST_STATE, appNotification } from "../utils/helpers";
 import AppPanel from "../components/AppPanel";
 import apolloClient from "../utils/apolloClient";
 import logger from "../utils/logger";
