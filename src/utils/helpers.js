@@ -257,7 +257,7 @@ export function formStorageCreate(formId, { initialValues }) {
   });
 }
 
-export function formStorageUpdate(formId, { type, name, value }) {
+export function formStorageUpdate(formId, { type, name = null, value }) {
   Store.commit("formUpdate", { formId, type, name, value });
 }
 

@@ -835,9 +835,12 @@ export default {
       ];
     },
     validatePostForm() {
-      // @FIXME : fix this direct store mutation
-      //this.$store.state.postForm.errors = {};
-      // validate that slug is an url
+      const errors = {};
+      formStorageUpdate("postForm", {
+        type: "errors",
+        value: {}
+      });
+      // SLUG
       if (
         !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(
           formStorageGetValue("postForm", "slug")
@@ -864,6 +867,7 @@ export default {
         });
         appNotification(message, "error");
       }
+      // TEASER
       if (!formStorageGetValue("postForm", "teaser").trim()) {
         let message = this.$t("views.postForm.fields.teaser.errors.required");
         formStorageUpdate("postForm", {

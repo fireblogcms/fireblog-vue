@@ -6,9 +6,11 @@
           <!-- IMAGE UPLOAD FIELD -->
           <div class="field featured-image">
             <label>
-              <strong>{{
+              <strong>
+                {{
                 $t("views.postForm.fields.featuredImage.label")
-              }}</strong>
+                }}
+              </strong>
             </label>
             <S3ImageUpload
               :blogId="$route.params.blogId"
@@ -23,9 +25,7 @@
           <div class="field">
             <label>
               <strong>{{ $t("views.postForm.fields.teaser.label") }}</strong>
-              <div class="field-help">
-                {{ $t("views.postForm.fields.teaser.help") }}
-              </div>
+              <div class="field-help">{{ $t("views.postForm.fields.teaser.help") }}</div>
             </label>
             <div class="control">
               <!-- limited to 250 because of google, facebook, twitter and co preview card limitation -->
@@ -37,20 +37,12 @@
                 placeholder="Teaser"
               ></textarea>
             </div>
-            <p
-              class="help is-danger"
-              v-if="formStorageGetError('postForm', 'teaser')"
-            >
-              {{ formStorageGetError("postForm", "teaser") }}
-            </p>
           </div>
           <!-- SLUG FIELD -->
           <div class="field">
             <label>
               <strong>{{ $t("views.postForm.fields.slug.label") }}</strong>
-              <div class="field-help">
-                {{ $t("views.postForm.fields.slug.help") }}
-              </div>
+              <div class="field-help">{{ $t("views.postForm.fields.slug.help") }}</div>
             </label>
 
             <div class="control">
@@ -65,9 +57,7 @@
             <p
               class="help is-danger"
               v-if="formStorageGetError('postForm', 'slug')"
-            >
-              {{ formStorageGetError("postForm", "slug") }}
-            </p>
+            >{{ formStorageGetError("postForm", "slug") }}</p>
           </div>
         </div>
         <!--

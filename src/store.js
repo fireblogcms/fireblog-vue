@@ -17,9 +17,11 @@ export default new Vuex.Store({
     },
     // @see formStorageUpdate()
     formUpdate(state, { formId, type, name, value }) {
-      if (type === "error") {
+      if (type === "errors") {
+        state.forms[formId].errors = value;
+      } else if (type === "error") {
         state.forms[formId].errors[name] = value;
-      } else {
+      } else if (type === "current") {
         state.forms[formId].values[type][name] = value;
       }
     },
