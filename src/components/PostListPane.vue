@@ -2,10 +2,7 @@
   <div class="container" style="border-top-left-radius:0;">
     <AppLoader v-show="postsRequestState === 'PENDING'" />
     <template v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length === 0">
-      <div class="content section has-text-centered">
-        <p v-show="activeStatus === 'PUBLISHED'">{{ $t("views.postList.noPublishedPostFound") }}</p>
-        <p v-show="activeStatus === 'DRAFT'">{{ $t("views.postList.noDraftPostFound") }}</p>
-      </div>
+      <div class="content section has-text-centered">No posts founds.</div>
     </template>
     <template v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length > 0">
       <AppList :items="posts.edges" :itemUniqueKey="item => item.node._id">
