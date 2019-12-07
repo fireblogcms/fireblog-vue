@@ -43,9 +43,7 @@
                     params: { blogId: $route.params.blogId }
                   })
                 "
-              >
-                {{ $t("views.postList.writeNewPostButton").toUpperCase() }}
-              </button>
+              >{{ $t("views.postList.writeNewPostButton").toUpperCase() }}</button>
             </div>
           </div>
         </header>
@@ -53,9 +51,10 @@
         <template v-if="isFirstPost === true">
           <div class="container">
             <AppPanel>
-              <h2 style="font-weight:200" class="title has-text-centered">
-                {{ $t("views.postList.firstBlogSentence") }}
-              </h2>
+              <h2
+                style="font-weight:200"
+                class="title has-text-centered"
+              >{{ $t("views.postList.firstBlogSentence") }}</h2>
               <div class="has-text-centered">
                 <div style="margin:2rem">
                   <button
@@ -66,9 +65,7 @@
                         params: { blogId: $route.params.blogId }
                       })
                     "
-                  >
-                    {{ $t("views.postList.firstPostWriteButton") }}
-                  </button>
+                  >{{ $t("views.postList.firstPostWriteButton") }}</button>
                 </div>
               </div>
             </AppPanel>
@@ -76,136 +73,46 @@
         </template>
         <template v-if="!isFirstPost">
           <section class="container">
-            <div
-              class="tabs is-boxed is-medium"
-              style="position:relative;margin-bottom:0;"
-            >
+            <div class="tabs is-boxed is-medium" style="position:relative;margin-bottom:0;">
               <ul style="border-bottom:0">
                 <li
                   @click="onStatusClick('PUBLISHED')"
                   :class="{ 'is-active': activeStatus == 'PUBLISHED' }"
                 >
-                  <a>{{ $t("views.postList.publishedTab") }}</a>
+                  <a>
+                    {{ $t("views.postList.publishedTab") }}
+                    <span
+                      style="margin-left:10px"
+                      class="tag is-rounded"
+                    >{{postsPublished.totalCount}}</span>
+                  </a>
                 </li>
                 <li
                   @click="onStatusClick('DRAFT')"
                   :class="{ 'is-active': activeStatus == 'DRAFT' }"
                 >
-                  <a>{{ $t("views.postList.draftTab") }}</a>
+                  <a>
+                    {{ $t("views.postList.draftTab") }}
+                    <span
+                      style="margin-left:10px"
+                      class="tag is-rounded"
+                    >{{postsDraft.totalCount}}</span>
+                  </a>
                 </li>
               </ul>
             </div>
 
             <AppPanel style="border-top-left-radius:0;min-height:200px">
-              <div class="container" style="border-top-left-radius:0;">
-                <AppLoader v-show="postsRequestState === 'PENDING'" />
-                <template
-                  v-if="
-                    postsRequestState === 'FINISHED_OK' &&
-                      posts.edges.length === 0
-                  "
-                >
-                  <div class="content section has-text-centered">
-                    <p v-show="activeStatus === 'PUBLISHED'">
-                      {{ $t("views.postList.noPublishedPostFound") }}
-                    </p>
-                    <p v-show="activeStatus === 'DRAFT'">
-                      {{ $t("views.postList.noDraftPostFound") }}
-                    </p>
-                  </div>
-                </template>
-                <template
-                  v-if="
-                    postsRequestState === 'FINISHED_OK' &&
-                      posts.edges.length > 0
-                  "
-                >
-                  <AppList
-                    :items="posts.edges"
-                    :itemUniqueKey="item => item.node._id"
-                  >
-                    <template v-slot="{ item }">
-                      <div class="columns">
-                        <div class="column is-1">
-                          <div
-                            v-if="item.node.image"
-                            v-lazy:background-image="item.node.image"
-                            class="post-list-image"
-                          />
-                        </div>
-                        <div
-                          @click="onRowClick(item)"
-                          class="column is-9 content"
-                        >
-                          <h2 class="post-list-title">
-                            <router-link
-                              class="item"
-                              :to="{
-                                name: 'postUpdate',
-                                params: {
-                                  blogId: $route.params.blogId,
-                                  postId: item.node._id
-                                }
-                              }"
-                              >{{ item.node.title + " " }}</router-link
-                            >
-                          </h2>
-                          <span
-                            style="color:rgba(0, 0, 0, 0.5);"
-                            v-if="item.node.status === 'PUBLISHED'"
-                          >
-                            {{
-                              $t("views.postList.publishedOn", {
-                                date: moment(
-                                  Number(item.node.publishedAt)
-                                ).format("DD MMMM YYYY - HH:mm")
-                              })
-                            }}
-                          </span>
-                          <span
-                            style="color:rgba(0, 0, 0, 0.5);"
-                            v-if="item.node.status === 'DRAFT'"
-                          >
-                            {{
-                              $t("views.postList.updatedOn", {
-                                date: moment(
-                                  Number(item.node.updatedAt)
-                                ).format("DD MMMM YYYY - HH:mm")
-                              })
-                            }}
-                          </span>
-
-                          <p
-                            style="padding-top:10px"
-                            v-if="item.node.teaser.trim()"
-                          >
-                            {{ striptags(item.node.teaser.substr(0, 200)) }}
-                          </p>
-                        </div>
-                        <div class="column is-2">
-                          <div class="actions">
-                            <!--
-                            <div
-                              @click="onUnpublishClick"
-                              v-show="activeStatus === 'PUBLISHED'"
-                              style="min-width:100px"
-                              class="button is-outlined"
-                            >Unpublish</div>
-                            -->
-                            <span
-                              @click="onDeleteClick(item.node)"
-                              style="min-width:100px"
-                              class="button is-outlined"
-                              >{{ $t("views.postList.deleteButton") }}</span
-                            >
-                          </div>
-                        </div>
-                      </div>
-                    </template>
-                  </AppList>
-                </template>
-                <!---->
-              </div>
+              <PostListPane
+                :postsRequestState="postsPublishedRequestState"
+                v-show="activeStatus === 'PUBLISHED'"
+                :posts="postsPublished"
+              />
+              <PostListPane
+                :postsRequestState="postsDraftRequestState"
+                v-show="activeStatus === 'DRAFT'"
+                :posts="postsDraft"
+              />
             </AppPanel>
           </section>
         </template>
@@ -218,26 +125,25 @@
           <div class="message-body">
             <p>
               {{
-                $t("views.postList.deleteModal.content", {
-                  postTitle: deleteModal.post.title
-                })
+              $t("views.postList.deleteModal.content", {
+              postTitle: deleteModal.post.title
+              })
               }}.
             </p>
           </div>
         </div>
       </template>
       <template #footer>
-        <div @click="deleteModal.show = false" class="button is-primary">
-          {{ $t("views.postList.deleteModal.cancelButton") }}
-        </div>
+        <div
+          @click="deleteModal.show = false"
+          class="button is-primary"
+        >{{ $t("views.postList.deleteModal.cancelButton") }}</div>
         <div
           @click="onDeleteModalConfirmClick"
           class="button is-danger"
           :class="{ 'is-loading': deletePostRequestState === 'PENDING' }"
           :disabled="deletePostRequestState === 'PENDING' ? true : false"
-        >
-          {{ $t("views.postList.deleteModal.confirmButton") }}
-        </div>
+        >{{ $t("views.postList.deleteModal.confirmButton") }}</div>
       </template>
     </BulmaModal>
   </DefaultLayout>
@@ -262,6 +168,7 @@ import AppList from "../components/AppList";
 import striptags from "striptags";
 import logger from "../utils/logger";
 import BulmaModal from "../components/BulmaModal";
+import PostListPane from "../components/PostListPane";
 
 export default {
   components: {
@@ -270,12 +177,15 @@ export default {
     AppList,
     BulmaModal,
     IconBack,
+    PostListPane,
     DefaultLayout
   },
   data() {
     return {
       initDataState: REQUEST_STATE.NOT_STARTED,
       postsRequestState: REQUEST_STATE.NOT_STARTED,
+      postsDraftRequestState: REQUEST_STATE.NOT_STARTED,
+      postsPublishedRequestState: REQUEST_STATE.NOT_STARTED,
       deletePostRequestState: REQUEST_STATE.NOT_STARTED,
       deleteModal: {
         show: false,
@@ -285,6 +195,8 @@ export default {
       },
       blog: null,
       posts: null,
+      postsPublished: null,
+      postsDraft: null,
       activeStatus: "PUBLISHED",
       // will be true or false, once we have counted all existing posts
       isFirstPost: null
@@ -307,6 +219,8 @@ export default {
       Promise.all([
         this.getBlog(),
         this.getPosts(this.activeStatus),
+        this.getPostsPublished(),
+        this.getPostsDraft(),
         this.getAllPosts()
       ])
         .then(() => {
@@ -380,6 +294,50 @@ export default {
           throw new Error(error);
         });
     },
+    getPostsPublished(status, fetchPolicy = "cache-first") {
+      this.postsPublishedRequestState = REQUEST_STATE.PENDING;
+      return apolloClient
+        .query({
+          query: getPostsByStatusQuery,
+          variables: {
+            blog: this.$route.params.blogId,
+            status: "PUBLISHED"
+          },
+          fetchPolicy
+        })
+        .then(result => {
+          this.postsPublishedRequestState = REQUEST_STATE.FINISHED_OK;
+          this.postsPublished = result.data.posts;
+          return result;
+        })
+        .catch(error => {
+          this.postsPublishedRequestState = REQUEST_STATE.FINISHED_ERROR;
+          appNotification("Sorry, an error occured while fetching posts");
+          throw new Error(error);
+        });
+    },
+    getPostsDraft(status, fetchPolicy = "cache-first") {
+      this.postsDraftRequestState = REQUEST_STATE.PENDING;
+      return apolloClient
+        .query({
+          query: getPostsByStatusQuery,
+          variables: {
+            blog: this.$route.params.blogId,
+            status: "DRAFT"
+          },
+          fetchPolicy
+        })
+        .then(result => {
+          this.postsDraftRequestState = REQUEST_STATE.FINISHED_OK;
+          this.postsDraft = result.data.posts;
+          return result;
+        })
+        .catch(error => {
+          this.postsDraftRequestState = REQUEST_STATE.FINISHED_ERROR;
+          appNotification("Sorry, an error occured while fetching posts");
+          throw new Error(error);
+        });
+    },
     deletePost(post) {
       this.deletePostRequestState = REQUEST_STATE.PENDING;
       return apolloClient
@@ -408,7 +366,12 @@ export default {
     },
     onStatusClick(status) {
       this.activeStatus = status;
-      this.getPosts(status);
+      if (status === "PUBLISHED") {
+        this.getPostsPublished();
+      }
+      if (status === "DRAFT") {
+        this.getPostsDraft();
+      }
     },
     onDeleteClick(post) {
       this.deleteModal.post = post;
@@ -416,9 +379,6 @@ export default {
       this.deleteModal.title = this.$t("views.postList.deleteModal.title", {
         postTitle: post.title
       });
-    },
-    onUnpublishClick(status) {
-      alert("unpublish");
     },
     onDeleteModalConfirmClick() {
       this.deletePost(this.deleteModal.post).then(r => {

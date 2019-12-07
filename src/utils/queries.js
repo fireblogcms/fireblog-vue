@@ -110,7 +110,8 @@ export const getPostQuery = gql`
 export const getPostsByStatusQuery = gql`
   ${FullPostFragment}
   query getPostsByStatusQuery($blog: ID!, $status: PostPublicationStatus!) {
-    posts(filter: { blog: $blog, status: $status }, last: ${postsPerPage}) {
+    posts(blog: $blog, filter: { status: $status }, last: ${postsPerPage}) {
+      totalCount
       edges {
         node {
           ...FullPostFragment
@@ -126,7 +127,8 @@ export const getPostsByStatusQuery = gql`
 export const getPostsQuery = gql`
   ${FullPostFragment}
   query getPostsQuery($blog: ID!) {
-    posts(filter: { blog: $blog }, last: ${postsPerPage}) {
+    posts(blog: $blog, last: ${postsPerPage}) {
+      totalCount
       edges {
         node {
           ...FullPostFragment

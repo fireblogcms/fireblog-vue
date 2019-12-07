@@ -19,10 +19,15 @@ export default new Vuex.Store({
     formUpdate(state, { formId, type, name, value }) {
       if (type === "errors") {
         state.forms[formId].errors = value;
-      } else if (type === "error") {
+      }
+      if (type === "error") {
         state.forms[formId].errors[name] = value;
-      } else if (type === "current") {
-        state.forms[formId].values[type][name] = value;
+      }
+      if (type === "current") {
+        state.forms[formId].values.current[name] = value;
+      }
+      if (type === "initial") {
+        state.forms[formId].values.initial[name] = value;
       }
     },
     // we display a special message the first a post is published.

@@ -266,7 +266,8 @@ import striptags from "striptags";
 const randomHurraGifs = [
   "https://media.giphy.com/media/7IW6Jnw29TYmgkuu3M/giphy.gif",
   "https://media.giphy.com/media/Wq2xnn2ZnwiTtoD6Qk/giphy.gif",
-  "http://giphygifs.s3.amazonaws.com/media/7vfhdCIn13zm8/giphy.gif"
+  "http://giphygifs.s3.amazonaws.com/media/7vfhdCIn13zm8/giphy.gif",
+  "https://66.media.tumblr.com/b53447fe9897178a2b4957a1ab32f6be/tumblr_n19pczDWI21ss6wowo9_250.gifv"
 ];
 
 const OPERATION_TYPE = {
