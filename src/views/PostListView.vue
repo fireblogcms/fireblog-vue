@@ -105,10 +105,14 @@
             <AppPanel style="border-top-left-radius:0;min-height:200px">
               <PostListPane
                 :postsRequestState="postsPublishedRequestState"
+                @onDeleteClick="onDeleteClick"
+                @onRowClick="onRowClick"
                 v-show="activeStatus === 'PUBLISHED'"
                 :posts="postsPublished"
               />
               <PostListPane
+                @onDeleteClick="onDeleteClick"
+                @onRowClick="onRowClick"
                 :postsRequestState="postsDraftRequestState"
                 v-show="activeStatus === 'DRAFT'"
                 :posts="postsDraft"
@@ -164,7 +168,6 @@ import {
   deletePostMutation
 } from "../utils/queries";
 import AppPanel from "../components/AppPanel";
-import AppList from "../components/AppList";
 import striptags from "striptags";
 import logger from "../utils/logger";
 import BulmaModal from "../components/BulmaModal";
@@ -174,7 +177,6 @@ export default {
   components: {
     AppLoader,
     AppPanel,
-    AppList,
     BulmaModal,
     IconBack,
     PostListPane,
@@ -219,6 +221,7 @@ export default {
       Promise.all([
         this.getBlog(),
         this.getPosts(this.activeStatus),
+
         this.getPostsPublished(),
         this.getPostsDraft(),
         this.getAllPosts()
@@ -349,7 +352,6 @@ export default {
           await apolloClient.resetStore();
           this.deletePostRequestState = REQUEST_STATE.FINISHED_OK;
           const post = result.data.deletePost;
-          return this.getPosts(this.activeStatus, "network-only");
         })
         .then(r => {
           this.deleteModal.show = false;
@@ -381,9 +383,13 @@ export default {
       });
     },
     onDeleteModalConfirmClick() {
-      this.deletePost(this.deleteModal.post).then(r => {
-        this.deleteModal.show = false;
-      });
+      this.deletePost(this.deleteModal.post)
+        .then(r => {
+          this.deleteModal.show = false;
+        })
+        .then(() => {
+          this.initData();
+        });
     }
   }
 };

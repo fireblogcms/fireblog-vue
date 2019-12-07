@@ -82,6 +82,9 @@ export default {
   methods: {
     onDeleteClick(post) {
       this.$emit("onDeleteClick", post);
+    },
+    onRowClick(post) {
+      this.$emit("onRowClick", post);
     }
   }
 };
