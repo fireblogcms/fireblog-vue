@@ -383,13 +383,15 @@ export default {
       });
     },
     onDeleteModalConfirmClick() {
-      this.deletePost(this.deleteModal.post)
-        .then(r => {
-          this.deleteModal.show = false;
-        })
-        .then(() => {
-          this.initData();
-        });
+      this.deletePost(this.deleteModal.post).then(() => {
+        this.deleteModal.show = false;
+        if (this.deleteModal.post.status === "PUBLISHED") {
+          this.getPostsPublished();
+        }
+        if (this.deleteModal.post.status === "DRAFT") {
+          this.getPostsDraft();
+        }
+      });
     }
   }
 };
