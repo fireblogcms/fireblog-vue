@@ -2,6 +2,19 @@ import i18n from "./i18n/index";
 
 export default ({ slug, locale }) => [
   {
+    id: "getBlogIinformations",
+    label: i18n.t("apiModal.GetBlogInformations"),
+    snippet: `
+    {
+      blog {
+        name
+        description
+        image
+      }
+    }
+  `
+  },
+  {
     id: "getAllPublishedPosts",
     label: i18n.t("apiModal.getAllPublishedPosts"),
     snippet: `
@@ -47,17 +60,5 @@ export default ({ slug, locale }) => [
   }
 }
     `
-  },
-  {
-    id: "getBlogIinformations",
-    label: i18n.t("apiModal.GetBlogInformations"),
-    snippet: `
-    {
-      blog {
-        name
-        description
-      }
-    }
-  `
   }
 ];
