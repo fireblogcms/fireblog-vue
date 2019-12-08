@@ -19,7 +19,7 @@ export default ({ slug, locale }) => [
     label: i18n.t("apiModal.getAllPublishedPosts"),
     snippet: `
 {
-  posts {
+  posts(last:50) {
     totalCount
     edges {
       cursor
