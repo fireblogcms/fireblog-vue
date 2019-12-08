@@ -1,47 +1,72 @@
 <template>
-  <div class="container" style="border-top-left-radius:0;">
+  <div class="container" style="border-top-left-radius:0; margin:30px;">
     <AppLoader v-show="postsRequestState === 'PENDING'" />
-    <template v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length === 0">
+    <template
+      v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length === 0"
+    >
       <div class="content section has-text-centered">No posts founds.</div>
     </template>
-    <template v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length > 0">
-      <AppList :items="posts.edges" :itemUniqueKey="item => item.node._id">
+    <template
+      v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length > 0"
+    >
+      <AppList :items="posts.edges" :itemUniqueKey="edge => edge.node._id">
         <template v-slot="{ item }">
           <div class="columns">
-            <div class="column is-1">
+            <div class="column is-2">
               <div
-                v-if="item.node.image"
+                v-show="item.node.image"
                 v-lazy:background-image="item.node.image"
                 class="post-list-image"
               />
             </div>
-            <div @click="onRowClick(item)" class="column is-9 content">
+            <div @click="onRowClick(item)" class="column is-8 content">
               <h2 class="post-list-title">
                 <router-link
                   class="item"
-                  :to="{name: 'postUpdate', params: {blogId: $route.params.blogId,postId: item.node._id}}"
-                >{{ item.node.title + " " }}</router-link>
+                  :to="{
+                    name: 'postUpdate',
+                    params: {
+                      blogId: $route.params.blogId,
+                      postId: item.node._id
+                    }
+                  }"
+                  >{{ item.node.title + " " }}</router-link
+                >
               </h2>
               <span
                 style="color:rgba(0, 0, 0, 0.5);"
                 v-if="item.node.status === 'PUBLISHED'"
-              >{{$t("views.postList.publishedOn", {date: moment(Number(item.node.publishedAt)).format("DD MMMM YYYY - HH:mm")})}}</span>
+                >{{
+                  $t("views.postList.publishedOn", {
+                    date: moment(Number(item.node.publishedAt)).format(
+                      "DD MMMM YYYY - HH:mm"
+                    )
+                  })
+                }}</span
+              >
               <span
                 style="color:rgba(0, 0, 0, 0.5);"
                 v-if="item.node.status === 'DRAFT'"
-              >{{$t("views.postList.updatedOn", {date: moment(Number(item.node.updatedAt)).format("DD MMMM YYYY - HH:mm")})}}</span>
-              <p
-                style="padding-top:10px"
-                v-if="item.node.teaser.trim()"
-              >{{ striptags(item.node.teaser.substr(0, 200)) }}</p>
+                >{{
+                  $t("views.postList.updatedOn", {
+                    date: moment(Number(item.node.updatedAt)).format(
+                      "DD MMMM YYYY - HH:mm"
+                    )
+                  })
+                }}</span
+              >
+              <p style="padding-top:10px" v-if="item.node.teaser.trim()">
+                {{ striptags(item.node.teaser.substr(0, 200)) }}
+              </p>
             </div>
             <div class="column is-2">
               <div class="actions">
                 <span
                   @click="onDeleteClick(item.node)"
                   style="min-width:100px"
-                  class="button is-outlined"
-                >{{ $t("views.postList.deleteButton") }}</span>
+                  class="button is-outlined is-pulled-right"
+                  >{{ $t("views.postList.deleteButton") }}</span
+                >
               </div>
             </div>
           </div>
@@ -86,3 +111,42 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.post-list-image {
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: auto;
+  margin-top: 5px;
+  width: 100%;
+  height: 100px;
+  overflow: hidden;
+  padding: 20px;
+  border-radius: 3px;
+}
+.post-list-title {
+  margin-bottom: 0;
+  padding: 0;
+}
+@media screen and (min-width: 1024px) {
+  .actions .button {
+    margin-bottom: 15px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+  .actions .button {
+    margin-left: 20px;
+  }
+  .main-call-to-action {
+    margin-top: 0px;
+    float: none;
+  }
+}
+</style>

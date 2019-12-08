@@ -314,6 +314,7 @@ export default {
         .then(result => {
           this.postsPublishedRequestState = REQUEST_STATE.FINISHED_OK;
           this.postsPublished = result.data.posts;
+          console.log(this.postsPublished);
           return result;
         })
         .catch(error => {
@@ -408,43 +409,5 @@ export default {
 .main-call-to-action {
   float: right;
   margin-top: 30px;
-}
-
-.post-list-image {
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  margin: auto;
-  margin-top: 5px;
-  width: 90px;
-  height: 90px;
-  overflow: hidden;
-  padding: 20px;
-  border-radius: 3px;
-}
-.post-list-title {
-  margin-bottom: 0;
-  padding: 0;
-}
-
-@media screen and (min-width: 1024px) {
-  .actions .button {
-    margin-bottom: 15px;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .actions {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-  }
-  .actions .button {
-    margin-left: 20px;
-  }
-  .main-call-to-action {
-    margin-top: 0px;
-    float: none;
-  }
 }
 </style>

@@ -113,6 +113,7 @@ export const getPostsByStatusQuery = gql`
     posts(blog: $blog, filter: { status: $status }, last: ${postsPerPage}) {
       totalCount
       edges {
+        cursor
         node {
           ...FullPostFragment
         }
@@ -130,6 +131,7 @@ export const getPostsQuery = gql`
     posts(blog: $blog, last: ${postsPerPage}) {
       totalCount
       edges {
+        cursor
         node {
           ...FullPostFragment
         }
