@@ -32,6 +32,7 @@ export const FullBlogFragment = gql`
     name
     updatedAt
     createdAt
+    url
     webhooks {
       name
       onEvents

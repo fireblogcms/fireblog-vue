@@ -9,14 +9,14 @@
         class="container"
         v-if="initDataState === 'FINISHED_OK'"
       >
-        <h2 class="title is-2">
-          {{ $t("views.blogSettings.generalSettingsForm.title") }}
-        </h2>
+        <h2 class="title is-2">{{ $t("views.blogSettings.generalSettingsForm.title") }}</h2>
         <form @submit.prevent="onGeneralSettingsFormSubmit">
           <div class="field">
-            <label class="label">{{
+            <label class="label">
+              {{
               $t("views.blogSettings.generalSettingsForm.fields.name.label")
-            }}</label>
+              }}
+            </label>
             <div class="control">
               <input
                 v-model="generalSettingsForm.values.current.name"
@@ -25,9 +25,10 @@
                 maxlength="100"
               />
             </div>
-            <p class="help is-danger" v-if="generalSettingsForm.errors.name">
-              {{ generalSettingsForm.errors.name }}
-            </p>
+            <p
+              class="help is-danger"
+              v-if="generalSettingsForm.errors.name"
+            >{{ generalSettingsForm.errors.name }}</p>
           </div>
           <div class="field">
             <label class="label">Description (250 characters max)</label>
@@ -63,9 +64,7 @@
                   savingGeneralSettingsState === 'PENDING'
               "
               type="submit"
-            >
-              {{ $t("views.blogSettings.generalSettingsForm.saveButton") }}
-            </button>
+            >{{ $t("views.blogSettings.generalSettingsForm.saveButton") }}</button>
           </div>
         </form>
       </AppPanel>
@@ -75,16 +74,33 @@
         class="container"
         v-if="initDataState === 'FINISHED_OK'"
       >
-        <h2 class="title is-2">
-          {{ $t("views.blogSettings.technicalSettingsForm.title") }}
-        </h2>
+        <h2 class="title is-2">{{ $t("views.blogSettings.technicalSettingsForm.title") }}</h2>
         <form @submit.prevent="onTechnicalSettingsFormSubmit">
           <div class="field">
             <label class="label">
               {{
-                $t(
-                  "views.blogSettings.technicalSettingsForm.fields.webhooks.label"
-                )
+              $t("views.blogSettings.technicalSettingsForm.fields.url.label")
+              }}
+            </label>
+            <div class="control">
+              <input
+                v-model="technicalSettingsForm.values.current.url"
+                class="input is-large"
+                type="text"
+                maxlength="100"
+              />
+            </div>
+            <p
+              class="help is-danger"
+              v-if="technicalSettingsForm.errors.url"
+            >{{ technicalSettingsForm.errors.url }}</p>
+          </div>
+          <div class="field">
+            <label class="label">
+              {{
+              $t(
+              "views.blogSettings.technicalSettingsForm.fields.webhooks.label"
+              )
               }}
             </label>
             <textarea
@@ -94,9 +110,9 @@
             ></textarea>
             <p class="help">
               {{
-                $t(
-                  "views.blogSettings.technicalSettingsForm.fields.webhooks.help"
-                )
+              $t(
+              "views.blogSettings.technicalSettingsForm.fields.webhooks.help"
+              )
               }}
             </p>
           </div>
@@ -109,9 +125,7 @@
               }"
               :disabled="savingTechnicalSettingsState === 'PENDING'"
               type="submit"
-            >
-              {{ $t("views.blogSettings.technicalSettingsForm.saveButton") }}
-            </button>
+            >{{ $t("views.blogSettings.technicalSettingsForm.saveButton") }}</button>
           </div>
         </form>
       </AppPanel>
@@ -120,12 +134,11 @@
         class="container"
         style="margin-top:40px;margin-bottom:40px;padding:40px;border: solid red 1px;background:rgba(255,0,0,0.1)"
       >
-        <h2 class="title is-2">
-          {{ $t("views.blogSettings.dangerZone.title") }}
-        </h2>
-        <button @click="onDeleteBlogClick" class="button is-danger is-large">
-          {{ $t("views.blogSettings.dangerZone.deleteBlog") }}
-        </button>
+        <h2 class="title is-2">{{ $t("views.blogSettings.dangerZone.title") }}</h2>
+        <button
+          @click="onDeleteBlogClick"
+          class="button is-danger is-large"
+        >{{ $t("views.blogSettings.dangerZone.deleteBlog") }}</button>
       </AppPanel>
 
       <BulmaModal class="api-modal" v-model="showDeleteBlogModal">
@@ -136,34 +149,25 @@
         <template #body>
           <div>
             <div class="field">
-              <label class="label"
-                >Please type the name of the blog to confirm</label
-              >
+              <label class="label">Please type the name of the blog to confirm</label>
               <div class="control">
-                <input
-                  v-model="deleteBlogConfirmName"
-                  class="input is-large"
-                  type="text"
-                />
-                <p v-if="deleteBlogConfirmError" class="help is-danger">
-                  Name does not match the blog's name.
-                </p>
+                <input v-model="deleteBlogConfirmName" class="input is-large" type="text" />
+                <p
+                  v-if="deleteBlogConfirmError"
+                  class="help is-danger"
+                >Name does not match the blog's name.</p>
               </div>
             </div>
           </div>
         </template>
         <template #footer>
-          <button @click="showDeleteBlogModal = false" class="button is-large">
-            Cancel
-          </button>
+          <button @click="showDeleteBlogModal = false" class="button is-large">Cancel</button>
           <button
             :class="{ 'is-loading': deleteBlogState === 'PENDING' }"
             :disabled="deleteBlogState === 'PENDING'"
             @click="onDeleteBlogConfirm"
             class="button is-danger is-large"
-          >
-            Delete
-          </button>
+          >Delete</button>
         </template>
       </BulmaModal>
     </template>
@@ -197,7 +201,8 @@ const initialGeneralSettingsFormValues = {
 };
 
 const initialTechnicalSettingsFormValues = {
-  staticBuildWebhooks: []
+  staticBuildWebhooks: [],
+  url: null
 };
 
 export default {
@@ -273,15 +278,13 @@ export default {
               ...initialGeneralSettingsFormValues,
               name: blog.name,
               description: blog.description,
-              image: blog.image,
-              staticBuildWebhooks: blog.webhooks
-                ? blog.webhooks.map(webhook => webhook.url).join(",")
-                : ""
+              image: blog.image
             }
           });
           this.technicalSettingsForm = formInitData({
             initialValues: {
               ...initialTechnicalSettingsFormValues,
+              url: blog.url,
               staticBuildWebhooks: blog.webhooks
                 ? blog.webhooks.map(webhook => webhook.url).join(",")
                 : ""
@@ -323,12 +326,13 @@ export default {
     },
     onTechnicalSettingsFormSubmit() {
       const webhooks = this.prepareWebhooksValuesForSave();
-      const blog = {
+      const update = {
         _id: this.$route.params.blogId,
-        webhooks
+        webhooks,
+        url: this.technicalSettingsForm.values.current.url.trim()
       };
       this.savingTechnicalSettingsState = REQUEST_STATE.PENDING;
-      this.updateBlog(blog)
+      this.updateBlog(update)
         .then(updatedBlog => {
           this.savingTechnicalSettingsState = REQUEST_STATE.FINISHED_OK;
           appNotification(

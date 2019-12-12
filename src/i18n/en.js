@@ -30,6 +30,9 @@ export default {
       technicalSettingsForm: {
         title: "Technical settings",
         fields: {
+          url: {
+            label: "absolute url of your blog"
+          },
           webhooks: {
             label: "Static site rebuild webhooks",
             help:

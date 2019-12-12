@@ -28,6 +28,9 @@ export default {
       technicalSettingsForm: {
         title: "Réglages techniques",
         fields: {
+          url: {
+            label: "Url absolue de votre blog"
+          },
           webhooks: {
             label: "Webhooks de reconstruction du site statique",
             help:
