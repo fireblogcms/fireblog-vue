@@ -9,7 +9,10 @@ export default ({ slug, locale }) => [
       blog {
         name
         description
-        image
+        image {
+          url
+          alt
+        }
       }
     }
   `
@@ -30,6 +33,10 @@ export default ({ slug, locale }) => [
         content
         updatedAt
         publishedAt
+        image {
+          url
+          alt
+        }
         author {
           name
           email
