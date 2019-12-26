@@ -204,3 +204,14 @@ export const deleteBlogMutation = gql`
     }
   }
 `;
+
+/**
+ * We need to know if this is the first post for this blog.
+ */
+export const getBlogStatsQuery = gql`
+  query getBlogStatsQuery($blog: ID!, $from: DateTime!, $to: DateTime!) {
+    apiStats(blog: $blog, from: $from, to: $to) {
+      count
+    }
+  }
+`;

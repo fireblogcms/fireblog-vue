@@ -12,6 +12,7 @@ import Auth0CallbackView from "./views/Auth0CallbackView.vue";
 import AccessTokenErrorView from "./views/AccessTokenErrorView.vue";
 import LogoutView from "./views/LogoutView";
 import LoginView from "./views/LoginView";
+import ApiUsageView from "./views/ApiUsageView";
 import { auth0Client } from "./utils/auth";
 import Store from "./store";
 
@@ -76,6 +77,11 @@ const router = new Router({
       path: "/blog/:blogId/post/:postId/proofread",
       name: "postProofread",
       component: PostProofreadView
+    },
+    {
+      path: "/blog/:blogId/apiusage",
+      name: "apiUsage",
+      component: ApiUsageView
     },
     {
       path: "/profile",

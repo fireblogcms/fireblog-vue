@@ -6,6 +6,9 @@ export default {
     close: "fermer"
   },
   views: {
+    apiUsage: {
+      title: "Consommation API"
+    },
     blogList: {
       title: "Mes blogs",
       createNewBlogButton: "Créer un nouveau blog",
