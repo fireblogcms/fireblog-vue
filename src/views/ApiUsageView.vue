@@ -1,8 +1,16 @@
 <template>
-  <div class="container section">
-    <AppPanel>
+  <div class="container is-small section">
+    <AppPanel style="padding:40px">
       <AppLoader v-if="initDataState === 'PENDING'">Loading stats...</AppLoader>
-      <template v-if="initDataState ==='FINISHED_OK'">{{apiStats}}</template>
+      <template v-if="initDataState ==='FINISHED_OK'">
+        <div class="has-text-centered">
+          <h1 class="title is-3">API USAGE - {{blog.name}}</h1>
+          <h2 class="subtitle is-3">{{ new Date().toLocaleDateString(undefined, { month: 'long' })}}</h2>
+          <p class="section">
+            <span class="title is-4">{{apiStats.count}} API calls</span>
+          </p>
+        </div>
+      </template>
     </AppPanel>
   </div>
 </template>
@@ -13,6 +21,7 @@ import { REQUEST_STATE, appNotification } from "../utils/helpers";
 import AppPanel from "../components/AppPanel";
 import apolloClient from "../utils/apolloClient";
 import { getBlogStatsQuery } from "../utils/queries";
+import { getBlog } from "../utils/helpers";
 
 export default {
   components: {
@@ -23,15 +32,18 @@ export default {
     return {
       error: null,
       initDataState: REQUEST_STATE.NOT_STARTED,
-      apiStats: null
+      apiStats: null,
+      blog: null
     };
   },
   async created() {
     this.initData();
   },
   methods: {
-    initData() {
+    async initData() {
       this.initDataState = REQUEST_STATE.PENDING;
+      this.blog = await getBlog(this.$route.params.blogId);
+      // get stats for current month
       var date = new Date();
       var from = new Date(date.getFullYear(), date.getMonth(), 1);
       var to = new Date(date.getFullYear(), date.getMonth() + 1, 0);
