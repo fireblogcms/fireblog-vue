@@ -7,7 +7,7 @@
           <h1 class="title is-3">API USAGE - {{blog.name}}</h1>
           <h2 class="subtitle is-3">{{ new Date().toLocaleDateString(undefined, { month: 'long' })}}</h2>
           <p class="section">
-            <span class="title is-4">{{apiStats.count}} API calls</span>
+            <span class="title is-4">{{apiUsage.count}}/220 000 API calls</span>
           </p>
         </div>
       </template>
@@ -20,7 +20,7 @@ import AppLoader from "../components/AppLoader";
 import { REQUEST_STATE, appNotification } from "../utils/helpers";
 import AppPanel from "../components/AppPanel";
 import apolloClient from "../utils/apolloClient";
-import { getBlogStatsQuery } from "../utils/queries";
+import { getBlogApiUsageQuery } from "../utils/queries";
 import { getBlog } from "../utils/helpers";
 
 export default {
@@ -49,7 +49,7 @@ export default {
       var to = new Date(date.getFullYear(), date.getMonth() + 1, 0);
       return apolloClient
         .query({
-          query: getBlogStatsQuery,
+          query: getBlogApiUsageQuery,
           variables: {
             blog: this.$route.params.blogId,
             from,
@@ -58,8 +58,7 @@ export default {
         })
         .then(results => {
           this.initDataState = REQUEST_STATE.FINISHED_OK;
-          this.apiStats = results.data.apiStats;
-          return results.data.apiStats;
+          this.apiUsage = results.data.apiUsage;
         })
         .catch(e => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
