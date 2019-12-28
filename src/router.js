@@ -9,7 +9,6 @@ import PostListView from "./views/PostListView";
 import PostProofreadView from "./views/PostProofreadView";
 import NotFoundView from "./views/NotFoundView";
 import Auth0CallbackView from "./views/Auth0CallbackView.vue";
-import AccessTokenErrorView from "./views/AccessTokenErrorView.vue";
 import LogoutView from "./views/LogoutView";
 import LoginView from "./views/LoginView";
 import { auth0Client } from "./utils/auth";
@@ -86,11 +85,6 @@ const router = new Router({
       path: "/logout",
       name: "logout",
       component: LogoutView
-    },
-    {
-      path: "/access-token-error",
-      name: "accessTokenError",
-      component: AccessTokenErrorView
     },
     {
       path: "*",

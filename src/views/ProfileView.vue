@@ -1,51 +1,24 @@
 <template>
   <DefaultLayout>
-    <template v-if="initDataState === 'PENDING'">
-      <AppLoader>Loading profile</AppLoader>
-    </template>
-
-    <template v-if="initDataState === 'FINISHED_OK'">
-      <div style="max-width:500px" class="container section">
-        <AppPanel>
-          <div style="padding:40px" class="has-text-centered">
-            <div class="col-md-2">
-              <img
-                style="border-radius:200px;"
-                width="200"
-                :src="me.picture"
-                alt="User's profile picture"
-              />
-            </div>
-            <div class="column">
-              <div class="content">
-                <h2>name: {{ me.name }}</h2>
-                <p>email: {{ me.email }}</p>
-                <!--
-                <h2>mes rôles</h2>
-                <ul
-                  class="has-text-left"
-                  v-for="(membership, index) in me.blogsMemberships"
-                  :key="index"
-                >
-                  <li>
-                    {{ membership.blog.name }} :
-                    <em>
-                      {{
-                        membership.roles
-                          .map(v => v.replace("_", " "))
-                          .join(",")
-                          .toLowerCase()
-                      }}
-                    </em>
-                  </li>
-                </ul>
-                -->
-              </div>
-            </div>
+    <AppLoader v-if="initDataState === 'PENDING'">Loading profile</AppLoader>
+    <AppPanel v-if="initDataState === 'FINISHED_OK'" class="container section is-small">
+      <div style="padding:40px" class="has-text-centered">
+        <div class="col-md-2">
+          <img
+            style="border-radius:200px;"
+            width="200"
+            :src="me.picture"
+            alt="User's profile picture"
+          />
+        </div>
+        <div class="column">
+          <div class="content">
+            <h2>name: {{ me.name }}</h2>
+            <p>email: {{ me.email }}</p>
           </div>
-        </AppPanel>
+        </div>
       </div>
-    </template>
+    </AppPanel>
   </DefaultLayout>
 </template>
 
