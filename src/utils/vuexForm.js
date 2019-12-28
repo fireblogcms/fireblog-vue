@@ -13,8 +13,6 @@ export const moduleForm = {
   mutations: {
     formCreate(state, { formId, form }) {
       Vue.set(state, formId, form);
-      state.test = "coucou enculé";
-      console.log("test", state);
     },
     formUpdate(state, { formId, type, name, value }) {
       if (type === "errors") {
