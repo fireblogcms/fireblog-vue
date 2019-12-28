@@ -15,7 +15,7 @@
             <S3ImageUpload
               :blogId="$route.params.blogId"
               @onUploadingStateChange="onUploadingStateChange"
-              :initialImage="formStorageGetValue('postForm', 'image')"
+              :initialImage="formGetValue('postForm', 'image')"
               @onUploaded="onUploaded"
             />
           </div>
@@ -32,7 +32,7 @@
               <textarea
                 maxlength="250"
                 @input="onTeaserInput"
-                :value="formStorageGetValue('postForm', 'teaser')"
+                :value="formGetValue('postForm', 'teaser')"
                 class="textarea is-medium"
                 placeholder="Teaser"
               ></textarea>
@@ -48,7 +48,7 @@
             <div class="control">
               <input
                 @input="onSlugInput"
-                :value="formStorageGetValue('postForm', 'slug')"
+                :value="formGetValue('postForm', 'slug')"
                 class="input is-medium"
                 type="text"
                 placeholder="slug"
@@ -56,8 +56,8 @@
             </div>
             <p
               class="help is-danger"
-              v-if="formStorageGetError('postForm', 'slug')"
-            >{{ formStorageGetError("postForm", "slug") }}</p>
+              v-if="formGetError('postForm', 'slug')"
+            >{{ formGetError("postForm", "slug") }}</p>
           </div>
         </div>
         <!--
@@ -94,11 +94,7 @@
 <script>
 import S3ImageUpload from "./S3ImageUpload";
 import { REQUEST_STATE } from "../utils/helpers";
-import {
-  formStorageGetValue,
-  formStorageGetError,
-  formStorageUpdate
-} from "../utils/vuexForm";
+import { formGetValue, formGetError, formUpdate } from "../utils/vuexForm";
 
 export default {
   components: {
@@ -112,12 +108,12 @@ export default {
     return data;
   },
   created() {
-    this.formStorageGetError = formStorageGetError;
-    this.formStorageGetValue = formStorageGetValue;
+    this.formGetError = formGetError;
+    this.formGetValue = formGetValue;
   },
   methods: {
     onUploaded(fileUrl) {
-      formStorageUpdate("postForm", {
+      formUpdate("postForm", {
         type: "current",
         name: "image",
         value: fileUrl
@@ -130,14 +126,14 @@ export default {
       this.$emit("onPublishClick");
     },
     onTeaserInput(event) {
-      formStorageUpdate("postForm", {
+      formUpdate("postForm", {
         type: "current",
         name: "teaser",
         value: event.target.value
       });
     },
     onSlugInput(event) {
-      formStorageUpdate("postForm", {
+      formUpdate("postForm", {
         type: "current",
         name: "slug",
         value: event.target.value

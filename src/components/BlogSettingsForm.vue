@@ -374,10 +374,6 @@ export default {
     },
     prepareWebhooksValuesForSave() {
       const webhooks = [];
-      console.log(
-        "this.technicalSettingsForm.values",
-        this.technicalSettingsForm.values
-      );
       if (
         this.technicalSettingsForm.values.current.staticBuildWebhooks.trim()
       ) {

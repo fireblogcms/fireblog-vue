@@ -2,7 +2,7 @@
   <div>
     <AppLoader v-if="initDataState === 'PENDING'" />
     <div v-if="initDataState === REQUEST_STATE.FINISHED_OK" class="post-form-wrapper">
-      <pre v-if="false">{{ formStorageGetAllValues("postForm") }}</pre>
+      <pre v-if="false">{{ formGetAllValues("postForm") }}</pre>
       <form @submit.prevent>
         <textarea-autosize
           maxlength="250"
@@ -14,7 +14,7 @@
           id="title"
           :disabled="savingDraftState === REQUEST_STATE.PENDING"
           @input="onTitleInput"
-          :value="formStorageGetValue('postForm', 'title')"
+          :value="formGetValue('postForm', 'title')"
         ></textarea-autosize>
         <ckeditor
           class="content"
@@ -22,7 +22,7 @@
           ref="ckeditor"
           :editor="editor"
           @input="onContentInput"
-          :value="formStorageGetValue('postForm', 'content')"
+          :value="formGetValue('postForm', 'content')"
           @ready="onEditorReady"
           :config="editorConfig"
         ></ckeditor>
@@ -247,11 +247,11 @@ import {
   appNotification
 } from "../utils/helpers";
 import {
-  formStorageCreate,
-  formStorageUpdate,
-  formStorageGetValue,
-  formStorageGetAllErrors,
-  formStorageGetAllValues
+  formInit,
+  formUpdate,
+  formGetValue,
+  formGetAllErrors,
+  formGetAllValues
 } from "../utils/vuexForm";
 
 import {
@@ -332,10 +332,10 @@ export default {
     };
   },
   created() {
-    this.formStorageGetValue = formStorageGetValue;
-    this.formStorageGetAllValues = formStorageGetAllValues;
+    this.formGetValue = formGetValue;
+    this.formGetAllValues = formGetAllValues;
     // store our form values in Vuex store.
-    formStorageCreate("postForm", {
+    formInit("postForm", {
       initialValues: initialFormValues
     });
 
@@ -559,14 +559,14 @@ export default {
       };
     },
     onTitleInput(value) {
-      formStorageUpdate("postForm", {
+      formUpdate("postForm", {
         type: "current",
         name: "title",
         value: value
       });
     },
     onContentInput(value) {
-      formStorageUpdate("postForm", {
+      formUpdate("postForm", {
         type: "current",
         name: "content",
         value: value
@@ -635,7 +635,7 @@ export default {
      */
     postFormIsValid() {
       let isValid = true;
-      if (!formStorageGetValue("postForm", "title").trim()) {
+      if (!formGetValue("postForm", "title").trim()) {
         appNotification("A title is required", "error");
         isValid = false;
       }
@@ -651,26 +651,23 @@ export default {
       if (this.mediaLoadingCounter > 0) {
         this.showMediaCurrentlyLoadingModal();
       } else {
-        if (formStorageGetValue("postForm", "slug").trim().length === 0) {
-          const slugSuggestion = createSlug(
-            formStorageGetValue("postForm", "title"),
-            {
-              replacement: "-",
-              lower: true
-            }
-          );
-          formStorageUpdate("postForm", {
+        if (formGetValue("postForm", "slug").trim().length === 0) {
+          const slugSuggestion = createSlug(formGetValue("postForm", "title"), {
+            replacement: "-",
+            lower: true
+          });
+          formUpdate("postForm", {
             type: "current",
             name: "slug",
             value: slugSuggestion
           });
         }
         // pre-fill teaser fied with the first sentence of the text.
-        if (formStorageGetValue("postForm", "teaser").trim().length === 0) {
+        if (formGetValue("postForm", "teaser").trim().length === 0) {
           const teaserSuggestion = striptags(
-            formStorageGetValue("postForm", "content").substr(0, 250)
+            formGetValue("postForm", "content").substr(0, 250)
           );
-          formStorageUpdate("postForm", {
+          formUpdate("postForm", {
             type: "current",
             name: "teaser",
             value: teaserSuggestion
@@ -816,18 +813,18 @@ export default {
         image: post.image ? post.image : ""
       };
       // store our form values in Vuex store.
-      formStorageCreate("postForm", {
+      formInit("postForm", {
         initialValues: initialFormValues
       });
     },
     // Prepare a post object from form form.values
     preparePostFromCurrentFormValues() {
       return {
-        title: formStorageGetValue("postForm", "title"),
-        content: formStorageGetValue("postForm", "content"),
-        slug: formStorageGetValue("postForm", "slug"),
-        teaser: formStorageGetValue("postForm", "teaser"),
-        image: formStorageGetValue("postForm", "image")
+        title: formGetValue("postForm", "title"),
+        content: formGetValue("postForm", "content"),
+        slug: formGetValue("postForm", "slug"),
+        teaser: formGetValue("postForm", "teaser"),
+        image: formGetValue("postForm", "image")
       };
     },
     getRandomHurrahGif() {
@@ -837,31 +834,29 @@ export default {
     },
     validatePostForm() {
       const errors = {};
-      formStorageUpdate("postForm", {
+      formUpdate("postForm", {
         type: "errors",
         value: {}
       });
       // SLUG
       if (
-        !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(
-          formStorageGetValue("postForm", "slug")
-        )
+        !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(formGetValue("postForm", "slug"))
       ) {
         let message = this.$t(
           "views.postForm.fields.slug.errors.invalidCharacters"
         );
-        formStorageUpdate("postForm", {
+        formUpdate("postForm", {
           type: "error",
           name: "slug",
           value: message
         });
         appNotification(message, "error");
       }
-      if (!formStorageGetValue("postForm", "slug").trim()) {
+      if (!formGetValue("postForm", "slug").trim()) {
         let message = this.$t(
           "views.postForm.fields.slug.errors.invalidCharacters"
         );
-        formStorageUpdate("postForm", {
+        formUpdate("postForm", {
           type: "error",
           name: "slug",
           value: message
@@ -869,16 +864,16 @@ export default {
         appNotification(message, "error");
       }
       // TEASER
-      if (!formStorageGetValue("postForm", "teaser").trim()) {
+      if (!formGetValue("postForm", "teaser").trim()) {
         let message = this.$t("views.postForm.fields.teaser.errors.required");
-        formStorageUpdate("postForm", {
+        formUpdate("postForm", {
           type: "error",
           name: "teaser",
           value: message
         });
         appNotification(message, "error");
       }
-      return formStorageGetAllErrors("postForm");
+      return formGetAllErrors("postForm");
     }
   }
 };

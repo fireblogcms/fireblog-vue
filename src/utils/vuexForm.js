@@ -11,7 +11,7 @@ import Vue from "vue";
 export const moduleForm = {
   state: {},
   mutations: {
-    formCreate(state, { formId, form }) {
+    formInit(state, { formId, form }) {
       Vue.set(state, formId, form);
     },
     formUpdate(state, { formId, type, name, value }) {
@@ -59,29 +59,29 @@ export function formInitData({ initialValues }) {
   };
 }
 
-export function formStorageCreate(formId, { initialValues }) {
-  Store.commit("formCreate", {
+export function formInit(formId, { initialValues }) {
+  Store.commit("formInit", {
     formId,
     form: formInitData({ initialValues })
   });
 }
 
-export function formStorageUpdate(formId, { type, name = null, value }) {
+export function formUpdate(formId, { type, name = null, value }) {
   Store.commit("formUpdate", { formId, type, name, value });
 }
 
-export function formStorageGetValue(formId, name) {
+export function formGetValue(formId, name) {
   return Store.state.forms[formId].values.current[name];
 }
 
-export function formStorageGetAllValues(formId) {
+export function formGetAllValues(formId) {
   return Store.state.forms[formId].values;
 }
 
-export function formStorageGetError(formId, name) {
+export function formGetError(formId, name) {
   return Store.state.forms[formId].errors[name];
 }
 
-export function formStorageGetAllErrors(formId) {
+export function formGetAllErrors(formId) {
   return Store.state.forms[formId].errors;
 }
