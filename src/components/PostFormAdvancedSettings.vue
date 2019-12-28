@@ -93,12 +93,12 @@
 
 <script>
 import S3ImageUpload from "./S3ImageUpload";
+import { REQUEST_STATE } from "../utils/helpers";
 import {
-  REQUEST_STATE,
   formStorageGetValue,
   formStorageGetError,
   formStorageUpdate
-} from "../utils/helpers";
+} from "../utils/vuexForm";
 
 export default {
   components: {

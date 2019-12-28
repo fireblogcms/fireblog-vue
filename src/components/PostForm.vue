@@ -242,17 +242,17 @@ import {
   REQUEST_STATE,
   getUser,
   getBlog,
-  formInitData,
   createSlug,
   ckeditorIframelyMediaProvider,
-  graphQLErrorsContainsCode,
-  appNotification,
+  appNotification
+} from "../utils/helpers";
+import {
   formStorageCreate,
   formStorageUpdate,
   formStorageGetValue,
   formStorageGetAllErrors,
   formStorageGetAllValues
-} from "../utils/helpers";
+} from "../utils/vuexForm";
 
 import {
   createPostMutation,
@@ -410,7 +410,7 @@ export default {
       }
       return Promise.all(promises)
         .then(results => {
-          if (this.$store.state.postJustPublished === true) {
+          if (this.$store.state.global.postJustPublished === true) {
             this.$store.commit("postJustPublished", false);
             this.publishingHurrahModal.show = true;
           }

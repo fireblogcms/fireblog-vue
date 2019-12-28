@@ -228,55 +228,6 @@ export const uploadFetch = (url, options) =>
     xhr.send(options.body);
   });
 
-/**
- * Helper to handle correctly form values in Vue component
- * 1) initialFormValues are the value loaded initially for the form. They never
- *    change during the lifetime of the form.
- * 2) "current" values are the one entered or modified by the user.
- *    Those are the values we want to submit..
- * @param {*} param0
- */
-export function formInitData({ initialValues }) {
-  return {
-    errors: {},
-    values: {
-      initial: {
-        ...initialValues
-      },
-      current: {
-        ...initialValues
-      }
-    }
-  };
-}
-
-export function formStorageCreate(formId, { initialValues }) {
-  Store.commit("formCreate", {
-    formId,
-    form: formInitData({ initialValues })
-  });
-}
-
-export function formStorageUpdate(formId, { type, name = null, value }) {
-  Store.commit("formUpdate", { formId, type, name, value });
-}
-
-export function formStorageGetValue(formId, name) {
-  return Store.state.forms[formId].values.current[name];
-}
-
-export function formStorageGetAllValues(formId) {
-  return Store.state.forms[formId].values;
-}
-
-export function formStorageGetError(formId, name) {
-  return Store.state.forms[formId].errors[name];
-}
-
-export function formStorageGetAllErrors(formId) {
-  return Store.state.forms[formId].errors;
-}
-
 export function ckeditorIframelyMediaProvider() {
   return {
     // hint: this is just for previews. Get actual HTML codes by making API calls from your CMS

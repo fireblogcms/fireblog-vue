@@ -1,19 +1,16 @@
 <template>
   <div
-    v-if="$store.state.notification"
-    @click="$store.state.notification = null"
+    v-if="$store.state.global.notification"
+    @click="$store.state.global.notification = null"
     style="margin-top:40px;"
     :class="{
-      'is-primary ': $store.state.notification.type === 'info',
-      'is-danger': $store.state.notification.type === 'error'
+      'is-primary ': $store.state.global.notification.type === 'info',
+      'is-danger': $store.state.global.notification.type === 'error'
     }"
     class="container notification has-text-centered animated flipInX"
   >
-    <button
-      @click="$store.commit('notification', null)"
-      class="delete"
-    ></button>
-    {{ $store.state.notification.message }}
+    <button @click="$store.commit('notification', null)" class="delete"></button>
+    {{ $store.state.global.notification.message }}
   </div>
 </template>
 

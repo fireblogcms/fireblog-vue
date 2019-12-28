@@ -176,12 +176,8 @@
 
 <script>
 import AppPanel from "../components/AppPanel";
-import {
-  getBlog,
-  REQUEST_STATE,
-  formInitData,
-  appNotification
-} from "../utils/helpers";
+import { getBlog, REQUEST_STATE, appNotification } from "../utils/helpers";
+import { formInitData } from "../utils/vuexForm";
 import AppLoader from "../components/AppLoader";
 import apolloClient from "../utils/apolloClient";
 import gql from "graphql-tag";
