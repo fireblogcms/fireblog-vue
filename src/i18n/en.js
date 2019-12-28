@@ -6,6 +6,9 @@ export default {
     close: "close"
   },
   views: {
+    apiUsage: {
+      title: "API usage"
+    },
     blogList: {
       title: "My blogs",
       createNewBlogButton: "Create a new blog",
