@@ -94,7 +94,7 @@
 <script>
 import S3ImageUpload from "./S3ImageUpload";
 import { REQUEST_STATE } from "../utils/helpers";
-import { formGetValue, formGetError, formUpdate } from "../utils/vuexForm";
+import { formGetValue, formGetError, formSetValue } from "../utils/vuexForm";
 
 export default {
   components: {
@@ -113,11 +113,7 @@ export default {
   },
   methods: {
     onUploaded(fileUrl) {
-      formUpdate("postForm", {
-        type: "current",
-        name: "image",
-        value: fileUrl
-      });
+      formSetValue("postForm", "image", fileUrl);
     },
     onCancelClick() {
       this.$emit("onCancelClick");
@@ -126,18 +122,10 @@ export default {
       this.$emit("onPublishClick");
     },
     onTeaserInput(event) {
-      formUpdate("postForm", {
-        type: "current",
-        name: "teaser",
-        value: event.target.value
-      });
+      formSetValue("postForm", "teaser", event.target.value);
     },
     onSlugInput(event) {
-      formUpdate("postForm", {
-        type: "current",
-        name: "slug",
-        value: event.target.value
-      });
+      formSetValue("postForm", "slug", event.target.value);
     },
     onUploadingStateChange(state) {
       this.uploadingState = state;

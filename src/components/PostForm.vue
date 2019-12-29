@@ -248,7 +248,9 @@ import {
 } from "../utils/helpers";
 import {
   formInit,
-  formUpdate,
+  formSetValue,
+  formSetError,
+  formSetErrors,
   formGetValue,
   formGetAllErrors,
   formGetAllValues
@@ -394,7 +396,7 @@ export default {
     hotkeys.unbind("command+s");
   },
   watch: {
-    "$store.state.forms.postForm.values.current": {
+    "$store.state.forms.postForm.values": {
       deep: true,
       handler() {
         this.changesDetected = this.detectChanges().changesDetected;
@@ -538,18 +540,16 @@ export default {
     },
     detectChanges() {
       const modifiedValues = {};
-      Object.keys(this.$store.state.forms.postForm.values.initial).forEach(
-        key => {
-          if (
-            this.$store.state.forms.postForm.values.initial[key] !==
-            this.$store.state.forms.postForm.values.current[key]
-          ) {
-            modifiedValues[key] = true;
-          } else {
-            modifiedValues[key] = false;
-          }
+      Object.keys(this.$store.state.forms.postForm.values).forEach(key => {
+        if (
+          this.$store.state.forms.postForm.values[key] !==
+          this.$store.state.forms.postForm.initialValues[key]
+        ) {
+          modifiedValues[key] = true;
+        } else {
+          modifiedValues[key] = false;
         }
-      );
+      });
       return {
         modifiedValues,
         changesDetected:
@@ -559,18 +559,11 @@ export default {
       };
     },
     onTitleInput(value) {
-      formUpdate("postForm", {
-        type: "current",
-        name: "title",
-        value: value
-      });
+      console.log("value title", value);
+      formSetValue("postForm", "title", value);
     },
     onContentInput(value) {
-      formUpdate("postForm", {
-        type: "current",
-        name: "content",
-        value: value
-      });
+      formSetValue("postForm", "content", value);
     },
     onEditorReady(editor) {
       const element = document.querySelector(
@@ -656,22 +649,14 @@ export default {
             replacement: "-",
             lower: true
           });
-          formUpdate("postForm", {
-            type: "current",
-            name: "slug",
-            value: slugSuggestion
-          });
+          formSetValue("postForm", "slug", slugSuggestion);
         }
         // pre-fill teaser fied with the first sentence of the text.
         if (formGetValue("postForm", "teaser").trim().length === 0) {
           const teaserSuggestion = striptags(
             formGetValue("postForm", "content").substr(0, 250)
           );
-          formUpdate("postForm", {
-            type: "current",
-            name: "teaser",
-            value: teaserSuggestion
-          });
+          formSetValue("postForm", "teaser", teaserSuggestion);
         }
         this.publicationSettingsModal.show = true;
       }
@@ -834,10 +819,8 @@ export default {
     },
     validatePostForm() {
       const errors = {};
-      formUpdate("postForm", {
-        type: "errors",
-        value: {}
-      });
+      // reset form errors
+      formSetErrors("postForm", {});
       // SLUG
       if (
         !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(formGetValue("postForm", "slug"))
@@ -845,32 +828,20 @@ export default {
         let message = this.$t(
           "views.postForm.fields.slug.errors.invalidCharacters"
         );
-        formUpdate("postForm", {
-          type: "error",
-          name: "slug",
-          value: message
-        });
+        formSetError("postForm", "slug", message);
         appNotification(message, "error");
       }
       if (!formGetValue("postForm", "slug").trim()) {
         let message = this.$t(
           "views.postForm.fields.slug.errors.invalidCharacters"
         );
-        formUpdate("postForm", {
-          type: "error",
-          name: "slug",
-          value: message
-        });
+        formSetError("postForm", "slug", message);
         appNotification(message, "error");
       }
       // TEASER
       if (!formGetValue("postForm", "teaser").trim()) {
         let message = this.$t("views.postForm.fields.teaser.errors.required");
-        formUpdate("postForm", {
-          type: "error",
-          name: "teaser",
-          value: message
-        });
+        formSetError("postForm", "teaser", message);
         appNotification(message, "error");
       }
       return formGetAllErrors("postForm");

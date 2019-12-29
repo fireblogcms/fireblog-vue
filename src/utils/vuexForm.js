@@ -1,18 +1,36 @@
 import Store from "../store";
 import Vue from "vue";
 
-/**
- * Store form values inside Vuex store.
- */
+const storeFormsKey = "forms";
 
 /**
- * A custom store module to store all our forms values.
+ * All our forms values will be stored inside a "forms" key
+ * inside Vuex store. E.g:
+ * - forms
+ *   - postForm
+ *      - values:
+ *        - title: "hello"
+ *        - content: "world"
+ *      - errors:
+ *        - title: ["title must contains at least two words"]
  */
 export const moduleForm = {
   state: {},
   mutations: {
     formInit(state, { formId, form }) {
       Vue.set(state, formId, form);
+    },
+    formSetValue(state, { formId, name, value }) {
+      Vue.set(state[formId].values, name, value);
+    },
+    formSetValues(state, { formId, values }) {
+      Vue.set(state[formId], "values", values);
+    },
+    formSetError(state, { formId, name, value }) {
+      Vue.set(state[formId].errors, name, value);
+    },
+    formSetErrors(state, { formId, errors }) {
+      Vue.set(state[formId], "errors", errors);
     },
     formUpdate(state, { formId, type, name, value }) {
       if (type === "errors") {
@@ -35,7 +53,7 @@ export const moduleForm = {
 /**
  * Register dynamically our module inside Vuex store.
  */
-Store.registerModule("forms", moduleForm);
+Store.registerModule(storeFormsKey, moduleForm);
 
 /**
  * Helper to handle correctly form values in Vue component
@@ -49,13 +67,9 @@ export function formInitData({ initialValues }) {
   return {
     errors: {},
     values: {
-      initial: {
-        ...initialValues
-      },
-      current: {
-        ...initialValues
-      }
-    }
+      ...initialValues
+    },
+    initialValues
   };
 }
 
@@ -71,17 +85,29 @@ export function formUpdate(formId, { type, name = null, value }) {
 }
 
 export function formGetValue(formId, name) {
-  return Store.state.forms[formId].values.current[name];
+  return Store.state[storeFormsKey][formId].values[name];
 }
 
 export function formGetAllValues(formId) {
-  return Store.state.forms[formId].values;
+  return Store.state[storeFormsKey][formId].values;
 }
 
 export function formGetError(formId, name) {
-  return Store.state.forms[formId].errors[name];
+  return Store.state[storeFormsKey][formId].errors[name];
 }
 
 export function formGetAllErrors(formId) {
-  return Store.state.forms[formId].errors;
+  return Store.state[storeFormsKey][formId].errors;
+}
+
+export function formSetValue(formId, name, value) {
+  Store.commit("formSetValue", { formId, name, value });
+}
+
+export function formSetError(formId, name, value) {
+  Store.commit("formSetError", { formId, name, value });
+}
+
+export function formSetErrors(formId, errors = {}) {
+  Store.commit("formSetErrors", { formId, errors });
 }
