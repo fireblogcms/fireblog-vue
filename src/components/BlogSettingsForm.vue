@@ -19,7 +19,7 @@
             </label>
             <div class="control">
               <input
-                v-model="generalSettingsForm.values.current.name"
+                v-model="generalSettingsForm.values.name"
                 class="input is-large"
                 type="text"
                 maxlength="100"
@@ -35,7 +35,7 @@
             <div class="control">
               <textarea
                 class="textarea is-large"
-                v-model="generalSettingsForm.values.current.description"
+                v-model="generalSettingsForm.values.description"
                 type="text"
                 maxlength="250"
               ></textarea>
@@ -48,7 +48,7 @@
               style="max-width:600px;"
               :blogId="$route.params.blogId"
               @onUploadingStateChange="onUploadingStateChange"
-              :initialImage="generalSettingsForm.values.initial.image"
+              :initialImage="generalSettingsForm.values.image"
               @onUploaded="onUploaded"
             />
           </div>
@@ -84,7 +84,7 @@
             </label>
             <div class="control">
               <input
-                v-model="technicalSettingsForm.values.current.url"
+                v-model="technicalSettingsForm.values.url"
                 class="input is-large"
                 type="text"
                 maxlength="100"
@@ -104,7 +104,7 @@
               }}
             </label>
             <textarea
-              v-model="technicalSettingsForm.values.current.staticBuildWebhooks"
+              v-model="technicalSettingsForm.values.staticBuildWebhooks"
               class="textarea"
               placeholder="e.g. Hello world"
             ></textarea>
@@ -236,11 +236,11 @@ export default {
       this.uploadBlogImageState = state;
     },
     onUploaded(fileUrl) {
-      this.generalSettingsForm.values.current.image = fileUrl;
+      this.generalSettingsForm.values.image = fileUrl;
     },
     validateGeneralSettingsForm() {
       this.generalSettingsForm.errors = {};
-      if (!this.generalSettingsForm.values.current.name.trim()) {
+      if (!this.generalSettingsForm.values.name.trim()) {
         this.generalSettingsForm.errors.name = this.$t(
           "views.blogSettings.generalSettingsForm.fields.name.errors.required"
         );
@@ -304,9 +304,9 @@ export default {
         this.savingGeneralSettingsState = REQUEST_STATE.PENDING;
         const blog = {
           _id: this.$route.params.blogId,
-          name: this.generalSettingsForm.values.current.name,
-          description: this.generalSettingsForm.values.current.description,
-          image: this.generalSettingsForm.values.current.image
+          name: this.generalSettingsForm.values.name,
+          description: this.generalSettingsForm.values.description,
+          image: this.generalSettingsForm.values.image
         };
         this.updateBlog(blog)
           .then(updatedBlog => {
@@ -325,7 +325,7 @@ export default {
       const update = {
         _id: this.$route.params.blogId,
         webhooks,
-        url: this.technicalSettingsForm.values.current.url.trim()
+        url: this.technicalSettingsForm.values.url.trim()
       };
       this.savingTechnicalSettingsState = REQUEST_STATE.PENDING;
       this.updateBlog(update)
@@ -374,10 +374,8 @@ export default {
     },
     prepareWebhooksValuesForSave() {
       const webhooks = [];
-      if (
-        this.technicalSettingsForm.values.current.staticBuildWebhooks.trim()
-      ) {
-        let staticBuildWebhooksArray = this.technicalSettingsForm.values.current.staticBuildWebhooks.split(
+      if (this.technicalSettingsForm.values.staticBuildWebhooks.trim()) {
+        let staticBuildWebhooksArray = this.technicalSettingsForm.values.staticBuildWebhooks.split(
           ","
         );
         //remove extra spaces

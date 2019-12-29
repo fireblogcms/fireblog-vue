@@ -559,7 +559,6 @@ export default {
       };
     },
     onTitleInput(value) {
-      console.log("value title", value);
       formSetValue("postForm", "title", value);
     },
     onContentInput(value) {
