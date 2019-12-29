@@ -1,227 +1,231 @@
 <template>
   <div>
     <AppLoader v-if="initDataState === 'PENDING'" />
-    <div v-if="initDataState === REQUEST_STATE.FINISHED_OK" class="post-form-wrapper">
-      <pre v-if="false">{{ formGetAllValues("postForm") }}</pre>
-      <form @submit.prevent>
-        <textarea-autosize
-          maxlength="250"
-          @keydown.enter.native.prevent="onTitleEnter"
-          autofocus
-          rows="1"
-          placeholder="Title"
-          type="text"
-          id="title"
-          :disabled="savingDraftState === REQUEST_STATE.PENDING"
-          @input="onTitleInput"
-          :value="formGetValue('postForm', 'title')"
-        ></textarea-autosize>
-        <ckeditor
-          class="content"
-          :disabled="savingDraftState === REQUEST_STATE.PENDING"
-          ref="ckeditor"
-          :editor="editor"
-          @input="onContentInput"
-          :value="formGetValue('postForm', 'content')"
-          @ready="onEditorReady"
-          :config="editorConfig"
-        ></ckeditor>
-      </form>
-    </div>
+    <template v-if="initDataState === REQUEST_STATE.FINISHED_OK">
+      <div class="post-form-wrapper">
+        <pre v-if="true">{{ formGetValues(formId) }}</pre>
+        <form @submit.prevent>
+          <textarea-autosize
+            maxlength="250"
+            @keydown.enter.native.prevent="onTitleEnter"
+            autofocus
+            rows="1"
+            placeholder="Title"
+            type="text"
+            id="title"
+            :disabled="savingDraftState === REQUEST_STATE.PENDING"
+            @input="onTitleInput"
+            :value="formGetValue('postForm', 'title')"
+          ></textarea-autosize>
+          <ckeditor
+            class="content"
+            :disabled="savingDraftState === REQUEST_STATE.PENDING"
+            ref="ckeditor"
+            :editor="editor"
+            @input="onContentInput"
+            :value="formGetValue('postForm', 'content')"
+            @ready="onEditorReady"
+            :config="editorConfig"
+          ></ckeditor>
+        </form>
+      </div>
 
-    <BulmaModal v-model="modal.show">
-      <template #title>{{ modal.title }}</template>
-      <template #body>{{ modal.content }}</template>
-      <template #footer>
-        <div
-          v-if="modal.confirmText && modal.confirmCallback"
-          @click="modal.confirmCallback"
-          class="button is-danger"
-        >{{ modal.confirmText }}</div>
-        <div
-          v-if="modal.cancelText && modal.cancelCallback"
-          @click="modal.cancelCallback"
-          class="button is-primary"
-        >{{ modal.cancelText }}</div>
-      </template>
-    </BulmaModal>
+      <BulmaModal v-model="modal.show">
+        <template #title>{{ modal.title }}</template>
+        <template #body>{{ modal.content }}</template>
+        <template #footer>
+          <div
+            v-if="modal.confirmText && modal.confirmCallback"
+            @click="modal.confirmCallback"
+            class="button is-danger"
+          >{{ modal.confirmText }}</div>
+          <div
+            v-if="modal.cancelText && modal.cancelCallback"
+            @click="modal.cancelCallback"
+            class="button is-primary"
+          >{{ modal.cancelText }}</div>
+        </template>
+      </BulmaModal>
 
-    <!-- PUBLISH MODAL -->
-    <BulmaModal
-      class="publication-settings-modal animated zoomIn"
-      :fullscreen="true"
-      v-model="publicationSettingsModal.show"
-    >
-      <template #body>
-        <div class="container">
-          <PostFormAdvancedSettings
-            :existingPost="existingPost"
-            :savingPost="savingPost"
-            @onCancelClick="publicationSettingsModal.show = false"
-            @onPublishClick="onPublishClick"
-            @onUploadingStateChange="state => (uploadingState = state)"
-          />
-        </div>
-      </template>
-      <template #title>
-        <div>
-          <span class="title is-2">PUBLICATION</span>
-          <button
-            class="button is-primary is-pulled-right is-large"
-            @click="onPublishClick"
-            :disabled="
+      <!-- PUBLISH MODAL -->
+      <BulmaModal
+        class="publication-settings-modal animated zoomIn"
+        :fullscreen="true"
+        v-model="publicationSettingsModal.show"
+      >
+        <template #body>
+          <div class="container">
+            <PostFormAdvancedSettings
+              :existingPost="existingPost"
+              :savingPost="savingPost"
+              @onCancelClick="publicationSettingsModal.show = false"
+              @onPublishClick="onPublishClick"
+              @onUploadingStateChange="state => (uploadingState = state)"
+            />
+          </div>
+        </template>
+        <template #title>
+          <div>
+            <span class="title is-2">PUBLICATION</span>
+            <button
+              class="button is-primary is-pulled-right is-large"
+              @click="onPublishClick"
+              :disabled="
               savingPost.state === 'PENDING' || uploadingState === 'PENDING'
             "
-            :class="{
+              :class="{
               'is-loading':
                 savingPost.state === 'PENDING' &&
                 savingPost.publicationStatus === 'PUBLISHED'
             }"
-          >PUBLISH NOW</button>
+            >PUBLISH NOW</button>
+            <button
+              style="margin-right:20px;"
+              @click="publicationSettingsModal.show = false"
+              class="button is-pulled-right is-large"
+            >CANCEL</button>
+          </div>
+        </template>
+        <template #footer />
+      </BulmaModal>
+
+      <!-- HURRAH MODAL -->
+      <BulmaModal class="hurrah-modal" v-model="publishingHurrahModal.show" :whiteFooter="true">
+        <template #title>
+          <div
+            class="has-text-centered"
+          >{{ $t("views.postForm.firstPublicationHurralModal.title") }}</div>
+        </template>
+        <template #body>
+          <div class="has-text-centered">
+            <img style="border-radius:5px" :src="getRandomHurrahGif()" />
+          </div>
+        </template>
+        <template class="has-text-centered" #footer>
           <button
-            style="margin-right:20px;"
-            @click="publicationSettingsModal.show = false"
-            class="button is-pulled-right is-large"
-          >CANCEL</button>
-        </div>
-      </template>
-      <template #footer />
-    </BulmaModal>
+            @click="publishingHurrahModal.show = false"
+            class="button is-primary is-large"
+          >{{ $t("views.postForm.firstPublicationHurralModal.okayButton") }}</button>
+        </template>
+      </BulmaModal>
 
-    <!-- HURRAH MODAL -->
-    <BulmaModal class="hurrah-modal" v-model="publishingHurrahModal.show" :whiteFooter="true">
-      <template #title>
-        <div class="has-text-centered">{{ $t("views.postForm.firstPublicationHurralModal.title") }}</div>
-      </template>
-      <template #body>
-        <div class="has-text-centered">
-          <img style="border-radius:5px" :src="getRandomHurrahGif()" />
-        </div>
-      </template>
-      <template class="has-text-centered" #footer>
+      <BulmaModal class="publishing-changes-modal" v-model="publishingChangesModal.show">
+        <template #title>
+          <div class="has-text-centered">{{ $t("views.postForm.publishChangesHurralModal.title") }}</div>
+        </template>
+        <template #body>
+          <div class="has-text-centered">
+            <img style="border-radius:5px" :src="getRandomHurrahGif()" />
+          </div>
+        </template>
+        <template class="has-text-centered" #footer>
+          <button
+            @click="publishingChangesModal.show = false"
+            class="button is-primary is-large"
+          >{{ $t("views.postForm.publishChangesHurralModal.okayButton") }}</button>
+        </template>
+      </BulmaModal>
+
+      <!-- TOPBAR LEFT BUTTONS -->
+      <portal to="topbar-left">
+        <span @click="onBackToPostsClick" style="cursor:pointer" class="item tag is-large">
+          <em>
+            <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
+            <IconBack />posts
+          </em>
+        </span>
+
+        <span
+          v-if="initDataState === 'FINISHED_OK'"
+          class="item"
+          style="color:rgba(0,0,0, 0.6);font-size:14px;"
+        >
+          <em>
+            {{ getCurrentPublicationStatus() }}
+            <span
+              v-if="getCurrentPublicationStatus() === 'DRAFT' && lastTimeSaved"
+            >- saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</span>
+          </em>
+        </span>
+      </portal>
+      <!-- END TOPBAR LEFT BUTTONS -->
+
+      <!-- TOPBAR RIGHT BUTTONS -->
+      <portal to="topbar-right" v-if="initDataState === 'FINISHED_OK'">
         <button
-          @click="publishingHurrahModal.show = false"
-          class="button is-primary is-large"
-        >{{ $t("views.postForm.firstPublicationHurralModal.okayButton") }}</button>
-      </template>
-    </BulmaModal>
-
-    <BulmaModal class="publishing-changes-modal" v-model="publishingChangesModal.show">
-      <template #title>
-        <div class="has-text-centered">{{ $t("views.postForm.publishChangesHurralModal.title") }}</div>
-      </template>
-      <template #body>
-        <div class="has-text-centered">
-          <img style="border-radius:5px" :src="getRandomHurrahGif()" />
-        </div>
-      </template>
-      <template class="has-text-centered" #footer>
-        <button
-          @click="publishingChangesModal.show = false"
-          class="button is-primary is-large"
-        >{{ $t("views.postForm.publishChangesHurralModal.okayButton") }}</button>
-      </template>
-    </BulmaModal>
-
-    <!-- TOPBAR LEFT BUTTONS -->
-    <portal to="topbar-left">
-      <span @click="onBackToPostsClick" style="cursor:pointer" class="item tag is-large">
-        <em>
-          <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
-          <IconBack />posts
-        </em>
-      </span>
-
-      <span
-        v-if="initDataState === 'FINISHED_OK'"
-        class="item"
-        style="color:rgba(0,0,0, 0.6);font-size:14px;"
-      >
-        <em>
-          {{ getCurrentPublicationStatus() }}
+          v-if="getCurrentPublicationStatus() === 'DRAFT'"
+          @click="onSaveDraftClick()"
+          class="button is-outlined item"
+          :class="{
+          'is-loading':
+            savingPost.state === 'PENDING' &&
+            savingPost.publicationStatus === 'DRAFT'
+        }"
+          :disabled="savingPost.state === 'PENDING'"
+          type="submit"
+        >
+          {{ $t("views.postForm.saveDraft").toUpperCase() }}
           <span
-            v-if="getCurrentPublicationStatus() === 'DRAFT' && lastTimeSaved"
-          >- saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</span>
-        </em>
-      </span>
-    </portal>
-    <!-- END TOPBAR LEFT BUTTONS -->
+            class="animated bounce"
+            v-if="changesDetected"
+          >*</span>
+        </button>
 
-    <!-- TOPBAR RIGHT BUTTONS -->
-    <portal to="topbar-right" v-if="initDataState === 'FINISHED_OK'">
-      <button
-        v-if="getCurrentPublicationStatus() === 'DRAFT'"
-        @click="onSaveDraftClick()"
-        class="button is-outlined item"
-        :class="{
+        <button
+          @click="onUnpublishClick()"
+          v-if="existingPost && existingPost.status === 'PUBLISHED'"
+          class="button is-outlined item"
+          :class="{
           'is-loading':
             savingPost.state === 'PENDING' &&
             savingPost.publicationStatus === 'DRAFT'
         }"
-        :disabled="savingPost.state === 'PENDING'"
-        type="submit"
-      >
-        {{ $t("views.postForm.saveDraft").toUpperCase() }}
-        <span
-          class="animated bounce"
-          v-if="changesDetected"
-        >*</span>
-      </button>
+          :disabled="savingPost.state === 'PENDING'"
+          type="submit"
+        >{{ $t("views.postForm.unpublish").toUpperCase() }}</button>
 
-      <button
-        @click="onUnpublishClick()"
-        v-if="existingPost && existingPost.status === 'PUBLISHED'"
-        class="button is-outlined item"
-        :class="{
-          'is-loading':
-            savingPost.state === 'PENDING' &&
-            savingPost.publicationStatus === 'DRAFT'
-        }"
-        :disabled="savingPost.state === 'PENDING'"
-        type="submit"
-      >{{ $t("views.postForm.unpublish").toUpperCase() }}</button>
-
-      <button
-        @click="onPublicationClick()"
-        v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
-        class="button is-outlined item is-primary"
-        :class="{
+        <button
+          @click="onPublicationClick()"
+          v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
+          class="button is-outlined item is-primary"
+          :class="{
           'is-loading':
             savingPost.state === 'PENDING' &&
             savingPost.publicationStatus === 'PUBLISHED'
         }"
-        :disabled="savingPost.state === 'PENDING'"
-        type="submit"
-      >{{ $t("views.postForm.publication").toUpperCase() }}</button>
+          :disabled="savingPost.state === 'PENDING'"
+          type="submit"
+        >{{ $t("views.postForm.publication").toUpperCase() }}</button>
 
-      <button
-        @click="onPublicationClick()"
-        v-if="existingPost && existingPost.status === 'PUBLISHED'"
-        class="button item is-outlined is-primary"
-        :class="{
+        <button
+          @click="onPublicationClick()"
+          v-if="existingPost && existingPost.status === 'PUBLISHED'"
+          class="button item is-outlined is-primary"
+          :class="{
           'is-loading':
             savingPost.state === 'PENDING' &&
             savingPost.publicationStatus === 'PUBLISHED'
         }"
-        :disabled="savingPost.state === 'PENDING'"
-        type="submit"
-      >
-        {{ $t("views.postForm.publishChanges").toUpperCase() }}
-        <span
-          class="animated bounce"
-          v-if="changesDetected"
-        >*</span>
-      </button>
+          :disabled="savingPost.state === 'PENDING'"
+          type="submit"
+        >
+          {{ $t("views.postForm.publishChanges").toUpperCase() }}
+          <span
+            class="animated bounce"
+            v-if="changesDetected"
+          >*</span>
+        </button>
 
-      <!--
+        <!--
       <button
         :disabled="savingPost.state === 'PENDING'"
         @click="onProofreadClick()"
         class="button is-outlined item"
         type="submit"
       >PROOFREAD</button>
-      -->
-    </portal>
+        -->
+      </portal>
+    </template>
     <!-- END TOPBAR RIGHT BUTTONS -->
   </div>
 </template>
@@ -252,8 +256,9 @@ import {
   formSetError,
   formSetErrors,
   formGetValue,
-  formGetAllErrors,
-  formGetAllValues
+  formGetErrors,
+  formGetValues,
+  formGetInitialValues
 } from "../utils/vuexForm";
 
 import {
@@ -283,8 +288,9 @@ const STATUS_ENUM = {
   DELETED: "DELETED"
 };
 
+const formId = "postForm";
+
 const initialFormValues = {
-  test: "",
   title: "",
   content: "",
   slug: "",
@@ -334,19 +340,16 @@ export default {
     };
   },
   created() {
+    this.formId = formId;
     this.formGetValue = formGetValue;
-    this.formGetAllValues = formGetAllValues;
-    // store our form values in Vuex store.
-    formInit("postForm", {
-      initialValues: initialFormValues
-    });
+    this.formGetValues = formGetValues;
+    this.REQUEST_STATE = REQUEST_STATE;
+    this.OPERATION_TYPE = OPERATION_TYPE;
 
     this.initData();
     window.onbeforeunload = function(e) {
       return "Are you sure you want to quit ?";
     };
-    this.REQUEST_STATE = REQUEST_STATE;
-    this.OPERATION_TYPE = OPERATION_TYPE;
     this.editor = Editor;
     this.editorConfig = {
       extraPlugins: [
@@ -404,24 +407,31 @@ export default {
     }
   },
   methods: {
-    initData() {
+    async initData() {
       this.initDataState = REQUEST_STATE.PENDING;
-      const promises = [];
+      let formValues = { ...initialFormValues };
+      let existingPost = null;
+      // load existing post if we are in edition mode.
       if (this.getCurrentOperation() === OPERATION_TYPE.UPDATE) {
-        promises.push(this.getExistingPost());
-      }
-      return Promise.all(promises)
-        .then(results => {
-          if (this.$store.state.global.postJustPublished === true) {
-            this.$store.commit("postJustPublished", false);
-            this.publishingHurrahModal.show = true;
-          }
-          this.initDataState = REQUEST_STATE.FINISHED_OK;
-        })
-        .catch(error => {
+        try {
+          existingPost = await this.getExistingPost();
+        } catch (error) {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           throw new Error(error);
-        });
+        }
+        formValues = { ...this.prepareFormValuesFromPost(existingPost) };
+      }
+
+      formInit(formId, {
+        initialValues: formValues
+      });
+
+      if (this.$store.state.global.postJustPublished === true) {
+        this.$store.commit("postJustPublished", false);
+        this.publishingHurrahModal.show = true;
+      }
+
+      this.initDataState = REQUEST_STATE.FINISHED_OK;
     },
     getCurrentPublicationStatus() {
       let status = this.existingPost ? this.existingPost.status : "DRAFT";
@@ -540,11 +550,10 @@ export default {
     },
     detectChanges() {
       const modifiedValues = {};
-      Object.keys(this.$store.state.forms.postForm.values).forEach(key => {
-        if (
-          this.$store.state.forms.postForm.values[key] !==
-          this.$store.state.forms.postForm.initialValues[key]
-        ) {
+      const formValues = formGetValues(formId);
+      const formInitialValues = formGetInitialValues(formId);
+      Object.keys(formValues).forEach(key => {
+        if (formValues[key] !== formInitialValues[key]) {
           modifiedValues[key] = true;
         } else {
           modifiedValues[key] = false;
@@ -559,10 +568,10 @@ export default {
       };
     },
     onTitleInput(value) {
-      formSetValue("postForm", "title", value);
+      formSetValue(formId, "title", value);
     },
     onContentInput(value) {
-      formSetValue("postForm", "content", value);
+      formSetValue(formId, "content", value);
     },
     onEditorReady(editor) {
       const element = document.querySelector(
@@ -615,7 +624,7 @@ export default {
         })
         .then(result => {
           this.existingPost = result.data.post;
-          this.prepareFormValuesFromPost(this.existingPost);
+          return result.data.post;
         })
         .catch(error => {
           appNotification("En error occured while loading post", "error");
@@ -627,7 +636,7 @@ export default {
      */
     postFormIsValid() {
       let isValid = true;
-      if (!formGetValue("postForm", "title").trim()) {
+      if (!formGetValue(formId, "title").trim()) {
         appNotification("A title is required", "error");
         isValid = false;
       }
@@ -643,19 +652,19 @@ export default {
       if (this.mediaLoadingCounter > 0) {
         this.showMediaCurrentlyLoadingModal();
       } else {
-        if (formGetValue("postForm", "slug").trim().length === 0) {
-          const slugSuggestion = createSlug(formGetValue("postForm", "title"), {
+        if (formGetValue(formId, "slug").trim().length === 0) {
+          const slugSuggestion = createSlug(formGetValue(formId, "title"), {
             replacement: "-",
             lower: true
           });
-          formSetValue("postForm", "slug", slugSuggestion);
+          formSetValue(formId, "slug", slugSuggestion);
         }
         // pre-fill teaser fied with the first sentence of the text.
-        if (formGetValue("postForm", "teaser").trim().length === 0) {
+        if (formGetValue(formId, "teaser").trim().length === 0) {
           const teaserSuggestion = striptags(
-            formGetValue("postForm", "content").substr(0, 250)
+            formGetValue(formId, "content").substr(0, 250)
           );
-          formSetValue("postForm", "teaser", teaserSuggestion);
+          formSetValue(formId, "teaser", teaserSuggestion);
         }
         this.publicationSettingsModal.show = true;
       }
@@ -788,7 +797,7 @@ export default {
       }
     },
     prepareFormValuesFromPost(post) {
-      let initialFormValues = {
+      let values = {
         title: post.title ? post.title : "",
         content: post.content ? post.content : "",
         slug: post.slug ? post.slug : "",
@@ -796,19 +805,16 @@ export default {
         teaser: post.teaser ? post.teaser : "",
         image: post.image ? post.image : ""
       };
-      // store our form values in Vuex store.
-      formInit("postForm", {
-        initialValues: initialFormValues
-      });
+      return values;
     },
     // Prepare a post object from form form.values
     preparePostFromCurrentFormValues() {
       return {
-        title: formGetValue("postForm", "title"),
-        content: formGetValue("postForm", "content"),
-        slug: formGetValue("postForm", "slug"),
-        teaser: formGetValue("postForm", "teaser"),
-        image: formGetValue("postForm", "image")
+        title: formGetValue(formId, "title"),
+        content: formGetValue(formId, "content"),
+        slug: formGetValue(formId, "slug"),
+        teaser: formGetValue(formId, "teaser"),
+        image: formGetValue(formId, "image")
       };
     },
     getRandomHurrahGif() {
@@ -819,31 +825,29 @@ export default {
     validatePostForm() {
       const errors = {};
       // reset form errors
-      formSetErrors("postForm", {});
+      formSetErrors(formId, {});
       // SLUG
-      if (
-        !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(formGetValue("postForm", "slug"))
-      ) {
+      if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(formGetValue(formId, "slug"))) {
         let message = this.$t(
           "views.postForm.fields.slug.errors.invalidCharacters"
         );
-        formSetError("postForm", "slug", message);
+        formSetError(formId, "slug", message);
         appNotification(message, "error");
       }
-      if (!formGetValue("postForm", "slug").trim()) {
+      if (!formGetValue(formId, "slug").trim()) {
         let message = this.$t(
           "views.postForm.fields.slug.errors.invalidCharacters"
         );
-        formSetError("postForm", "slug", message);
+        formSetError(formId, "slug", message);
         appNotification(message, "error");
       }
       // TEASER
-      if (!formGetValue("postForm", "teaser").trim()) {
+      if (!formGetValue(formId, "teaser").trim()) {
         let message = this.$t("views.postForm.fields.teaser.errors.required");
-        formSetError("postForm", "teaser", message);
+        formSetError(formId, "teaser", message);
         appNotification(message, "error");
       }
-      return formGetAllErrors("postForm");
+      return formGetErrors(formId);
     }
   }
 };

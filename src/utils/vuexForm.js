@@ -1,7 +1,7 @@
 import Store from "../store";
 import Vue from "vue";
 
-const storeFormsKey = "forms";
+export const formsStoreKey = "forms";
 
 /**
  * All our forms values will be stored inside a "forms" key
@@ -39,7 +39,7 @@ export const moduleForm = {
 /**
  * Register dynamically our module inside Vuex store.
  */
-Store.registerModule(storeFormsKey, moduleForm);
+Store.registerModule(formsStoreKey, moduleForm);
 
 /**
  * Helper to handle correctly form values in Vue component
@@ -74,19 +74,23 @@ export function formInit(formId, { initialValues }) {
  */
 
 export function formGetValue(formId, name) {
-  return Store.state[storeFormsKey][formId].values[name];
+  return Store.state[formsStoreKey][formId].values[name];
 }
 
-export function formGetAllValues(formId) {
-  return Store.state[storeFormsKey][formId].values;
+export function formGetValues(formId) {
+  return Store.state[formsStoreKey][formId].values;
+}
+
+export function formGetInitialValues(formId) {
+  return Store.state[formsStoreKey][formId].initialValues;
 }
 
 export function formGetError(formId, name) {
-  return Store.state[storeFormsKey][formId].errors[name];
+  return Store.state[formsStoreKey][formId].errors[name];
 }
 
-export function formGetAllErrors(formId) {
-  return Store.state[storeFormsKey][formId].errors;
+export function formGetErrors(formId) {
+  return Store.state[formsStoreKey][formId].errors;
 }
 
 export function formSetValue(formId, name, value) {
