@@ -4,9 +4,7 @@
     <template v-if="initDataState === 'FINISHED_OK'">
       <BlogSettingsGeneral :blog="blog" />
       <BlogSettingsTechnical :blog="blog" />
-      <!--
-      <BlogSettingsDelete />
-      -->
+      <BlogSettingsDeleteBlog :blog="blog" />
     </template>
   </div>
 </template>
@@ -18,6 +16,7 @@ import AppLoader from "../components/AppLoader";
 import apolloClient from "../utils/apolloClient";
 import BlogSettingsGeneral from "../components/BlogSettingsGeneral";
 import BlogSettingsTechnical from "../components/BlogSettingsTechnical";
+import BlogSettingsDeleteBlog from "../components/BlogSettingsDeleteBlog";
 import gql from "graphql-tag";
 import {
   deleteBlogMutation,
@@ -26,22 +25,12 @@ import {
   updateBlogMutation
 } from "../utils/queries";
 
-const initialGeneralSettingsFormValues = {
-  name: "",
-  description: "",
-  image: null
-};
-
-const initialTechnicalSettingsFormValues = {
-  staticBuildWebhooks: [],
-  url: ""
-};
-
 export default {
   components: {
     AppLoader,
     BlogSettingsGeneral,
-    BlogSettingsTechnical
+    BlogSettingsTechnical,
+    BlogSettingsDeleteBlog
   },
   data() {
     return {
