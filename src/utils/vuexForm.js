@@ -31,20 +31,6 @@ export const moduleForm = {
     },
     formSetErrors(state, { formId, errors }) {
       Vue.set(state[formId], "errors", errors);
-    },
-    formUpdate(state, { formId, type, name, value }) {
-      if (type === "errors") {
-        Vue.set(state[formId], "errors", value);
-      }
-      if (type === "error") {
-        Vue.set(state[formId].errors, name, value);
-      }
-      if (type === "current") {
-        Vue.set(state[formId].values.current, name, value);
-      }
-      if (type === "initial") {
-        Vue.set(state[formId].values.initial, name, value);
-      }
     }
   },
   actions: {}
@@ -57,9 +43,9 @@ Store.registerModule(storeFormsKey, moduleForm);
 
 /**
  * Helper to handle correctly form values in Vue component
- * 1) initialFormValues are the value loaded initially for the form. They never
+ * 1) "initialValues" are the value loaded initially for the form. They never
  *    change during the lifetime of the form.
- * 2) "current" values are the one entered or modified by the user.
+ * 2) "values" are the one entered or modified by the user.
  *    Those are the values we want to submit..
  * @param {*} param0
  */
@@ -80,15 +66,18 @@ export function formInit(formId, { initialValues }) {
   });
 }
 
-export function formUpdate(formId, { type, name = null, value }) {
-  Store.commit("formUpdate", { formId, type, name, value });
-}
+/**
+ * ============================================
+ * Some simple wrappers around store mutations
+ * for our form values.
+ * ============================================
+ */
 
 export function formGetValue(formId, name) {
   return Store.state[storeFormsKey][formId].values[name];
 }
 
-export function formGetAllValues(formId) {
+export function formGetValues(formId) {
   return Store.state[storeFormsKey][formId].values;
 }
 
@@ -96,7 +85,7 @@ export function formGetError(formId, name) {
   return Store.state[storeFormsKey][formId].errors[name];
 }
 
-export function formGetAllErrors(formId) {
+export function formGetErrors(formId) {
   return Store.state[storeFormsKey][formId].errors;
 }
 

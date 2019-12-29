@@ -2,7 +2,7 @@
   <div>
     <AppLoader v-if="initDataState === 'PENDING'" />
     <div v-if="initDataState === REQUEST_STATE.FINISHED_OK" class="post-form-wrapper">
-      <pre v-if="false">{{ formGetAllValues("postForm") }}</pre>
+      <pre v-if="false">{{ formGetValues("postForm") }}</pre>
       <form @submit.prevent>
         <textarea-autosize
           maxlength="250"
@@ -252,8 +252,8 @@ import {
   formSetError,
   formSetErrors,
   formGetValue,
-  formGetAllErrors,
-  formGetAllValues
+  formGetErrors,
+  formGetValues
 } from "../utils/vuexForm";
 
 import {
@@ -335,7 +335,7 @@ export default {
   },
   created() {
     this.formGetValue = formGetValue;
-    this.formGetAllValues = formGetAllValues;
+    this.formGetValues = formGetValues;
     // store our form values in Vuex store.
     formInit("postForm", {
       initialValues: initialFormValues
@@ -843,7 +843,7 @@ export default {
         formSetError("postForm", "teaser", message);
         appNotification(message, "error");
       }
-      return formGetAllErrors("postForm");
+      return formGetErrors("postForm");
     }
   }
 };

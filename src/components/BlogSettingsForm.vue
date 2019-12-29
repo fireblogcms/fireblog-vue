@@ -198,7 +198,7 @@ const initialGeneralSettingsFormValues = {
 
 const initialTechnicalSettingsFormValues = {
   staticBuildWebhooks: [],
-  url: null
+  url: ""
 };
 
 export default {
@@ -280,7 +280,7 @@ export default {
           this.technicalSettingsForm = formInitData({
             initialValues: {
               ...initialTechnicalSettingsFormValues,
-              url: blog.url,
+              url: blog.url ? blog.url : initialTechnicalSettingsFormValues.url,
               staticBuildWebhooks: blog.webhooks
                 ? blog.webhooks.map(webhook => webhook.url).join(",")
                 : ""
@@ -374,6 +374,7 @@ export default {
     },
     prepareWebhooksValuesForSave() {
       const webhooks = [];
+      console.log("tc", this.technicalSettingsForm);
       if (this.technicalSettingsForm.values.staticBuildWebhooks.trim()) {
         let staticBuildWebhooksArray = this.technicalSettingsForm.values.staticBuildWebhooks.split(
           ","
