@@ -3,7 +3,7 @@
     <AppLoader v-if="initDataState === 'PENDING'" />
     <template v-if="initDataState === REQUEST_STATE.FINISHED_OK">
       <div class="post-form-wrapper">
-        <pre v-if="true">{{ formGetValues(formId) }}</pre>
+        <pre v-if="false">{{ formGetValues(formId) }}</pre>
         <form @submit.prevent>
           <textarea-autosize
             maxlength="250"

@@ -15,7 +15,7 @@
             <S3ImageUpload
               :blogId="$route.params.blogId"
               @onUploadingStateChange="onUploadingStateChange"
-              :initialImage="formGetValue('postForm', 'image')"
+              :initialImage="formGetValue(formId, 'image')"
               @onUploaded="onUploaded"
             />
           </div>
@@ -32,7 +32,7 @@
               <textarea
                 maxlength="250"
                 @input="onTeaserInput"
-                :value="formGetValue('postForm', 'teaser')"
+                :value="formGetValue(formId, 'teaser')"
                 class="textarea is-medium"
                 placeholder="Teaser"
               ></textarea>
@@ -48,7 +48,7 @@
             <div class="control">
               <input
                 @input="onSlugInput"
-                :value="formGetValue('postForm', 'slug')"
+                :value="formGetValue(formId, 'slug')"
                 class="input is-medium"
                 type="text"
                 placeholder="slug"
@@ -96,6 +96,8 @@ import S3ImageUpload from "./S3ImageUpload";
 import { REQUEST_STATE } from "../utils/helpers";
 import { formGetValue, formGetError, formSetValue } from "../utils/vuexForm";
 
+const formId = "postForm";
+
 export default {
   components: {
     S3ImageUpload
@@ -110,10 +112,11 @@ export default {
   created() {
     this.formGetError = formGetError;
     this.formGetValue = formGetValue;
+    this.formId = formId;
   },
   methods: {
     onUploaded(fileUrl) {
-      formSetValue("postForm", "image", fileUrl);
+      formSetValue(formId, "image", fileUrl);
     },
     onCancelClick() {
       this.$emit("onCancelClick");
@@ -122,10 +125,10 @@ export default {
       this.$emit("onPublishClick");
     },
     onTeaserInput(event) {
-      formSetValue("postForm", "teaser", event.target.value);
+      formSetValue(formId, "teaser", event.target.value);
     },
     onSlugInput(event) {
-      formSetValue("postForm", "slug", event.target.value);
+      formSetValue(formId, "slug", event.target.value);
     },
     onUploadingStateChange(state) {
       this.uploadingState = state;
