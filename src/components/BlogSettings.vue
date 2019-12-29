@@ -3,9 +3,8 @@
     <AppLoader v-if="initDataState === 'PENDING'">Loading</AppLoader>
     <template v-if="initDataState === 'FINISHED_OK'">
       <BlogSettingsGeneral :blog="blog" />
-
+      <BlogSettingsTechnical :blog="blog" />
       <!--
-      <BlogSettingsTechnical />
       <BlogSettingsDelete />
       -->
     </template>
@@ -18,6 +17,7 @@ import { formInitData } from "../utils/vuexForm";
 import AppLoader from "../components/AppLoader";
 import apolloClient from "../utils/apolloClient";
 import BlogSettingsGeneral from "../components/BlogSettingsGeneral";
+import BlogSettingsTechnical from "../components/BlogSettingsTechnical";
 import gql from "graphql-tag";
 import {
   deleteBlogMutation,
@@ -40,7 +40,8 @@ const initialTechnicalSettingsFormValues = {
 export default {
   components: {
     AppLoader,
-    BlogSettingsGeneral
+    BlogSettingsGeneral,
+    BlogSettingsTechnical
   },
   data() {
     return {
