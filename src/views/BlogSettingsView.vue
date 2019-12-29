@@ -15,12 +15,12 @@
     </portal>
     <!-- END TOPBAR LEFT BUTTONS -->
 
-    <BlogSettingsForm />
+    <BlogSettings />
   </DefaultLayout>
 </template>
 
 <script>
-import BlogSettingsForm from "../components/BlogSettingsForm";
+import BlogSettings from "../components/BlogSettings";
 import IconBack from "../components/IconBack";
 import { REQUEST_STATE } from "../utils/helpers";
 import DefaultLayout from "../layouts/DefaultLayout";
@@ -28,7 +28,7 @@ import DefaultLayout from "../layouts/DefaultLayout";
 export default {
   components: {
     IconBack,
-    BlogSettingsForm,
+    BlogSettings,
     DefaultLayout
   }
 };
