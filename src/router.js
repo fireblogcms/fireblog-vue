@@ -131,10 +131,10 @@ router.beforeEach(async (to, from, next) => {
 
 router.afterEach((to, from, next) => {
   // clear notification on route Change, unless persistAfterRouteChange is requested..
-  if (Store.state.notification) {
+  if (Store.state.global.notification) {
     if (
-      Store.state.notification.options &&
-      !Store.state.notification.options.persistAfterRouteChange
+      Store.state.global.notification.options &&
+      !Store.state.global.notification.options.persistAfterRouteChange
     ) {
       Store.commit("notification", null);
     }
