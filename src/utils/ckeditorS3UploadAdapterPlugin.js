@@ -2,7 +2,7 @@ import { REQUEST_STATE, S3Upload } from "./helpers";
 import Router from "../router";
 
 /**
- * Upload an image directly from ckEditor to Cloudinary servers with an XMLHttpRequest
+ * Upload an image directly from ckEditor to S3 servers with an XMLHttpRequest
  * - less CPU for our own servers
  * - Better and easier tracking of upload progress (which is critical because publishing
  * an article if a image is not 100% uploaded will result in loss of this image)

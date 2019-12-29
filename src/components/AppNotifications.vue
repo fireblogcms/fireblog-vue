@@ -1,18 +1,48 @@
 <template>
   <div
-    v-if="$store.state.global.notification"
-    @click="$store.state.global.notification = null"
+    v-if="showNotification"
+    @click="closeNotification"
     style="margin-top:40px;"
-    :class="{
-      'is-primary ': $store.state.global.notification.type === 'info',
-      'is-danger': $store.state.global.notification.type === 'error'
-    }"
+    :class="classes"
     class="container notification has-text-centered animated flipInX"
   >
-    <button @click="$store.commit('notification', null)" class="delete"></button>
-    {{ $store.state.global.notification.message }}
+    <button @click="closeNotification" class="delete"></button>
+    {{ notification.message }}
   </div>
 </template>
+
+<script>
+import Store from "../store";
+
+export default {
+  data() {
+    return {
+      showNotification: false
+    };
+  },
+  methods: {
+    closeNotification() {
+      this.$store.commit("notification", null);
+    }
+  },
+  computed: {
+    notification() {
+      return this.$store.state.global.notification;
+    },
+    classes() {
+      return {
+        "is-primary ": this.notification.type === "info",
+        "is-danger": this.notification.type === "error"
+      };
+    }
+  },
+  watch: {
+    notification(value) {
+      this.showNotification = value === null ? false : true;
+    }
+  }
+};
+</script>
 
 <style scoped>
 .notification {
