@@ -64,7 +64,7 @@ import {
   formSetError,
   formGetValue,
   formGetError,
-  formGetErrors,
+  formGetAllErrors,
   formResetErrors
 } from "../utils/vuexForm";
 import AppLoader from "../components/AppLoader";
@@ -149,7 +149,7 @@ export default {
     onFormSubmit() {
       this.validateForm();
       // display form errors if any
-      const formErrors = formGetErrors(formId);
+      const formErrors = formGetAllErrors(formId);
       if (Object.keys(formErrors).length > 0) {
         const message = Object.keys(formErrors)
           .map(key => formErrors[key])

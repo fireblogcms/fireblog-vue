@@ -55,7 +55,7 @@ import {
   formSetError,
   formGetValue,
   formGetError,
-  formGetErrors,
+  formGetAllErrors,
   formResetErrors
 } from "../utils/vuexForm";
 import { REQUEST_STATE, appNotification } from "../utils/helpers";

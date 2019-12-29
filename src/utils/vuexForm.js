@@ -77,7 +77,7 @@ export function formGetValue(formId, name) {
   return Store.state[storeFormsKey][formId].values[name];
 }
 
-export function formGetValues(formId) {
+export function formGetAllValues(formId) {
   return Store.state[storeFormsKey][formId].values;
 }
 
@@ -85,7 +85,7 @@ export function formGetError(formId, name) {
   return Store.state[storeFormsKey][formId].errors[name];
 }
 
-export function formGetErrors(formId) {
+export function formGetAllErrors(formId) {
   return Store.state[storeFormsKey][formId].errors;
 }
 
