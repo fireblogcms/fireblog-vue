@@ -8,17 +8,16 @@
       <button
         @click="onDeleteBlogClick"
         class="button is-danger is-large"
-      >{{ $t("views.blogSettings.dangerZone.deleteBlog") }}</button>
+      >{{ $t("views.blogSettings.dangerZone.deleteButton") }}</button>
     </AppPanel>
     <BulmaModal class="api-modal" v-model="showDeleteBlogModal">
-      <template #title>
-        Detele
-        <em>{{ blog.name }}</em>
-      </template>
+      <template
+        #title
+      >{{ $t('views.blogSettings.dangerZone.deleteModal.title', {blogName: `"${blog.name}"`}) }}</template>
       <template #body>
         <div>
           <div class="field">
-            <label class="label">Please type the name of the blog to confirm</label>
+            <label class="label">{{ $t("views.blogSettings.dangerZone.deleteModal.content") }}</label>
             <div class="control">
               <input v-model="deleteBlogConfirmName" class="input is-large" type="text" />
               <p
@@ -30,13 +29,16 @@
         </div>
       </template>
       <template #footer>
-        <button @click="showDeleteBlogModal = false" class="button is-large">Cancel</button>
+        <button
+          @click="showDeleteBlogModal = false"
+          class="button is-large"
+        >{{ $t("views.blogSettings.dangerZone.deleteModal.cancelButton") }}</button>
         <button
           :class="{ 'is-loading': deleteBlogState === 'PENDING' }"
           :disabled="deleteBlogState === 'PENDING'"
           @click="onDeleteBlogConfirm"
           class="button is-danger is-large"
-        >Delete</button>
+        >{{ $t("views.blogSettings.dangerZone.deleteModal.deleteButton") }}</button>
       </template>
     </BulmaModal>
   </div>

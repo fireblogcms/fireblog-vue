@@ -1,165 +1,84 @@
+// prettier-ignore
 export default {
-  dictionnary: {
-    draft: "Brouillon",
-    published: "Publié",
-    deleted: "supprimé",
-    close: "fermer"
-  },
-  views: {
-    apiUsage: {
-      title: "Consommation API"
-    },
-    blogList: {
-      title: "Mes blogs",
-      createNewBlogButton: "Créer un nouveau blog",
-      settingsButton: "Réglages"
-    },
-    blogSettings: {
-      generalSettingsForm: {
-        title: "Réglages généraux",
-        fields: {
-          name: {
-            label: "Nom",
-            errors: { required: "Le champ nom est requis" }
-          },
-          description: {
-            label: "Une description qui donne envie de lire votre blog",
-            help:
-              "Celle-ci sera affichée par les moteurs de recherche ou quand le lien de votre blog sera partagé sur les réseaux sociaux."
-          },
-          image: {
-            label: "Une belle image qui représente votre blog",
-            help:
-              "Celle-ci sera utilisée pour illustrer le lien de votre blog quand il sera partagé sur les réseaux sociaux"
-          }
-        },
-        notifications: {
-          saved: "Les modifications des réglages généraux ont été enregistrées."
-        },
-        saveButton: "Enregistrer"
-      },
-      technicalSettingsForm: {
-        title: "Réglages techniques",
-        fields: {
-          url: {
-            label: "Url absolue de votre blog"
-          },
-          webhooks: {
-            label: "Webhooks à appeler quand le contenu du site change",
-            help:
-              "Ces webhooks seront appelés à chaque fois que le contenu de votre site change. Vous pouvez spécifier plusieurs urls en les séparant par des virgules"
-          }
-        },
-        notifications: {
-          saved:
-            "Les modifications des réglages techniques ont été enregistrées."
-        },
-        saveButton: "Enregistrer"
-      },
-      dangerZone: {
-        title: "Zone dangereuse",
-        deleteBlog: "Supprimer ce blog"
-      }
-    },
-    postList: {
-      title: "posts",
-      firstBlogSentence:
-        "Il est temps d'écrire le premier article de votre blog!",
-      firstPostWriteButton: "Écrire",
-      writeNewPostButton: "Écrire un nouveau post",
-      publishedTab: "Publiés",
-      draftTab: "Brouillons",
-      noPublishedPostFound: "Aucun post publié pour le moment.",
-      noDraftPostFound: "Aucun brouillon pour le moment.",
-      backToBlogLink: "Mes blogs",
-      deleteButton: "Supprimer",
-      deleteModal: {
-        title: "Supprimer {postTitle}",
-        content:
-          "ATTENTION !\r\n Cette action n'est pas réversible. {postTitle} sera effacé définitivement.",
-        confirmButton: "Supprimer.",
-        cancelButton: "Oups, non, annuler !"
-      },
-      updatedOn: "mis à jour le {date}",
-      publishedOn: "publié le {date}"
-    },
-    postForm: {
-      saveDraft: "Sauvegarder le brouillon",
-      publication: "Publication",
-      unpublish: "Dépublier",
-      publishChanges: "Publier les changements",
-      publishNow: "Publier maintenant",
-      publicationCancel: "Annuler",
-      changesNotSavedModal: {
-        title: "Des modifications du post n'ont pas été sauvegardées",
-        content: "Si vous quittez maintenant, vos changement seront perdus.",
-        saveAndQuit: "Sauvegarder et quitter",
-        quitWithoutSaving: "Quitter sans sauvegarder"
-      },
-      fields: {
-        title: {
-          placeholder: "title"
-        },
-        content: {
-          placeholder: "content"
-        },
-        featuredImage: {
-          label: "Image à la une"
-        },
-        teaser: {
-          label: "Accroche",
-          help:
-            "Un texte court et percutant pour donner envie à vos lecteurs de lire votre billet. 250 characters max.",
-          errors: {
-            required: "Le champ accroche est obligatoire."
-          }
-        },
-        slug: {
-          label: "slug",
-          help: "Utilisé pour construire une url SEO-friendly pour votre post",
-          errors: {
-            invalidCharacters:
-              "Le slug peut seulement contenir des minuscules et le caractère '-'",
-            required: "Le champ slug est obligatoire"
-          }
-        }
-      },
-      previews: {
-        general: {
-          name: "Prévisualiation",
-          description:
-            "Une approximation de comment apparaitra votre article lorsque son lien sera partagé sur d'autres sites (Facebook, linkedin, twitter, etc)"
-        }
-      },
-      firstPublicationHurralModal: {
-        title: "Hourrah ! Votre post a été publié !",
-        okayButton: "Ok !"
-      },
-      publishChangesHurralModal: {
-        title: "Vos changement ont été publiés !",
-        okayButton: "Ok !"
-      },
-      mediaUploadingModal: {
-        title: "Nous n'avons pas fini d'uploder vos media",
-        content:
-          "Un media est toujours en cours d'upload | {count} media sont actuellement en cours d'upload",
-        cancelText: "Attendre que les uploads soient terminés!",
-        confirmText: "Quitter quand même"
-      }
-    }
-  },
-  topbar: {
-    accountMenu: {
-      myAccount: "Mon compte",
-      logout: "Se déconnecter"
-    }
-  },
-  apiModal: {
-    title: "API GraphQL",
-    tryItButton: "Essayer!",
-    openGraphQLExplorer: "Ouvrir l'explorateur GraphQL",
-    getAllPublishedPosts: "Obtenir la liste des posts publiés",
-    getASinglePostBySlug: "Obtenir un post par son slug",
-    GetBlogInformations: "Obtenir les informations du blog"
-  }
+  "global.draft": "Brouillon",
+  "global.published": "Publié",
+  "global.deleted": "Supprimé",
+  "global.close": "Fermer",
+  "views.apiUsage.title:": "Consommation API",
+  "views.blogList.title": "Mes blogs",
+  "views.blogList.createNewBlogButton": "Créer un nouveau blog",
+  "views.blogList.settingsButton": "Réglages",
+  "views.blogSettings.generalSettingsForm.title": "Réglages généraux",
+  "views.blogSettings.generalSettingsForm.fields.name.label": "Nom",
+  "views.blogSettings.generalSettingsForm.fields.name.errors.required": "Le champ nom est requis",
+  "views.blogSettings.generalSettingsForm.fields.description.label": "Une description qui donne envie de lire votre blog",
+  "views.blogSettings.generalSettingsForm.fields.description.help": "Celle-ci sera affichée par les moteurs de recherche ou quand le lien de votre blog sera partagé sur les réseaux sociaux.",
+  "views.blogSettings.generalSettingsForm.fields.image.label": "Une belle image qui représente votre blog",
+  "views.blogSettings.generalSettingsForm.fields.image.help": "Celle-ci sera affichée par les moteurs de recherche ou quand le lien de votre blog sera partagé sur les réseaux sociaux.",
+  "views.blogSettings.generalSettingsForm.notifications.saved": "Les modifications des réglages généraux ont été enregistrées.",
+  "views.blogSettings.generalSettingsForm.saveButton": "Enregistrer",
+  "views.blogSettings.technicalSettingsForm.title": "Réglages techniques",
+  "views.blogSettings.technicalSettingsForm.fields.url.label": "Url absolue de votre blog",
+  "views.blogSettings.technicalSettingsForm.fields.webhooks.label": "Webhooks à appeler quand le contenu du site change",
+  "views.blogSettings.technicalSettingsForm.fields.webhooks.help": "Ces webhooks seront appelés à chaque fois que le contenu de votre site change. Vous pouvez spécifier plusieurs urls en les séparant par des virgules",
+  "views.blogSettings.technicalSettingsForm.notifications.saved": "Les modifications des réglages techniques ont été enregistrées.",
+  "views.blogSettings.technicalSettingsForm.saveButton": "Enregistrer",
+  "views.blogSettings.dangerZone.title": "Zone dangereuse",
+  "views.blogSettings.dangerZone.deleteButton": "Supprimer ce blog",
+  "views.blogSettings.dangerZone.deleteModal.title":  "Supprimer le blog {blogName}",
+  "views.blogSettings.dangerZone.deleteModal.content":  "Veuillez entrer le nom du blog pour confirmer la suppression",
+  "views.blogSettings.dangerZone.deleteModal.cancelButton":  "Annuler",
+  "views.blogSettings.dangerZone.deleteModal.deleteButton":  "Supprimer",
+  "views.postList.title": "posts",
+  "views.postList.firstBlogSentence": "Il est temps d'écrire le premier article de votre blog!",
+  "views.postList.firstPostWriteButton": "Écrire",
+  "views.postList.writeNewPostButton": "Écrire un nouveau post",
+  "views.postList.publishedTab": "Publiés",
+  "views.postList.draftTab": "Brouillons",
+  "views.postList.noPublishedPostFound": "Aucun post publié pour le moment.",
+  "views.postList.noDraftPostFound": "Aucun brouillon trouvé pour le moment.",
+  "views.postList.backToBlogLink": "Mes blogs",
+  "views.postList.deleteButton": "Supprimer",
+  "views.postList.deleteModal.title": "Supprimer {postTitle}",
+  "views.postList.deleteModal.content": "ATTENTION !\r\n Cette action n'est pas réversible. {postTitle} sera effacé définitivement.",
+  "views.postList.deleteModal.confirmButton": "Supprimer",
+  "views.postList.deleteModal.cancelButton": "Oups, non, annuler !",
+  "views.postList.updatedOn": "mis à jour le {date}",
+  "views.postList.publishedOn": "publié le {date}",
+  "views.postForm.saveDraft": "Sauvegarder le brouillon",
+  "views.postForm.publication": "Publication",
+  "views.postForm.unpublish": "Dépublier",
+  "views.postForm.publishChanges": "Publier les changements",
+  "views.postForm.publishNow": "Publier maintenant",
+  "views.postForm.publicationCancel": "Annuler",
+  "views.postForm.changesNotSavedModal.title": "Des modifications du post n'ont pas été sauvegardées",
+  "views.postForm.changesNotSavedModal.content": "Si vous quittez maintenant, vos changement seront perdus.",
+  "views.postForm.changesNotSavedModal.saveAndQuit": "Sauvegarder et quitter",
+  "views.postForm.changesNotSavedModal.quitWithoutSaving": "Quitter sans sauvegarder",
+  "views.postForm.fields.title.placeholder": "Titre",
+  "views.postForm.fields.content.placeholder": "Contenu",
+  "views.postForm.fields.content.featuredImage.label": "Image à la une",
+  "views.postForm.fields.teaser.label": "Accroche",
+  "views.postForm.fields.teaser.help": "Un texte court et percutant pour donner envie à vos lecteurs de lire votre billet. 250 characters max.",
+  "views.postForm.fields.teaser.errors.required": "Le champ accroche est obligatoire",
+  "views.postForm.fields.slug.label": "Slug",
+  "views.postForm.fields.slug.help": "Utilisé pour construire une url SEO-friendly pour votre post",
+  "views.postForm.fields.slug.errors.invalidCharacters":  "Le slug peut seulement contenir des minuscules et le caractère '-'",
+  "views.postForm.fields.slug.errors.required":  "Le champ slug est obligatoire",
+  "views.postForm.firstPublicationHurralModal.title":  "Hourrah ! Votre post a été publié !",
+  "views.postForm.firstPublicationHurralModal.okayButton":  "Ok !",
+  "views.postForm.publishChangesHurralModal.title":  "Vos changements ont été publiés !",
+  "views.postForm.publishChangesHurralModal.okayButton":  "Ok!",
+  "views.postForm.mediaUploadingModal.title": "Nous n'avons pas fini d'uploder vos media",
+  "views.postForm.mediaUploadingModal.content": "Un media est toujours en cours d'upload | {count} media sont actuellement en cours d'upload",
+  "views.postForm.mediaUploadingModal.cancelText": "Attendre que les uploads soient terminés!",
+  "views.postForm.mediaUploadingModal.confirmText": "Quitter quand même",
+  "topbar.accountMenu.myAccount": "Mon compte",
+  "topbar.accountMenu.logout": "Se déconnecter",
+  "apiModal.title": "API GraphQL",
+  "apiModal.tryItButton": "Essayer",
+  "apiModal.openGraphQLExplorer": "Ouvrir l'explorateur GraphQL",
+  "apiModal.getAllPublishedPosts": "Obtenir la liste des posts publiés",
+  "apiModal.getASinglePostBySlug":  "Obtenir un post par son slug",
+  "apiModal.GetBlogInformations":  "Obtenir les informations du blog",
 };

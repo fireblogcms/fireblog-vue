@@ -94,7 +94,7 @@
           @click="showApiModal = false"
           class="button is-pulled-right"
           style="margin-right:20px;"
-        >{{ $t("dictionnary.close") }}</button>
+        >{{ $t("global.close") }}</button>
       </template>
       <template #body>
         <div class="container">
