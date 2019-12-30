@@ -21,7 +21,10 @@
             <br />
 
             <div class="field">
-              <label class="label is-large">Which is your blog's name ?</label>
+              <div class="label-wrapper">
+                <label class="label is-large">{{$t("views.blogCreate.fields.title.label")}}</label>
+                <p class="description">{{$t("views.blogCreate.fields.title.help")}}</p>
+              </div>
               <div class="control">
                 <input
                   v-model="inputs.name"
@@ -32,14 +35,15 @@
                   placeholder="Blog's Name"
                 />
               </div>
-              <p class="help is-danger" v-if="formErrors.name">
-                {{ formErrors.name }}
-              </p>
+              <p class="help is-danger" v-if="formErrors.name">{{ formErrors.name }}</p>
             </div>
 
             <div class="field">
               <div class="control has-text-centered">
-                <label class="label is-large">What is your blog about ?</label>
+                <div class="label-wrapper">
+                  <label class="label is-large">{{$t("views.blogCreate.fields.description.label")}}</label>
+                  <p class="description">{{$t("views.blogCreate.fields.description.help")}}</p>
+                </div>
                 <textarea
                   v-model="inputs.description"
                   class="input is-large textarea"
@@ -48,9 +52,7 @@
                   maxlength="250"
                 ></textarea>
               </div>
-              <p class="help is-danger" v-if="formErrors.description">
-                {{ formErrors.description }}
-              </p>
+              <p class="help is-danger" v-if="formErrors.description">{{ formErrors.description }}</p>
             </div>
 
             <br />
@@ -60,17 +62,13 @@
                 v-if="!isMyFirstBlog"
                 class="button is-outlined"
                 @click="$router.push('/')"
-              >
-                CANCEL
-              </button>
+              >{{$t("views.blogCreate.cancelButton").toUpperCase()}}</button>
               <button
                 :disabled="savingBlogState === 'PENDING'"
                 :class="{ 'is-loading': savingBlogState === 'PENDING' }"
                 class="button is-primary"
                 @click="onCreateClick"
-              >
-                CREATE MY BLOG
-              </button>
+              >{{$t("views.blogCreate.createButton").toUpperCase()}}</button>
             </div>
 
             <!-- Any other Bulma elements you want -->
