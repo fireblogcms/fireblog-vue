@@ -1,7 +1,7 @@
 <template>
   <div>
     <AppPanel
-      class="container"
+      class="container is-small"
       style="margin-top:40px;margin-bottom:40px;padding:40px;border: solid red 1px;background:rgba(255,0,0,0.1)"
     >
       <h2 class="title is-2">{{ $t("views.blogSettings.dangerZone.title") }}</h2>

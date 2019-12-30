@@ -23,8 +23,18 @@ export default {
             errors: { required: "Le champ nom est requis" }
           },
           description: {
-            label: "Description"
+            label: "Une description qui donne envie de lire votre blog",
+            help:
+              "Celle-ci sera affichée par les moteurs de recherche ou quand le lien de votre blog sera partagé sur les réseaux sociaux."
+          },
+          image: {
+            label: "Une belle image qui représente votre blog",
+            help:
+              "Celle-ci sera utilisée pour illustrer le lien de votre blog quand il sera partagé sur les réseaux sociaux"
           }
+        },
+        notifications: {
+          saved: "Les modifications des réglages généraux ont été enregistrées."
         },
         saveButton: "Enregistrer"
       },
@@ -35,10 +45,14 @@ export default {
             label: "Url absolue de votre blog"
           },
           webhooks: {
-            label: "Webhooks de reconstruction du site statique",
+            label: "Webhooks à appeler quand le contenu du site change",
             help:
-              "Vous pouvez spécifier plusieurs urls en les séparant par des virgules. Ces webhooks seront appelés à chaque fois qu'une reconstruction du site statique sera nécessaire."
+              "Ces webhooks seront appelés à chaque fois que le contenu de votre site change. Vous pouvez spécifier plusieurs urls en les séparant par des virgules"
           }
+        },
+        notifications: {
+          saved:
+            "Les modifications des réglages techniques ont été enregistrées."
         },
         saveButton: "Enregistrer"
       },

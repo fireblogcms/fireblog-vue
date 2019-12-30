@@ -92,3 +92,13 @@ video {
 #app .container.is-small {
   max-width: 800px;
 }
+
+#app .label-wrapper .label {
+  margin-bottom: 0;
+}
+
+#app .field .label-wrapper .description {
+  font-size: 0.8rem;
+  margin-bottom: 0.25rem;
+  margin-top: 0rem;
+}

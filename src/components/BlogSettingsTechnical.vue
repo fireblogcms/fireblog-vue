@@ -1,13 +1,15 @@
 <template>
-  <AppPanel style="margin-top:40px;margin-bottom:40px;padding:40px;" class="container">
+  <AppPanel style="margin-top:40px;margin-bottom:40px;padding:40px;" class="container is-small">
     <h2 class="title is-2">{{ $t("views.blogSettings.technicalSettingsForm.title") }}</h2>
     <form @submit.prevent="onFormSubmit">
+      <!--
       <div class="field">
         <label class="label">
           {{
           $t("views.blogSettings.technicalSettingsForm.fields.url.label")
           }}
         </label>
+        
         <div class="control">
           <input
             :value="formGetValue(formId, 'url')"
@@ -23,17 +25,22 @@
           v-if="formGetError(formId, 'url')"
         >{{ formGetError(formId, 'url')}}</p>
       </div>
+      -->
       <div class="field">
-        <label
-          class="label"
-        >{{$t("views.blogSettings.technicalSettingsForm.fields.webhooks.label") }}</label>
+        <div class="label-wrapper">
+          <label
+            class="label"
+          >{{$t("views.blogSettings.technicalSettingsForm.fields.webhooks.label") }}</label>
+          <p
+            class="description"
+          >{{$t("views.blogSettings.technicalSettingsForm.fields.webhooks.help")}}</p>
+        </div>
         <textarea
           :value="formGetValue(formId,'staticBuildWebhooks')"
           @input="formSetValue(formId, 'staticBuildWebhooks', $event.target.value)"
           class="textarea"
           placeholder="e.g. Hello world"
         ></textarea>
-        <p class="help">{{$t("views.blogSettings.technicalSettingsForm.fields.webhooks.help")}}</p>
       </div>
       <div>
         <button
@@ -112,7 +119,9 @@ export default {
         .then(updatedBlog => {
           this.savingState = REQUEST_STATE.FINISHED_OK;
           appNotification(
-            `"${updatedBlog.name}" technical settings have been saved.`,
+            this.$t(
+              "views.blogSettings.technicalSettingsForm.notifications.saved"
+            ),
             "info",
             { persistAfterRouteChange: true }
           );

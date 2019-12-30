@@ -1,9 +1,11 @@
 <template>
-  <AppPanel style="margin-top:40px;margin-bottom:40px;padding:40px;" class="container">
+  <AppPanel style="margin-top:40px;margin-bottom:40px;padding:40px;" class="container is-small">
     <h2 class="title is-2">{{ $t("views.blogSettings.generalSettingsForm.title") }}</h2>
     <form @submit.prevent="onFormSubmit">
       <div class="field">
-        <label class="label">{{ $t("views.blogSettings.generalSettingsForm.fields.name.label") }}</label>
+        <div class="label-wrapper">
+          <label class="label">{{ $t("views.blogSettings.generalSettingsForm.fields.name.label") }}</label>
+        </div>
         <div class="control is-danger">
           <input
             :value="formGetValue(formId, 'name')"
@@ -20,7 +22,12 @@
         >{{ formGetError(formId, 'name') }}</p>
       </div>
       <div class="field">
-        <label class="label">Description (250 characters max)</label>
+        <div class="label-wrapper">
+          <label class="label">Description (250 caractères maximum)</label>
+          <p
+            class="description"
+          >{{ $t("views.blogSettings.generalSettingsForm.fields.description.help") }}</p>
+        </div>
         <div class="control">
           <textarea
             class="textarea is-large"
@@ -33,7 +40,12 @@
       </div>
 
       <div class="field">
-        <label class="label">Couverture du blog</label>
+        <div class="label-wrapper">
+          <label class="label">{{ $t("views.blogSettings.generalSettingsForm.fields.image.label") }}</label>
+          <p
+            class="description"
+          >{{ $t("views.blogSettings.generalSettingsForm.fields.image.help") }}</p>
+        </div>
         <S3ImageUpload
           style="max-width:600px;"
           :blogId="$route.params.blogId"
@@ -169,7 +181,9 @@ export default {
         .then(updatedBlog => {
           this.savingState = REQUEST_STATE.FINISHED_OK;
           appNotification(
-            `"${updatedBlog.name}" general settings have been saved.`
+            this.$t(
+              "views.blogSettings.generalSettingsForm.notifications.saved"
+            )
           );
         })
         .catch(e => {

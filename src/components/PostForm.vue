@@ -857,6 +857,7 @@ export default {
 .post-form-wrapper {
   padding-top: 30px;
   padding-bottom: 30px;
+  background: white;
 }
 
 .post-form-wrapper > form {
