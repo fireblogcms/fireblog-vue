@@ -3,7 +3,7 @@
     <div class="label-wrapper">
       <label>
         <strong>{{ label }}</strong>
-        <p v-if="help" class="help">{{ help }}</p>
+        <p v-if="computedHelp" class="help" v-html="computedHelp" />
       </label>
     </div>
     <div class="control">
@@ -21,6 +21,8 @@
 </template>
 
 <script>
+import i18n from "../i18n";
+
 export default {
   props: {
     value: {
@@ -33,11 +35,10 @@ export default {
     },
     label: {
       type: String,
-      default: "Slug"
+      default: i18n.t("components.fieldSlug.label")
     },
     help: {
-      type: String,
-      default: ""
+      type: String
     },
     error: {
       type: String
@@ -53,6 +54,11 @@ export default {
     }
   },
   computed: {
+    computedHelp() {
+      return this.$t("components.fieldSlug.help", {
+        exampleUrl: `https://yourblog.com/post/<mark>${this.value}</mark>`
+      });
+    },
     computedInputClass() {
       return {
         "is-danger": this.error ? true : false,
@@ -62,3 +68,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.slug-example {
+  color: green;
+}
+</style>

@@ -43,8 +43,6 @@
           <SlugField
             :value="formGetValue(formId, 'slug')"
             :error="formGetError(formId, 'slug')"
-            :label="$t('views.postForm.fields.slug.label')"
-            :help="$t('views.postForm.fields.slug.help')"
             @input="onSlugInput"
           />
         </div>

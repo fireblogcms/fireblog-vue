@@ -6,6 +6,10 @@ export default {
   "apiModal.openGraphQLExplorer": "Ouvrir l'explorateur GraphQL",
   "apiModal.title": "API GraphQL",
   "apiModal.tryItButton": "Essayer",
+  "components.fieldSlug.label": "Slug",
+  "components.fieldSlug.help": "Utilisé pour construire une url SEO-friendly pour votre post. Par exemple : {exampleUrl}",
+  "components.fieldSlug.errors.invalidCharacters":  "Le slug peut seulement contenir des minuscules et le caractère '-'",
+  "components.fieldSlug.errors.required":  "Le champ slug est obligatoire",
   "global.close": "Fermer",
   "global.deleted": "Supprimé",
   "global.draft": "Brouillon",
@@ -88,6 +92,4 @@ export default {
   "views.postList.writeNewPostButton": "Écrire un nouveau post",
   "views.postList.title": "posts",
   "views.postList.updatedOn": "mis à jour le {date}",
-
-
 };
