@@ -35,33 +35,18 @@
                 @input="onTeaserInput"
                 :value="formGetValue(formId, 'teaser')"
                 class="textarea is-medium"
+                :class="{'is-danger': formGetError(formId, 'teaser')}"
                 placeholder="Teaser"
               ></textarea>
             </div>
           </div>
-          <!-- SLUG FIELD -->
-          <div class="field">
-            <div class="label-wrapper">
-              <label>
-                <strong>{{ $t("views.postForm.fields.slug.label") }}</strong>
-                <p class="help">{{ $t("views.postForm.fields.slug.help") }}</p>
-              </label>
-            </div>
-
-            <div class="control">
-              <input
-                @input="onSlugInput"
-                :value="formGetValue(formId, 'slug')"
-                class="input is-medium"
-                type="text"
-                placeholder="slug"
-              />
-            </div>
-            <p
-              class="help is-danger"
-              v-if="formGetError('postForm', 'slug')"
-            >{{ formGetError("postForm", "slug") }}</p>
-          </div>
+          <SlugField
+            :value="formGetValue(formId, 'slug')"
+            :error="formGetError(formId, 'slug')"
+            :label="$t('views.postForm.fields.slug.label')"
+            :help="$t('views.postForm.fields.slug.help')"
+            @input="onSlugInput"
+          />
         </div>
         <!--
         <div class="column">
@@ -98,12 +83,14 @@
 import S3ImageUpload from "./S3ImageUpload";
 import { REQUEST_STATE } from "../utils/helpers";
 import { formGetValue, formGetError, formSetValue } from "../utils/vuexForm";
+import SlugField from "./SlugField";
 
 const formId = "postForm";
 
 export default {
   components: {
-    S3ImageUpload
+    S3ImageUpload,
+    SlugField
   },
   data() {
     const data = {
@@ -130,8 +117,8 @@ export default {
     onTeaserInput(event) {
       formSetValue(formId, "teaser", event.target.value);
     },
-    onSlugInput(event) {
-      formSetValue(formId, "slug", event.target.value);
+    onSlugInput(value) {
+      formSetValue(formId, "slug", value);
     },
     onUploadingStateChange(state) {
       this.uploadingState = state;

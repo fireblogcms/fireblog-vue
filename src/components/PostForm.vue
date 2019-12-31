@@ -78,12 +78,12 @@
                 savingPost.state === 'PENDING' &&
                 savingPost.publicationStatus === 'PUBLISHED'
             }"
-            >PUBLISH NOW</button>
+            >{{$t("views.postForm.publishNow")}}</button>
             <button
               style="margin-right:20px;"
               @click="publicationSettingsModal.show = false"
               class="button is-pulled-right is-large"
-            >CANCEL</button>
+            >{{$t("views.postForm.publicationCancel")}}</button>
           </div>
         </template>
         <template #footer />
