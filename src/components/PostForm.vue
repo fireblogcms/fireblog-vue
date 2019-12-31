@@ -831,16 +831,12 @@ export default {
       formSetErrors(formId, {});
       // SLUG
       if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(formGetValue(formId, "slug"))) {
-        let message = this.$t(
-          "views.postForm.fields.slug.errors.invalidCharacters"
-        );
+        let message = this.$t("components.fieldSlug.errors.invalidCharacters");
         formSetError(formId, "slug", message);
         appNotification(message, "error");
       }
       if (!formGetValue(formId, "slug").trim()) {
-        let message = this.$t(
-          "views.postForm.fields.slug.errors.invalidCharacters"
-        );
+        let message = this.$t("components.fieldSlug.errors.invalidCharacters");
         formSetError(formId, "slug", message);
         appNotification(message, "error");
       }
