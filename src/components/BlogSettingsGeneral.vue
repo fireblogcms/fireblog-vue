@@ -24,9 +24,7 @@
       <div class="field">
         <div class="label-wrapper">
           <label class="label">Description (250 caractères maximum)</label>
-          <p
-            class="description"
-          >{{ $t("views.blogSettings.generalSettingsForm.fields.description.help") }}</p>
+          <p class="help">{{ $t("views.blogSettings.generalSettingsForm.fields.description.help") }}</p>
         </div>
         <div class="control">
           <textarea
@@ -42,9 +40,7 @@
       <div class="field">
         <div class="label-wrapper">
           <label class="label">{{ $t("views.blogSettings.generalSettingsForm.fields.image.label") }}</label>
-          <p
-            class="description"
-          >{{ $t("views.blogSettings.generalSettingsForm.fields.image.help") }}</p>
+          <p class="help">{{ $t("views.blogSettings.generalSettingsForm.fields.image.help") }}</p>
         </div>
         <S3ImageUpload
           style="max-width:600px;"

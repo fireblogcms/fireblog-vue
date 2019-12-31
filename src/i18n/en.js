@@ -70,6 +70,7 @@ export default {
   "views.postForm.changesNotSavedModal.saveAndQuit": "Save and quit",
   "views.postForm.changesNotSavedModal.quitWithoutSaving": "Quit without saving",
   "views.postForm.fields.title.placeholder": "Title",
+  "views.postForm.fields.title.errors.required": "Title is required",
   "views.postForm.fields.content.placeholder": "Content",
   "views.postForm.fields.content.featuredImage.label": "Image",
   "views.postForm.fields.teaser.label": "Teaser",

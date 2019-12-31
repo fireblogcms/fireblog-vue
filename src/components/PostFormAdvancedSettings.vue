@@ -5,13 +5,12 @@
         <div class="column">
           <!-- IMAGE UPLOAD FIELD -->
           <div class="field featured-image">
-            <label>
-              <strong>
-                {{
-                $t("views.postForm.fields.featuredImage.label")
-                }}
-              </strong>
-            </label>
+            <div class="label-wrapper">
+              <label>
+                <strong>{{ $t("views.postForm.fields.featuredImage.label")}}</strong>
+              </label>
+              <p class="help">{{ $t("views.postForm.fields.featuredImage.help")}}</p>
+            </div>
             <S3ImageUpload
               :blogId="$route.params.blogId"
               @onUploadingStateChange="onUploadingStateChange"
@@ -23,10 +22,12 @@
         <div class="column">
           <!-- TEASER FIELD -->
           <div class="field">
-            <label>
-              <strong>{{ $t("views.postForm.fields.teaser.label") }}</strong>
-              <div class="field-help">{{ $t("views.postForm.fields.teaser.help") }}</div>
-            </label>
+            <div class="label-wrapper">
+              <label>
+                <strong>{{ $t("views.postForm.fields.teaser.label") }}</strong>
+                <p class="help">{{ $t("views.postForm.fields.teaser.help") }}</p>
+              </label>
+            </div>
             <div class="control">
               <!-- limited to 250 because of google, facebook, twitter and co preview card limitation -->
               <textarea
@@ -40,10 +41,12 @@
           </div>
           <!-- SLUG FIELD -->
           <div class="field">
-            <label>
-              <strong>{{ $t("views.postForm.fields.slug.label") }}</strong>
-              <div class="field-help">{{ $t("views.postForm.fields.slug.help") }}</div>
-            </label>
+            <div class="label-wrapper">
+              <label>
+                <strong>{{ $t("views.postForm.fields.slug.label") }}</strong>
+                <p class="help">{{ $t("views.postForm.fields.slug.help") }}</p>
+              </label>
+            </div>
 
             <div class="control">
               <input

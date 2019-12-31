@@ -637,7 +637,10 @@ export default {
     postFormIsValid() {
       let isValid = true;
       if (!formGetValue(formId, "title").trim()) {
-        appNotification("A title is required", "error");
+        appNotification(
+          this.$t("views.postForm.fields.title.errors.required"),
+          "error"
+        );
         isValid = false;
       }
       return isValid;

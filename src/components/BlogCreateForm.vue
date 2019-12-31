@@ -23,7 +23,7 @@
             <div class="field">
               <div class="label-wrapper">
                 <label class="label is-large">{{$t("views.blogCreate.fields.title.label")}}</label>
-                <p class="description">{{$t("views.blogCreate.fields.title.help")}}</p>
+                <p class="help">{{$t("views.blogCreate.fields.title.help")}}</p>
               </div>
               <div class="control">
                 <input
@@ -42,7 +42,7 @@
               <div class="control has-text-centered">
                 <div class="label-wrapper">
                   <label class="label is-large">{{$t("views.blogCreate.fields.description.label")}}</label>
-                  <p class="description">{{$t("views.blogCreate.fields.description.help")}}</p>
+                  <p class="help">{{$t("views.blogCreate.fields.description.help")}}</p>
                 </div>
                 <textarea
                   v-model="inputs.description"

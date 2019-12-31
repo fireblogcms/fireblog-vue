@@ -1,11 +1,11 @@
 <template>
-  <div class="layout-body">
+  <div class="app-panel">
     <slot />
   </div>
 </template>
 
 <style scoped>
-.layout-body {
+.app-panel {
   border: solid rgb(230, 230, 230) 1px;
   background: white;
   border-radius: 6px;

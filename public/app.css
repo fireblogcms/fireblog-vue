@@ -97,8 +97,10 @@ video {
   margin-bottom: 0;
 }
 
-#app .field .label-wrapper .description {
-  font-size: 0.8rem;
+#app .field .label-wrapper .help {
+  font-size: 0.9rem;
   margin-bottom: 0.25rem;
   margin-top: 0rem;
+  font-weight: 100;
+  font-style: italic;
 }

@@ -31,9 +31,7 @@
           <label
             class="label"
           >{{$t("views.blogSettings.technicalSettingsForm.fields.webhooks.label") }}</label>
-          <p
-            class="description"
-          >{{$t("views.blogSettings.technicalSettingsForm.fields.webhooks.help")}}</p>
+          <p class="help">{{$t("views.blogSettings.technicalSettingsForm.fields.webhooks.help")}}</p>
         </div>
         <textarea
           :value="formGetValue(formId,'staticBuildWebhooks')"
