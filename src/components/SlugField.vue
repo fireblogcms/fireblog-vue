@@ -22,6 +22,7 @@
 
 <script>
 import i18n from "../i18n";
+import { createSlug } from "../utils/helpers";
 
 export default {
   props: {
@@ -48,15 +49,25 @@ export default {
       default: "is-medium"
     }
   },
+  data() {
+    return {
+      source: this.value,
+      slug: createSlug(this.value)
+    };
+  },
   methods: {
     onSlugInput(event) {
-      this.$emit("input", event.target.value);
+      this.slug = createSlug(event.target.value);
+      this.$emit("input", {
+        source: event.target.value,
+        slug: this.slug
+      });
     }
   },
   computed: {
     computedHelp() {
       return this.$t("components.fieldSlug.help", {
-        exampleUrl: `https://yourblog.com/post/<mark>${this.value}</mark>`
+        exampleUrl: `https://yourblog.com/post/<mark>${this.slug}</mark>`
       });
     },
     computedInputClass() {

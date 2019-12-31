@@ -41,8 +41,8 @@
             </div>
           </div>
           <SlugField
-            :value="formGetValue(formId, 'slug')"
-            :error="formGetError(formId, 'slug')"
+            :value="formGetValue(formId, 'slugSource')"
+            :error="formGetError(formId, 'slugSource')"
             @input="onSlugInput"
           />
         </div>
@@ -115,8 +115,9 @@ export default {
     onTeaserInput(event) {
       formSetValue(formId, "teaser", event.target.value);
     },
-    onSlugInput(value) {
-      formSetValue(formId, "slug", value);
+    onSlugInput({ source, slug }) {
+      formSetValue(formId, "slugSource", source);
+      formSetValue(formId, "slug", slug);
     },
     onUploadingStateChange(state) {
       this.uploadingState = state;

@@ -655,13 +655,6 @@ export default {
       if (this.mediaLoadingCounter > 0) {
         this.showMediaCurrentlyLoadingModal();
       } else {
-        if (formGetValue(formId, "slug").trim().length === 0) {
-          const slugSuggestion = createSlug(formGetValue(formId, "title"), {
-            replacement: "-",
-            lower: true
-          });
-          formSetValue(formId, "slug", slugSuggestion);
-        }
         // pre-fill teaser fied with the first sentence of the text.
         if (formGetValue(formId, "teaser").trim().length === 0) {
           const teaserSuggestion = striptags(
@@ -803,6 +796,10 @@ export default {
       let values = {
         title: post.title ? post.title : "",
         content: post.content ? post.content : "",
+        // slugSource is the slug value before being slugified.
+        // this is equal to post.slug until use try to modify the slug.
+        slugSource: post.slug ? post.slug : "",
+        // slug is the slug value after being slugified by SlugField component
         slug: post.slug ? post.slug : "",
         title: post.title ? post.title : "",
         teaser: post.teaser ? post.teaser : "",
@@ -830,13 +827,15 @@ export default {
       // reset form errors
       formSetErrors(formId, {});
       // SLUG
-      if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(formGetValue(formId, "slug"))) {
+      if (
+        !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(formGetValue(formId, "slugSource"))
+      ) {
         let message = this.$t("components.fieldSlug.errors.invalidCharacters");
-        formSetError(formId, "slug", message);
+        formSetError(formId, "slugSource", message);
         appNotification(message, "error");
       }
-      if (!formGetValue(formId, "slug").trim()) {
-        let message = this.$t("components.fieldSlug.errors.invalidCharacters");
+      if (!formGetValue(formId, "slugSource").trim()) {
+        let message = this.$t("components.fieldSlug.errors.required");
         formSetError(formId, "slug", message);
         appNotification(message, "error");
       }

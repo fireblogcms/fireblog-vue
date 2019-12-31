@@ -95,11 +95,11 @@ export function cloudinaryUploadImage({ file, folder, options = {} }) {
 /**
  * Wrapper around slugify to ensure options consistance
  */
-export function createSlug(value, options) {
+export function createSlug(value, options = {}) {
   return slug(value, {
-    ...options,
     replacement: "-",
-    lower: true
+    lower: true,
+    ...options
   });
 }
 

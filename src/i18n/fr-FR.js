@@ -7,7 +7,7 @@ export default {
   "apiModal.title": "API GraphQL",
   "apiModal.tryItButton": "Essayer",
   "components.fieldSlug.label": "Slug",
-  "components.fieldSlug.help": "Utilisé pour construire une url SEO-friendly pour votre post.<br /> Par exemple : {exampleUrl}",
+  "components.fieldSlug.help": "Utilisé pour construire une url SEO-friendly pour votre post.<br /> Par exemple : {exampleUrl}<br /> Seuls les minuscules et le caractère '-' sont autorisés",
   "components.fieldSlug.errors.invalidCharacters":  "Le slug peut seulement contenir des minuscules et le caractère '-'",
   "components.fieldSlug.errors.required":  "Le champ slug est obligatoire",
   "global.close": "Fermer",
