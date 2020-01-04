@@ -41,6 +41,7 @@
             </div>
           </div>
           <SlugField
+            :locked="existingPost && existingPost.status === 'PUBLISHED'"
             :value="formGetValue(formId, 'slugSource')"
             :error="formGetError(formId, 'slugSource')"
             @input="onSlugInput"
@@ -86,6 +87,12 @@ import SlugField from "./SlugField";
 const formId = "postForm";
 
 export default {
+  props: {
+    existingPost: {
+      type: [Object, null],
+      default: () => null
+    }
+  },
   components: {
     S3ImageUpload,
     SlugField

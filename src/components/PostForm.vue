@@ -248,7 +248,8 @@ import {
   getBlog,
   createSlug,
   ckeditorIframelyMediaProvider,
-  appNotification
+  appNotification,
+  validateSlug
 } from "../utils/helpers";
 import {
   formInit,
@@ -823,13 +824,10 @@ export default {
       ];
     },
     validatePostForm() {
-      const errors = {};
       // reset form errors
       formSetErrors(formId, {});
       // SLUG
-      if (
-        !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(formGetValue(formId, "slugSource"))
-      ) {
+      if (!validateSlug(formGetValue(formId, "slugSource"))) {
         let message = this.$t("components.fieldSlug.errors.invalidCharacters");
         formSetError(formId, "slugSource", message);
         appNotification(message, "error");
