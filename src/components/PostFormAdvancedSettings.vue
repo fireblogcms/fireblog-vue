@@ -41,9 +41,10 @@
             </div>
           </div>
           <SlugField
-            :locked="existingPost && existingPost.status === 'PUBLISHED'"
-            :value="formGetValue(formId, 'slugSource')"
-            :error="formGetError(formId, 'slugSource')"
+            :value="formGetValue(formId, 'slug')"
+            :error="formGetError(formId, 'slug')"
+            :showToggleLockButton="false"
+            :locked="false"
             @input="onSlugInput"
           />
         </div>
@@ -123,7 +124,6 @@ export default {
       formSetValue(formId, "teaser", event.target.value);
     },
     onSlugInput({ source, slug }) {
-      formSetValue(formId, "slugSource", source);
       formSetValue(formId, "slug", slug);
     },
     onUploadingStateChange(state) {
