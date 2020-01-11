@@ -327,6 +327,15 @@ export function S3Upload({
     });
 }
 
+export function toast(component, message, options = {}) {
+  component.$toasted.show(message, {
+    duration: 2000,
+    position: "bottom-center",
+    className: "app-toast",
+    ...options
+  });
+}
+
 export function appNotification(
   message,
   type = "info",

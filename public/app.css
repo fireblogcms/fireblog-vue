@@ -104,3 +104,8 @@ video {
   font-weight: 100;
   font-style: italic;
 }
+
+/* @see vue-toaster */
+.app-toast {
+  background-color: #816cdc !important;
+}

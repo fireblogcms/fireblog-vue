@@ -59,6 +59,7 @@ export default {
   "views.postForm.changesNotSavedModal.content": "If you quit now, last changes will be lost",
   "views.postForm.changesNotSavedModal.saveAndQuit": "Save and quit",
   "views.postForm.changesNotSavedModal.quitWithoutSaving": "Quit without saving",
+  "views.postForm.draftSaved": "Draft saved",
   "views.postForm.fields.title.placeholder": "Title",
   "views.postForm.fields.title.errors.required": "Title is required",
   "views.postForm.fields.content.placeholder": "Content",

@@ -69,9 +69,9 @@
         </template>
         <template #title>
           <div>
-            <span class="title is-2">{{
-              $t("views.postForm.advancedSettingsModal.title")
-            }}</span>
+            <span class="title is-2">
+              {{ $t("views.postForm.advancedSettingsModal.title") }}
+            </span>
             <!-- PUBLISH BUTTON -->
             <button
               style="margin-right:20px;"
@@ -302,7 +302,8 @@ import {
   ckeditorIframelyMediaProvider,
   appNotification,
   validateSlug,
-  resetAppNotifications
+  resetAppNotifications,
+  toast
 } from "../utils/helpers";
 import {
   formInit,
@@ -445,14 +446,22 @@ export default {
 
     // allow ctrl+s to be detected on inputs and textareas
     hotkeys.filter = () => true;
+    // save shortcuts
     hotkeys("ctrl+s,command+s", (event, handler) => {
+      event.preventDefault();
       // Prevent the default refresh event under WINDOWS system
       if (this.existingPost && this.existingPost.status === "PUBLISHED") {
         this.publish();
       } else {
-        this.saveDraft();
+        this.saveDraft()
+          .then(() => {
+            toast(this, this.$t("views.postForm.draftSaved"));
+          })
+          .catch(e => {
+            console.log("Cannot be saved: form validation failed: " + e);
+          });
       }
-      event.preventDefault();
+      return false;
     });
   },
   beforeDestroy() {

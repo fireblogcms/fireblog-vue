@@ -59,6 +59,7 @@ export default {
   "views.postForm.changesNotSavedModal.quitWithoutSaving": "Quitter sans sauvegarder",
   "views.postForm.changesNotSavedModal.saveAndQuit": "Sauvegarder et quitter",
   "views.postForm.changesNotSavedModal.title": "Des modifications du post n'ont pas été sauvegardées",
+  "views.postForm.draftSaved": "Brouillon sauvegardé",
   "views.postForm.fields.content.placeholder": "Contenu",
   "views.postForm.fields.featuredImage.label": "Image",
   "views.postForm.fields.featuredImage.help": "Celle-ci sera affichée dans les listes de vos posts et quand le lien de votre post sera partagé sur les réseaux sociaux.",
