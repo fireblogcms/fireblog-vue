@@ -337,6 +337,10 @@ export function appNotification(
   Store.commit("notification", { message, type, options });
 }
 
+export function resetAppNotifications() {
+  Store.commit("notification", null);
+}
+
 export function validateSlug(slug) {
   return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug);
 }

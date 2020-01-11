@@ -301,7 +301,8 @@ import {
   createSlug,
   ckeditorIframelyMediaProvider,
   appNotification,
-  validateSlug
+  validateSlug,
+  resetAppNotifications
 } from "../utils/helpers";
 import {
   formInit,
@@ -841,6 +842,7 @@ export default {
     },
     validatePostForm() {
       formResetErrors(formId);
+      resetAppNotifications();
       // TITLE
       if (!validateSlug(formGetValue(formId, "title").trim())) {
         let message = this.$t("views.postForm.fields.title.errors.required");
