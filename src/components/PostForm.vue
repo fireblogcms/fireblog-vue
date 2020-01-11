@@ -47,7 +47,7 @@
         </template>
       </BulmaModal>
 
-      <!-- PUBLISH MODAL -->
+      <!-- ADVANCED SETTINGS MODAL -->
       <BulmaModal
         class="publication-settings-modal animated zoomIn"
         :fullscreen="true"
@@ -59,15 +59,16 @@
               :existingPost="existingPost"
               :savingPost="savingPost"
               @onCancelClick="publicationSettingsModal.show = false"
-              @onPublishClick="onPublishClick"
               @onUploadingStateChange="state => (uploadingState = state)"
             />
           </div>
         </template>
         <template #title>
           <div>
-            <span class="title is-2">PUBLICATION</span>
+            <span class="title is-2">{{ $t("views.postForm.advancedSettingsModal.title") }}</span>
+            <!-- PUBLISH BUTTON -->
             <button
+              style="margin-right:20px;"
               class="button is-primary is-pulled-right is-large"
               @click="onPublishClick"
               :disabled="
@@ -78,7 +79,22 @@
                 savingPost.state === 'PENDING' &&
                 savingPost.publicationStatus === 'PUBLISHED'
             }"
-            >{{$t("views.postForm.publishNow")}}</button>
+            >{{$t("views.postForm.publishNowButton")}}</button>
+            <!-- UNPUBLISH BUTTON -->
+            <button
+              @click="onUnpublishClick()"
+              style="margin-right:20px;"
+              v-if="existingPost && existingPost.status === 'PUBLISHED'"
+              class="button is-pulled-right is-large is-danger"
+              :class="{
+          'is-loading':
+            savingPost.state === 'PENDING' &&
+            savingPost.publicationStatus === 'DRAFT'
+        }"
+              :disabled="savingPost.state === 'PENDING'"
+              type="submit"
+            >{{ $t("views.postForm.unpublishButton") }}</button>
+
             <button
               style="margin-right:20px;"
               @click="publicationSettingsModal.show = false"
@@ -89,7 +105,7 @@
         <template #footer />
       </BulmaModal>
 
-      <!-- HURRAH MODAL -->
+      <!-- HURRAH MODAL FOR FIRST PUBLICATION -->
       <BulmaModal class="hurrah-modal" v-model="publishingHurrahModal.show" :whiteFooter="true">
         <template #title>
           <div
@@ -109,6 +125,7 @@
         </template>
       </BulmaModal>
 
+      <!-- HURRAH MODAL WHEN PUBLISHING CHANGES ON ALREADY PUBLISHED POST -->
       <BulmaModal class="publishing-changes-modal" v-model="publishingChangesModal.show">
         <template #title>
           <div class="has-text-centered">{{ $t("views.postForm.publishChangesHurralModal.title") }}</div>
@@ -152,6 +169,7 @@
 
       <!-- TOPBAR RIGHT BUTTONS -->
       <portal to="topbar-right" v-if="initDataState === 'FINISHED_OK'">
+        <!-- SAVE DRAFT BUTTON -->
         <button
           v-if="getCurrentPublicationStatus() === 'DRAFT'"
           @click="onSaveDraftClick()"
@@ -171,21 +189,9 @@
           >*</span>
         </button>
 
+        <!-- BEGIN PUBLICATION BUTTON (launch advanced settings modal) -->
         <button
-          @click="onUnpublishClick()"
-          v-if="existingPost && existingPost.status === 'PUBLISHED'"
-          class="button is-outlined item"
-          :class="{
-          'is-loading':
-            savingPost.state === 'PENDING' &&
-            savingPost.publicationStatus === 'DRAFT'
-        }"
-          :disabled="savingPost.state === 'PENDING'"
-          type="submit"
-        >{{ $t("views.postForm.unpublish").toUpperCase() }}</button>
-
-        <button
-          @click="onPublicationClick()"
+          @click="showAdvancedSettings()"
           v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
           class="button is-outlined item is-primary"
           :class="{
@@ -195,10 +201,11 @@
         }"
           :disabled="savingPost.state === 'PENDING'"
           type="submit"
-        >{{ $t("views.postForm.publication").toUpperCase() }}</button>
+        >{{ $t("views.postForm.publicationButton").toUpperCase() }}</button>
 
+        <!-- PUBLISH CHANGES BUTTON -->
         <button
-          @click="onPublicationClick()"
+          @click="onPublishClick()"
           v-if="existingPost && existingPost.status === 'PUBLISHED'"
           class="button item is-outlined is-primary"
           :class="{
@@ -215,6 +222,15 @@
             v-if="changesDetected"
           >*</span>
         </button>
+
+        <!-- ADVANCED OPTIONS BUTTON -->
+        <button
+          @click="showAdvancedSettings()"
+          v-if="existingPost && existingPost.status === 'PUBLISHED'"
+          class="button item is-outlined"
+          :disabled="savingPost.state === 'PENDING'"
+          type="submit"
+        >{{ $t("views.postForm.advancedSettingsButton").toUpperCase() }}</button>
 
         <!--
       <button
@@ -255,7 +271,7 @@ import {
   formInit,
   formSetValue,
   formSetError,
-  formSetErrors,
+  formResetErrors,
   formGetValue,
   formGetErrors,
   formGetValues,
@@ -647,9 +663,9 @@ export default {
       return isValid;
     },
     /**
-     * Open publication modal, this is not the final publish operation.
+     * Open publication modal. This is NOT the final publish operation.
      */
-    onPublicationClick() {
+    showAdvancedSettings() {
       if (!this.postFormIsValid()) {
         return;
       }
@@ -828,8 +844,13 @@ export default {
       ];
     },
     validatePostForm() {
-      // reset form errors
-      formSetErrors(formId, {});
+      formResetErrors(formId);
+      // TITLE
+      if (!validateSlug(formGetValue(formId, "title").trim())) {
+        let message = this.$t("views.postForm.fields.title.errors.required");
+        formSetError(formId, "title", message);
+        appNotification(message, "error");
+      }
       // SLUG
       if (!validateSlug(formGetValue(formId, "slug"))) {
         let message = this.$t("components.fieldSlug.errors.invalidCharacters");
@@ -847,7 +868,11 @@ export default {
         formSetError(formId, "teaser", message);
         appNotification(message, "error");
       }
-      return formGetErrors(formId);
+      const errors = formGetErrors(formId);
+      return errors;
+    },
+    onAdvancedSettingsClick() {
+      alert("ok");
     }
   }
 };

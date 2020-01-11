@@ -114,12 +114,6 @@ export default {
     onUploaded(fileUrl) {
       formSetValue(formId, "image", fileUrl);
     },
-    onCancelClick() {
-      this.$emit("onCancelClick");
-    },
-    onPublishClick() {
-      this.$emit("onPublishClick");
-    },
     onTeaserInput(event) {
       formSetValue(formId, "teaser", event.target.value);
     },

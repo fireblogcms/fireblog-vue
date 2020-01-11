@@ -18,7 +18,7 @@
             -->
           </portal-target>
         </div>
-        <div class="column column-right">
+        <div class="column column-right is-8">
           <portal-target name="topbar-right">
             <!--
             This component can be located anywhere in your App.
