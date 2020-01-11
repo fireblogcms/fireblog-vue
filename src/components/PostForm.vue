@@ -656,7 +656,7 @@ export default {
       if (this.existingPost && this.existingPost.status === "PUBLISHED") {
         publishingChanges = true;
       }
-      const errors = this.validatePostForm();
+      const errors = this.validatePostForm("PUBLISH");
       if (Object.keys(errors).length > 0) {
         return false;
       } else {
@@ -728,7 +728,7 @@ export default {
       this.savePost(STATUS_ENUM.DRAFT);
     },
     saveDraft() {
-      const errors = this.validatePostForm();
+      const errors = this.validatePostForm("SAVE_DRAFT");
       if (Object.keys(errors).length > 0) {
         return Promise.reject("Form values are invalid");
       } else if (this.mediaLoadingCounter > 0) {
@@ -840,32 +840,42 @@ export default {
         Math.floor(Math.floor(Math.random() * randomHurraGifs.length))
       ];
     },
-    validatePostForm() {
+    /**
+     * Validation might differ according to what we are doing. Possibles types are:
+     * - SAVE_DRAFT
+     * - PUBLISH
+     */
+    validatePostForm(action = "SAVE_DRAFT") {
       formResetErrors(formId);
       resetAppNotifications();
       // TITLE
-      if (!validateSlug(formGetValue(formId, "title").trim())) {
+      if (!formGetValue(formId, "title").trim()) {
         let message = this.$t("views.postForm.fields.title.errors.required");
         formSetError(formId, "title", message);
         appNotification(message, "error");
       }
-      // SLUG
-      if (!validateSlug(formGetValue(formId, "slug"))) {
-        let message = this.$t("components.fieldSlug.errors.invalidCharacters");
-        formSetError(formId, "slug", message);
-        appNotification(message, "error");
+      if (action === "PUBLISH") {
+        if (!validateSlug(formGetValue(formId, "slug"))) {
+          // SLUG
+          let message = this.$t(
+            "components.slugField.errors.invalidCharacters"
+          );
+          formSetError(formId, "slug", message);
+          appNotification(message, "error");
+        }
+        if (!formGetValue(formId, "slug").trim()) {
+          let message = this.$t("components.slugField.errors.required");
+          formSetError(formId, "slug", message);
+          appNotification(message, "error");
+        }
+        // TEASER
+        if (!formGetValue(formId, "teaser").trim()) {
+          let message = this.$t("views.postForm.fields.teaser.errors.required");
+          formSetError(formId, "teaser", message);
+          appNotification(message, "error");
+        }
       }
-      if (!formGetValue(formId, "slug").trim()) {
-        let message = this.$t("components.fieldSlug.errors.required");
-        formSetError(formId, "slug", message);
-        appNotification(message, "error");
-      }
-      // TEASER
-      if (!formGetValue(formId, "teaser").trim()) {
-        let message = this.$t("views.postForm.fields.teaser.errors.required");
-        formSetError(formId, "teaser", message);
-        appNotification(message, "error");
-      }
+
       const errors = formGetErrors(formId);
       return errors;
     }
