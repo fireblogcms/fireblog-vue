@@ -10,7 +10,7 @@
           <input
             :value="formGetValue(formId, 'name')"
             @input="formSetValue(formId,'name', $event.target.value)"
-            class="input is-large"
+            class="input"
             :class="{'is-danger': formGetError(formId, 'name')}"
             type="text"
             maxlength="100"
@@ -28,7 +28,7 @@
         </div>
         <div class="control">
           <textarea
-            class="textarea is-large"
+            class="textarea"
             :value="formGetValue(formId, 'description')"
             @input="formSetValue(formId,'description', $event.target.value)"
             type="text"
