@@ -38,12 +38,16 @@
             v-if="modal.confirmText && modal.confirmCallback"
             @click="modal.confirmCallback"
             class="button is-danger"
-          >{{ modal.confirmText }}</div>
+          >
+            {{ modal.confirmText }}
+          </div>
           <div
             v-if="modal.cancelText && modal.cancelCallback"
             @click="modal.cancelCallback"
             class="button is-primary"
-          >{{ modal.cancelText }}</div>
+          >
+            {{ modal.cancelText }}
+          </div>
         </template>
       </BulmaModal>
 
@@ -65,38 +69,52 @@
         </template>
         <template #title>
           <div>
-            <span class="title is-2">{{ $t("views.postForm.advancedSettingsModal.title") }}</span>
+            <span class="title is-2">{{
+              $t("views.postForm.advancedSettingsModal.title")
+            }}</span>
             <!-- PUBLISH BUTTON -->
             <button
               style="margin-right:20px;"
               class="button is-primary is-pulled-right is-large"
-              @click="onPublishClick"
+              @click="publish"
               :disabled="
-              savingPost.state === 'PENDING' || uploadingState === 'PENDING'
-            "
+                savingPost.state === 'PENDING' || uploadingState === 'PENDING'
+              "
               :class="{
-              'is-loading':
-                savingPost.state === 'PENDING' &&
-                savingPost.publicationStatus === 'PUBLISHED'
-            }"
-            >{{existingPost && existingPost.status === 'PUBLISHED' ? $t("views.postForm.publishNowButton"):$t("views.postForm.publishChangesButton") }}</button>
+                'is-loading':
+                  savingPost.state === 'PENDING' &&
+                  savingPost.publicationStatus === 'PUBLISHED'
+              }"
+            >
+              {{
+                existingPost && existingPost.status === "PUBLISHED"
+                  ? $t("views.postForm.publishNowButton")
+                  : $t("views.postForm.publishChangesButton")
+              }}
+            </button>
 
             <button
               style="margin-right:20px;"
               @click="publicationSettingsModal.show = false"
               class="button is-pulled-right is-large"
-            >{{$t("views.postForm.publicationCancel")}}</button>
+            >
+              {{ $t("views.postForm.publicationCancel") }}
+            </button>
           </div>
         </template>
         <template #footer />
       </BulmaModal>
 
       <!-- HURRAH MODAL FOR FIRST PUBLICATION -->
-      <BulmaModal class="hurrah-modal" v-model="publishingHurrahModal.show" :whiteFooter="true">
+      <BulmaModal
+        class="hurrah-modal"
+        v-model="publishingHurrahModal.show"
+        :whiteFooter="true"
+      >
         <template #title>
-          <div
-            class="has-text-centered"
-          >{{ $t("views.postForm.firstPublicationHurralModal.title") }}</div>
+          <div class="has-text-centered">
+            {{ $t("views.postForm.firstPublicationHurralModal.title") }}
+          </div>
         </template>
         <template #body>
           <div class="has-text-centered">
@@ -107,14 +125,21 @@
           <button
             @click="publishingHurrahModal.show = false"
             class="button is-primary is-large"
-          >{{ $t("views.postForm.firstPublicationHurralModal.okayButton") }}</button>
+          >
+            {{ $t("views.postForm.firstPublicationHurralModal.okayButton") }}
+          </button>
         </template>
       </BulmaModal>
 
       <!-- HURRAH MODAL WHEN PUBLISHING CHANGES ON ALREADY PUBLISHED POST -->
-      <BulmaModal class="publishing-changes-modal" v-model="publishingChangesModal.show">
+      <BulmaModal
+        class="publishing-changes-modal"
+        v-model="publishingChangesModal.show"
+      >
         <template #title>
-          <div class="has-text-centered">{{ $t("views.postForm.publishChangesHurralModal.title") }}</div>
+          <div class="has-text-centered">
+            {{ $t("views.postForm.publishChangesHurralModal.title") }}
+          </div>
         </template>
         <template #body>
           <div class="has-text-centered">
@@ -125,15 +150,24 @@
           <button
             @click="publishingChangesModal.show = false"
             class="button is-primary is-large"
-          >{{ $t("views.postForm.publishChangesHurralModal.okayButton") }}</button>
+          >
+            {{ $t("views.postForm.publishChangesHurralModal.okayButton") }}
+          </button>
         </template>
       </BulmaModal>
 
       <!-- TOPBAR LEFT BUTTONS -->
       <portal to="topbar-left">
-        <span @click="onBackToPostsClick" style="cursor:pointer" class="item tag is-large">
+        <span
+          @click="onBackToPostsClick"
+          style="cursor:pointer"
+          class="item tag is-large"
+        >
           <em>
-            <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
+            <img
+              style="position:relative;height:20px !important;top:4px;"
+              src="/images/book.png"
+            />
             <IconBack />posts
           </em>
         </span>
@@ -147,7 +181,8 @@
             {{ getCurrentPublicationStatus() }}
             <span
               v-if="getCurrentPublicationStatus() === 'DRAFT' && lastTimeSaved"
-            >- saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</span>
+              >- saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</span
+            >
           </em>
         </span>
       </portal>
@@ -158,21 +193,18 @@
         <!-- SAVE DRAFT BUTTON -->
         <button
           v-if="getCurrentPublicationStatus() === 'DRAFT'"
-          @click="onSaveDraftClick()"
+          @click="saveDraft()"
           class="button is-outlined item"
           :class="{
-          'is-loading':
-            savingPost.state === 'PENDING' &&
-            savingPost.publicationStatus === 'DRAFT'
-        }"
+            'is-loading':
+              savingPost.state === 'PENDING' &&
+              savingPost.publicationStatus === 'DRAFT'
+          }"
           :disabled="savingPost.state === 'PENDING'"
           type="submit"
         >
           {{ $t("views.postForm.saveDraft").toUpperCase() }}
-          <span
-            class="animated bounce"
-            v-if="changesDetected"
-          >*</span>
+          <span class="animated bounce" v-if="changesDetected">*</span>
         </button>
 
         <!-- ADVANCED OPTIONS BUTTON -->
@@ -182,7 +214,9 @@
           class="button item is-outlined"
           :disabled="savingPost.state === 'PENDING'"
           type="submit"
-        >{{ $t("views.postForm.advancedSettingsButton").toUpperCase() }}</button>
+        >
+          {{ $t("views.postForm.advancedSettingsButton").toUpperCase() }}
+        </button>
 
         <!-- BEGIN PUBLICATION BUTTON (launch advanced settings modal) -->
         <button
@@ -190,13 +224,15 @@
           v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
           class="button is-outlined item is-primary"
           :class="{
-          'is-loading':
-            savingPost.state === 'PENDING' &&
-            savingPost.publicationStatus === 'PUBLISHED'
-        }"
+            'is-loading':
+              savingPost.state === 'PENDING' &&
+              savingPost.publicationStatus === 'PUBLISHED'
+          }"
           :disabled="savingPost.state === 'PENDING'"
           type="submit"
-        >{{ $t("views.postForm.publicationButton").toUpperCase() }}</button>
+        >
+          {{ $t("views.postForm.publicationButton").toUpperCase() }}
+        </button>
 
         <!-- UNPUBLISH BUTTON -->
         <button
@@ -205,32 +241,31 @@
           v-if="existingPost && existingPost.status === 'PUBLISHED'"
           class="button is-outlined"
           :class="{
-          'is-loading':
-            savingPost.state === 'PENDING' &&
-            savingPost.publicationStatus === 'DRAFT'
-        }"
+            'is-loading':
+              savingPost.state === 'PENDING' &&
+              savingPost.publicationStatus === 'DRAFT'
+          }"
           :disabled="savingPost.state === 'PENDING'"
           type="submit"
-        >{{ $t("views.postForm.unpublishButton").toUpperCase() }}</button>
+        >
+          {{ $t("views.postForm.unpublishButton").toUpperCase() }}
+        </button>
 
         <!-- PUBLISH CHANGES BUTTON -->
         <button
-          @click="onPublishClick()"
+          @click="publish()"
           v-if="existingPost && existingPost.status === 'PUBLISHED'"
           class="button item is-outlined is-primary"
           :class="{
-          'is-loading':
-            savingPost.state === 'PENDING' &&
-            savingPost.publicationStatus === 'PUBLISHED'
-        }"
+            'is-loading':
+              savingPost.state === 'PENDING' &&
+              savingPost.publicationStatus === 'PUBLISHED'
+          }"
           :disabled="savingPost.state === 'PENDING'"
           type="submit"
         >
           {{ $t("views.postForm.publishChangesButton").toUpperCase() }}
-          <span
-            class="animated bounce"
-            v-if="changesDetected"
-          >*</span>
+          <span class="animated bounce" v-if="changesDetected">*</span>
         </button>
 
         <!--
@@ -406,9 +441,17 @@ export default {
         providers: [ckeditorIframelyMediaProvider()]
       }
     };
+
+    // allow ctrl+s to be detected on inputs and textareas
+    hotkeys.filter = () => true;
     hotkeys("ctrl+s,command+s", (event, handler) => {
-      //this.onSaveDraftClick();
-      //event.preventDefault();
+      // Prevent the default refresh event under WINDOWS system
+      if (this.existingPost && this.existingPost.status === "PUBLISHED") {
+        this.publish();
+      } else {
+        this.saveDraft();
+      }
+      event.preventDefault();
     });
   },
   beforeDestroy() {
@@ -550,7 +593,7 @@ export default {
             });
           },
           cancelCallback: () => {
-            this.onSaveDraftClick().then(() => {
+            this.saveDraft().then(() => {
               this.modal.show = false;
               this.$router.push({
                 name: "postList",
@@ -604,7 +647,7 @@ export default {
     onTitleEnter() {
       this.$refs.ckeditor.$el.focus();
     },
-    onPublishClick() {
+    publish() {
       // If article is published or re-published from draft, we display a "Hurrah modal".
       // If we only publish changes on a already published articles, we have a more
       // sober modal.
@@ -683,7 +726,7 @@ export default {
     onUnpublishClick() {
       this.savePost(STATUS_ENUM.DRAFT);
     },
-    onSaveDraftClick() {
+    saveDraft() {
       const errors = this.validatePostForm();
       if (Object.keys(errors).length > 0) {
         return Promise.reject("Form values are invalid");
@@ -769,45 +812,6 @@ export default {
           throw new Error(error);
         });
     },
-    saveDraft() {
-      this.savingDraftState = REQUEST_STATE.PENDING;
-      // NEW POST
-      if (this.getCurrentOperation() === OPERATION_TYPE.CREATE) {
-        const newPost = {
-          ...this.preparePostFromCurrentFormValues(),
-          status: "DRAFT"
-        };
-        this.createPost(newPost)
-          .then(() => {
-            this.savingDraftState = REQUEST_STATE.FINISHED_OK;
-          })
-          .catch(error => {
-            this.savingDraftState = REQUEST_STATE.FINISHED_ERROR;
-            throw new Error(error);
-          });
-      }
-      // EDITING EXISTING POST
-      if (this.getCurrentOperation() === OPERATION_TYPE.UPDATE) {
-        const post = {
-          ...this.preparePostFromCurrentFormValues(),
-          status: "DRAFT",
-          _id: this.$route.params.postId
-        };
-        this.prepareFormValuesFromPost(post);
-        this.updatePost(post)
-          .then(() => {
-            this.savingDraftState = REQUEST_STATE.FINISHED_OK;
-          })
-          .catch(error => {
-            this.savingDraftState = REQUEST_STATE.FINISHED_ERROR;
-            appNotification(
-              "Sorry, an error occured while saving draft.",
-              "error"
-            );
-            throw new Error(error);
-          });
-      }
-    },
     prepareFormValuesFromPost(post) {
       let values = {
         title: post.title ? post.title : "",
@@ -862,9 +866,6 @@ export default {
       }
       const errors = formGetErrors(formId);
       return errors;
-    },
-    onAdvancedSettingsClick() {
-      alert("ok");
     }
   }
 };
