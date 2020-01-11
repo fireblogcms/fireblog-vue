@@ -79,7 +79,7 @@
                 savingPost.state === 'PENDING' &&
                 savingPost.publicationStatus === 'PUBLISHED'
             }"
-            >{{$t("views.postForm.publishNowButton")}}</button>
+            >{{existingPost && existingPost.status === 'PUBLISHED' ? $t("views.postForm.publishNowButton"):$t("views.postForm.publishChangesButton") }}</button>
 
             <button
               style="margin-right:20px;"
@@ -226,7 +226,7 @@
           :disabled="savingPost.state === 'PENDING'"
           type="submit"
         >
-          {{ $t("views.postForm.publishChanges").toUpperCase() }}
+          {{ $t("views.postForm.publishChangesButton").toUpperCase() }}
           <span
             class="animated bounce"
             v-if="changesDetected"
@@ -650,25 +650,15 @@ export default {
         });
     },
     /**
-     * At least a title is required to begin publication process.
+     * Open publication modal. This is NOT the final publish operation.
      */
-    postFormIsValid() {
-      let isValid = true;
+    showAdvancedSettings() {
+      // we need at least the title to autocomplete the slug field
       if (!formGetValue(formId, "title").trim()) {
         appNotification(
           this.$t("views.postForm.fields.title.errors.required"),
           "error"
         );
-        isValid = false;
-      }
-      return isValid;
-    },
-    /**
-     * Open publication modal. This is NOT the final publish operation.
-     */
-    showAdvancedSettings() {
-      if (!this.postFormIsValid()) {
-        return;
       }
       if (this.mediaLoadingCounter > 0) {
         this.showMediaCurrentlyLoadingModal();
@@ -694,7 +684,8 @@ export default {
       this.savePost(STATUS_ENUM.DRAFT);
     },
     onSaveDraftClick() {
-      if (!this.postFormIsValid()) {
+      const errors = this.validatePostForm();
+      if (Object.keys(errors).length > 0) {
         return Promise.reject("Form values are invalid");
       } else if (this.mediaLoadingCounter > 0) {
         Promise.reject("Media are currently loading");
