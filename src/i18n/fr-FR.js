@@ -8,7 +8,7 @@ export default {
   "apiModal.tryItButton": "Essayer",
   "components.slugField.errors.invalidCharacters":  "Le slug peut seulement contenir des minuscules et le caractère '-'",
   "components.slugField.errors.required":  "Le champ slug est obligatoire",
-  "components.slugField.help": "Le slug est utilisé pour construire une url SEO-friendly pour votre post. Seuls les minuscules et le caractère '-' sont autorisés.<br />Example de slug: {exampleUrl}<br />",
+  "components.slugField.help": "Le slug est utilisé pour construire une url SEO-friendly pour votre post. Seuls les minuscules et le caractère '-' sont autorisés.<br />Example d'utilisation du slug: {exampleUrl}<br />",
   "components.slugField.label": "Slug",
   "components.slugField.lock": "Verrouiller",
   "components.slugField.unlock": "Déverrouiller",
