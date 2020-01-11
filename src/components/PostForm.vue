@@ -80,20 +80,6 @@
                 savingPost.publicationStatus === 'PUBLISHED'
             }"
             >{{$t("views.postForm.publishNowButton")}}</button>
-            <!-- UNPUBLISH BUTTON -->
-            <button
-              @click="onUnpublishClick()"
-              style="margin-right:20px;"
-              v-if="existingPost && existingPost.status === 'PUBLISHED'"
-              class="button is-pulled-right is-large is-danger"
-              :class="{
-          'is-loading':
-            savingPost.state === 'PENDING' &&
-            savingPost.publicationStatus === 'DRAFT'
-        }"
-              :disabled="savingPost.state === 'PENDING'"
-              type="submit"
-            >{{ $t("views.postForm.unpublishButton") }}</button>
 
             <button
               style="margin-right:20px;"
@@ -189,6 +175,15 @@
           >*</span>
         </button>
 
+        <!-- ADVANCED OPTIONS BUTTON -->
+        <button
+          @click="showAdvancedSettings()"
+          v-if="existingPost && existingPost.status === 'PUBLISHED'"
+          class="button item is-outlined"
+          :disabled="savingPost.state === 'PENDING'"
+          type="submit"
+        >{{ $t("views.postForm.advancedSettingsButton").toUpperCase() }}</button>
+
         <!-- BEGIN PUBLICATION BUTTON (launch advanced settings modal) -->
         <button
           @click="showAdvancedSettings()"
@@ -202,6 +197,21 @@
           :disabled="savingPost.state === 'PENDING'"
           type="submit"
         >{{ $t("views.postForm.publicationButton").toUpperCase() }}</button>
+
+        <!-- UNPUBLISH BUTTON -->
+        <button
+          @click="onUnpublishClick()"
+          style="margin-right:20px;"
+          v-if="existingPost && existingPost.status === 'PUBLISHED'"
+          class="button is-outlined"
+          :class="{
+          'is-loading':
+            savingPost.state === 'PENDING' &&
+            savingPost.publicationStatus === 'DRAFT'
+        }"
+          :disabled="savingPost.state === 'PENDING'"
+          type="submit"
+        >{{ $t("views.postForm.unpublishButton").toUpperCase() }}</button>
 
         <!-- PUBLISH CHANGES BUTTON -->
         <button
@@ -222,15 +232,6 @@
             v-if="changesDetected"
           >*</span>
         </button>
-
-        <!-- ADVANCED OPTIONS BUTTON -->
-        <button
-          @click="showAdvancedSettings()"
-          v-if="existingPost && existingPost.status === 'PUBLISHED'"
-          class="button item is-outlined"
-          :disabled="savingPost.state === 'PENDING'"
-          type="submit"
-        >{{ $t("views.postForm.advancedSettingsButton").toUpperCase() }}</button>
 
         <!--
       <button
