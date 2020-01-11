@@ -443,26 +443,6 @@ export default {
         providers: [ckeditorIframelyMediaProvider()]
       }
     };
-
-    // allow ctrl+s to be detected on inputs and textareas
-    hotkeys.filter = () => true;
-    // save shortcuts
-    hotkeys("ctrl+s,command+s", (event, handler) => {
-      event.preventDefault();
-      // Prevent the default refresh event under WINDOWS system
-      if (this.existingPost && this.existingPost.status === "PUBLISHED") {
-        this.publish();
-      } else {
-        this.saveDraft()
-          .then(() => {
-            toast(this, this.$t("views.postForm.draftSaved"));
-          })
-          .catch(e => {
-            console.log("Cannot be saved: form validation failed: " + e);
-          });
-      }
-      return false;
-    });
   },
   beforeDestroy() {
     window.onbeforeunload = null;
@@ -651,6 +631,26 @@ export default {
       const toolTip = "Add media";
       element.innerHTML = toolTip;
       element.innerText = toolTip;
+
+      // allow ctrl+s to be detected on inputs and textareas
+      hotkeys.filter = () => true;
+      // save shortcuts
+      hotkeys("ctrl+s,command+s", (event, handler) => {
+        event.preventDefault();
+        // Prevent the default refresh event under WINDOWS system
+        if (this.existingPost && this.existingPost.status === "PUBLISHED") {
+          this.publish();
+        } else {
+          this.saveDraft()
+            .then(() => {
+              toast(this, this.$t("views.postForm.draftSaved"));
+            })
+            .catch(e => {
+              console.log("Cannot be saved: form validation failed: " + e);
+            });
+        }
+        return false;
+      });
     },
     // when user click "enter" in the title input,
     // automically move cursor to the textarea
