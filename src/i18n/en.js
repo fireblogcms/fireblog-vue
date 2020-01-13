@@ -37,6 +37,7 @@ export default {
   "views.blogSettings.dangerZone.deleteModal.cancelButton":  "Cancel",
   "views.blogSettings.dangerZone.deleteModal.content":  "Please enter blog's name to confirm deletion.",
   "views.blogSettings.dangerZone.deleteModal.deleteButton":  "Delete",
+  "views.blogSettings.dangerZone.deleteModal.nameMismatch": "Name does not match the blog's name.",
   "views.blogSettings.dangerZone.deleteModal.title":  "Delete {blogName}",
   "views.blogSettings.generalSettingsForm.title": "General settings",
   "views.blogSettings.generalSettingsForm.fields.description.help": "This description will appear in search engine results or when sharing blog's link on social networks.",

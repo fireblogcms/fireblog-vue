@@ -37,6 +37,7 @@ export default {
   "views.blogSettings.dangerZone.deleteModal.cancelButton":  "Annuler",
   "views.blogSettings.dangerZone.deleteModal.content":  "Veuillez entrer le nom du blog pour confirmer la suppression",
   "views.blogSettings.dangerZone.deleteModal.deleteButton":  "Supprimer",  "views.postForm.saveDraft": "Sauvegarder le brouillon",
+  "views.blogSettings.dangerZone.deleteModal.nameMismatch": "Le nom entré ne correspond pas à celui du blog",
   "views.blogSettings.dangerZone.deleteModal.title":  "Supprimer le blog {blogName}",
   "views.blogSettings.generalSettingsForm.title": "Réglages généraux",
   "views.blogSettings.generalSettingsForm.fields.description.help": "Celle-ci sera affichée par les moteurs de recherche ou quand le lien de votre blog sera partagé sur les réseaux sociaux.",
