@@ -55,6 +55,9 @@ const link = ApolloLink.from([authLink, onErrorLink, uploadLink]);
 
 const client = new ApolloClient({
   link,
+  fetchOptions: {
+    mode: "no-cors"
+  },
   cache: new InMemoryCache(),
   connectToDevTools: process.env.NODE_ENV === "development" ? true : false,
   defaultOptions: {
