@@ -150,10 +150,11 @@
           style="color:rgba(0,0,0, 0.6);font-size:14px;"
         >
           <em>
-            {{ getCurrentPublicationStatus() }}
+            {{ $t("global." + getCurrentPublicationStatus().toLowerCase()) }}
+            {{existingPost.updatedAt}}
             <span
               v-if="getCurrentPublicationStatus() === 'DRAFT' && lastTimeSaved"
-            >- saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</span>
+            >- {{$t("views.postForm.savedAt {time}", {time: lastTimeSaved})}}</span>
           </em>
         </span>
       </portal>
