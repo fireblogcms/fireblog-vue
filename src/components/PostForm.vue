@@ -10,7 +10,7 @@
             @keydown.enter.native.prevent="onTitleEnter"
             autofocus
             rows="1"
-            placeholder="Title"
+            :placeholder="$t('views.postForm.fields.title.placeholder')"
             type="text"
             id="title"
             :disabled="savingDraftState === REQUEST_STATE.PENDING"
@@ -38,16 +38,12 @@
             v-if="modal.confirmText && modal.confirmCallback"
             @click="modal.confirmCallback"
             class="button is-danger"
-          >
-            {{ modal.confirmText }}
-          </div>
+          >{{ modal.confirmText }}</div>
           <div
             v-if="modal.cancelText && modal.cancelCallback"
             @click="modal.cancelCallback"
             class="button is-primary"
-          >
-            {{ modal.cancelText }}
-          </div>
+          >{{ modal.cancelText }}</div>
         </template>
       </BulmaModal>
 
@@ -69,9 +65,7 @@
         </template>
         <template #title>
           <div>
-            <span class="title is-2">
-              {{ $t("views.postForm.advancedSettingsModal.title") }}
-            </span>
+            <span class="title is-2">{{ $t("views.postForm.advancedSettingsModal.title") }}</span>
             <!-- PUBLISH BUTTON -->
             <button
               style="margin-right:20px;"
@@ -87,9 +81,9 @@
               }"
             >
               {{
-                existingPost && existingPost.status === "PUBLISHED"
-                  ? $t("views.postForm.publishNowButton")
-                  : $t("views.postForm.publishChangesButton")
+              existingPost && existingPost.status === "PUBLISHED"
+              ? $t("views.postForm.publishNowButton")
+              : $t("views.postForm.publishChangesButton")
               }}
             </button>
 
@@ -97,24 +91,18 @@
               style="margin-right:20px;"
               @click="publicationSettingsModal.show = false"
               class="button is-pulled-right is-large"
-            >
-              {{ $t("views.postForm.publicationCancel") }}
-            </button>
+            >{{ $t("views.postForm.publicationCancel") }}</button>
           </div>
         </template>
         <template #footer />
       </BulmaModal>
 
       <!-- HURRAH MODAL FOR FIRST PUBLICATION -->
-      <BulmaModal
-        class="hurrah-modal"
-        v-model="publishingHurrahModal.show"
-        :whiteFooter="true"
-      >
+      <BulmaModal class="hurrah-modal" v-model="publishingHurrahModal.show" :whiteFooter="true">
         <template #title>
-          <div class="has-text-centered">
-            {{ $t("views.postForm.firstPublicationHurralModal.title") }}
-          </div>
+          <div
+            class="has-text-centered"
+          >{{ $t("views.postForm.firstPublicationHurralModal.title") }}</div>
         </template>
         <template #body>
           <div class="has-text-centered">
@@ -125,21 +113,14 @@
           <button
             @click="publishingHurrahModal.show = false"
             class="button is-primary is-large"
-          >
-            {{ $t("views.postForm.firstPublicationHurralModal.okayButton") }}
-          </button>
+          >{{ $t("views.postForm.firstPublicationHurralModal.okayButton") }}</button>
         </template>
       </BulmaModal>
 
       <!-- HURRAH MODAL WHEN PUBLISHING CHANGES ON ALREADY PUBLISHED POST -->
-      <BulmaModal
-        class="publishing-changes-modal"
-        v-model="publishingChangesModal.show"
-      >
+      <BulmaModal class="publishing-changes-modal" v-model="publishingChangesModal.show">
         <template #title>
-          <div class="has-text-centered">
-            {{ $t("views.postForm.publishChangesHurralModal.title") }}
-          </div>
+          <div class="has-text-centered">{{ $t("views.postForm.publishChangesHurralModal.title") }}</div>
         </template>
         <template #body>
           <div class="has-text-centered">
@@ -150,24 +131,15 @@
           <button
             @click="publishingChangesModal.show = false"
             class="button is-primary is-large"
-          >
-            {{ $t("views.postForm.publishChangesHurralModal.okayButton") }}
-          </button>
+          >{{ $t("views.postForm.publishChangesHurralModal.okayButton") }}</button>
         </template>
       </BulmaModal>
 
       <!-- TOPBAR LEFT BUTTONS -->
       <portal to="topbar-left">
-        <span
-          @click="onBackToPostsClick"
-          style="cursor:pointer"
-          class="item tag is-large"
-        >
+        <span @click="onBackToPostsClick" style="cursor:pointer" class="item tag is-large">
           <em>
-            <img
-              style="position:relative;height:20px !important;top:4px;"
-              src="/images/book.png"
-            />
+            <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
             <IconBack />posts
           </em>
         </span>
@@ -181,8 +153,7 @@
             {{ getCurrentPublicationStatus() }}
             <span
               v-if="getCurrentPublicationStatus() === 'DRAFT' && lastTimeSaved"
-              >- saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</span
-            >
+            >- saved at {{ lastTimeSaved | moment("HH:mm:ss") }}</span>
           </em>
         </span>
       </portal>
@@ -204,7 +175,10 @@
           type="submit"
         >
           {{ $t("views.postForm.saveDraft").toUpperCase() }}
-          <span class="animated bounce" v-if="changesDetected">*</span>
+          <span
+            class="animated bounce"
+            v-if="changesDetected"
+          >*</span>
         </button>
 
         <!-- ADVANCED OPTIONS BUTTON -->
@@ -214,9 +188,7 @@
           class="button item is-outlined"
           :disabled="savingPost.state === 'PENDING'"
           type="submit"
-        >
-          {{ $t("views.postForm.advancedSettingsButton").toUpperCase() }}
-        </button>
+        >{{ $t("views.postForm.advancedSettingsButton").toUpperCase() }}</button>
 
         <!-- BEGIN PUBLICATION BUTTON (launch advanced settings modal) -->
         <button
@@ -230,9 +202,7 @@
           }"
           :disabled="savingPost.state === 'PENDING'"
           type="submit"
-        >
-          {{ $t("views.postForm.publicationButton").toUpperCase() }}
-        </button>
+        >{{ $t("views.postForm.publicationButton").toUpperCase() }}</button>
 
         <!-- UNPUBLISH BUTTON -->
         <button
@@ -247,9 +217,7 @@
           }"
           :disabled="savingPost.state === 'PENDING'"
           type="submit"
-        >
-          {{ $t("views.postForm.unpublishButton").toUpperCase() }}
-        </button>
+        >{{ $t("views.postForm.unpublishButton").toUpperCase() }}</button>
 
         <!-- PUBLISH CHANGES BUTTON -->
         <button
@@ -265,7 +233,10 @@
           type="submit"
         >
           {{ $t("views.postForm.publishChangesButton").toUpperCase() }}
-          <span class="animated bounce" v-if="changesDetected">*</span>
+          <span
+            class="animated bounce"
+            v-if="changesDetected"
+          >*</span>
         </button>
 
         <!--
