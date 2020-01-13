@@ -151,9 +151,8 @@
         >
           <em>
             {{ $t("global." + getCurrentPublicationStatus().toLowerCase()) }}
-            {{existingPost.updatedAt}}
             <span
-              v-if="getCurrentPublicationStatus() === 'DRAFT' && lastTimeSaved"
+              v-if="false && getCurrentPublicationStatus() === 'DRAFT' && lastTimeSaved"
             >- {{$t("views.postForm.savedAt {time}", {time: lastTimeSaved})}}</span>
           </em>
         </span>
