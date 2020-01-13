@@ -15,7 +15,6 @@ Vue.use(VueLazyload);
 Vue.use(vClickOutside);
 Vue.use(PortalVue);
 Vue.use(VueTextareaAutosize);
-Vue.use(require("vue-moment"));
 Vue.use(Toasted);
 
 Vue.config.productionTip = false;

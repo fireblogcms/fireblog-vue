@@ -82,7 +82,7 @@ export default {
   "views.postForm.publishChangesButton": "Publier les changements",
   "views.postForm.publishNowButton": "Publier maintenant",
   "views.postForm.saveDraft": "Sauvegarder le brouillon",
-  "views.postForm.savedAt {time}": "Sauvegardé à {time}",
+  "views.postForm.savedAt {time}": "sauvegardé à {time}",
   "views.postForm.unpublishButton": "Dépublier",
   "views.postList.backToBlogLink": "Mes blogs",
   "views.postList.deleteButton": "Supprimer",

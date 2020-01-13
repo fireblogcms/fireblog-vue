@@ -80,7 +80,7 @@ export default {
   "views.postForm.publishChangesHurralModal.okayButton":  "Okay!",
   "views.postForm.publishChangesHurralModal.title":  "Your changes have been published!",
   "views.postForm.publishNowButton": "Publish now",
-  "views.postForm.savedAt {time}": "Saved at {time}",
+  "views.postForm.savedAt {time}": "saved at {time}",
   "views.postForm.saveDraft": "Save draft",
   "views.postForm.unpublishButton": "Unpublish",
   "views.postList.title": "posts",
