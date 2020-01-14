@@ -19,7 +19,7 @@ Vue.use(Toasted);
 
 Vue.config.productionTip = false;
 
-const VueInstance = new Vue({
+new Vue({
   router,
   store,
   i18n,
