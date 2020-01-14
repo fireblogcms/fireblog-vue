@@ -1,12 +1,13 @@
 <template>
-  <p>
+  <div>
     <template v-if="initDataState ==='PENDING'">
       Loading stats...
     </template>
     <template v-if="initDataState ==='FINISHED_OK'">
-      {{apiUsage.count}}/{{apiUsage.total}} API calls
+      <p>{{apiUsage.count}}/{{apiUsage.countTotal}} API calls</p>
+      <p>{{apiUsage.size}}/{{apiUsage.sizeTotal}} GB</p>
     </template>
-  </p>
+  </div>
 </template>
 
 <script>

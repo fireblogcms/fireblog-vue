@@ -211,8 +211,10 @@ export const deleteBlogMutation = gql`
 export const getBlogApiUsageQuery = gql`
   query getBlogApiUsageQuery($blog: ID!, $from: DateTime!, $to: DateTime!) {
     apiUsage(blog: $blog, from: $from, to: $to) {
+      size
+      sizeTotal
       count
-      total
+      countTotal
     }
   }
 `;
