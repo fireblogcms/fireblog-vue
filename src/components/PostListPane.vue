@@ -4,7 +4,9 @@
     <template
       v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length === 0"
     >
-      <div class="content section has-text-centered">No posts founds.</div>
+      <div class="content section has-text-centered">
+        {{ $t("views.postList.noPostFound") }}
+      </div>
     </template>
     <template
       v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length > 0"
