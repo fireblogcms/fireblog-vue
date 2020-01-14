@@ -9,7 +9,8 @@
             style="position:relative;height:20px !important;top:4px;"
             src="/images/books.webp"
           />
-          <IconBack />My blogs
+          <IconBack />
+          {{ $t("views.postList.backToBlogLink") }}
         </router-link>
       </span>
     </portal>
