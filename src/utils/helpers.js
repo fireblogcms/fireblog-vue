@@ -327,6 +327,15 @@ export function S3Upload({
     });
 }
 
+export function toast(component, message, options = {}) {
+  component.$toasted.show(message, {
+    duration: 2000,
+    position: "bottom-center",
+    className: "app-toast",
+    ...options
+  });
+}
+
 export function appNotification(
   message,
   type = "info",
@@ -337,6 +346,27 @@ export function appNotification(
   Store.commit("notification", { message, type, options });
 }
 
+export function resetAppNotifications() {
+  Store.commit("notification", null);
+}
+
 export function validateSlug(slug) {
   return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug);
+}
+
+/**
+ * @param {object} date
+ * @param {string} type
+ */
+export function formatDate(date, type) {
+  if (type === "long") {
+    return date.toLocaleDateString(undefined, {
+      day: "numeric",
+      weekday: "long",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  }
 }

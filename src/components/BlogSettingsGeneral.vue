@@ -1,36 +1,48 @@
 <template>
-  <AppPanel style="margin-top:40px;margin-bottom:40px;padding:40px;" class="container is-small">
-    <h2 class="title is-2">{{ $t("views.blogSettings.generalSettingsForm.title") }}</h2>
+  <AppPanel
+    style="margin-top:40px;margin-bottom:40px;padding:40px;"
+    class="container is-small"
+  >
+    <h2 class="title is-2">
+      {{ $t("views.blogSettings.generalSettingsForm.title") }}
+    </h2>
     <form @submit.prevent="onFormSubmit">
       <div class="field">
         <div class="label-wrapper">
-          <label class="label">{{ $t("views.blogSettings.generalSettingsForm.fields.name.label") }}</label>
+          <label class="label">{{
+            $t("views.blogSettings.generalSettingsForm.fields.name.label")
+          }}</label>
         </div>
         <div class="control is-danger">
           <input
             :value="formGetValue(formId, 'name')"
-            @input="formSetValue(formId,'name', $event.target.value)"
+            @input="formSetValue(formId, 'name', $event.target.value)"
             class="input is-large"
-            :class="{'is-danger': formGetError(formId, 'name')}"
+            :class="{ 'is-danger': formGetError(formId, 'name') }"
             type="text"
             maxlength="100"
           />
         </div>
-        <p
-          class="help is-danger"
-          v-if="formGetError(formId, 'name')"
-        >{{ formGetError(formId, 'name') }}</p>
+        <p class="help is-danger" v-if="formGetError(formId, 'name')">
+          {{ formGetError(formId, "name") }}
+        </p>
       </div>
       <div class="field">
         <div class="label-wrapper">
           <label class="label">Description (250 caractères maximum)</label>
-          <p class="help">{{ $t("views.blogSettings.generalSettingsForm.fields.description.help") }}</p>
+          <p class="help">
+            {{
+              $t(
+                "views.blogSettings.generalSettingsForm.fields.description.help"
+              )
+            }}
+          </p>
         </div>
         <div class="control">
           <textarea
-            class="textarea is-large"
+            class="textarea"
             :value="formGetValue(formId, 'description')"
-            @input="formSetValue(formId,'description', $event.target.value)"
+            @input="formSetValue(formId, 'description', $event.target.value)"
             type="text"
             maxlength="250"
           ></textarea>
@@ -39,8 +51,12 @@
 
       <div class="field">
         <div class="label-wrapper">
-          <label class="label">{{ $t("views.blogSettings.generalSettingsForm.fields.image.label") }}</label>
-          <p class="help">{{ $t("views.blogSettings.generalSettingsForm.fields.image.help") }}</p>
+          <label class="label">{{
+            $t("views.blogSettings.generalSettingsForm.fields.image.label")
+          }}</label>
+          <p class="help">
+            {{ $t("views.blogSettings.generalSettingsForm.fields.image.help") }}
+          </p>
         </div>
         <S3ImageUpload
           style="max-width:600px;"
@@ -54,10 +70,14 @@
         <button
           style="margin-top:20px;"
           class="button is-outlined is-primary is-large"
-          :class="{'is-loading': savingState === 'PENDING'}"
-          :disabled="uploadBlogImageState === 'PENDING' ||savingState === 'PENDING'"
+          :class="{ 'is-loading': savingState === 'PENDING' }"
+          :disabled="
+            uploadBlogImageState === 'PENDING' || savingState === 'PENDING'
+          "
           type="submit"
-        >{{ $t("views.blogSettings.generalSettingsForm.saveButton") }}</button>
+        >
+          {{ $t("views.blogSettings.generalSettingsForm.saveButton") }}
+        </button>
       </div>
     </form>
   </AppPanel>

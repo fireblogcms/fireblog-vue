@@ -4,7 +4,9 @@
     <template
       v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length === 0"
     >
-      <div class="content section has-text-centered">No posts founds.</div>
+      <div class="content section has-text-centered">
+        {{ $t("views.postList.noPostFound") }}
+      </div>
     </template>
     <template
       v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length > 0"
@@ -36,27 +38,25 @@
               <span
                 style="color:rgba(0, 0, 0, 0.5);"
                 v-if="item.node.status === 'PUBLISHED'"
-                >{{
-                  $t("views.postList.publishedOn", {
-                    date: moment(Number(item.node.publishedAt)).format(
-                      "DD MMMM YYYY - HH:mm"
-                    )
-                  })
-                }}</span
               >
+                {{
+                  $t("views.postList.publishedOn", {
+                    date: publishedOnDate(item)
+                  })
+                }}
+              </span>
               <span
                 style="color:rgba(0, 0, 0, 0.5);"
                 v-if="item.node.status === 'DRAFT'"
-                >{{
-                  $t("views.postList.updatedOn", {
-                    date: moment(Number(item.node.updatedAt)).format(
-                      "DD MMMM YYYY - HH:mm"
-                    )
-                  })
-                }}</span
               >
+                {{
+                  $t("views.postList.updatedOn", {
+                    date: updatedOnDate(item)
+                  })
+                }}
+              </span>
               <p style="padding-top:10px" v-if="item.node.teaser.trim()">
-                {{ striptags(item.node.teaser.substr(0, 200)) }}
+                {{ striptags(item.node.teaser) }}
               </p>
             </div>
             <div class="column is-2">
@@ -79,8 +79,8 @@
 <script>
 import AppLoader from "./AppLoader";
 import AppList from "./AppList";
-import moment from "moment";
 import striptags from "striptags";
+import { formatDate } from "../utils/helpers";
 
 export default {
   components: {
@@ -98,10 +98,15 @@ export default {
     }
   },
   created() {
-    this.moment = moment;
     this.striptags = striptags;
   },
   methods: {
+    publishedOnDate(item) {
+      return formatDate(new Date(item.node.publishedAt), "long");
+    },
+    updatedOnDate(item) {
+      return formatDate(new Date(item.node.updatedAt), "long");
+    },
     onDeleteClick(post) {
       this.$emit("onDeleteClick", post);
     },

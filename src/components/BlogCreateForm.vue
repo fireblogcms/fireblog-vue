@@ -32,7 +32,7 @@
                   :class="{ 'is-danger': formErrors.name }"
                   type="text"
                   maxlength="250"
-                  placeholder="Blog's Name"
+                  :placeholder="generate()"
                 />
               </div>
               <p class="help is-danger" v-if="formErrors.name">{{ formErrors.name }}</p>
@@ -120,6 +120,7 @@ export default {
   },
   created() {
     this.initData();
+    this.generate = generate;
   },
   methods: {
     async initData() {

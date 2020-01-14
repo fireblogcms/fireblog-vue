@@ -23,7 +23,7 @@
               <p
                 v-if="deleteBlogConfirmError"
                 class="help is-danger"
-              >Name does not match the blog's name.</p>
+              >{{$t("views.blogSettings.dangerZone.deleteModal.nameMismatch") }}</p>
             </div>
           </div>
         </div>
