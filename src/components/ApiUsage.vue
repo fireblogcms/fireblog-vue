@@ -5,7 +5,6 @@
     </template>
     <template v-if="initDataState ==='FINISHED_OK'">
       <p>{{apiUsage.count}}/{{apiUsage.countTotal}} API calls</p>
-      <p>{{apiUsage.size}}/{{apiUsage.sizeTotal}} GB</p>
     </template>
   </div>
 </template>
@@ -40,8 +39,6 @@ export default {
         .query({
           query: getBlogApiUsageQuery,
           variables: {
-            // No need for the blog id, right ?
-            // Add total to apiUsage object but how ?
             blog: this.$route.params.blogId,
             from,
             to
