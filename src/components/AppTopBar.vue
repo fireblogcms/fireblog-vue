@@ -35,25 +35,20 @@
               class="dropdown is-right"
               :class="{ 'is-active': dropdownMenuActive }"
             >
-              <div
-                class="dropdown-trigger"
-                @click="dropdownMenuActive = !dropdownMenuActive"
-              >
-                <div class aria-haspopup="true">
-                  <span>
-                    <img
-                      v-if="me.picture"
-                      :src="me.picture"
-                      style="height: 40px;border-radius:20px; margin-right:1rem"
-                    />
-                    <span v-if="!me.picture">{{ me.name }}</span>
-                  </span>
+              <div class="dropdown-trigger" @click="dropdownMenuActive = !dropdownMenuActive">
+                <div class="dropdown-trigger-image" aria-haspopup="true">
+                  <img
+                    v-if="me.picture"
+                    :src="me.picture"
+                    style="height: 40px;border-radius:20px"
+                  />
+                  <span v-if="!me.picture">{{ me.name }}</span>
                 </div>
               </div>
               <div class="dropdown-menu" role="menu">
                 <div class="dropdown-content">
-                  <router-link :to="{ name: 'blogList' }" class="dropdown-item">
-                    <strong>My blogs</strong>
+                  <router-link :to="{ name: 'blogList' }" class="dropdown-item dropdown-item-important">
+                    My blogs
                   </router-link>
                   <router-link
                     v-for="edge in me.blogs.edges"
@@ -243,12 +238,17 @@ export default {
   margin-right: 1rem;
 }
 .topbar .column-right {
-  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
-.topbar #profile-dropdown:hover {
+.dropdown-trigger:hover {
   cursor: pointer;
 }
-.topbar #profile-dropdown {
-  display: inline;
+.dropdown-trigger-image {
+  display: flex;
+}
+.dropdown-item-important {
+  font-weight: bold;
 }
 </style>

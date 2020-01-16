@@ -21,21 +21,18 @@
     </template>
     <template v-if="initDataState === 'FINISHED_OK'">
       <div>
-        <header class="container" style="padding: 0 1rem 2rem 1rem">
-          <div class="columns">
+        <header class="container" style="padding: 2rem 1rem">
+          <div class="blog-title columns">
             <div class="column">
+              <img class="is-hidden-mobile" src="/images/book.png" />
               <h1 class="title is-2 is-uppercase">
-                <img
-                  class="is-hidden-mobile"
-                  style="height:70px !important;position:relative;top:20px;padding-right:1rem"
-                  src="/images/book.png"
-                />
                 {{ blog.name }}
               </h1>
             </div>
-            <div class="column is-4">
+            <div class="column column-right">
+              <ApiUsage></ApiUsage>
               <button
-                class="button is-large is-primary main-call-to-action is-box-shadowed"
+                class="button is-large is-primary is-box-shadowed"
                 v-if="!isFirstPost"
                 @click="
                   $router.push({
@@ -176,6 +173,7 @@ import striptags from "striptags";
 import logger from "../utils/logger";
 import BulmaModal from "../components/BulmaModal";
 import PostListPane from "../components/PostListPane";
+import ApiUsage from "../components/ApiUsage";
 
 export default {
   components: {
@@ -184,7 +182,8 @@ export default {
     BulmaModal,
     IconBack,
     PostListPane,
-    DefaultLayout
+    DefaultLayout,
+    ApiUsage
   },
   data() {
     return {
@@ -402,9 +401,18 @@ export default {
 #app .tabs li a {
   text-decoration: none;
 }
-
-.main-call-to-action {
-  float: right;
-  margin-top: 30px;
+.blog-title .column {
+  display: flex;
+  align-items: center;
+}
+.blog-title .column-right {
+  justify-content: flex-end;
+}
+.blog-title img {
+  height: 4rem;
+  padding-right: 1rem;
+}
+.blog-title .column-right button {
+  margin-left: 2rem;
 }
 </style>
