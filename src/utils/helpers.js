@@ -1,5 +1,8 @@
 import apolloClient from "./apolloClient";
-import { createUploadPolicyMutation } from "./queries";
+import {
+  createUploadPolicyMutation,
+  createStripeCheckoutSessionMutation
+} from "./queries";
 import slug from "slug";
 import {
   getUserQuery,
@@ -369,4 +372,18 @@ export function formatDate(date, type) {
       minute: "2-digit"
     });
   }
+}
+
+export function createStripeCheckoutSession(blogId) {
+  return apolloClient
+    .mutate({
+      mutation: createStripeCheckoutSessionMutation,
+      variables: {
+        blogId
+      }
+    })
+    .then(result => {
+      const sessionId = result.data.createStripeCheckoutSession.id;
+      return sessionId;
+    });
 }
