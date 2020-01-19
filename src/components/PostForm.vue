@@ -400,7 +400,7 @@ export default {
     this.OPERATION_TYPE = OPERATION_TYPE;
     // _.debounce is a function provided by lodash to limit how
     // often a particularly expensive operation can be run.
-    this.debouncedSaveDraft = debounce(this.saveDraft, 500);
+    this.debouncedSaveDraft = debounce(this.saveDraft, 1000);
 
     this.initData();
 
