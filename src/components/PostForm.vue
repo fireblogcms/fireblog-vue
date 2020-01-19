@@ -629,15 +629,13 @@ export default {
     },
     onTitleInput(value) {
       formSetValue(formId, "title", value);
-      if (this.existingPost && this.existingPost.status === "DRAFT") {
-        this.debouncedSaveDraft();
+      if (value.trim() && this.getCurrentOperation() === "UPDATE") {
+        this.autoSave();
       }
     },
     onContentInput(value) {
       formSetValue(formId, "content", value);
-      if (this.existingPost && this.existingPost.status === "DRAFT") {
-        this.debouncedSaveDraft();
-      }
+      this.autoSave();
     },
     onEditorReady(editor) {
       const element = document.querySelector(
@@ -651,6 +649,14 @@ export default {
     // automically move cursor to the textarea
     onTitleEnter() {
       this.$refs.ckeditor.$el.focus();
+    },
+    autoSave() {
+      if (
+        this.getCurrentOperation() === "CREATE" ||
+        (this.existingPost && this.existingPost.status === "DRAFT")
+      ) {
+        this.debouncedSaveDraft();
+      }
     },
     publish() {
       // If article is published or re-published from draft, we display a "Hurrah modal".
