@@ -69,9 +69,9 @@
         </template>
         <template #title>
           <div>
-            <span class="title is-2">{{
-              $t("views.postForm.advancedSettingsModal.title")
-            }}</span>
+            <span class="title is-2">
+              {{ $t("views.postForm.advancedSettingsModal.title") }}
+            </span>
             <!-- PUBLISH BUTTON -->
             <button
               style="margin-right:20px;"
@@ -181,8 +181,8 @@
             {{ $t("global." + getCurrentPublicationStatus().toLowerCase()) }}
             <span
               v-if="existingPost && getCurrentPublicationStatus() === 'DRAFT'"
-              >- {{ savedAt }}
-            </span>
+              >- {{ savedAt }}</span
+            >
           </em>
         </span>
       </portal>
@@ -204,7 +204,6 @@
           type="submit"
         >
           {{ $t("views.postForm.saveDraft").toUpperCase() }}
-          <span class="animated bounce" v-if="changesDetected">*</span>
         </button>
 
         <!-- ADVANCED OPTIONS BUTTON -->
@@ -287,7 +286,6 @@ import AppLoader from "../components/AppLoader";
 import Editor from "@ckeditor/ckeditor5-build-balloon-block";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import gql from "graphql-tag";
-import hotkeys from "hotkeys-js";
 import logger from "../utils/logger";
 import BulmaModal from "./BulmaModal";
 import IconBack from "./IconBack";
@@ -302,8 +300,7 @@ import {
   ckeditorIframelyMediaProvider,
   appNotification,
   validateSlug,
-  resetAppNotifications,
-  toast
+  resetAppNotifications
 } from "../utils/helpers";
 import {
   formInit,
@@ -324,6 +321,7 @@ import {
   getPostsByStatusQuery
 } from "../utils/queries";
 import striptags from "striptags";
+import debounce from "lodash.debounce";
 
 const randomHurraGifs = [
   "https://media.giphy.com/media/7IW6Jnw29TYmgkuu3M/giphy.gif",
@@ -400,11 +398,16 @@ export default {
     this.formGetValues = formGetValues;
     this.REQUEST_STATE = REQUEST_STATE;
     this.OPERATION_TYPE = OPERATION_TYPE;
+    // _.debounce is a function provided by lodash to limit how
+    // often a particularly expensive operation can be run.
+    this.debouncedSaveDraft = debounce(this.saveDraft, 500);
 
     this.initData();
+
     window.onbeforeunload = function(e) {
       return "Are you sure you want to quit ?";
     };
+
     this.editor = Editor;
     this.editorConfig = {
       extraPlugins: [
@@ -446,8 +449,6 @@ export default {
   },
   beforeDestroy() {
     window.onbeforeunload = null;
-    hotkeys.unbind("ctrl+s");
-    hotkeys.unbind("command+s");
   },
   watch: {
     "$store.state.forms.postForm.values": {
@@ -464,7 +465,8 @@ export default {
           undefined,
           {
             hour: "2-digit",
-            minute: "2-digit"
+            minute: "2-digit",
+            second: "2-digit"
           }
         )
       });
@@ -534,12 +536,6 @@ export default {
           ...this.preparePostFromCurrentFormValues(),
           status
         };
-        if (
-          this.existingPost.status !== "PUBLISHED" &&
-          status === "PUBLISHED"
-        ) {
-          post.publishedAt = new Date();
-        }
         return this.updatePost(post)
           .then(result => {
             this.savingPost.state = REQUEST_STATE.FINISHED_OK;
@@ -633,9 +629,15 @@ export default {
     },
     onTitleInput(value) {
       formSetValue(formId, "title", value);
+      if (this.existingPost && this.existingPost.status === "DRAFT") {
+        this.debouncedSaveDraft();
+      }
     },
     onContentInput(value) {
       formSetValue(formId, "content", value);
+      if (this.existingPost && this.existingPost.status === "DRAFT") {
+        this.debouncedSaveDraft();
+      }
     },
     onEditorReady(editor) {
       const element = document.querySelector(
@@ -644,26 +646,6 @@ export default {
       const toolTip = "Add media";
       element.innerHTML = toolTip;
       element.innerText = toolTip;
-
-      // allow ctrl+s to be detected on inputs and textareas
-      hotkeys.filter = () => true;
-      // save shortcuts
-      hotkeys("ctrl+s,command+s", (event, handler) => {
-        event.preventDefault();
-        // Prevent the default refresh event under WINDOWS system
-        if (this.existingPost && this.existingPost.status === "PUBLISHED") {
-          this.publish();
-        } else {
-          this.saveDraft()
-            .then(() => {
-              toast(this, this.$t("views.postForm.draftSaved"));
-            })
-            .catch(e => {
-              console.log("Cannot be saved: form validation failed: " + e);
-            });
-        }
-        return false;
-      });
     },
     // when user click "enter" in the title input,
     // automically move cursor to the textarea
@@ -750,6 +732,7 @@ export default {
       this.savePost(STATUS_ENUM.DRAFT);
     },
     saveDraft() {
+      console.log("save draft");
       const errors = this.validatePostForm("SAVE_DRAFT");
       if (Object.keys(errors).length > 0) {
         return Promise.reject("Form values are invalid");
