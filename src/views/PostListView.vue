@@ -30,7 +30,7 @@
               </h1>
             </div>
             <div class="column column-right">
-              <ApiUsage></ApiUsage>
+              <!--<ApiUsage></ApiUsage>-->
               <button
                 class="button is-large is-primary is-box-shadowed"
                 v-if="!isFirstPost"
