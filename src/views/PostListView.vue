@@ -30,7 +30,6 @@
               </h1>
             </div>
             <div class="column column-right">
-              <ApiUsage></ApiUsage>
               <button
                 class="button is-large is-primary is-box-shadowed"
                 v-if="!isFirstPost"
@@ -43,12 +42,12 @@
               >
                 {{ $t("views.postList.writeNewPostButton").toUpperCase() }}
               </button>
-              <button
+              <!-- <button
                 class="button is-large is-primary is-box-shadowed"
                 @click="onSubscribeClick"
               >
                 SUBSCRIBE
-              </button>
+              </button> -->
             </div>
           </div>
         </header>
@@ -183,7 +182,6 @@ import striptags from "striptags";
 import logger from "../utils/logger";
 import BulmaModal from "../components/BulmaModal";
 import PostListPane from "../components/PostListPane";
-import ApiUsage from "../components/ApiUsage";
 
 export default {
   components: {
@@ -192,8 +190,7 @@ export default {
     BulmaModal,
     IconBack,
     PostListPane,
-    DefaultLayout,
-    ApiUsage
+    DefaultLayout
   },
   data() {
     return {

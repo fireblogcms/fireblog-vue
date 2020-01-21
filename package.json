@@ -24,6 +24,7 @@
     "apollo-link-http": "^1.5.15",
     "apollo-upload-client": "^11.0.0",
     "bulma": "^0.7.4",
+    "core-js": "^2.6.11",
     "graphql": "^14.4.1",
     "graphql-tag": "^2.10.1",
     "hotkeys-js": "^3.7.3",

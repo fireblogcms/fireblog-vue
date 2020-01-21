@@ -40,24 +40,35 @@
             </div>
           </header>
           <div class="container">
-            <div
-              v-for="(edge, index) in blogs.edges"
-              style="box-shadow: rgba(14, 30, 37, 0.12) 1px 1px 10px 0px;border-radius:6px"
-              :style="blogCardStyles(edge, index)"
-              class="blog-card"
-              :key="edge.node._id"
-              @click="onRowClick(edge, $event)"
-            >
-              <div class="blog-infos">
-                <h2 class="title">{{ edge.node.name }}</h2>
-                <h3 class="subtitle" v-if="edge.node.description">{{ edge.node.description }}</h3>
+            <div class="columns">
+              <div class="column is-three-fifths is-offset-one-fifth centered-column">
+                <div
+                  v-for="(edge, index) in blogs.edges"
+                  class="card"
+                  :key="edge.node._id"
+                >
+                  <div
+                    class="card-image"
+                    :style="blogCardStyles(edge, index)"
+                    @click="onRowClick(edge, $event)"
+                  >
+                    <div class="blog-infos">
+                      <h2 class="title">{{ edge.node.name }}</h2>
+                      <h3 class="subtitle" v-if="edge.node.description">{{ edge.node.description }}</h3>
+                    </div>
+                  </div>
+                  <div class="card-content">
+                    <ApiUsage :blogId="edge.node._id"></ApiUsage>
+                    <button
+                      class="button is-box-shadowed is-large"
+                      @click="onSettingsClick(edge.node, $event)"
+                    >
+                      <span class="settings-icon"></span>
+                      <span>{{ $t("views.blogList.settingsButton").toUpperCase() }}</span>
+                    </button>
+                  </div>
+                </div>
               </div>
-
-              <div
-                @click.stop="onSettingsClick(edge.node, $event)"
-                style="min-width:100px;font-weight:300"
-                class="button is-medium is-outlined settings"
-              >{{ $t("views.blogList.settingsButton") }}</div>
             </div>
           </div>
         </div>
@@ -76,12 +87,14 @@ import { REQUEST_STATE, appNotification } from "../utils/helpers";
 import logger from "../utils/logger";
 import gradient from "random-gradient";
 import { getMyBlogs } from "../utils/helpers";
+import ApiUsage from "../components/ApiUsage";
 
 export default {
   components: {
     DefaultLayout,
     BlogCreateForm,
-    AppLoader
+    AppLoader,
+    ApiUsage
   },
   data() {
     return {
@@ -153,6 +166,7 @@ export default {
   float: right;
   margin-top: 30px;
 }
+
 @media screen and (max-width: 768px) {
   .main-call-to-action {
     float: none;
@@ -160,26 +174,24 @@ export default {
   }
 }
 
-.blog-card {
-  position: relative;
-  max-width: 700px;
-  margin: auto;
-  cursor: pointer;
-  border-radius: 3px;
-  border: solid rgb(240, 240, 240) 1px;
-  background: white;
-  margin-bottom: 40px;
-  min-height: 300px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.centered-column {
+  padding-bottom: 5rem;
 }
 
-.blog-card .blog-infos {
-  padding: 10px;
+.card-image {
+  min-height: 20rem;
+  position: relative;
+  cursor: pointer;
+}
+
+.card-image .blog-infos {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: .7rem;
   text-align: center;
-  color: white;
-  width: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
 }
@@ -193,15 +205,16 @@ export default {
   font-style: italic;
 }
 
-.blog-card .settings {
-  padding-left: 35px;
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: url("/images/icon-settings.svg") no-repeat white 10px;
-  background-size: 20px;
-  border-radius: 4px;
-  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.1);
-  color: #333;
+.card-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.settings-icon {
+  margin-right: .7rem;
+  width: 30px;
+  height: 30px;
+  background: url("/images/icon-settings.svg") no-repeat;
 }
 </style>
