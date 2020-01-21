@@ -13,13 +13,11 @@
             :placeholder="$t('views.postForm.fields.title.placeholder')"
             type="text"
             id="title"
-            :disabled="savingPost.state === REQUEST_STATE.PENDING"
             @input="onTitleInput"
             :value="formGetValue('postForm', 'title')"
           ></textarea-autosize>
           <ckeditor
             class="content"
-            :disabled="savingPost.state === REQUEST_STATE.PENDING"
             ref="ckeditor"
             :editor="editor"
             @input="onContentInput"
@@ -642,6 +640,7 @@ export default {
       this.$refs.ckeditor.$el.focus();
     },
     autoSave() {
+      return false;
       if (
         this.getCurrentOperation() === "CREATE" ||
         (this.existingPost && this.existingPost.status === "DRAFT")
