@@ -5,13 +5,17 @@ Vue.use(Vuex);
 
 const moduleGlobal = {
   state: {
-    postJustPublished: false,
+    postJustCreated: null, // will be a postId
+    postJustPublished: null, // will be a postId
     notification: null
   },
   mutations: {
+    postJustCreated(state, postId) {
+      state.postJustCreated = postId;
+    },
     // we display a special message the first a post is published.
-    postJustPublished(state, value) {
-      state.postJustPublished = value;
+    postJustPublished(state, postId) {
+      state.postJustPublished = postId;
     },
     // @see appNotification() function
     notification(state, args) {

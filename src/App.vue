@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <AppNotifications />
-    <router-view :key="$route.fullPath" />
+    <router-view />
   </div>
 </template>
 
