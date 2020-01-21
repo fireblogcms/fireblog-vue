@@ -161,7 +161,6 @@ export default {
           }
         })
         .then(async result => {
-          await apolloClient.resetStore();
           this.savingBlogState = REQUEST_STATE.FINISHED_OK;
           this.$router.push({
             name: "postList",

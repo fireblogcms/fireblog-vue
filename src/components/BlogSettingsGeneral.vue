@@ -1,17 +1,14 @@
 <template>
-  <AppPanel
-    style="margin-top:40px;margin-bottom:40px;padding:40px;"
-    class="container is-small"
-  >
-    <h2 class="title is-2">
-      {{ $t("views.blogSettings.generalSettingsForm.title") }}
-    </h2>
+  <AppPanel style="margin-top:40px;margin-bottom:40px;padding:40px;" class="container is-small">
+    <h2 class="title is-2">{{ $t("views.blogSettings.generalSettingsForm.title") }}</h2>
     <form @submit.prevent="onFormSubmit">
       <div class="field">
         <div class="label-wrapper">
-          <label class="label">{{
+          <label class="label">
+            {{
             $t("views.blogSettings.generalSettingsForm.fields.name.label")
-          }}</label>
+            }}
+          </label>
         </div>
         <div class="control is-danger">
           <input
@@ -23,18 +20,19 @@
             maxlength="100"
           />
         </div>
-        <p class="help is-danger" v-if="formGetError(formId, 'name')">
-          {{ formGetError(formId, "name") }}
-        </p>
+        <p
+          class="help is-danger"
+          v-if="formGetError(formId, 'name')"
+        >{{ formGetError(formId, "name") }}</p>
       </div>
       <div class="field">
         <div class="label-wrapper">
           <label class="label">Description (250 caractères maximum)</label>
           <p class="help">
             {{
-              $t(
-                "views.blogSettings.generalSettingsForm.fields.description.help"
-              )
+            $t(
+            "views.blogSettings.generalSettingsForm.fields.description.help"
+            )
             }}
           </p>
         </div>
@@ -51,12 +49,12 @@
 
       <div class="field">
         <div class="label-wrapper">
-          <label class="label">{{
+          <label class="label">
+            {{
             $t("views.blogSettings.generalSettingsForm.fields.image.label")
-          }}</label>
-          <p class="help">
-            {{ $t("views.blogSettings.generalSettingsForm.fields.image.help") }}
-          </p>
+            }}
+          </label>
+          <p class="help">{{ $t("views.blogSettings.generalSettingsForm.fields.image.help") }}</p>
         </div>
         <S3ImageUpload
           style="max-width:600px;"
@@ -75,9 +73,7 @@
             uploadBlogImageState === 'PENDING' || savingState === 'PENDING'
           "
           type="submit"
-        >
-          {{ $t("views.blogSettings.generalSettingsForm.saveButton") }}
-        </button>
+        >{{ $t("views.blogSettings.generalSettingsForm.saveButton") }}</button>
       </div>
     </form>
   </AppPanel>
@@ -166,7 +162,6 @@ export default {
           }
         })
         .then(async result => {
-          await apolloClient.resetStore();
           return result.data.updateBlog;
         })
         .catch(error => {

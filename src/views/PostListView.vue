@@ -25,9 +25,7 @@
           <div class="blog-title columns">
             <div class="column">
               <img class="is-hidden-mobile" src="/images/book.png" />
-              <h1 class="title is-2 is-uppercase">
-                {{ blog.name }}
-              </h1>
+              <h1 class="title is-2 is-uppercase">{{ blog.name }}</h1>
             </div>
             <div class="column column-right">
               <button
@@ -39,15 +37,13 @@
                     params: { blogId: $route.params.blogId }
                   })
                 "
-              >
-                {{ $t("views.postList.writeNewPostButton").toUpperCase() }}
-              </button>
+              >{{ $t("views.postList.writeNewPostButton").toUpperCase() }}</button>
               <!-- <button
                 class="button is-large is-primary is-box-shadowed"
                 @click="onSubscribeClick"
               >
                 SUBSCRIBE
-              </button> -->
+              </button>-->
             </div>
           </div>
         </header>
@@ -55,9 +51,10 @@
         <template v-if="isFirstPost === true">
           <div class="container">
             <AppPanel>
-              <h2 style="font-weight:200" class="title has-text-centered">
-                {{ $t("views.postList.firstBlogSentence") }}
-              </h2>
+              <h2
+                style="font-weight:200"
+                class="title has-text-centered"
+              >{{ $t("views.postList.firstBlogSentence") }}</h2>
               <div class="has-text-centered">
                 <div style="margin:2rem">
                   <button
@@ -68,9 +65,7 @@
                         params: { blogId: $route.params.blogId }
                       })
                     "
-                  >
-                    {{ $t("views.postList.firstPostWriteButton") }}
-                  </button>
+                  >{{ $t("views.postList.firstPostWriteButton") }}</button>
                 </div>
               </div>
             </AppPanel>
@@ -78,10 +73,7 @@
         </template>
         <template v-if="!isFirstPost">
           <section class="container">
-            <div
-              class="tabs is-boxed is-medium"
-              style="position:relative;margin-bottom:0;"
-            >
+            <div class="tabs is-boxed is-medium" style="position:relative;margin-bottom:0;">
               <ul style="border-bottom:0">
                 <li
                   @click="onStatusClick('PUBLISHED')"
@@ -89,9 +81,10 @@
                 >
                   <a>
                     {{ $t("views.postList.publishedTab") }}
-                    <span style="margin-left:10px" class="tag is-rounded">
-                      {{ postsPublished.totalCount }}
-                    </span>
+                    <span
+                      style="margin-left:10px"
+                      class="tag is-rounded"
+                    >{{ postsPublished.totalCount }}</span>
                   </a>
                 </li>
                 <li
@@ -100,9 +93,10 @@
                 >
                   <a>
                     {{ $t("views.postList.draftTab") }}
-                    <span style="margin-left:10px" class="tag is-rounded">
-                      {{ postsDraft.totalCount }}
-                    </span>
+                    <span
+                      style="margin-left:10px"
+                      class="tag is-rounded"
+                    >{{ postsDraft.totalCount }}</span>
                   </a>
                 </li>
               </ul>
@@ -135,26 +129,25 @@
           <div class="message-body">
             <p>
               {{
-                $t("views.postList.deleteModal.content", {
-                  postTitle: deleteModal.post.title
-                })
+              $t("views.postList.deleteModal.content", {
+              postTitle: deleteModal.post.title
+              })
               }}.
             </p>
           </div>
         </div>
       </template>
       <template #footer>
-        <div @click="deleteModal.show = false" class="button is-primary">
-          {{ $t("views.postList.deleteModal.cancelButton") }}
-        </div>
+        <div
+          @click="deleteModal.show = false"
+          class="button is-primary"
+        >{{ $t("views.postList.deleteModal.cancelButton") }}</div>
         <div
           @click="onDeleteModalConfirmClick"
           class="button is-danger"
           :class="{ 'is-loading': deletePostRequestState === 'PENDING' }"
           :disabled="deletePostRequestState === 'PENDING' ? true : false"
-        >
-          {{ $t("views.postList.deleteModal.confirmButton") }}
-        </div>
+        >{{ $t("views.postList.deleteModal.confirmButton") }}</div>
       </template>
     </BulmaModal>
   </DefaultLayout>
@@ -356,7 +349,6 @@ export default {
           variables: { id: post._id }
         })
         .then(async result => {
-          await apolloClient.resetStore();
           this.deletePostRequestState = REQUEST_STATE.FINISHED_OK;
           const post = result.data.deletePost;
         })
@@ -402,7 +394,9 @@ export default {
     },
     async onSubscribeClick() {
       const stripe = Stripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY);
-      const sessionId = await createStripeCheckoutSession(this.$route.params.blogId);
+      const sessionId = await createStripeCheckoutSession(
+        this.$route.params.blogId
+      );
       const { error } = await stripe.redirectToCheckout({
         sessionId
       });

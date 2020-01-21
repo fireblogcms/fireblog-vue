@@ -766,7 +766,6 @@ export default {
           }
         })
         .then(async result => {
-          await apolloClient.resetStore();
           this.existingPost = result.data.createPost;
           // this flag help us to display hurrah modal after creation, when post is published
           if (this.existingPost.status === "PUBLISHED") {
@@ -801,7 +800,6 @@ export default {
           }
         })
         .then(async result => {
-          await apolloClient.resetStore();
           this.existingPost = result.data.updatePost;
           this.changesDetected = false;
           return result;

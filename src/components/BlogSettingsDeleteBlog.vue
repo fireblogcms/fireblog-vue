@@ -89,7 +89,6 @@ export default {
             }
           })
           .then(async () => {
-            await apolloClient.resetStore();
             this.deleteBlogState = REQUEST_STATE.FINISHED_OK;
             this.$router.push({ name: "blogList" });
           })

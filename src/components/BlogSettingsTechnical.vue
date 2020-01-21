@@ -157,7 +157,6 @@ export default {
           }
         })
         .then(async result => {
-          await apolloClient.resetStore();
           return result.data.updateBlog;
         })
         .catch(error => {
