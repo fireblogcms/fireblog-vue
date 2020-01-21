@@ -401,7 +401,7 @@ export default {
       });
     },
     async onSubscribeClick() {
-      const stripe = Stripe('pk_test_z5sj646k9ISp6hRo2ZaViNbv00ItB4TF88');
+      const stripe = Stripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY);
       const sessionId = await createStripeCheckoutSession(this.$route.params.blogId);
       const { error } = await stripe.redirectToCheckout({
         sessionId

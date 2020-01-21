@@ -38,7 +38,7 @@ export default {
   props: {
     blogId: {
       type: String,
-      default: () => ""
+      required: true
     }
   },
   data() {
