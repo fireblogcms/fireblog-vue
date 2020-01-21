@@ -13,13 +13,13 @@
             :placeholder="$t('views.postForm.fields.title.placeholder')"
             type="text"
             id="title"
-            :disabled="savingDraftState === REQUEST_STATE.PENDING"
+            :disabled="savingPost.state === REQUEST_STATE.PENDING"
             @input="onTitleInput"
             :value="formGetValue('postForm', 'title')"
           ></textarea-autosize>
           <ckeditor
             class="content"
-            :disabled="savingDraftState === REQUEST_STATE.PENDING"
+            :disabled="savingPost.state === REQUEST_STATE.PENDING"
             ref="ckeditor"
             :editor="editor"
             @input="onContentInput"
@@ -38,16 +38,12 @@
             v-if="modal.confirmText && modal.confirmCallback"
             @click="modal.confirmCallback"
             class="button is-danger"
-          >
-            {{ modal.confirmText }}
-          </div>
+          >{{ modal.confirmText }}</div>
           <div
             v-if="modal.cancelText && modal.cancelCallback"
             @click="modal.cancelCallback"
             class="button is-primary"
-          >
-            {{ modal.cancelText }}
-          </div>
+          >{{ modal.cancelText }}</div>
         </template>
       </BulmaModal>
 
@@ -69,9 +65,7 @@
         </template>
         <template #title>
           <div>
-            <span class="title is-2">
-              {{ $t("views.postForm.advancedSettingsModal.title") }}
-            </span>
+            <span class="title is-2">{{ $t("views.postForm.advancedSettingsModal.title") }}</span>
             <!-- PUBLISH BUTTON -->
             <button
               style="margin-right:20px;"
@@ -87,9 +81,9 @@
               }"
             >
               {{
-                existingPost && existingPost.status === "PUBLISHED"
-                  ? $t("views.postForm.publishNowButton")
-                  : $t("views.postForm.publishChangesButton")
+              existingPost && existingPost.status === "PUBLISHED"
+              ? $t("views.postForm.publishNowButton")
+              : $t("views.postForm.publishChangesButton")
               }}
             </button>
 
@@ -97,24 +91,18 @@
               style="margin-right:20px;"
               @click="publicationSettingsModal.show = false"
               class="button is-pulled-right is-large"
-            >
-              {{ $t("views.postForm.publicationCancel") }}
-            </button>
+            >{{ $t("views.postForm.publicationCancel") }}</button>
           </div>
         </template>
         <template #footer />
       </BulmaModal>
 
       <!-- HURRAH MODAL FOR FIRST PUBLICATION -->
-      <BulmaModal
-        class="hurrah-modal"
-        v-model="publishingHurrahModal.show"
-        :whiteFooter="true"
-      >
+      <BulmaModal class="hurrah-modal" v-model="publishingHurrahModal.show" :whiteFooter="true">
         <template #title>
-          <div class="has-text-centered">
-            {{ $t("views.postForm.firstPublicationHurralModal.title") }}
-          </div>
+          <div
+            class="has-text-centered"
+          >{{ $t("views.postForm.firstPublicationHurralModal.title") }}</div>
         </template>
         <template #body>
           <div class="has-text-centered">
@@ -125,21 +113,14 @@
           <button
             @click="publishingHurrahModal.show = false"
             class="button is-primary is-large"
-          >
-            {{ $t("views.postForm.firstPublicationHurralModal.okayButton") }}
-          </button>
+          >{{ $t("views.postForm.firstPublicationHurralModal.okayButton") }}</button>
         </template>
       </BulmaModal>
 
       <!-- HURRAH MODAL WHEN PUBLISHING CHANGES ON ALREADY PUBLISHED POST -->
-      <BulmaModal
-        class="publishing-changes-modal"
-        v-model="publishingChangesModal.show"
-      >
+      <BulmaModal class="publishing-changes-modal" v-model="publishingChangesModal.show">
         <template #title>
-          <div class="has-text-centered">
-            {{ $t("views.postForm.publishChangesHurralModal.title") }}
-          </div>
+          <div class="has-text-centered">{{ $t("views.postForm.publishChangesHurralModal.title") }}</div>
         </template>
         <template #body>
           <div class="has-text-centered">
@@ -150,24 +131,15 @@
           <button
             @click="publishingChangesModal.show = false"
             class="button is-primary is-large"
-          >
-            {{ $t("views.postForm.publishChangesHurralModal.okayButton") }}
-          </button>
+          >{{ $t("views.postForm.publishChangesHurralModal.okayButton") }}</button>
         </template>
       </BulmaModal>
 
       <!-- TOPBAR LEFT BUTTONS -->
       <portal to="topbar-left">
-        <span
-          @click="onBackToPostsClick"
-          style="cursor:pointer"
-          class="item tag is-large"
-        >
+        <span @click="onBackToPostsClick" style="cursor:pointer" class="item tag is-large">
           <em>
-            <img
-              style="position:relative;height:20px !important;top:4px;"
-              src="/images/book.png"
-            />
+            <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
             <IconBack />posts
           </em>
         </span>
@@ -181,8 +153,7 @@
             {{ $t("global." + getCurrentPublicationStatus().toLowerCase()) }}
             <span
               v-if="existingPost && getCurrentPublicationStatus() === 'DRAFT'"
-              >- {{ savedAt }}</span
-            >
+            >- {{ savedAt }}</span>
           </em>
         </span>
       </portal>
@@ -202,9 +173,7 @@
           }"
           :disabled="savingPost.state === 'PENDING'"
           type="submit"
-        >
-          {{ $t("views.postForm.saveDraft").toUpperCase() }}
-        </button>
+        >{{ $t("views.postForm.saveDraft").toUpperCase() }}</button>
 
         <!-- ADVANCED OPTIONS BUTTON -->
         <button
@@ -213,9 +182,7 @@
           class="button item is-outlined"
           :disabled="savingPost.state === 'PENDING'"
           type="submit"
-        >
-          {{ $t("views.postForm.advancedSettingsButton").toUpperCase() }}
-        </button>
+        >{{ $t("views.postForm.advancedSettingsButton").toUpperCase() }}</button>
 
         <!-- BEGIN PUBLICATION BUTTON (launch advanced settings modal) -->
         <button
@@ -229,9 +196,7 @@
           }"
           :disabled="savingPost.state === 'PENDING'"
           type="submit"
-        >
-          {{ $t("views.postForm.publicationButton").toUpperCase() }}
-        </button>
+        >{{ $t("views.postForm.publicationButton").toUpperCase() }}</button>
 
         <!-- UNPUBLISH BUTTON -->
         <button
@@ -246,9 +211,7 @@
           }"
           :disabled="savingPost.state === 'PENDING'"
           type="submit"
-        >
-          {{ $t("views.postForm.unpublishButton").toUpperCase() }}
-        </button>
+        >{{ $t("views.postForm.unpublishButton").toUpperCase() }}</button>
 
         <!-- PUBLISH CHANGES BUTTON -->
         <button
@@ -264,7 +227,10 @@
           type="submit"
         >
           {{ $t("views.postForm.publishChangesButton").toUpperCase() }}
-          <span class="animated bounce" v-if="changesDetected">*</span>
+          <span
+            class="animated bounce"
+            v-if="changesDetected"
+          >*</span>
         </button>
 
         <!--
@@ -286,6 +252,7 @@ import AppLoader from "../components/AppLoader";
 import Editor from "@ckeditor/ckeditor5-build-balloon-block";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import gql from "graphql-tag";
+import hotkeys from "hotkeys-js";
 import logger from "../utils/logger";
 import BulmaModal from "./BulmaModal";
 import IconBack from "./IconBack";
@@ -362,7 +329,6 @@ export default {
   data() {
     return {
       initDataState: REQUEST_STATE.NOT_STARTED,
-      savingDraftState: REQUEST_STATE.NOT_STARTED,
       uploadingState: REQUEST_STATE.NOT_STARTED,
       changesDetected: false,
       mediaLoadingCounter: 0,
@@ -449,6 +415,8 @@ export default {
   },
   beforeDestroy() {
     window.onbeforeunload = null;
+    hotkeys.unbind("ctrl+s");
+    hotkeys.unbind("command+s");
   },
   watch: {
     "$store.state.forms.postForm.values": {
@@ -504,6 +472,9 @@ export default {
       return status;
     },
     savePost(status) {
+      if (this.savingPost.state === "PENDING") {
+        console.log("Post is already currently saving");
+      }
       if (!STATUS_ENUM[status]) {
         throw new Error(
           `Received unknown status ${status}. Status MUST be one of the following value: ` +
@@ -644,6 +615,26 @@ export default {
       const toolTip = "Add media";
       element.innerHTML = toolTip;
       element.innerText = toolTip;
+
+      // allow ctrl+s to be detected on inputs and textareas
+      hotkeys.filter = () => true;
+      // save shortcuts
+      hotkeys("ctrl+s,command+s", (event, handler) => {
+        event.preventDefault();
+        // Prevent the default refresh event under WINDOWS system
+        if (this.existingPost && this.existingPost.status === "PUBLISHED") {
+          this.publish();
+        } else {
+          this.saveDraft()
+            .then(() => {
+              //toast(this, this.$t("views.postForm.draftSaved"));
+            })
+            .catch(e => {
+              console.log("Cannot be saved: form validation failed: " + e);
+            });
+        }
+        return false;
+      });
     },
     // when user click "enter" in the title input,
     // automically move cursor to the textarea
@@ -738,7 +729,6 @@ export default {
       this.savePost(STATUS_ENUM.DRAFT);
     },
     saveDraft() {
-      console.log("save draft");
       const errors = this.validatePostForm("SAVE_DRAFT");
       if (Object.keys(errors).length > 0) {
         return Promise.reject("Form values are invalid");

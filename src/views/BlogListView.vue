@@ -42,11 +42,7 @@
           <div class="container">
             <div class="columns">
               <div class="column is-three-fifths is-offset-one-fifth centered-column">
-                <div
-                  v-for="(edge, index) in blogs.edges"
-                  class="card"
-                  :key="edge.node._id"
-                >
+                <div v-for="(edge, index) in blogs.edges" class="card" :key="edge.node._id">
                   <div
                     class="card-image"
                     :style="blogCardStyles(edge, index)"
@@ -59,7 +55,9 @@
                   </div>
                   <div class="card-content">
                     <div>
-                      <p class="plans-name">{{ $t("views.blogList.plansName") }}</p>
+                      <p
+                        class="plans-name"
+                      >Plan : firestarter ({{ $t("views.blogList.oneMonthFreeTrial") }})</p>
                       <ApiUsage :blogId="edge.node._id"></ApiUsage>
                     </div>
                     <button
@@ -193,7 +191,7 @@ export default {
   right: 0;
   top: 50%;
   transform: translateY(-50%);
-  padding: .7rem;
+  padding: 0.7rem;
   text-align: center;
   background-color: rgba(0, 0, 0, 0.5);
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
@@ -208,6 +206,11 @@ export default {
   font-style: italic;
 }
 
+.card {
+  border-radius: 5px;
+  margin-bottom: 40px;
+}
+
 .card-content {
   display: flex;
   align-items: center;
@@ -220,7 +223,7 @@ export default {
 }
 
 .settings-icon {
-  margin-right: .7rem;
+  margin-right: 0.7rem;
   width: 30px;
   height: 30px;
   background: url("/images/icon-settings.svg") no-repeat;
