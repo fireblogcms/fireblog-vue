@@ -768,7 +768,7 @@ export default {
         .then(async result => {
           await apolloClient.resetStore();
           this.existingPost = result.data.createPost;
-          // post is created, we are now in UPDATE mode for the form.
+          // this flag help us to display hurrah modal after creation, when post is published
           if (this.existingPost.status === "PUBLISHED") {
             this.$store.commit("postJustPublished", true);
           }
