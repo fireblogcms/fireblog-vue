@@ -58,7 +58,10 @@
                     </div>
                   </div>
                   <div class="card-content">
-                    <ApiUsage :blogId="edge.node._id"></ApiUsage>
+                    <div>
+                      <p class="plans-name">{{ $t("views.blogList.plansName") }}</p>
+                      <ApiUsage :blogId="edge.node._id"></ApiUsage>
+                    </div>
                     <button
                       class="button is-box-shadowed is-large"
                       @click="onSettingsClick(edge.node, $event)"
@@ -211,10 +214,27 @@ export default {
   justify-content: space-between;
 }
 
+.plans-name {
+  margin: 0 0 1rem 0;
+  font-weight: 500;
+}
+
 .settings-icon {
   margin-right: .7rem;
   width: 30px;
   height: 30px;
   background: url("/images/icon-settings.svg") no-repeat;
+}
+
+@media screen and (max-width: 768px) {
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .card-content button {
+    margin-top: 2rem;
+  }
 }
 </style>

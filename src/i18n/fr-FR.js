@@ -33,6 +33,7 @@ export default {
   "views.blogList.createNewBlogButton": "Créer un nouveau blog",
   "views.blogList.title": "Mes blogs",
   "views.blogList.settingsButton": "Réglages",
+  "views.blogList.plansName": "Période d'essai : un mois gratuit",
   "views.blogSettings.dangerZone.title": "Zone dangereuse",
   "views.blogSettings.dangerZone.deleteButton": "Supprimer ce blog",
   "views.blogSettings.dangerZone.deleteModal.cancelButton":  "Annuler",
