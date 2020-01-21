@@ -216,3 +216,11 @@ export const getBlogApiUsageQuery = gql`
     }
   }
 `;
+
+export const createStripeCheckoutSessionMutation = gql`
+  mutation($blogId: ID) {
+    createStripeCheckoutSession(blogId: $blogId) {
+      id
+    }
+  }
+`;
