@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!--<AppLoader v-if="initDataState === 'PENDING'" />-->
+    <AppLoader v-if="false && initDataState === 'PENDING'" />
     <div class="post-form-wrapper">
       <pre v-if="false">{{ formGetValues(formId) }}</pre>
       <form @submit.prevent>
@@ -443,12 +443,11 @@ export default {
     },
     async initData() {
       this.initDataState = REQUEST_STATE.PENDING;
-      let formValues = { ...initialFormValues };
       let existingPost = null;
 
       if (this.getCurrentOperation() === "CREATE") {
         formInit(formId, {
-          initialValues: formValues
+          initialValues: { ...initialFormValues }
         });
       }
       if (this.getCurrentOperation() === "UPDATE") {
@@ -462,9 +461,16 @@ export default {
         // we are in update mode and not coming from creation page: we need to
         // load existing post and init form values with it.
         if (!this.weAreComingFromPostCreation()) {
+          // reset form values first, otherwise a previous post might be displayed.
+          formInit(formId, {
+            initialValues: { ...initialFormValues }
+          });
           try {
             existingPost = await this.getExistingPost();
-            formValues = { ...this.prepareFormValuesFromPost(existingPost) };
+            const formValues = {
+              ...this.prepareFormValuesFromPost(existingPost)
+            };
+            // update form value with existing post.
             formInit(formId, {
               initialValues: formValues
             });
@@ -551,7 +557,7 @@ export default {
             "views.postForm.mediaUploadingModal.confirmText"
           ),
           confirmCallback: () => {
-            this.$router.push({
+            this.$router.replace({
               name: "postList",
               params: { blogId: this.$route.params.blogId }
             });

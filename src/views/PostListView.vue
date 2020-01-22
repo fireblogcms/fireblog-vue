@@ -209,6 +209,8 @@ export default {
   },
   created() {
     this.striptags = striptags;
+  },
+  mounted() {
     this.initData();
   },
   methods: {
@@ -297,7 +299,7 @@ export default {
           throw new Error(error);
         });
     },
-    getPostsPublished(status, fetchPolicy = "cache-first") {
+    getPostsPublished(status) {
       this.postsPublishedRequestState = REQUEST_STATE.PENDING;
       return apolloClient
         .query({
@@ -305,8 +307,7 @@ export default {
           variables: {
             blog: this.$route.params.blogId,
             status: "PUBLISHED"
-          },
-          fetchPolicy
+          }
         })
         .then(result => {
           this.postsPublishedRequestState = REQUEST_STATE.FINISHED_OK;
@@ -319,7 +320,7 @@ export default {
           throw new Error(error);
         });
     },
-    getPostsDraft(status, fetchPolicy = "cache-first") {
+    getPostsDraft(status) {
       this.postsDraftRequestState = REQUEST_STATE.PENDING;
       return apolloClient
         .query({
@@ -327,8 +328,7 @@ export default {
           variables: {
             blog: this.$route.params.blogId,
             status: "DRAFT"
-          },
-          fetchPolicy
+          }
         })
         .then(result => {
           this.postsDraftRequestState = REQUEST_STATE.FINISHED_OK;
@@ -351,9 +351,6 @@ export default {
         .then(async result => {
           this.deletePostRequestState = REQUEST_STATE.FINISHED_OK;
           const post = result.data.deletePost;
-        })
-        .then(r => {
-          this.deleteModal.show = false;
         })
         .catch(error => {
           this.deletePostRequestState = REQUEST_STATE.FINISHED_ERROR;
@@ -383,12 +380,16 @@ export default {
     },
     onDeleteModalConfirmClick() {
       this.deletePost(this.deleteModal.post).then(() => {
-        this.deleteModal.show = false;
+        console.log("delete", this.deleteModal.post);
         if (this.deleteModal.post.status === "PUBLISHED") {
-          this.getPostsPublished();
+          this.getPostsPublished().then(() => {
+            this.deleteModal.show = false;
+          });
         }
         if (this.deleteModal.post.status === "DRAFT") {
-          this.getPostsDraft();
+          this.getPostsDraft().then(() => {
+            this.deleteModal.show = false;
+          });
         }
       });
     },
