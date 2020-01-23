@@ -262,8 +262,7 @@ import {
   ckeditorIframelyMediaProvider,
   appNotification,
   validateSlug,
-  resetAppNotifications,
-  resetApolloCache
+  resetAppNotifications
 } from "../utils/helpers";
 import {
   formInit,
@@ -810,7 +809,7 @@ export default {
           }
         })
         .then(async result => {
-          await resetApolloCache();
+          apolloClient.clearStore();
           const postId = result.data.createPost._id;
           this.$store.commit("postJustCreated", postId);
           // this flag help us to display hurrah modal after creation, when post is published
@@ -846,7 +845,7 @@ export default {
           }
         })
         .then(async result => {
-          await resetApolloCache();
+          apolloClient.clearStore();
           this.existingPost = result.data.updatePost;
           this.changesDetected = false;
           return result;

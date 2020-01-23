@@ -38,7 +38,7 @@ export default {
       initDataState: REQUEST_STATE.NOT_STARTED
     };
   },
-  created() {
+  mounted() {
     this.initData();
   },
   methods: {

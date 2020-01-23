@@ -162,8 +162,7 @@ import AppLoader from "../components/AppLoader";
 import {
   REQUEST_STATE,
   appNotification,
-  createStripeCheckoutSession,
-  resetApolloCache
+  createStripeCheckoutSession
 } from "../utils/helpers";
 import {
   getPostsQuery,
@@ -330,7 +329,7 @@ export default {
           variables: { id: post._id }
         })
         .then(async result => {
-          await resetApolloCache();
+          apolloClient.clearStore();
           this.deletePostRequestState = REQUEST_STATE.FINISHED_OK;
           const post = result.data.deletePost;
         })
