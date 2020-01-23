@@ -190,7 +190,7 @@
       <!-- SAVE DRAFT BUTTON -->
       <button
         v-if="getCurrentPublicationStatus() === 'DRAFT'"
-        @click="saveDraft()"
+        @click="saveAsDraft()"
         class="button is-outlined item"
         :class="{
           'is-loading':
@@ -359,7 +359,6 @@ export default {
       uploadingState: REQUEST_STATE.NOT_STARTED,
       changesDetected: false,
       mediaLoadingCounter: 0,
-      lastTimeSaved: null,
       existingPost: null,
       savingPost: {
         state: REQUEST_STATE.NOT_STARTED,
@@ -393,9 +392,8 @@ export default {
     this.formGetValue = formGetValue;
     this.formGetValues = formGetValues;
     this.REQUEST_STATE = REQUEST_STATE;
-    // _.debounce is a function provided by lodash to limit how
-    // often a particularly expensive operation can be run.
-    this.debouncedAutoSaveDraft = debounce(this.saveDraft, 3000);
+
+    this.debouncedAutoSaveAsDraft = debounce(this.autoSaveAsDraft, 3000);
 
     window.onbeforeunload = function(e) {
       return "Are you sure you want to quit ?";
@@ -441,11 +439,12 @@ export default {
     };
   },
   beforeDestroy() {
-    this.debouncedAutoSaveDraft.cancel();
+    this.debouncedAutoSaveAsDraft.cancel();
     window.onbeforeunload = null;
     hotkeys.unbind("ctrl+s");
     hotkeys.unbind("command+s");
   },
+  /*
   watch: {
     "$store.state.forms.postForm.values": {
       deep: true,
@@ -454,6 +453,7 @@ export default {
       }
     }
   },
+  */
   computed: {
     savedAt() {
       return this.$t("views.postForm.savedAt {time}", {
@@ -495,29 +495,24 @@ export default {
         formInit(formId, {
           initialValues: { ...initialFormValues }
         });
-      } else if (this.getCurrentOperation() === "UPDATE") {
-        // We just arrived from CREATE page and are now on UPDATE page
-        if (this.weAreComingFromPostCreation()) {
-          // well, do NOT fetch existing post ih this case, to make sure writer CANNOT LOOSE CONTENT
-          // because of the autosave : our form already contains
-          // all the data so we don't want to override them at this moment
-          // by fetching the existing post : just read our form values already in store.
+      }
+      if (this.getCurrentOperation() === "UPDATE") {
+        try {
+          existingPost = await this.getExistingPost();
+        } catch (error) {
+          this.initDataState = REQUEST_STATE.FINISHED_ERROR;
+          throw new Error(error);
         }
-        // we are not coming from CREATE page, we land directly on UPDATE page.
+        // DO NOT overwrite form values if are just coming from post creation :
+        // This would delete some of the words we typed just after the post has been saved.
         if (!this.weAreComingFromPostCreation()) {
-          try {
-            existingPost = await this.getExistingPost();
-            const formValues = {
-              ...this.prepareFormValuesFromPost(existingPost)
-            };
-            // update form value with existing post.
-            formInit(formId, {
-              initialValues: formValues
-            });
-          } catch (error) {
-            this.initDataState = REQUEST_STATE.FINISHED_ERROR;
-            throw new Error(error);
-          }
+          const formValues = {
+            ...this.prepareFormValuesFromPost(existingPost)
+          };
+          // update form values with existing post.
+          formInit(formId, {
+            initialValues: formValues
+          });
         }
       }
 
@@ -533,9 +528,6 @@ export default {
       return status;
     },
     savePost(status, operation) {
-      if (this.savingPost.state === "PENDING") {
-        console.log("Post is already currently saving");
-      }
       if (!STATUS_ENUM[status]) {
         throw new Error(
           `Received unknown status ${status}. Status MUST be one of the following value: ` +
@@ -626,7 +618,7 @@ export default {
             });
           },
           cancelCallback: () => {
-            this.saveDraft().then(() => {
+            this.saveAsDraft().then(() => {
               this.modal.show = false;
               this.$router.push({
                 name: "postList",
@@ -642,18 +634,28 @@ export default {
         });
       }
     },
+    /**
+     * @FIXME super broken now ...
+
     detectChanges() {
       const modifiedValues = {};
       // get current form values
       const formValues = formGetValues(formId);
-      // get previously saved value.
+      // get previously saved values.
       let formPreviousValues;
+
       if (this.getCurrentOperation() === "CREATE") {
+        console.log("detectedChanges formGetInitialValues()");
         formPreviousValues = formGetInitialValues(formId);
       }
-      if (this.getCurrentOperation() === "UPDATE") {
+      if (this.getCurrentOperation() === "UPDATE" && this.existingPost) {
+        console.log("detectedChanges prepareFormValuesFromPost()");
         formPreviousValues = this.prepareFormValuesFromPost(this.existingPost);
       }
+      if (!formPreviousValues) {
+        return;
+      }
+
       Object.keys(formValues).forEach(key => {
         if (formValues[key] !== formPreviousValues[key]) {
           modifiedValues[key] = true;
@@ -669,16 +671,17 @@ export default {
             : false
       };
     },
+    */
     onTitleInput(value) {
       formSetValue(formId, "title", value);
-      // on CREATE, do not autosave until user has entered some content.
+      // on CREATE, do not autoSaveAsDraft until user has entered some content.
       if (value.trim() && this.getCurrentOperation() === "UPDATE") {
-        this.debouncedAutoSaveDraft();
+        this.debouncedAutoSaveAsDraft();
       }
     },
     onContentInput(value) {
       formSetValue(formId, "content", value);
-      this.debouncedAutoSaveDraft();
+      this.debouncedAutoSaveAsDraft();
     },
     onEditorReady(editor) {
       const element = document.querySelector(
@@ -697,7 +700,7 @@ export default {
         if (this.existingPost && this.existingPost.status === "PUBLISHED") {
           this.publish();
         } else {
-          this.saveDraft()
+          this.saveAsDraft()
             .then(() => {
               //toast(this, this.$t("views.postForm.draftSaved"));
             })
@@ -713,15 +716,20 @@ export default {
     onTitleEnter() {
       this.$refs.ckeditor.$el.focus();
     },
-    autoSave(value) {
+    /**
+     * autoSave ONLY FOR DRAFT MODE for now.
+     */
+    autoSaveAsDraft() {
       if (
         this.getCurrentOperation() === "CREATE" ||
         (this.existingPost && this.existingPost.status === "DRAFT")
       ) {
-        this.saveDraft();
+        this.saveAsDraft();
       }
     },
     publish() {
+      // disabled saving post as DRAFT, as post is now published.
+      this.debouncedAutoSaveAsDraft.cancel();
       // If article is published or re-published from draft, we display a "Hurrah modal".
       // If we only publish changes on a already published articles, we have a more
       // sober modal.
@@ -733,6 +741,7 @@ export default {
       if (Object.keys(errors).length > 0) {
         return false;
       } else {
+        // make sure there is not an autoSaveAsDraft triggere
         this.savePost(STATUS_ENUM.PUBLISHED).then(() => {
           this.publicationSettingsModal.show = false;
           if (publishingChanges === true) {
@@ -804,8 +813,7 @@ export default {
     onUnpublishClick() {
       this.savePost(STATUS_ENUM.DRAFT);
     },
-    saveDraft() {
-      console.log("saveDraft()" + this.getCurrentOperation());
+    saveAsDraft() {
       const errors = this.validatePostForm("SAVE_DRAFT");
       if (Object.keys(errors).length > 0) {
         return Promise.reject(
