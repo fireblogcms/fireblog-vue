@@ -262,7 +262,8 @@ import {
   ckeditorIframelyMediaProvider,
   appNotification,
   validateSlug,
-  resetAppNotifications
+  resetAppNotifications,
+  resetApolloCache
 } from "../utils/helpers";
 import {
   formInit,
@@ -360,7 +361,7 @@ export default {
     this.REQUEST_STATE = REQUEST_STATE;
     // _.debounce is a function provided by lodash to limit how
     // often a particularly expensive operation can be run.
-    this.debouncedAutoSaveDraft = debounce(this.saveDraft, 2000);
+    this.debouncedAutoSaveDraft = debounce(this.saveDraft, 3000);
 
     window.onbeforeunload = function(e) {
       this.debouncedAutoSaveDraft.cancel();
@@ -412,6 +413,7 @@ export default {
     hotkeys.unbind("ctrl+s");
     hotkeys.unbind("command+s");
   },
+  /*
   watch: {
     "$store.state.forms.postForm.values": {
       deep: true,
@@ -420,6 +422,7 @@ export default {
       }
     }
   },
+  */
   computed: {
     savedAt() {
       return this.$t("views.postForm.savedAt {time}", {
@@ -453,7 +456,7 @@ export default {
       let existingPost = null;
 
       if (this.getCurrentOperation() === "CREATE") {
-        console.log("formInit CREATE");
+        console.log("formInit CREATE", initialFormValues);
         formInit(formId, {
           initialValues: { ...initialFormValues }
         });
@@ -769,7 +772,9 @@ export default {
       console.log("saveDraft()" + this.getCurrentOperation());
       const errors = this.validatePostForm("SAVE_DRAFT");
       if (Object.keys(errors).length > 0) {
-        return Promise.reject("Form values are invalid");
+        return Promise.reject(
+          "Form values are invalid " + JSON.stringify(errors)
+        );
       } else if (this.mediaLoadingCounter > 0) {
         Promise.reject("Media are currently loading");
         this.showMediaCurrentlyLoadingModal();
@@ -805,7 +810,7 @@ export default {
           }
         })
         .then(async result => {
-          await apolloClient.resetStore();
+          await resetApolloCache();
           const postId = result.data.createPost._id;
           this.$store.commit("postJustCreated", postId);
           // this flag help us to display hurrah modal after creation, when post is published
@@ -841,7 +846,7 @@ export default {
           }
         })
         .then(async result => {
-          await apolloClient.resetStore();
+          await resetApolloCache();
           this.existingPost = result.data.updatePost;
           this.changesDetected = false;
           return result;

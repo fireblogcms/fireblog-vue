@@ -387,3 +387,11 @@ export function createStripeCheckoutSession(blogId) {
       return sessionId;
     });
 }
+
+export function resetApolloCache() {
+  // try to avoid random fatal error by catching ourself this fucking error:
+  // " Error: Invariant Violation: Store reset while query was in flight (not completed in link chain)"
+  return apolloClient.resetStore().catch(e => {
+    console.log(e);
+  });
+}
