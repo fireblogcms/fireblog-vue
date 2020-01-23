@@ -209,10 +209,9 @@ export default {
   },
   created() {
     this.striptags = striptags;
-  },
-  mounted() {
     this.initData();
   },
+  mounted() {},
   methods: {
     /**
      * We need to run two requests, to know what user has to see;
@@ -245,11 +244,12 @@ export default {
     onRowClick(item) {
       this.$router.push(this.buildLinkToPost(item));
     },
-    async getAllPosts() {
+    async getAllPosts(fetchPolicy = "cache-first") {
       return apolloClient
         .query({
           query: getPostsQuery,
-          variables: { blog: this.$route.params.blogId, last: 1 }
+          variables: { blog: this.$route.params.blogId, last: 1 },
+          fetchPolicy
         })
         .then(result => {
           this.isFirstPost =
@@ -277,29 +277,7 @@ export default {
           return result;
         });
     },
-    getPosts(status, fetchPolicy = "cache-first") {
-      this.postsRequestState = REQUEST_STATE.PENDING;
-      return apolloClient
-        .query({
-          query: getPostsByStatusQuery,
-          variables: {
-            blog: this.$route.params.blogId,
-            status: status
-          },
-          fetchPolicy
-        })
-        .then(result => {
-          this.postsRequestState = REQUEST_STATE.FINISHED_OK;
-          this.posts = result.data.posts;
-          return result;
-        })
-        .catch(error => {
-          this.postsRequestState = REQUEST_STATE.FINISHED_ERROR;
-          appNotification("Sorry, an error occured while fetching posts");
-          throw new Error(error);
-        });
-    },
-    getPostsPublished(status) {
+    getPostsPublished(fetchPolicy = "cache-first") {
       this.postsPublishedRequestState = REQUEST_STATE.PENDING;
       return apolloClient
         .query({
@@ -307,7 +285,8 @@ export default {
           variables: {
             blog: this.$route.params.blogId,
             status: "PUBLISHED"
-          }
+          },
+          fetchPolicy
         })
         .then(result => {
           this.postsPublishedRequestState = REQUEST_STATE.FINISHED_OK;
@@ -320,7 +299,7 @@ export default {
           throw new Error(error);
         });
     },
-    getPostsDraft(status) {
+    getPostsDraft(fetchPolicy = "cache-first") {
       this.postsDraftRequestState = REQUEST_STATE.PENDING;
       return apolloClient
         .query({
@@ -328,7 +307,8 @@ export default {
           variables: {
             blog: this.$route.params.blogId,
             status: "DRAFT"
-          }
+          },
+          fetchPolicy
         })
         .then(result => {
           this.postsDraftRequestState = REQUEST_STATE.FINISHED_OK;
@@ -349,6 +329,7 @@ export default {
           variables: { id: post._id }
         })
         .then(async result => {
+          apolloClient.resetStore();
           this.deletePostRequestState = REQUEST_STATE.FINISHED_OK;
           const post = result.data.deletePost;
         })
@@ -380,16 +361,12 @@ export default {
     },
     onDeleteModalConfirmClick() {
       this.deletePost(this.deleteModal.post).then(() => {
-        console.log("delete", this.deleteModal.post);
+        this.deleteModal.show = false;
         if (this.deleteModal.post.status === "PUBLISHED") {
-          this.getPostsPublished().then(() => {
-            this.deleteModal.show = false;
-          });
+          this.getPostsPublished();
         }
         if (this.deleteModal.post.status === "DRAFT") {
-          this.getPostsDraft().then(() => {
-            this.deleteModal.show = false;
-          });
+          this.getPostsDraft();
         }
       });
     },

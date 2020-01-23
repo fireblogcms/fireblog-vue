@@ -62,12 +62,12 @@ const client = new ApolloClient({
   connectToDevTools: process.env.NODE_ENV === "development" ? true : false,
   defaultOptions: {
     watchQuery: {
-      fetchPolicy: "no-cache",
+      fetchPolicy: "cache-first",
       // Any GraphQL Errors are treated the same as network errors and any data is ignored from the response.
       errorPolicy: "none"
     },
     query: {
-      fetchPolicy: "no-cache",
+      fetchPolicy: "cache-first",
       // Any GraphQL Errors are treated the same as network errors and any data is ignored from the response.
       errorPolicy: "none"
     },

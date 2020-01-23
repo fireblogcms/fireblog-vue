@@ -292,11 +292,6 @@ const randomHurraGifs = [
   "https://66.media.tumblr.com/b53447fe9897178a2b4957a1ab32f6be/tumblr_n19pczDWI21ss6wowo9_250.gifv"
 ];
 
-const OPERATION_TYPE = {
-  CREATE: "CREATE",
-  UPDATE: "UPDATE"
-};
-
 const STATUS_ENUM = {
   PUBLISHED: "PUBLISHED",
   DRAFT: "DRAFT",
@@ -353,19 +348,22 @@ export default {
       }
     };
   },
+  mounted() {
+    console.log("mounted");
+    this.initData();
+  },
   created() {
+    console.log("created");
     this.formId = formId;
     this.formGetValue = formGetValue;
     this.formGetValues = formGetValues;
     this.REQUEST_STATE = REQUEST_STATE;
-    this.OPERATION_TYPE = OPERATION_TYPE;
     // _.debounce is a function provided by lodash to limit how
     // often a particularly expensive operation can be run.
-    this.debouncedSaveDraft = debounce(this.saveDraft, 1000);
-
-    this.initData();
+    this.debouncedAutoSaveDraft = debounce(this.saveDraft, 2000);
 
     window.onbeforeunload = function(e) {
+      this.debouncedAutoSaveDraft.cancel();
       return "Are you sure you want to quit ?";
     };
 
@@ -409,6 +407,7 @@ export default {
     };
   },
   beforeDestroy() {
+    this.debouncedAutoSaveDraft.cancel();
     window.onbeforeunload = null;
     hotkeys.unbind("ctrl+s");
     hotkeys.unbind("command+s");
@@ -441,26 +440,36 @@ export default {
         this.$store.state.global.postJustCreated === this.$route.params.postId
       );
     },
+    /**
+     * Init data and provides a fluid experience
+     * when switching from "create" to "update" route; which is what happens
+     * when we save a new post (/post/create => post/6789Y4HnfeihU9U8978)
+     * In this case we don't want user to notice this route change and
+     * bother him with loaders and such.
+     */
     async initData() {
+      console.log("initData()");
       this.initDataState = REQUEST_STATE.PENDING;
       let existingPost = null;
 
       if (this.getCurrentOperation() === "CREATE") {
+        console.log("formInit CREATE");
         formInit(formId, {
           initialValues: { ...initialFormValues }
         });
       }
       if (this.getCurrentOperation() === "UPDATE") {
-        // We just arrived from CREATE page
+        // We just arrived from CREATE page and are now on UPDATE page
         if (this.weAreComingFromPostCreation()) {
-          // well, do nothing ih this case, to make sur write CAN NOT LOOSE CONTENT
+          // well, do nothing ih this case, to make sure writer CANNOT LOOSE CONTENT
           // because of the autosave : our form already contain
-          // data and we don't want to override them at this moment
-          // by fetching existing post : just read our form values in store :)
+          // all the data and we don't want to override them at this moment
+          // by fetching the existing post : just read our form values already in store.
         }
         // we are in update mode and not coming from creation page: we need to
-        // load existing post and init form values with it.
+        // just load existing post and init our form values with it.
         if (!this.weAreComingFromPostCreation()) {
+          console.log("formInit UPDATE");
           // reset form values first, otherwise a previous post might be displayed.
           formInit(formId, {
             initialValues: { ...initialFormValues }
@@ -492,7 +501,7 @@ export default {
       let status = this.existingPost ? this.existingPost.status : "DRAFT";
       return status;
     },
-    savePost(status) {
+    savePost(status, operation) {
       if (this.savingPost.state === "PENDING") {
         console.log("Post is already currently saving");
       }
@@ -504,6 +513,9 @@ export default {
       }
       this.savingPost.state = REQUEST_STATE.PENDING;
       this.savingPost.publicationStatus = status;
+      console.log(
+        "saving post. Current operation " + this.getCurrentOperation()
+      );
       if (this.getCurrentOperation() === "CREATE") {
         const newPost = {
           ...this.preparePostFromCurrentFormValues(),
@@ -557,7 +569,7 @@ export default {
             "views.postForm.mediaUploadingModal.confirmText"
           ),
           confirmCallback: () => {
-            this.$router.replace({
+            this.$router.push({
               name: "postList",
               params: { blogId: this.$route.params.blogId }
             });
@@ -622,12 +634,12 @@ export default {
     onTitleInput(value) {
       formSetValue(formId, "title", value);
       if (value.trim() && this.getCurrentOperation() === "UPDATE") {
-        this.autoSave(value);
+        this.autoSave();
       }
     },
     onContentInput(value) {
       formSetValue(formId, "content", value);
-      this.autoSave(value);
+      this.autoSave();
     },
     onEditorReady(editor) {
       const element = document.querySelector(
@@ -667,7 +679,7 @@ export default {
         this.getCurrentOperation() === "CREATE" ||
         (this.existingPost && this.existingPost.status === "DRAFT")
       ) {
-        this.debouncedSaveDraft();
+        this.saveDraft();
       }
     },
     publish() {
@@ -696,9 +708,13 @@ export default {
      * Determine if we are currently creating a new post or updating an existing one.
      */
     getCurrentOperation() {
-      return this.$route.params.postId
-        ? OPERATION_TYPE.UPDATE
-        : OPERATION_TYPE.CREATE;
+      if (this.$route.name === "postUpdate") {
+        return "UPDATE";
+      }
+      if (this.$route.name === "postCreate") {
+        return "CREATE";
+      }
+      return null;
     },
     getExistingPost() {
       return apolloClient
@@ -750,6 +766,7 @@ export default {
       this.savePost(STATUS_ENUM.DRAFT);
     },
     saveDraft() {
+      console.log("saveDraft()" + this.getCurrentOperation());
       const errors = this.validatePostForm("SAVE_DRAFT");
       if (Object.keys(errors).length > 0) {
         return Promise.reject("Form values are invalid");
@@ -787,14 +804,15 @@ export default {
             post
           }
         })
-        .then(result => {
+        .then(async result => {
+          await apolloClient.resetStore();
           const postId = result.data.createPost._id;
           this.$store.commit("postJustCreated", postId);
           // this flag help us to display hurrah modal after creation, when post is published
           if (result.data.createPost.status === "PUBLISHED") {
             this.$store.commit("postJustPublished", postId);
           }
-          this.$router.replace({
+          this.$router.push({
             name: "postUpdate",
             params: {
               blogId: this.$route.params.blogId,
@@ -823,6 +841,7 @@ export default {
           }
         })
         .then(async result => {
+          await apolloClient.resetStore();
           this.existingPost = result.data.updatePost;
           this.changesDetected = false;
           return result;
