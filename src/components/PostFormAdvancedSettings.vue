@@ -1,5 +1,5 @@
 <template>
-  <div class="root container">
+  <div>
     <form @submit.prevent>
       <div class="columns">
         <div class="column">

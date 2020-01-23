@@ -35,17 +35,22 @@
           v-if="modal.confirmText && modal.confirmCallback"
           @click="modal.confirmCallback"
           class="button is-danger"
-        >{{ modal.confirmText }}</div>
+        >
+          {{ modal.confirmText }}
+        </div>
         <div
           v-if="modal.cancelText && modal.cancelCallback"
           @click="modal.cancelCallback"
           class="button is-primary"
-        >{{ modal.cancelText }}</div>
+        >
+          {{ modal.cancelText }}
+        </div>
       </template>
     </BulmaModal>
 
     <!-- ADVANCED SETTINGS MODAL -->
     <BulmaModal
+      v-if="initDataState === 'FINISHED_OK'"
       class="publication-settings-modal animated zoomIn"
       :fullscreen="true"
       v-model="publicationSettingsModal.show"
@@ -62,25 +67,27 @@
       </template>
       <template #title>
         <div>
-          <span class="title is-2">{{ $t("views.postForm.advancedSettingsModal.title") }}</span>
+          <span class="title is-2">{{
+            $t("views.postForm.advancedSettingsModal.title")
+          }}</span>
           <!-- PUBLISH BUTTON -->
           <button
             style="margin-right:20px;"
             class="button is-primary is-pulled-right is-large"
             @click="publish"
             :disabled="
-                savingPost.state === 'PENDING' || uploadingState === 'PENDING'
-              "
+              savingPost.state === 'PENDING' || uploadingState === 'PENDING'
+            "
             :class="{
-                'is-loading':
-                  savingPost.state === 'PENDING' &&
-                  savingPost.publicationStatus === 'PUBLISHED'
-              }"
+              'is-loading':
+                savingPost.state === 'PENDING' &&
+                savingPost.publicationStatus === 'PUBLISHED'
+            }"
           >
             {{
-            existingPost && existingPost.status === "PUBLISHED"
-            ? $t("views.postForm.publishNowButton")
-            : $t("views.postForm.publishChangesButton")
+              existingPost && existingPost.status === "PUBLISHED"
+                ? $t("views.postForm.publishNowButton")
+                : $t("views.postForm.publishChangesButton")
             }}
           </button>
 
@@ -88,16 +95,24 @@
             style="margin-right:20px;"
             @click="publicationSettingsModal.show = false"
             class="button is-pulled-right is-large"
-          >{{ $t("views.postForm.publicationCancel") }}</button>
+          >
+            {{ $t("views.postForm.publicationCancel") }}
+          </button>
         </div>
       </template>
       <template #footer />
     </BulmaModal>
 
     <!-- HURRAH MODAL FOR FIRST PUBLICATION -->
-    <BulmaModal class="hurrah-modal" v-model="publishingHurrahModal.show" :whiteFooter="true">
+    <BulmaModal
+      class="hurrah-modal"
+      v-model="publishingHurrahModal.show"
+      :whiteFooter="true"
+    >
       <template #title>
-        <div class="has-text-centered">{{ $t("views.postForm.firstPublicationHurralModal.title") }}</div>
+        <div class="has-text-centered">
+          {{ $t("views.postForm.firstPublicationHurralModal.title") }}
+        </div>
       </template>
       <template #body>
         <div class="has-text-centered">
@@ -108,14 +123,21 @@
         <button
           @click="publishingHurrahModal.show = false"
           class="button is-primary is-large"
-        >{{ $t("views.postForm.firstPublicationHurralModal.okayButton") }}</button>
+        >
+          {{ $t("views.postForm.firstPublicationHurralModal.okayButton") }}
+        </button>
       </template>
     </BulmaModal>
 
     <!-- HURRAH MODAL WHEN PUBLISHING CHANGES ON ALREADY PUBLISHED POST -->
-    <BulmaModal class="publishing-changes-modal" v-model="publishingChangesModal.show">
+    <BulmaModal
+      class="publishing-changes-modal"
+      v-model="publishingChangesModal.show"
+    >
       <template #title>
-        <div class="has-text-centered">{{ $t("views.postForm.publishChangesHurralModal.title") }}</div>
+        <div class="has-text-centered">
+          {{ $t("views.postForm.publishChangesHurralModal.title") }}
+        </div>
       </template>
       <template #body>
         <div class="has-text-centered">
@@ -126,15 +148,24 @@
         <button
           @click="publishingChangesModal.show = false"
           class="button is-primary is-large"
-        >{{ $t("views.postForm.publishChangesHurralModal.okayButton") }}</button>
+        >
+          {{ $t("views.postForm.publishChangesHurralModal.okayButton") }}
+        </button>
       </template>
     </BulmaModal>
 
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
-      <span @click="onBackToPostsClick" style="cursor:pointer" class="item tag is-large">
+      <span
+        @click="onBackToPostClick"
+        style="cursor:pointer"
+        class="item tag is-large"
+      >
         <em>
-          <img style="position:relative;height:20px !important;top:4px;" src="/images/book.png" />
+          <img
+            style="position:relative;height:20px !important;top:4px;"
+            src="/images/book.png"
+          />
           <IconBack />posts
         </em>
       </span>
@@ -146,9 +177,9 @@
       >
         <em>
           {{ $t("global." + getCurrentPublicationStatus().toLowerCase()) }}
-          <span
-            v-if="existingPost && getCurrentPublicationStatus() === 'DRAFT'"
-          >- {{ savedAt }}</span>
+          <span v-if="existingPost && getCurrentPublicationStatus() === 'DRAFT'"
+            >- {{ savedAt }}</span
+          >
         </em>
       </span>
     </portal>
@@ -162,13 +193,16 @@
         @click="saveDraft()"
         class="button is-outlined item"
         :class="{
-            'is-loading':
-              savingPost.state === 'PENDING' &&
-              savingPost.publicationStatus === 'DRAFT'
-          }"
+          'is-loading':
+            savingPost.state === 'PENDING' &&
+            savingPost.publicationStatus === 'DRAFT'
+        }"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
-      >{{ $t("views.postForm.saveDraft").toUpperCase() }}</button>
+      >
+        {{ $t("views.postForm.saveDraft").toUpperCase() }}
+        <span class="animated bounce" v-if="changesDetected">*</span>
+      </button>
 
       <!-- ADVANCED OPTIONS BUTTON -->
       <button
@@ -177,21 +211,25 @@
         class="button item is-outlined"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
-      >{{ $t("views.postForm.advancedSettingsButton").toUpperCase() }}</button>
+      >
+        {{ $t("views.postForm.advancedSettingsButton").toUpperCase() }}
+      </button>
 
       <!-- BEGIN PUBLICATION BUTTON (launch advanced settings modal) -->
       <button
         @click="showAdvancedSettings()"
         v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
-        class="button is-outlined item is-primary"
+        class="button is-outlined item is-primary is-light"
         :class="{
-            'is-loading':
-              savingPost.state === 'PENDING' &&
-              savingPost.publicationStatus === 'PUBLISHED'
-          }"
+          'is-loading':
+            savingPost.state === 'PENDING' &&
+            savingPost.publicationStatus === 'PUBLISHED'
+        }"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
-      >{{ $t("views.postForm.publicationButton").toUpperCase() }}</button>
+      >
+        {{ $t("views.postForm.publicationButton").toUpperCase() }}
+      </button>
 
       <!-- UNPUBLISH BUTTON -->
       <button
@@ -200,13 +238,15 @@
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
         class="button is-outlined"
         :class="{
-            'is-loading':
-              savingPost.state === 'PENDING' &&
-              savingPost.publicationStatus === 'DRAFT'
-          }"
+          'is-loading':
+            savingPost.state === 'PENDING' &&
+            savingPost.publicationStatus === 'DRAFT'
+        }"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
-      >{{ $t("views.postForm.unpublishButton").toUpperCase() }}</button>
+      >
+        {{ $t("views.postForm.unpublishButton").toUpperCase() }}
+      </button>
 
       <!-- PUBLISH CHANGES BUTTON -->
       <button
@@ -214,18 +254,15 @@
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
         class="button item is-outlined is-primary"
         :class="{
-            'is-loading':
-              savingPost.state === 'PENDING' &&
-              savingPost.publicationStatus === 'PUBLISHED'
-          }"
+          'is-loading':
+            savingPost.state === 'PENDING' &&
+            savingPost.publicationStatus === 'PUBLISHED'
+        }"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
       >
         {{ $t("views.postForm.publishChangesButton").toUpperCase() }}
-        <span
-          class="animated bounce"
-          v-if="changesDetected"
-        >*</span>
+        <span class="animated bounce" v-if="changesDetected">*</span>
       </button>
 
       <!--
@@ -409,7 +446,6 @@ export default {
     hotkeys.unbind("ctrl+s");
     hotkeys.unbind("command+s");
   },
-  /*
   watch: {
     "$store.state.forms.postForm.values": {
       deep: true,
@@ -418,7 +454,6 @@ export default {
       }
     }
   },
-  */
   computed: {
     savedAt() {
       return this.$t("views.postForm.savedAt {time}", {
@@ -434,6 +469,12 @@ export default {
     }
   },
   methods: {
+    onBackToPostClick() {
+      this.confirmQuittingPostForm();
+      if (this.existingPost) {
+        this.$store.commit("lastEditedPost", this.existingPost);
+      }
+    },
     weAreComingFromPostCreation() {
       return (
         this.$store.state.global.postJustCreated === this.$route.params.postId
@@ -457,17 +498,13 @@ export default {
       } else if (this.getCurrentOperation() === "UPDATE") {
         // We just arrived from CREATE page and are now on UPDATE page
         if (this.weAreComingFromPostCreation()) {
-          // well, do nothing ih this case, to make sure writer CANNOT LOOSE CONTENT
-          // because of the autosave : our form already contain
-          // all the data and we don't want to override them at this moment
+          // well, do NOT fetch existing post ih this case, to make sure writer CANNOT LOOSE CONTENT
+          // because of the autosave : our form already contains
+          // all the data so we don't want to override them at this moment
           // by fetching the existing post : just read our form values already in store.
         }
         // we are not coming from CREATE page, we land directly on UPDATE page.
         if (!this.weAreComingFromPostCreation()) {
-          // reset form values first, otherwise a previous post might be displayed.
-          formInit(formId, {
-            initialValues: { ...initialFormValues }
-          });
           try {
             existingPost = await this.getExistingPost();
             const formValues = {
@@ -515,6 +552,7 @@ export default {
         return this.createPost(newPost)
           .then(result => {
             this.savingPost.state = REQUEST_STATE.FINISHED_OK;
+            this.$store.commit("lastEditedPost", this.existingPost);
             return result;
           })
           .catch(error => {
@@ -534,6 +572,7 @@ export default {
         return this.updatePost(post)
           .then(result => {
             this.savingPost.state = REQUEST_STATE.FINISHED_OK;
+            this.$store.commit("lastEditedPost", this.existingPost);
             return result;
           })
           .catch(error => {
@@ -546,7 +585,7 @@ export default {
           });
       }
     },
-    onBackToPostsClick() {
+    confirmQuittingPostForm() {
       if (this.mediaLoadingCounter > 0) {
         this.modal = {
           show: true,
@@ -605,10 +644,18 @@ export default {
     },
     detectChanges() {
       const modifiedValues = {};
+      // get current form values
       const formValues = formGetValues(formId);
-      const formInitialValues = formGetInitialValues(formId);
+      // get previously saved value.
+      let formPreviousValues;
+      if (this.getCurrentOperation() === "CREATE") {
+        formPreviousValues = formGetInitialValues(formId);
+      }
+      if (this.getCurrentOperation() === "UPDATE") {
+        formPreviousValues = this.prepareFormValuesFromPost(this.existingPost);
+      }
       Object.keys(formValues).forEach(key => {
-        if (formValues[key] !== formInitialValues[key]) {
+        if (formValues[key] !== formPreviousValues[key]) {
           modifiedValues[key] = true;
         } else {
           modifiedValues[key] = false;

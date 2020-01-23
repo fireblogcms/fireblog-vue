@@ -7,9 +7,14 @@ const moduleGlobal = {
   state: {
     postJustCreated: null, // will be a postId
     postJustPublished: null, // will be a postId
+    // full post object for last edited post
+    lastEditedPost: null,
     notification: null
   },
   mutations: {
+    lastEditedPost(state, post) {
+      state.lastEditedPost = post;
+    },
     postJustCreated(state, postId) {
       state.postJustCreated = postId;
     },
