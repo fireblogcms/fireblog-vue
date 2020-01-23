@@ -1,7 +1,7 @@
 <template>
   <div>
-    <AppLoader v-if="false && initDataState === 'PENDING'" />
-    <div class="post-form-wrapper">
+    <AppLoader v-if="initDataState === 'PENDING'" />
+    <div v-if="initDataState === 'FINISHED_OK'" class="post-form-wrapper">
       <pre v-if="false">{{ formGetValues(formId) }}</pre>
       <form @submit.prevent>
         <textarea-autosize
@@ -349,11 +349,9 @@ export default {
     };
   },
   mounted() {
-    console.log("mounted");
     this.initData();
   },
   created() {
-    console.log("created");
     this.formId = formId;
     this.formGetValue = formGetValue;
     this.formGetValues = formGetValues;
@@ -363,7 +361,6 @@ export default {
     this.debouncedAutoSaveDraft = debounce(this.saveDraft, 3000);
 
     window.onbeforeunload = function(e) {
-      this.debouncedAutoSaveDraft.cancel();
       return "Are you sure you want to quit ?";
     };
 
@@ -450,17 +447,14 @@ export default {
      * bother him with loaders and such.
      */
     async initData() {
-      console.log("initData()");
       this.initDataState = REQUEST_STATE.PENDING;
       let existingPost = null;
 
       if (this.getCurrentOperation() === "CREATE") {
-        console.log("formInit CREATE", initialFormValues);
         formInit(formId, {
           initialValues: { ...initialFormValues }
         });
-      }
-      if (this.getCurrentOperation() === "UPDATE") {
+      } else if (this.getCurrentOperation() === "UPDATE") {
         // We just arrived from CREATE page and are now on UPDATE page
         if (this.weAreComingFromPostCreation()) {
           // well, do nothing ih this case, to make sure writer CANNOT LOOSE CONTENT
@@ -468,10 +462,8 @@ export default {
           // all the data and we don't want to override them at this moment
           // by fetching the existing post : just read our form values already in store.
         }
-        // we are in update mode and not coming from creation page: we need to
-        // just load existing post and init our form values with it.
+        // we are not coming from CREATE page, we land directly on UPDATE page.
         if (!this.weAreComingFromPostCreation()) {
-          console.log("formInit UPDATE");
           // reset form values first, otherwise a previous post might be displayed.
           formInit(formId, {
             initialValues: { ...initialFormValues }
@@ -515,9 +507,6 @@ export default {
       }
       this.savingPost.state = REQUEST_STATE.PENDING;
       this.savingPost.publicationStatus = status;
-      console.log(
-        "saving post. Current operation " + this.getCurrentOperation()
-      );
       if (this.getCurrentOperation() === "CREATE") {
         const newPost = {
           ...this.preparePostFromCurrentFormValues(),
@@ -635,13 +624,14 @@ export default {
     },
     onTitleInput(value) {
       formSetValue(formId, "title", value);
+      // on CREATE, do not autosave until user has entered some content.
       if (value.trim() && this.getCurrentOperation() === "UPDATE") {
-        this.autoSave();
+        this.debouncedAutoSaveDraft();
       }
     },
     onContentInput(value) {
       formSetValue(formId, "content", value);
-      this.autoSave();
+      this.debouncedAutoSaveDraft();
     },
     onEditorReady(editor) {
       const element = document.querySelector(
