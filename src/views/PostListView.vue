@@ -294,7 +294,7 @@ export default {
           return result;
         });
     },
-    getPostsPublished(fetchPolicy = "cache-first") {
+    getPostsPublished(fetchPolicy = "no-cache") {
       this.postsPublishedRequestState = REQUEST_STATE.PENDING;
       return apolloClient
         .query({
@@ -316,7 +316,7 @@ export default {
           throw new Error(error);
         });
     },
-    getPostsDraft(fetchPolicy = "cache-first") {
+    getPostsDraft(fetchPolicy = "no-cache") {
       this.postsDraftRequestState = REQUEST_STATE.PENDING;
       return apolloClient
         .query({
@@ -346,7 +346,6 @@ export default {
           variables: { id: post._id }
         })
         .then(async result => {
-          apolloClient.clearStore();
           this.deletePostRequestState = REQUEST_STATE.FINISHED_OK;
           const post = result.data.deletePost;
         })
