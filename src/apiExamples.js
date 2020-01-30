@@ -58,7 +58,10 @@ export default ({ slug, locale }) => [
     title
     content
     publishedAt
-    image
+    image {
+      url
+      alt
+    }
     author {
       name
       email
