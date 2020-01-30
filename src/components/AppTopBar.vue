@@ -18,7 +18,7 @@
             -->
           </portal-target>
         </div>
-        <div class="column column-right is-7">
+        <div class="column column-right is-8">
           <portal-target name="topbar-right">
             <!--
             This component can be located anywhere in your App.
@@ -37,19 +37,16 @@
             >
               <div class="dropdown-trigger" @click="dropdownMenuActive = !dropdownMenuActive">
                 <div class="dropdown-trigger-image" aria-haspopup="true">
-                  <img
-                    v-if="me.picture"
-                    :src="me.picture"
-                    style="height: 40px;border-radius:20px"
-                  />
+                  <img v-if="me.picture" :src="me.picture" style="height: 40px;border-radius:20px" />
                   <span v-if="!me.picture">{{ me.name }}</span>
                 </div>
               </div>
               <div class="dropdown-menu" role="menu">
                 <div class="dropdown-content">
-                  <router-link :to="{ name: 'blogList' }" class="dropdown-item dropdown-item-important">
-                    My blogs
-                  </router-link>
+                  <router-link
+                    :to="{ name: 'blogList' }"
+                    class="dropdown-item dropdown-item-important"
+                  >My blogs</router-link>
                   <router-link
                     v-for="edge in me.blogs.edges"
                     :key="edge.node._id"
@@ -58,17 +55,16 @@
                       params: { blogId: edge.node._id }
                     }"
                     class="dropdown-item"
-                    >{{ edge.node.name }}</router-link
-                  >
+                  >{{ edge.node.name }}</router-link>
                   <hr class="dropdown-divider" />
                   <router-link
                     :to="{ name: 'profile' }"
                     class="dropdown-item"
-                    >{{ $t("topbar.accountMenu.myAccount") }}</router-link
-                  >
-                  <router-link :to="{ name: 'logout' }" class="dropdown-item">
-                    {{ $t("topbar.accountMenu.logout") }}
-                  </router-link>
+                  >{{ $t("topbar.accountMenu.myAccount") }}</router-link>
+                  <router-link
+                    :to="{ name: 'logout' }"
+                    class="dropdown-item"
+                  >{{ $t("topbar.accountMenu.logout") }}</router-link>
                 </div>
               </div>
             </div>
@@ -85,29 +81,21 @@
           :href="blogApiUrl"
           target="_blank"
           class="button is-primary is-pulled-right"
-          >{{ $t("apiModal.openGraphQLExplorer") }}</a
-        >
+        >{{ $t("apiModal.openGraphQLExplorer") }}</a>
         <button
           :href="blogApiUrl"
           target="_blank"
           @click="showApiModal = false"
           class="button is-pulled-right"
           style="margin-right:20px;"
-        >
-          {{ $t("global.close") }}
-        </button>
+        >{{ $t("global.close") }}</button>
       </template>
       <template #body>
         <div class="container">
           <h2 class="title is-4">GraphQL endpoint</h2>
           <div class="field">
             <div class="control">
-              <input
-                readonly="true"
-                class="input"
-                type="text"
-                :value="blogApiUrl"
-              />
+              <input readonly="true" class="input" type="text" :value="blogApiUrl" />
             </div>
           </div>
           <div
@@ -123,8 +111,7 @@
                 :href="`${blogApiUrl}?query=${encodeURI(example.snippet)}`"
                 target="_blank"
                 class="button is-info is-outlined"
-                >{{ $t("apiModal.tryItButton") }}</a
-              >
+              >{{ $t("apiModal.tryItButton") }}</a>
             </h2>
             <pre class="locale-graphql"><code>{{example.snippet}}</code></pre>
           </div>
