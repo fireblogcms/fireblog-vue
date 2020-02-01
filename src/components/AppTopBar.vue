@@ -1,71 +1,69 @@
 <template>
   <div class="topbar" :class="`route-${$route.name}`">
     <div class="container">
-      <div class="columns">
-        <div class="column">
-          <figure
-            @click="onLogoClick"
-            style="float:left;cursor:pointer;margin-right:20px;"
-            class="image"
+      <div class="topbar-left">
+        <figure
+          @click="onLogoClick"
+          style="float:left;cursor:pointer;margin-right:20px;"
+          class="image"
+        >
+          <img style="width:60px" src="/logo-solo.png" alt />
+        </figure>
+
+        <portal-target name="topbar-left">
+          <!--
+            This component can be located anywhere in your App.
+            The slot content of the above portal component will be rendered here.
+          -->
+        </portal-target>
+      </div>
+      <div class="topbar-right">
+        <portal-target name="topbar-right">
+          <!--
+            This component can be located anywhere in your App.
+            The slot content of the above portal component will be rendered here.
+          -->
+        </portal-target>
+
+        <ApiButton v-if="apiHelpIsVisible()" @click="onApiClick" />
+
+        <!--Dropdown menu with profile, blog list, logout link etc-->
+        <div v-if="me" class="item" id="profile-dropdown">
+          <div
+            v-click-outside="onProfileDropdownOutsideClick"
+            class="dropdown is-right"
+            :class="{ 'is-active': dropdownMenuActive }"
           >
-            <img style="width:60px" src="/logo-solo.png" alt />
-          </figure>
-
-          <portal-target name="topbar-left">
-            <!--
-            This component can be located anywhere in your App.
-            The slot content of the above portal component will be rendered here.
-            -->
-          </portal-target>
-        </div>
-        <div class="column column-right is-8">
-          <portal-target name="topbar-right">
-            <!--
-            This component can be located anywhere in your App.
-            The slot content of the above portal component will be rendered here.
-            -->
-          </portal-target>
-
-          <ApiButton v-if="apiHelpIsVisible()" @click="onApiClick" />
-
-          <!--Dropdown menu with profile, blog list, logout link etc-->
-          <div v-if="me" class="item" id="profile-dropdown">
-            <div
-              v-click-outside="onProfileDropdownOutsideClick"
-              class="dropdown is-right"
-              :class="{ 'is-active': dropdownMenuActive }"
-            >
-              <div class="dropdown-trigger" @click="dropdownMenuActive = !dropdownMenuActive">
-                <div class="dropdown-trigger-image" aria-haspopup="true">
-                  <img v-if="me.picture" :src="me.picture" style="height: 40px;border-radius:20px" />
-                  <span v-if="!me.picture">{{ me.name }}</span>
-                </div>
+            <div class="dropdown-trigger" @click="dropdownMenuActive = !dropdownMenuActive">
+              <div class="dropdown-trigger-image" aria-haspopup="true">
+                <img v-if="me.picture" :src="me.picture" style="height: 40px;border-radius:20px" />
+                <span v-if="!me.picture">{{ me.name }}</span>
               </div>
-              <div class="dropdown-menu" role="menu">
-                <div class="dropdown-content">
-                  <router-link
-                    :to="{ name: 'blogList' }"
-                    class="dropdown-item dropdown-item-important"
-                  >My blogs</router-link>
-                  <router-link
-                    v-for="edge in me.blogs.edges"
-                    :key="edge.node._id"
-                    :to="{
+            </div>
+            <div class="dropdown-menu" role="menu">
+              <div class="dropdown-content">
+                <router-link
+                  :to="{ name: 'blogList' }"
+                  class="dropdown-item dropdown-item-important"
+                >My blogs</router-link>
+                <router-link
+                  v-for="edge in me.blogs.edges"
+                  :key="edge.node._id"
+                  :to="{
                       name: 'postList',
                       params: { blogId: edge.node._id }
                     }"
-                    class="dropdown-item"
-                  >{{ edge.node.name }}</router-link>
-                  <hr class="dropdown-divider" />
-                  <router-link
-                    :to="{ name: 'profile' }"
-                    class="dropdown-item"
-                  >{{ $t("topbar.accountMenu.myAccount") }}</router-link>
-                  <router-link
-                    :to="{ name: 'logout' }"
-                    class="dropdown-item"
-                  >{{ $t("topbar.accountMenu.logout") }}</router-link>
-                </div>
+                  class="dropdown-item"
+                >{{ edge.node.name }}</router-link>
+                <hr class="dropdown-divider" />
+                <router-link
+                  :to="{ name: 'profile' }"
+                  class="dropdown-item"
+                >{{ $t("topbar.accountMenu.myAccount") }}</router-link>
+                <router-link
+                  :to="{ name: 'logout' }"
+                  class="dropdown-item"
+                >{{ $t("topbar.accountMenu.logout") }}</router-link>
               </div>
             </div>
           </div>
@@ -218,17 +216,23 @@ export default {
   padding: 1rem;
   min-height: 78px;
 }
-.topbar .vue-portal-target {
-  display: inline;
-}
-.topbar .item {
-  margin-right: 1rem;
-}
-.topbar .column-right {
+.topbar > .container {
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
+
+.topbar-left {
+  display: flex;
+}
+
+.topbar-right {
+  display: flex;
+}
+
+.topbar .item {
+  margin-right: 10px;
+}
+
 .dropdown-trigger:hover {
   cursor: pointer;
 }
