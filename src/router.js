@@ -6,7 +6,6 @@ import BlogCreateView from "./views/BlogCreateView";
 import BlogListView from "./views/BlogListView";
 import BlogSettingsView from "./views/BlogSettingsView";
 import PostListView from "./views/PostListView";
-import PostProofreadView from "./views/PostProofreadView";
 import NotFoundView from "./views/NotFoundView";
 import Auth0CallbackView from "./views/Auth0CallbackView.vue";
 import LogoutView from "./views/LogoutView";
@@ -70,11 +69,6 @@ const router = new Router({
       path: "/blog/:blogId/post/:postId",
       name: "postUpdate",
       component: PostFormView
-    },
-    {
-      path: "/blog/:blogId/post/:postId/proofread",
-      name: "postProofread",
-      component: PostProofreadView
     },
     {
       path: "/profile",
