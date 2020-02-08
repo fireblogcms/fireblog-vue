@@ -161,8 +161,8 @@ export const createBlogMutation = gql`
 
 export const savePostMutation = gql`
   ${FullPostFragment}
-  mutation savePostMutation($post: savePostInput!) {
-    savePost(post: $post) {
+  mutation savePostMutation($blog: ID!, $post: savePostInput!) {
+    savePost(blog: $blog, post: $post) {
       ...FullPostFragment
     }
   }

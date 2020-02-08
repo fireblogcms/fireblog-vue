@@ -5,7 +5,7 @@ Vue.use(Vuex);
 
 const moduleGlobal = {
   state: {
-    postJustCreated: null, // will be a postId
+    comingFromPostCreateRoute: null, // will be a postId
     postJustPublished: null, // will be a postId
     // full post object for last edited post
     lastEditedPost: null,
@@ -15,8 +15,8 @@ const moduleGlobal = {
     lastEditedPost(state, post) {
       state.lastEditedPost = post;
     },
-    postJustCreated(state, postId) {
-      state.postJustCreated = postId;
+    comingFromPostCreateRoute(state, postId) {
+      state.comingFromPostCreateRoute = postId;
     },
     // we display a special message the first a post is published.
     postJustPublished(state, postId) {

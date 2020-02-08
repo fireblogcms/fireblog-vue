@@ -13,13 +13,18 @@
       </div>
     </template>
     <!-- else, display the blog list -->
-    <template v-if="initDataState === 'FINISHED_OK' && blogs && blogs.edges.length > 0">
+    <template
+      v-if="initDataState === 'FINISHED_OK' && blogs && blogs.edges.length > 0"
+    >
       <div class="container">
         <div>
           <header style="padding: 0 1rem 2rem 1rem">
             <div class="columns">
               <div class="column">
-                <h1 style="padding-bottom:2rem;" class="title is-2 is-uppercase">
+                <h1
+                  style="padding-bottom:2rem;"
+                  class="title is-2 is-uppercase"
+                >
                   <img
                     height="70"
                     style="position:relative;top:25px;padding-right:1rem"
@@ -41,8 +46,14 @@
           </header>
           <div class="container">
             <div class="columns">
-              <div class="column is-three-fifths is-offset-one-fifth centered-column">
-                <div v-for="(edge, index) in blogs.edges" class="card" :key="edge.node._id">
+              <div
+                class="column is-three-fifths is-offset-one-fifth centered-column"
+              >
+                <div
+                  v-for="(edge, index) in blogs.edges"
+                  class="card"
+                  :key="edge.node._id"
+                >
                   <div
                     class="card-image"
                     :style="blogCardStyles(edge, index)"
@@ -50,14 +61,18 @@
                   >
                     <div class="blog-infos">
                       <h2 class="title">{{ edge.node.name }}</h2>
-                      <h3 class="subtitle" v-if="edge.node.description">{{ edge.node.description }}</h3>
+                      <h3 class="subtitle" v-if="edge.node.description">
+                        {{ edge.node.description }}
+                      </h3>
                     </div>
                   </div>
                   <div class="card-content">
                     <div>
-                      <p
-                        class="plans-name"
-                      >Plan : firestarter ({{ $t("views.blogList.oneMonthFreeTrial") }})</p>
+                      <p class="plans-name">
+                        Plan : firestarter ({{
+                          $t("views.blogList.oneMonthFreeTrial")
+                        }})
+                      </p>
                       <ApiUsage :blogId="edge.node._id"></ApiUsage>
                     </div>
                     <button
@@ -65,7 +80,9 @@
                       @click="onSettingsClick(edge.node, $event)"
                     >
                       <span class="settings-icon"></span>
-                      <span>{{ $t("views.blogList.settingsButton").toUpperCase() }}</span>
+                      <span>{{
+                        $t("views.blogList.settingsButton").toUpperCase()
+                      }}</span>
                     </button>
                   </div>
                 </div>

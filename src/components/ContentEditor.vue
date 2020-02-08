@@ -10,10 +10,13 @@ import Editor from "fireblog-ckeditor";
 import ContentEditor from "./ContentEditor";
 import { ckeditorS3UploadAdapterPlugin } from "../utils/ckeditorS3UploadAdapterPlugin";
 import { REQUEST_STATE } from "../utils/helpers";
-let editorInstance;
 
 export default {
   props: {
+    value: {
+      type: String,
+      default: ""
+    },
     autosave: {
       type: Function,
       default: data => {
@@ -58,7 +61,7 @@ export default {
       ],
       autosave: {
         save: editor => {
-          this.autosave(editor.getData());
+          return this.autosave(editor.getData());
         }
       }
     })
@@ -66,11 +69,10 @@ export default {
         const wordCountPlugin = editor.plugins.get("WordCount");
         const wordCountWrapper = document.getElementById("word-count");
         wordCountWrapper.appendChild(wordCountPlugin.wordCountContainer);
-        editorInstance = editor;
+        editor.setData(this.value);
         // The "change" event is fired whenever a change is made in the editor.
-        editorInstance.model.document.on("change:data", () => {
-          this.$emit("change", editorInstance.getData());
-          //console.log("change", editorInstance.getData());
+        editor.model.document.on("change:data", () => {
+          this.$emit("change", editor.getData());
         });
       })
       .catch(error => {

@@ -49,7 +49,7 @@ Store.registerModule(formsStoreKey, moduleForm);
  *    Those are the values we want to submit..
  * @param {*} param0
  */
-export function formInit(
+export function vuexFormInit(
   formId,
   { initialValues, onFormValueChange = () => {} }
 ) {
@@ -74,39 +74,39 @@ export function formInit(
  * ============================================
  */
 
-export function formGetValue(formId, name) {
+export function vuexFormGetValue(formId, name) {
   return Store.state[formsStoreKey][formId].values[name];
 }
 
-export function formGetValues(formId) {
+export function vuexFormGetValues(formId) {
   return Store.state[formsStoreKey][formId].values;
 }
 
-export function formGetInitialValues(formId) {
+export function vuexFormGetInitialValues(formId) {
   return Store.state[formsStoreKey][formId].initialValues;
 }
 
-export function formGetError(formId, name) {
+export function vuexFormGetError(formId, name) {
   return Store.state[formsStoreKey][formId].errors[name];
 }
 
-export function formGetErrors(formId) {
+export function vuexFormGetErrors(formId) {
   return Store.state[formsStoreKey][formId].errors;
 }
 
-export function formSetValue(formId, name, value) {
+export function vuexFormSetValue(formId, name, value) {
   Store.commit("formSetValue", { formId, name, value });
   Store.state[formsStoreKey][formId].onFormValueChange({ name, value });
 }
 
-export function formSetError(formId, name, value) {
+export function vuexFormSetError(formId, name, value) {
   Store.commit("formSetError", { formId, name, value });
 }
 
-export function formSetErrors(formId, errors = {}) {
+export function vuexFormSetErrors(formId, errors = {}) {
   Store.commit("formSetErrors", { formId, errors });
 }
 
-export function formResetErrors(formId) {
+export function vuexFormResetErrors(formId) {
   Store.commit("formSetErrors", { formId, errors: {} });
 }
