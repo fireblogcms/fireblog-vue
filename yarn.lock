@@ -688,6 +688,17 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
+"@ckeditor/ckeditor5-code-block@^16.0.0":
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-code-block/-/ckeditor5-code-block-16.0.0.tgz#207f4eef708e931df3b883b3f0de9e7db4246233"
+  integrity sha512-QegxC4FdY+TDnQrzxcvSF/9m0uJD2jJJe2sq0QsKHp5LJOXMu6rzCGfWQdADTHMUhFyBWwmCw4e3xYupd/rwIw==
+  dependencies:
+    "@ckeditor/ckeditor5-core" "^16.0.0"
+    "@ckeditor/ckeditor5-enter" "^16.0.0"
+    "@ckeditor/ckeditor5-ui" "^16.0.0"
+    "@ckeditor/ckeditor5-utils" "^16.0.0"
+    lodash-es "^4.17.10"
+
 "@ckeditor/ckeditor5-core@^16.0.0":
   version "16.0.0"
   resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-core/-/ckeditor5-core-16.0.0.tgz#c9ff37b883ca293ac5998e04a89e2ac613042e09"
@@ -704,6 +715,15 @@
   dependencies:
     "@ckeditor/ckeditor5-utils" "^16.0.0"
     lodash-es "^4.17.10"
+
+"@ckeditor/ckeditor5-enter@^16.0.0":
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-enter/-/ckeditor5-enter-16.0.0.tgz#55f63463ce8d7031adb675f8b574d1db45efe292"
+  integrity sha512-LZjXu4RMpFFU7zudggTO/bfHtQEz7pYN1zYr/amDTR2zwsQs0jlTSh2UFtJHz4bVM10KliYKqUYcC1w97d9Qow==
+  dependencies:
+    "@ckeditor/ckeditor5-core" "^16.0.0"
+    "@ckeditor/ckeditor5-engine" "^16.0.0"
+    "@ckeditor/ckeditor5-utils" "^16.0.0"
 
 "@ckeditor/ckeditor5-ui@^16.0.0":
   version "16.0.0"
@@ -4062,8 +4082,9 @@ find-up@^4.0.0, find-up@^4.1.0:
 
 "fireblog-ckeditor@git+ssh://git@github.com/fireblogcms/fireblog-ckeditor#master":
   version "1.0.0"
-  resolved "git+ssh://git@github.com/fireblogcms/fireblog-ckeditor#5a653ed734657318470a276fb245cf46f601b7ac"
+  resolved "git+ssh://git@github.com/fireblogcms/fireblog-ckeditor#f3aabdf3dbb6909141576e0aefa8538a9a587c25"
   dependencies:
+    "@ckeditor/ckeditor5-code-block" "^16.0.0"
     "@ckeditor/ckeditor5-word-count" "^16.0.0"
 
 flat-cache@^1.2.1:
