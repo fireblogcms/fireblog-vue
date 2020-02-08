@@ -1,7 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
-import PostFormCreateView from "./views/PostFormCreateView";
-import PostFormUpdateView from "./views/PostFormUpdateView";
+import PostFormView from "./views/PostFormView";
 import ProfileView from "./views/ProfileView";
 import BlogCreateView from "./views/BlogCreateView";
 import BlogListView from "./views/BlogListView";
@@ -64,12 +63,12 @@ const router = new Router({
     {
       path: "/blog/:blogId/post/create",
       name: "postCreate",
-      component: PostFormCreateView
+      component: PostFormView
     },
     {
       path: "/blog/:blogId/post/:postId",
       name: "postUpdate",
-      component: PostFormUpdateView
+      component: PostFormView
     },
     {
       path: "/profile",

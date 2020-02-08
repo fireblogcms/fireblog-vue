@@ -7,14 +7,18 @@
           <div class="field featured-image">
             <div class="label-wrapper">
               <label>
-                <strong>{{ $t("views.postForm.fields.featuredImage.label")}}</strong>
+                <strong>{{
+                  $t("views.postForm.fields.featuredImage.label")
+                }}</strong>
               </label>
-              <p class="help">{{ $t("views.postForm.fields.featuredImage.help")}}</p>
+              <p class="help">
+                {{ $t("views.postForm.fields.featuredImage.help") }}
+              </p>
             </div>
             <S3ImageUpload
               :blogId="$route.params.blogId"
               @onUploadingStateChange="onUploadingStateChange"
-              :initialImage="formGetValue(formId, 'image')"
+              :initialImage="vuexFormGetValue(formId, 'image')"
               @onUploaded="onUploaded"
             />
           </div>
@@ -25,7 +29,9 @@
             <div class="label-wrapper">
               <label>
                 <strong>{{ $t("views.postForm.fields.teaser.label") }}</strong>
-                <p class="help">{{ $t("views.postForm.fields.teaser.help") }}</p>
+                <p class="help">
+                  {{ $t("views.postForm.fields.teaser.help") }}
+                </p>
               </label>
             </div>
             <div class="control">
@@ -33,16 +39,16 @@
               <textarea
                 maxlength="250"
                 @input="onTeaserInput"
-                :value="formGetValue(formId, 'teaser')"
+                :value="vuexFormGetValue(formId, 'teaser')"
                 class="textarea is-medium"
-                :class="{'is-danger': formGetError(formId, 'teaser')}"
+                :class="{ 'is-danger': vuexFormGetError(formId, 'teaser') }"
                 placeholder="Teaser"
               ></textarea>
             </div>
           </div>
           <SlugField
-            :value="formGetValue(formId, 'slug')"
-            :error="formGetError(formId, 'slug')"
+            :value="vuexFormGetValue(formId, 'slug')"
+            :error="vuexFormGetError(formId, 'slug')"
             :showToggleLockButton="false"
             :locked="false"
             @input="onSlugInput"
@@ -82,7 +88,11 @@
 <script>
 import S3ImageUpload from "./S3ImageUpload";
 import { REQUEST_STATE } from "../utils/helpers";
-import { formGetValue, formGetError, formSetValue } from "../utils/vuexForm";
+import {
+  vuexFormGetValue,
+  vuexFormGetError,
+  vuexFormSetValue
+} from "../utils/vuexForm";
 import SlugField from "./SlugField";
 
 const formId = "postForm";
@@ -106,19 +116,19 @@ export default {
     return data;
   },
   created() {
-    this.formGetError = formGetError;
-    this.formGetValue = formGetValue;
+    this.vuexFormGetError = vuexFormGetError;
+    this.vuexFormGetValue = vuexFormGetValue;
     this.formId = formId;
   },
   methods: {
     onUploaded(fileUrl) {
-      formSetValue(formId, "image", fileUrl);
+      vuexFormSetValue(formId, "image", fileUrl);
     },
     onTeaserInput(event) {
-      formSetValue(formId, "teaser", event.target.value);
+      vuexFormSetValue(formId, "teaser", event.target.value);
     },
     onSlugInput({ source, slug }) {
-      formSetValue(formId, "slug", slug);
+      vuexFormSetValue(formId, "slug", slug);
     },
     onUploadingStateChange(state) {
       this.uploadingState = state;

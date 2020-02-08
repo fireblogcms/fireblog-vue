@@ -1,6 +1,5 @@
 <template>
   <div class="post-form">
-    {{ savingPost }}
     <AppLoader v-if="loadingAsyncData" />
     <form v-if="!loadingAsyncData" @submit.prevent>
       <div class="post-form__field-title">
@@ -16,16 +15,36 @@
           :value="vuexFormGetValue('postForm', 'title')"
         />
       </div>
+      <!--      -->
       <ContentEditor
         ref="contentEditor"
-        :value="vuexFormGetValue('postForm', 'content')"
         class="post-form__field-editor"
         :autosave="contentAutosave"
+        :value="vuexFormGetValue('postForm', 'content')"
+        :wordCountDomElement="$refs.wordcount"
       />
       <button class="button is-primary" type="submit" @click="onSaveClick">
         Sauvegarder
       </button>
     </form>
+
+    <!-- TOPBAR LEFT BUTTONS -->
+    <portal to="topbar-left">
+      <span
+        @click="onBackToPostClick"
+        style="cursor:pointer"
+        class="item tag is-large"
+      >
+        <em>
+          <img
+            style="position:relative;height:20px !important;top:4px;"
+            src="/images/book.png"
+          />
+          <IconBack />posts
+        </em>
+      </span>
+    </portal>
+    <!-- END TOPBAR LEFT BUTTONS -->
 
     <!-- TOPBAR RIGHT BUTTONS -->
     <portal to="topbar-right">
@@ -107,6 +126,22 @@
       </button>
       -->
     </portal>
+    <footer class="post-form__document-infos">
+      <div class="container">
+        <div v-if="existingPost" class="item">
+          {{ $t("global." + getPostStatus().toLowerCase()) }}
+          <span v-if="savingPost.state === 'PENDING'">Saving...</span>
+          <span v-if="savingPost.state !== 'PENDING'"
+            >-{{
+              $t("views.postForm.savedAt {time}", {
+                time: formatDate(new Date(existingPost.updatedAt), "long")
+              })
+            }}
+          </span>
+        </div>
+        <div ref="wordcount" class="post-form__document-infos__word-count" />
+      </div>
+    </footer>
   </div>
 </template>
 
@@ -115,6 +150,9 @@ import Editor from "fireblog-ckeditor";
 import ContentEditor from "./ContentEditor";
 import { ckeditorS3UploadAdapterPlugin } from "../utils/ckeditorS3UploadAdapterPlugin";
 import AppLoader from "../components/AppLoader";
+import hotkeys from "hotkeys-js";
+import IconBack from "./IconBack";
+
 import {
   REQUEST_STATE,
   getUser,
@@ -123,7 +161,9 @@ import {
   ckeditorIframelyMediaProvider,
   appNotification,
   validateSlug,
-  resetAppNotifications
+  resetAppNotifications,
+  toast,
+  formatDate
 } from "../utils/helpers";
 import {
   vuexFormInit,
@@ -152,22 +192,8 @@ const formId = "postForm";
 export default {
   components: {
     ContentEditor,
-    AppLoader
-  },
-  props: {
-    // UPDATE or CREATE.
-    operation: {
-      type: String,
-      required: true
-    },
-    blogId: {
-      type: String,
-      required: true
-    },
-    postId: {
-      type: String,
-      default: null
-    }
+    AppLoader,
+    IconBack
   },
   data() {
     return {
@@ -186,32 +212,55 @@ export default {
     this.formId = formId;
     this.vuexFormGetValue = vuexFormGetValue;
     this.vuexFormGetValues = vuexFormGetValues;
+    this.formatDate = formatDate;
     this.init();
   },
   mounted() {
-    console.log("postForm - mounted");
-  },
-  watch: {
-    post: {
-      handler: function(post) {
-        this.postFormInit();
+    // allow ctrl+s to be detected on inputs and textareas
+    hotkeys.filter = () => true;
+    // save shortcuts
+    hotkeys("ctrl+s,command+s", (event, handler) => {
+      // Prevent the default refresh event under WINDOWS system
+      event.preventDefault();
+      if (this.existingPost && this.existingPost.status === "PUBLISHED") {
+        this.publish();
+      } else {
+        this.saveAsDraft()
+          .then(() => {
+            toast(this, this.$t("views.postForm.draftSaved"));
+          })
+          .catch(e => {
+            console.log("Cannot be saved: form validation failed: " + e);
+          });
       }
-    }
+      return false;
+    });
+  },
+  beforeDestroy() {
+    window.onbeforeunload = null;
+    hotkeys.unbind("ctrl+s");
+    hotkeys.unbind("command+s");
   },
   methods: {
     async init() {
-      if (this.operation === "CREATE") {
+      // no existing post, we are in CREATE MODE
+      if (this.$route.name === "postCreate") {
         this.postFormInit(initialFormValues);
       }
+
+      // UPDATE MODE
       // if update mode, we need to load existing post first.
       // UNLESS we are coming from create page after first saving : all our values
       // are already in our form so no need to rerender all the component.
       // Yhis is because we DONT want to interrupt writing in this particular case,
       // this could lead to data loss when autosave is enabled.
-      if (this.operation === "UPDATE") {
+      if (this.$route.name === "postUpdate") {
         if (!this.comingFromPostCreateRoute()) {
           this.loadingAsyncData = true;
-          this.existingPost = await this.getExistingPost(this.postId);
+          this.existingPost = await this.getExistingPost(
+            this.$route.params.postId
+          );
+          this.$store.commit("lastVisitedPost", this.existingPost);
           this.loadingAsyncData = false;
           const formValues = this.prepareFormValuesFromPost(this.existingPost);
           this.postFormInit(formValues);
@@ -222,9 +271,15 @@ export default {
       vuexFormSetValue(formId, "title", value);
     },
     contentAutosave(value) {
+      // @FIXME : l'autosave peut techniquement se déclencher sur un AUTRE POST
+      // avec les valeurs d'un autre post :-/
       // we hack ckeditor autosave to update our form value
       // We are not using "change" event  because it is triggered on every key stroke.
       vuexFormSetValue(formId, "content", value);
+      /*
+      if (!["postCreate", "postUpdate"].includes(this.$route.name)) {
+        Promise.reject("autosave is allow only on post Form.");
+      }
       // save post automatically as DRAFT when post is DRAFT
       if (
         vuexFormGetValue(formId, "title").trim() &&
@@ -234,6 +289,7 @@ export default {
       } else {
         return Promise.resolve("nothing to save.");
       }
+      */
     },
     // when user click "enter" in the title input,
     // automically move cursor to the textarea
@@ -244,6 +300,7 @@ export default {
       vuexFormInit(formId, {
         initialValues: { ...formValues },
         onFormValueChange: ({ name, value }) => {
+          console.log("form value changed !");
           // @TODO that's the right place to autosave something on the server,
           // with some deboucing :).
           //console.log("name:", name, "value changed:", value);
@@ -272,9 +329,10 @@ export default {
         teaser: vuexFormGetValue(formId, "teaser"),
         image: vuexFormGetValue(formId, "image")
       };
-      // if there is an id, API will know this is an UPDATE and not a CREATE operation
-      if (this.post && this.post._id) {
-        postToSave._id = this.post._id;
+      // API will know that this is an UPDATE and not a CREATE
+      // if we add _id key to our post.
+      if (this.$route.params.postId) {
+        postToSave._id = this.$route.params.postId;
       }
       return postToSave;
     },
@@ -295,24 +353,25 @@ export default {
           mutation: savePostMutation,
           variables: {
             post,
-            blog: this.blogId
+            blog: this.$route.params.blogId
           }
         })
         .then(async result => {
           const post = result.data.savePost;
+          this.existingPost = post;
+          this.$store.commit("lastVisitedPost", post);
           this.savingPost = {
             state: REQUEST_STATE.FINISHED_OK,
             status
           };
-          // if post does not exist yet in database, we are in create mode.
-          // And we want to redirect user to its update url in a fluid way
-          // while he is still writing.
-          if (!this.post) {
+          // redirect to update route if we were on "postCreate" route,
+          // Now that our post exist for sure in database
+          if (this.$route.name === "postCreate") {
             this.$router.replace(
               {
                 name: "postUpdate",
                 params: {
-                  blogId: this.blogId,
+                  blogId: this.$route.params.blogId,
                   postId: post._id
                 }
               },
@@ -329,7 +388,7 @@ export default {
             status
           };
           appNotification(
-            "😞Sorry, an error occured while creating post : " + error,
+            "😞Sorry, an error occured while saving post, maybe an issue with the server. Please copy paste your whole text to an outside location, to ensure your work is not lost! ",
             "error"
           );
           throw new Error(error);
@@ -342,7 +401,7 @@ export default {
           variables: { _id: id }
         })
         .then(result => {
-          this.post = result.data.post;
+          this.existingPost = result.data.post;
           return result.data.post;
         })
         .catch(error => {
@@ -354,24 +413,41 @@ export default {
       return status;
     },
     comingFromPostCreateRoute() {
-      return this.$store.state.global.comingFromPostCreateRoute === this.postId;
+      return (
+        this.$store.state.global.comingFromPostCreateRoute ===
+        this.$route.params.postId
+      );
     },
     saveAsDraft() {
-      this.savePost("DRAFT");
+      return this.savePost("DRAFT");
+    },
+    onBackToPostClick() {
+      this.$router.push({
+        name: "postList"
+      });
     }
   }
 };
 </script>
 
 <style>
+.post-form {
+  margin-top: 30px;
+}
+
 .post-form__field-title {
   text-align: center;
-  max-width: 812px;
+  position: relative;
+  background: white;
+  top: 10px;
+  padding: 30px;
+  padding-bottom: 0px;
+  max-width: 880px;
   margin: auto;
+  box-shadow: 1px 0px 1px 0px rgba(0, 0, 0, 0.05);
 }
 .post-form__field-title textarea {
   width: 100%;
-
   font-family: Roslindale, serif;
   text-align: left;
   font-size: 53px;
@@ -382,10 +458,49 @@ export default {
 
 .post-form__field-editor #editor {
   min-height: 100vh;
-  max-width: 812px;
+  max-width: 880px;
   padding: 32px;
-  box-shadow: 1px 1px 4px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.05);
   margin: auto;
   background: white;
+}
+.post-form__field-editor .ck-content {
+  border: none !important;
+  border-color: none;
+  outline: none !important;
+  border-color: #a0c0e4;
+  border-radius: 2px;
+  outline: none;
+  padding: 1px;
+  margin: 0;
+  resize: none; /*remove the resize handle on the bottom right*/
+  line-height: 1.8;
+}
+
+.post-form__document-infos {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  background-color: white;
+  text-align: right;
+  font-size: 11px;
+  padding: 5px;
+}
+
+.post-form__document-infos .container {
+  display: flex;
+  justify-content: space-between;
+  width: 800px;
+}
+
+.post-form__document-infos__word-count .ck-word-count {
+  display: flex;
+  justify-content: space-between;
+}
+
+.post-form__document-infos__word-count .ck-word-count .ck-word-count__words {
+  padding-right: 5px;
+  margin-right: 5px;
+  border-right: solid silver 1px;
 }
 </style>

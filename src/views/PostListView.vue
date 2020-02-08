@@ -221,8 +221,8 @@ export default {
     next(vm => {
       if (from.name === "postUpdate" || from.name === "postCreate") {
         if (
-          vm.$store.state.global.lastEditedPost &&
-          vm.$store.state.global.lastEditedPost.status === "DRAFT"
+          vm.$store.state.global.lastVisitedPost &&
+          vm.$store.state.global.lastVisitedPost.status === "DRAFT"
         ) {
           vm.activeStatus = "DRAFT";
         }

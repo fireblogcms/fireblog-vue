@@ -1,6 +1,11 @@
 <template>
-  <AppPanel style="margin-top:40px;margin-bottom:40px;padding:40px;" class="container is-small">
-    <h2 class="title is-2">{{ $t("views.blogSettings.technicalSettingsForm.title") }}</h2>
+  <AppPanel
+    style="margin-top:40px;margin-bottom:40px;padding:40px;"
+    class="container is-small"
+  >
+    <h2 class="title is-2">
+      {{ $t("views.blogSettings.technicalSettingsForm.title") }}
+    </h2>
     <form @submit.prevent="onFormSubmit">
       <!--
       <div class="field">
@@ -12,9 +17,9 @@
         
         <div class="control">
           <input
-            :value="formGetValue(formId, 'url')"
-            @input="formSetValue(formId, 'url', $event.target.value)"
-            :class="{'is-danger': formGetError(formId, 'url')}"
+            :value="vuexFormGetValue(formId, 'url')"
+            @input="vuexFormSetValue(formId, 'url', $event.target.value)"
+            :class="{'is-danger': vuexFormGetError(formId, 'url')}"
             class="input is-large"
             type="text"
             maxlength="100"
@@ -22,20 +27,28 @@
         </div>
         <p
           class="help is-danger"
-          v-if="formGetError(formId, 'url')"
-        >{{ formGetError(formId, 'url')}}</p>
+          v-if="vuexFormGetError(formId, 'url')"
+        >{{ vuexFormGetError(formId, 'url')}}</p>
       </div>
       -->
       <div class="field">
         <div class="label-wrapper">
-          <label
-            class="label"
-          >{{$t("views.blogSettings.technicalSettingsForm.fields.webhooks.label") }}</label>
-          <p class="help">{{$t("views.blogSettings.technicalSettingsForm.fields.webhooks.help")}}</p>
+          <label class="label">{{
+            $t("views.blogSettings.technicalSettingsForm.fields.webhooks.label")
+          }}</label>
+          <p class="help">
+            {{
+              $t(
+                "views.blogSettings.technicalSettingsForm.fields.webhooks.help"
+              )
+            }}
+          </p>
         </div>
         <textarea
-          :value="formGetValue(formId,'staticBuildWebhooks')"
-          @input="formSetValue(formId, 'staticBuildWebhooks', $event.target.value)"
+          :value="vuexFormGetValue(formId, 'staticBuildWebhooks')"
+          @input="
+            vuexFormSetValue(formId, 'staticBuildWebhooks', $event.target.value)
+          "
           class="textarea"
           placeholder="e.g. Hello world"
         ></textarea>
@@ -44,10 +57,12 @@
         <button
           style="margin-top:20px;"
           class="button is-outlined is-primary is-large"
-          :class="{'is-loading': savingState === 'PENDING'}"
+          :class="{ 'is-loading': savingState === 'PENDING' }"
           :disabled="savingState === 'PENDING'"
           type="submit"
-        >{{ $t("views.blogSettings.technicalSettingsForm.saveButton") }}</button>
+        >
+          {{ $t("views.blogSettings.technicalSettingsForm.saveButton") }}
+        </button>
       </div>
     </form>
   </AppPanel>
@@ -55,13 +70,13 @@
 
 <script>
 import {
-  formInit,
-  formSetValue,
-  formSetError,
-  formGetValue,
-  formGetError,
-  formGetErrors,
-  formResetErrors
+  vuexFormInit,
+  vuexFormSetValue,
+  vuexFormSetError,
+  vuexFormGetValue,
+  vuexFormGetError,
+  vuexFormGetErrors,
+  vuexFormResetErrors
 } from "../utils/vuexForm";
 import { REQUEST_STATE, appNotification } from "../utils/helpers";
 import AppPanel from "../components/AppPanel";
@@ -91,11 +106,11 @@ export default {
   },
   created() {
     this.formId = formId;
-    this.formSetValue = formSetValue;
-    this.formGetValue = formGetValue;
-    this.formGetError = formGetError;
+    this.vuexFormSetValue = vuexFormSetValue;
+    this.vuexFormGetValue = vuexFormGetValue;
+    this.vuexFormGetError = vuexFormGetError;
 
-    formInit(formId, {
+    vuexFormInit(formId, {
       initialValues: {
         url: this.blog.url ? this.blog.url : initialFormValues.url,
         staticBuildWebhooks: this.blog.webhooks
@@ -110,7 +125,7 @@ export default {
       const update = {
         _id: this.$route.params.blogId,
         webhooks,
-        url: formGetValue(formId, "url")
+        url: vuexFormGetValue(formId, "url")
       };
       this.savingState = REQUEST_STATE.PENDING;
       this.updateBlog(update)
@@ -131,7 +146,10 @@ export default {
     },
     prepareWebhooksValuesForSave() {
       const webhooks = [];
-      const webhooksFieldValue = formGetValue(formId, "staticBuildWebhooks");
+      const webhooksFieldValue = vuexFormGetValue(
+        formId,
+        "staticBuildWebhooks"
+      );
       if (webhooksFieldValue.trim()) {
         let staticBuildWebhooksArray = webhooksFieldValue.split(",");
         //remove extra spaces

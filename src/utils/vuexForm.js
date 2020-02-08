@@ -17,19 +17,19 @@ export const formsStoreKey = "forms";
 export const moduleForm = {
   state: {},
   mutations: {
-    formInit(state, { formId, form }) {
+    vuexFormInit(state, { formId, form }) {
       Vue.set(state, formId, form);
     },
-    formSetValue(state, { formId, name, value }) {
+    vuexFormSetValue(state, { formId, name, value }) {
       Vue.set(state[formId].values, name, value);
     },
-    formSetValues(state, { formId, values }) {
+    vuexFormSetValues(state, { formId, values }) {
       Vue.set(state[formId], "values", values);
     },
-    formSetError(state, { formId, name, value }) {
+    vuexFormSetError(state, { formId, name, value }) {
       Vue.set(state[formId].errors, name, value);
     },
-    formSetErrors(state, { formId, errors }) {
+    vuexFormSetErrors(state, { formId, errors }) {
       Vue.set(state[formId], "errors", errors);
     }
   },
@@ -53,7 +53,7 @@ export function vuexFormInit(
   formId,
   { initialValues, onFormValueChange = () => {} }
 ) {
-  Store.commit("formInit", {
+  Store.commit("vuexFormInit", {
     formId,
     form: {
       errors: {},
@@ -95,18 +95,18 @@ export function vuexFormGetErrors(formId) {
 }
 
 export function vuexFormSetValue(formId, name, value) {
-  Store.commit("formSetValue", { formId, name, value });
+  Store.commit("vuexFormSetValue", { formId, name, value });
   Store.state[formsStoreKey][formId].onFormValueChange({ name, value });
 }
 
 export function vuexFormSetError(formId, name, value) {
-  Store.commit("formSetError", { formId, name, value });
+  Store.commit("vuexFormSetError", { formId, name, value });
 }
 
 export function vuexFormSetErrors(formId, errors = {}) {
-  Store.commit("formSetErrors", { formId, errors });
+  Store.commit("vuexFormSetErrors", { formId, errors });
 }
 
 export function vuexFormResetErrors(formId) {
-  Store.commit("formSetErrors", { formId, errors: {} });
+  Store.commit("vuexFormSetErrors", { formId, errors: {} });
 }

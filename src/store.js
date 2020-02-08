@@ -8,12 +8,12 @@ const moduleGlobal = {
     comingFromPostCreateRoute: null, // will be a postId
     postJustPublished: null, // will be a postId
     // full post object for last edited post
-    lastEditedPost: null,
+    lastVisitedPost: null,
     notification: null
   },
   mutations: {
-    lastEditedPost(state, post) {
-      state.lastEditedPost = post;
+    lastVisitedPost(state, post) {
+      state.lastVisitedPost = post;
     },
     comingFromPostCreateRoute(state, postId) {
       state.comingFromPostCreateRoute = postId;

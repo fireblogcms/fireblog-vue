@@ -11,7 +11,7 @@
 
 <script>
 import { getBlog, REQUEST_STATE, appNotification } from "../utils/helpers";
-import { formInitData } from "../utils/vuexForm";
+import { vuexFormInitData } from "../utils/vuexForm";
 import AppLoader from "../components/AppLoader";
 import apolloClient from "../utils/apolloClient";
 import BlogSettingsGeneral from "../components/BlogSettingsGeneral";

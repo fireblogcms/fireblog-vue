@@ -1,7 +1,6 @@
 <template>
   <div>
     <div class="content" id="editor" ref="editor" />
-    <div id="word-count" />
   </div>
 </template>
 
@@ -22,6 +21,10 @@ export default {
       default: data => {
         return Promise.resolve(data);
       }
+    },
+    wordCountDomElement: {
+      type: HTMLElement,
+      required: true
     }
   },
   mounted() {
@@ -66,14 +69,18 @@ export default {
       }
     })
       .then(editor => {
+        const element = document.querySelector(
+          ".ck-block-toolbar-button .ck-tooltip__text"
+        );
+        const toolTip = "Add media";
+        element.innerHTML = toolTip;
+        element.innerText = toolTip;
+
         const wordCountPlugin = editor.plugins.get("WordCount");
-        const wordCountWrapper = document.getElementById("word-count");
+        const wordCountWrapper = this.wordCountDomElement;
         wordCountWrapper.appendChild(wordCountPlugin.wordCountContainer);
+
         editor.setData(this.value);
-        // The "change" event is fired whenever a change is made in the editor.
-        editor.model.document.on("change:data", () => {
-          this.$emit("change", editor.getData());
-        });
       })
       .catch(error => {
         console.error(error);
