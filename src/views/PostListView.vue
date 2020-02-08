@@ -29,7 +29,7 @@
             </div>
             <div class="column column-right">
               <button
-                class="button is-large is-primary is-box-shadowed"
+                class="button is-large is-outline is-primary"
                 v-if="!isFirstPost"
                 @click="
                   $router.push({

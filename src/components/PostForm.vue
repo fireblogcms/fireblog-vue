@@ -59,7 +59,7 @@
         {{ $t("views.postForm.saveDraft").toUpperCase() }}
       </button>
 
-      <!-- ADVANCED OPTIONS BUTTON
+      <!-- ADVANCED OPTIONS BUTTON -->
       <button
         @click="showAdvancedSettings()"
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
@@ -69,13 +69,12 @@
       >
         {{ $t("views.postForm.advancedSettingsButton").toUpperCase() }}
       </button>
-       -->
 
       <!-- BEGIN PUBLICATION BUTTON (launch advanced settings modal)       -->
       <button
         @click="showAdvancedSettings()"
         v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
-        class="button is-outlined item is-primary is-light"
+        class="button item is-primary is-light"
         :class="{
           'is-loading':
             savingPost.state === 'PENDING' &&
@@ -87,7 +86,7 @@
         {{ $t("views.postForm.publicationButton").toUpperCase() }}
       </button>
 
-      <!-- UNPUBLISH BUTTON 
+      <!-- UNPUBLISH BUTTON  -->
       <button
         @click="onUnpublishClick()"
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
@@ -102,9 +101,8 @@
       >
         {{ $t("views.postForm.unpublishButton").toUpperCase() }}
       </button>
-      -->
 
-      <!-- PUBLISH CHANGES BUTTON 
+      <!-- PUBLISH CHANGES BUTTON -->
       <button
         @click="publish()"
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
@@ -118,17 +116,16 @@
         type="submit"
       >
         {{ $t("views.postForm.publishChangesButton").toUpperCase() }}
-        <span class="animated bounce" v-if="changesDetected">*</span>
       </button>
-      -->
     </portal>
     <footer class="post-form__document-infos">
       <div class="container">
-        <div v-if="existingPost" class="item">
+        <div class="item">
           {{ $t("global." + getPostStatus().toLowerCase()) }}
           <span v-if="savingPost.state === 'PENDING'">Saving...</span>
-          <span v-if="savingPost.state !== 'PENDING'"
-            >-{{
+          <span v-if="savingPost.state !== 'PENDING' && existingPost"
+            >-
+            {{
               $t("views.postForm.savedAt {time}", {
                 time: formatDate(new Date(existingPost.updatedAt), "long")
               })
@@ -138,6 +135,132 @@
         <div ref="wordcount" class="post-form__document-infos__word-count" />
       </div>
     </footer>
+
+    <BulmaModal v-model="modal.show">
+      <template #title>{{ modal.title }}</template>
+      <template #body>{{ modal.content }}</template>
+      <template #footer>
+        <div
+          v-if="modal.confirmText && modal.confirmCallback"
+          @click="modal.confirmCallback"
+          class="button is-danger"
+        >
+          {{ modal.confirmText }}
+        </div>
+        <div
+          v-if="modal.cancelText && modal.cancelCallback"
+          @click="modal.cancelCallback"
+          class="button is-primary"
+        >
+          {{ modal.cancelText }}
+        </div>
+      </template>
+    </BulmaModal>
+
+    <!-- ADVANCED SETTINGS MODAL -->
+    <BulmaModal
+      v-if="!loadingAsyncData"
+      class="publication-settings-modal animated zoomIn"
+      :fullscreen="true"
+      v-model="publicationSettingsModal.show"
+    >
+      <template #body>
+        <div class="container">
+          <PostFormAdvancedSettings
+            :existingPost="existingPost"
+            :savingPost="savingPost"
+            @onCancelClick="publicationSettingsModal.show = false"
+            @onUploadingStateChange="state => (uploadingState = state)"
+          />
+        </div>
+      </template>
+      <template #title>
+        <div>
+          <span class="title is-2">
+            {{ $t("views.postForm.advancedSettingsModal.title") }}
+          </span>
+          <!-- PUBLISH BUTTON -->
+          <button
+            class="button is-primary is-pulled-right is-large"
+            @click="publish"
+            :disabled="
+              savingPost.state === 'PENDING' || uploadingState === 'PENDING'
+            "
+            :class="{
+              'is-loading':
+                savingPost.state === 'PENDING' &&
+                savingPost.publicationStatus === 'PUBLISHED'
+            }"
+          >
+            {{
+              existingPost && existingPost.status === "PUBLISHED"
+                ? $t("views.postForm.publishNowButton")
+                : $t("views.postForm.publishChangesButton")
+            }}
+          </button>
+
+          <button
+            style="margin-right:20px;"
+            @click="publicationSettingsModal.show = false"
+            class="button is-pulled-right is-large"
+          >
+            {{ $t("views.postForm.publicationCancel") }}
+          </button>
+        </div>
+      </template>
+      <template #footer />
+    </BulmaModal>
+
+    <!-- HURRAH MODAL FOR FIRST PUBLICATION -->
+    <BulmaModal
+      class="hurrah-modal"
+      v-model="publishingHurrahModal.show"
+      :whiteFooter="true"
+    >
+      <template #title>
+        <div class="has-text-centered">
+          {{ $t("views.postForm.firstPublicationHurralModal.title") }}
+        </div>
+      </template>
+      <template #body>
+        <div class="has-text-centered">
+          <img style="border-radius:5px" :src="getRandomHurrahGif()" />
+        </div>
+      </template>
+      <template class="has-text-centered" #footer>
+        <button
+          @click="publishingHurrahModal.show = false"
+          class="button is-primary is-large"
+        >
+          {{ $t("views.postForm.firstPublicationHurralModal.okayButton") }}
+        </button>
+      </template>
+    </BulmaModal>
+
+    <!-- HURRAH MODAL WHEN PUBLISHING CHANGES ON ALREADY PUBLISHED POST -->
+    <BulmaModal
+      class="publishing-changes-modal"
+      v-model="publishingChangesModal.show"
+    >
+      <template #title>
+        <div class="has-text-centered">
+          {{ $t("views.postForm.publishChangesHurralModal.title") }}
+        </div>
+      </template>
+      <template #body>
+        <div class="has-text-centered">
+          <img style="border-radius:5px" :src="getRandomHurrahGif()" />
+        </div>
+      </template>
+      <template class="has-text-centered" #footer>
+        <button
+          @click="publishingChangesModal.show = false"
+          class="button is-primary is-large"
+        >
+          {{ $t("views.postForm.publishChangesHurralModal.okayButton") }}
+        </button>
+      </template>
+    </BulmaModal>
   </div>
 </template>
 
@@ -174,6 +297,9 @@ import {
 import { savePostMutation } from "../utils/queries";
 import apolloClient from "../utils/apolloClient";
 import { getPostQuery } from "../utils/queries";
+import PostFormAdvancedSettings from "./PostFormAdvancedSettings";
+import striptags from "striptags";
+import BulmaModal from "./BulmaModal";
 
 let initialFormValues = {
   title: "",
@@ -183,13 +309,22 @@ let initialFormValues = {
   image: null
 };
 
+const randomHurraGifs = [
+  "https://media.giphy.com/media/7IW6Jnw29TYmgkuu3M/giphy.gif",
+  "https://media.giphy.com/media/Wq2xnn2ZnwiTtoD6Qk/giphy.gif",
+  "http://giphygifs.s3.amazonaws.com/media/7vfhdCIn13zm8/giphy.gif",
+  "https://66.media.tumblr.com/b53447fe9897178a2b4957a1ab32f6be/tumblr_n19pczDWI21ss6wowo9_250.gifv"
+];
+
 const formId = "postForm";
 
 export default {
   components: {
     ContentEditor,
     AppLoader,
-    IconBack
+    IconBack,
+    PostFormAdvancedSettings,
+    BulmaModal
   },
   data() {
     return {
@@ -197,9 +332,28 @@ export default {
       // only for postUpdate route.
       existingPost: null,
       loadingAsyncData: false,
+      uploadingState: REQUEST_STATE.NOT_STARTED,
       savingPost: {
         state: REQUEST_STATE.NOT_STARTED,
         status: null
+      },
+      modal: {
+        show: false,
+        title: null,
+        content: null,
+        confirmText: null,
+        confirmCallback: () => {},
+        cancelText: null,
+        cancelCallback: () => {}
+      },
+      publicationSettingsModal: {
+        show: false
+      },
+      publishingHurrahModal: {
+        show: false
+      },
+      publishingChangesModal: {
+        show: false
       }
     };
   },
@@ -333,6 +487,13 @@ export default {
       return postToSave;
     },
     savePost(status) {
+      if (!vuexFormGetValue(formId, "title").trim()) {
+        appNotification(
+          this.$t("views.postForm.fields.title.errors.required"),
+          "error"
+        );
+        return;
+      }
       this.savingPost = {
         state: REQUEST_STATE.PENDING,
         status
@@ -380,10 +541,7 @@ export default {
             state: REQUEST_STATE.FINISHED_ERROR,
             status
           };
-          appNotification(
-            "😞Sorry, an error occured while saving post, maybe an issue with the server. Please copy paste your whole text to an outside location, to ensure your work is not lost! ",
-            "error"
-          );
+          appNotification(error, "error");
           throw new Error(error);
         });
     },
@@ -418,6 +576,108 @@ export default {
       this.$router.push({
         name: "postList"
       });
+    },
+    publish() {
+      // disabled saving post as DRAFT, as post is now published.
+
+      // If article is published or re-published from draft, we display a "Hurrah modal".
+      // If we only publish changes on a already published articles, we have a more
+      // sober modal.
+      let publishingChanges = false;
+      if (this.existingPost && this.existingPost.status === "PUBLISHED") {
+        publishingChanges = true;
+      }
+      const errors = this.validatePostForm("PUBLISH");
+      if (Object.keys(errors).length > 0) {
+        return false;
+      } else {
+        // make sure there is not an autoSaveAsDraft triggere
+        this.savePost("PUBLISHED").then(() => {
+          this.publicationSettingsModal.show = false;
+          if (publishingChanges === true) {
+            this.publishingChangesModal.show = true;
+          } else {
+            this.publishingHurrahModal.show = true;
+          }
+        });
+      }
+    },
+    /**
+     * Open publication modal. This is NOT the final publish operation.
+     */
+    showAdvancedSettings() {
+      // we need at least the title to autocomplete the slug field
+      if (!vuexFormGetValue(formId, "title").trim()) {
+        appNotification(
+          this.$t("views.postForm.fields.title.errors.required"),
+          "error"
+        );
+      }
+      if (this.mediaLoadingCounter > 0) {
+        this.showMediaCurrentlyLoadingModal();
+      } else {
+        if (vuexFormGetValue(formId, "slug").trim().length === 0) {
+          vuexFormSetValue(
+            formId,
+            "slug",
+            createSlug(vuexFormGetValue(formId, "title"))
+          );
+        }
+        // pre-fill teaser fied with the first sentence of the text.
+        if (vuexFormGetValue(formId, "teaser").trim().length === 0) {
+          const teaserSuggestion = striptags(
+            vuexFormGetValue(formId, "content").substr(0, 250)
+          );
+          vuexFormSetValue(formId, "teaser", teaserSuggestion);
+        }
+        this.publicationSettingsModal.show = true;
+      }
+    },
+    onUnpublishClick() {
+      this.savePost("DRAFT");
+    },
+    getRandomHurrahGif() {
+      return randomHurraGifs[
+        Math.floor(Math.floor(Math.random() * randomHurraGifs.length))
+      ];
+    },
+    /**
+     * Validation might differ according to what we are doing. Possibles types are:
+     * - SAVE_DRAFT
+     * - PUBLISH
+     */
+    validatePostForm(action = "SAVE_DRAFT") {
+      vuexFormResetErrors(formId);
+      resetAppNotifications();
+      // TITLE
+      if (!vuexFormGetValue(formId, "title").trim()) {
+        let message = this.$t("views.postForm.fields.title.errors.required");
+        vuexFormSetError(formId, "title", message);
+        appNotification(message, "error");
+      }
+      if (action === "PUBLISH") {
+        if (!validateSlug(vuexFormGetValue(formId, "slug"))) {
+          // SLUG
+          let message = this.$t(
+            "components.slugField.errors.invalidCharacters"
+          );
+          vuexFormSetError(formId, "slug", message);
+          appNotification(message, "error");
+        }
+        if (!vuexFormGetValue(formId, "slug").trim()) {
+          let message = this.$t("components.slugField.errors.required");
+          vuexFormSetError(formId, "slug", message);
+          appNotification(message, "error");
+        }
+        // TEASER
+        if (!vuexFormGetValue(formId, "teaser").trim()) {
+          let message = this.$t("views.postForm.fields.teaser.errors.required");
+          vuexFormSetError(formId, "teaser", message);
+          appNotification(message, "error");
+        }
+      }
+      const errors = vuexFormGetErrors(formId);
+      return errors;
     }
   }
 };
