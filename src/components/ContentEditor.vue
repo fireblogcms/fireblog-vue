@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="content" id="editor" ref="editor" />
+    <div class="content is-medium" id="editor" ref="editor" />
   </div>
 </template>
 

@@ -710,9 +710,12 @@ export default {
 }
 
 .post-form__field-editor #editor {
+  color: #222;
+  font-family: Source Sans Pro, Helvetica Neue, Helvetica, Arial, sans-serif;
   min-height: 100vh;
   max-width: 880px;
   padding: 32px;
+  padding-top: 0;
   box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.05);
   margin: auto;
   background: white;
