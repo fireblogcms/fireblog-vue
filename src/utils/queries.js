@@ -159,6 +159,15 @@ export const createBlogMutation = gql`
   }
 `;
 
+export const savePostMutation = gql`
+  ${FullPostFragment}
+  mutation savePostMutation($post: savePostInput!) {
+    savePost(post: $post) {
+      ...FullPostFragment
+    }
+  }
+`;
+
 export const createPostMutation = gql`
   ${FullPostFragment}
   mutation createPostMutation($post: CreatePostInput!) {

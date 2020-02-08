@@ -49,20 +49,21 @@ Store.registerModule(formsStoreKey, moduleForm);
  *    Those are the values we want to submit..
  * @param {*} param0
  */
-export function formInitData({ initialValues }) {
-  return {
-    errors: {},
-    values: {
-      ...initialValues
-    },
-    initialValues
-  };
-}
-
-export function formInit(formId, { initialValues }) {
+export function formInit(
+  formId,
+  { initialValues, onFormValueChange = () => {} }
+) {
   Store.commit("formInit", {
     formId,
-    form: formInitData({ initialValues })
+    form: {
+      errors: {},
+      values: {
+        ...initialValues
+      },
+      initialValues,
+      // this callback is called every time a form value has changed.
+      onFormValueChange
+    }
   });
 }
 
@@ -95,6 +96,7 @@ export function formGetErrors(formId) {
 
 export function formSetValue(formId, name, value) {
   Store.commit("formSetValue", { formId, name, value });
+  Store.state[formsStoreKey][formId].onFormValueChange({ name, value });
 }
 
 export function formSetError(formId, name, value) {
