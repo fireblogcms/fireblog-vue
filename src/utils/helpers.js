@@ -120,6 +120,9 @@ export function getUser() {
         throw new Error("No logged in user found");
       }
       return result.data.me;
+    })
+    .catch(e => {
+      console.log("MERDE", e);
     });
 }
 

@@ -77,6 +77,13 @@ function checkEnvVars(exampleEnvFile) {
 checkEnvVars(".env.example");
 
 module.exports = {
+  css: {
+    loaderOptions: {
+      sass: {
+        prependData: `@import "@/scss/_variables.scss";`
+      }
+    }
+  },
   configureWebpack: {
     // Merged into the final Webpack config
     plugins: [

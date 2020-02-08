@@ -5,26 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="/app.css" />
-
     <title>Fireblog</title>
     <script
       async
       charset="utf-8"
       src="//cdn.iframe.ly/embed.js?api_key=<%= VUE_APP_IFRAMELY_API_KEY %>"
     ></script>
-    <script type="text/javascript">
-      window.$crisp = [];
-      window.$crisp.push(["safe", true]);
-      window.CRISP_WEBSITE_ID = "50a3b992-5d14-4c54-bbf4-224410d36e53";
-      (function() {
-        d = document;
-        s = d.createElement("script");
-        s.src = "https://client.crisp.chat/l.js";
-        s.async = 1;
-        d.getElementsByTagName("head")[0].appendChild(s);
-      })();
-    </script>
   </head>
 
   <body>
@@ -38,5 +24,17 @@
     <!-- built files will be auto injected -->
     <!--<script src="https://kit.fontawesome.com/2e71344bf2.js"></script>-->
     <!-- <script src="https://js.stripe.com/v3/"></script>-->
+    <script type="text/javascript">
+      window.$crisp = [];
+      window.$crisp.push(["safe", true]);
+      window.CRISP_WEBSITE_ID = "50a3b992-5d14-4c54-bbf4-224410d36e53";
+      (function() {
+        d = document;
+        s = d.createElement("script");
+        s.src = "https://client.crisp.chat/l.js";
+        s.async = 1;
+        d.getElementsByTagName("head")[0].appendChild(s);
+      })();
+    </script>
   </body>
 </html>

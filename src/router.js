@@ -1,17 +1,17 @@
 import Vue from "vue";
 import Router from "vue-router";
-import PostFormView from "./views/PostFormView";
-import ProfileView from "./views/ProfileView";
-import BlogCreateView from "./views/BlogCreateView";
-import BlogListView from "./views/BlogListView";
-import BlogSettingsView from "./views/BlogSettingsView";
-import PostListView from "./views/PostListView";
-import NotFoundView from "./views/NotFoundView";
-import Auth0CallbackView from "./views/Auth0CallbackView.vue";
-import LogoutView from "./views/LogoutView";
-import LoginView from "./views/LoginView";
-import { auth0Client } from "./utils/auth";
 import Store from "./store";
+import { auth0Client } from "./utils/auth";
+const PostFormView = () => import("./views/PostFormView");
+const ProfileView = () => import("./views/ProfileView");
+const BlogCreateView = () => import("./views/BlogCreateView");
+const BlogListView = () => import("./views/BlogListView");
+const BlogSettingsView = () => import("./views/BlogSettingsView");
+const PostListView = () => import("./views/PostListView");
+const NotFoundView = () => import("./views/NotFoundView");
+const Auth0CallbackView = () => import("./views/Auth0CallbackView.vue");
+const LogoutView = () => import("./views/LogoutView");
+const LoginView = () => import("./views/LoginView");
 
 Vue.use(Router);
 

@@ -3,13 +3,13 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import VueTextareaAutosize from "vue-textarea-autosize";
-import "bulma/css/bulma.css";
 import PortalVue from "portal-vue";
 import vClickOutside from "v-click-outside";
 import "animate.css/animate.min.css";
 import VueLazyload from "vue-lazyload";
 import i18n from "./i18n/index";
 import Toasted from "vue-toasted";
+import "./scss/main.scss";
 
 Vue.use(VueLazyload);
 Vue.use(vClickOutside);

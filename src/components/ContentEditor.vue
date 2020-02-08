@@ -23,7 +23,7 @@ export default {
       }
     },
     wordCountDomElement: {
-      type: HTMLElement,
+      type: Function,
       required: true
     }
   },
@@ -77,7 +77,7 @@ export default {
         element.innerText = toolTip;
 
         const wordCountPlugin = editor.plugins.get("WordCount");
-        const wordCountWrapper = this.wordCountDomElement;
+        const wordCountWrapper = this.wordCountDomElement();
         wordCountWrapper.appendChild(wordCountPlugin.wordCountContainer);
 
         editor.setData(this.value);

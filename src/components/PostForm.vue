@@ -21,11 +21,8 @@
         class="post-form__field-editor"
         :autosave="contentAutosave"
         :value="vuexFormGetValue('postForm', 'content')"
-        :wordCountDomElement="$refs.wordcount"
+        :wordCountDomElement="() => $refs.wordcount"
       />
-      <button class="button is-primary" type="submit" @click="onSaveClick">
-        Sauvegarder
-      </button>
     </form>
 
     <!-- TOPBAR LEFT BUTTONS -->
@@ -74,7 +71,7 @@
       </button>
        -->
 
-      <!-- BEGIN PUBLICATION BUTTON (launch advanced settings modal) 
+      <!-- BEGIN PUBLICATION BUTTON (launch advanced settings modal)       -->
       <button
         @click="showAdvancedSettings()"
         v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
@@ -89,7 +86,6 @@
       >
         {{ $t("views.postForm.publicationButton").toUpperCase() }}
       </button>
-      -->
 
       <!-- UNPUBLISH BUTTON 
       <button
@@ -335,9 +331,6 @@ export default {
         postToSave._id = this.$route.params.postId;
       }
       return postToSave;
-    },
-    onSaveClick() {
-      this.savePost("DRAFT");
     },
     savePost(status) {
       this.savingPost = {
