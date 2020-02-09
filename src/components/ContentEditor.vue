@@ -8,7 +8,7 @@
 import Editor from "fireblog-ckeditor";
 import ContentEditor from "./ContentEditor";
 import { ckeditorS3UploadAdapterPlugin } from "../utils/ckeditorS3UploadAdapterPlugin";
-import { REQUEST_STATE } from "../utils/helpers";
+import { REQUEST_STATE, ckeditorIframelyMediaProvider } from "../utils/helpers";
 
 export default {
   props: {
@@ -62,6 +62,10 @@ export default {
         save: editor => {
           return this.autosave(editor.getData());
         }
+      },
+      mediaEmbed: {
+        previewsInData: false,
+        providers: [ckeditorIframelyMediaProvider()]
       }
     })
       .then(editor => {
