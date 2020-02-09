@@ -76,11 +76,8 @@
         </template>
         <template v-if="!isFirstPost">
           <section class="container">
-            <div
-              class="tabs is-boxed is-medium"
-              style="position:relative;margin-bottom:0;"
-            >
-              <ul style="border-bottom:0">
+            <div class="tabs is-boxed is-medium">
+              <ul>
                 <li
                   @click="onStatusClick('PUBLISHED')"
                   :class="{ 'is-active': activeStatus == 'PUBLISHED' }"
@@ -407,6 +404,12 @@ export default {
 </script>
 
 <style scoped>
+.app-panel {
+  border-top: none;
+}
+.tabs {
+  margin-bottom: 0;
+}
 #app .tabs li a {
   text-decoration: none;
 }
