@@ -77,8 +77,7 @@
         class="button item is-primary is-light"
         :class="{
           'is-loading':
-            savingPost.state === 'PENDING' &&
-            savingPost.status === 'PUBLISHED'
+            savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'
         }"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
@@ -93,8 +92,7 @@
         class="button item is-outlined"
         :class="{
           'is-loading':
-            savingPost.state === 'PENDING' &&
-            savingPost.status === 'DRAFT'
+            savingPost.state === 'PENDING' && savingPost.status === 'DRAFT'
         }"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
@@ -109,8 +107,7 @@
         class="button item is-outlined is-primary"
         :class="{
           'is-loading':
-            savingPost.state === 'PENDING' &&
-            savingPost.status === 'PUBLISHED'
+            savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'
         }"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
@@ -193,7 +190,7 @@
             }"
           >
             {{
-              existingPost && existingPost.status === "PUBLISHED"
+              existingPost && existingPost.status === "DRAFT"
                 ? $t("views.postForm.publishNowButton")
                 : $t("views.postForm.publishChangesButton")
             }}
