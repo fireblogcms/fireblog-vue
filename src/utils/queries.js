@@ -108,28 +108,13 @@ export const getPostQuery = gql`
   }
 `;
 
-export const getPostsByStatusQuery = gql`
-  ${FullPostFragment}
-  query getPostsByStatusQuery($blog: ID!, $status: PostPublicationStatus!) {
-    posts(blog: $blog, filter: { status: $status }, last: ${postsPerPage}) {
-      totalCount
-      edges {
-        cursor
-        node {
-          ...FullPostFragment
-        }
-      }
-    }
-  }
-`;
-
 /**
  * We need to know if this is the first post for this blog.
  */
 export const getPostsQuery = gql`
   ${FullPostFragment}
-  query getPostsQuery($blog: ID!) {
-    posts(blog: $blog, last: ${postsPerPage}) {
+  query getPostsQuery($blog: ID!, $status: [PostPublicationStatus]!) {
+    posts(blog: $blog, last: ${postsPerPage}, filter: { status: $status }) {
       totalCount
       edges {
         cursor

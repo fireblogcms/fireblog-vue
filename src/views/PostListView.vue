@@ -171,7 +171,6 @@ import {
 } from "../utils/helpers";
 import {
   getPostsQuery,
-  getPostsByStatusQuery,
   getBlogQuery,
   deletePostMutation
 } from "../utils/queries";
@@ -214,6 +213,8 @@ export default {
   },
   created() {
     this.striptags = striptags;
+  },
+  mounted() {
     this.initData();
   },
   beforeRouteEnter(to, from, next) {
@@ -261,14 +262,18 @@ export default {
     onRowClick(item) {
       this.$router.push(this.buildLinkToPost(item));
     },
-    async getAllPosts(fetchPolicy = "cache-first") {
+    async getAllPosts() {
       return apolloClient
         .query({
           query: getPostsQuery,
-          variables: { blog: this.$route.params.blogId, last: 1 },
-          fetchPolicy
+          variables: {
+            blog: this.$route.params.blogId,
+            last: 1,
+            status: ["PUBLISHED", "DRAFT"]
+          }
         })
         .then(result => {
+          console.log("result", result);
           this.isFirstPost =
             result.data.posts.edges.length === 0 ? true : false;
           return result;
@@ -294,16 +299,15 @@ export default {
           return result;
         });
     },
-    getPostsPublished(fetchPolicy = "no-cache") {
+    getPostsPublished() {
       this.postsPublishedRequestState = REQUEST_STATE.PENDING;
       return apolloClient
         .query({
-          query: getPostsByStatusQuery,
+          query: getPostsQuery,
           variables: {
             blog: this.$route.params.blogId,
-            status: "PUBLISHED"
-          },
-          fetchPolicy
+            status: ["PUBLISHED"]
+          }
         })
         .then(result => {
           this.postsPublishedRequestState = REQUEST_STATE.FINISHED_OK;
@@ -316,16 +320,15 @@ export default {
           throw new Error(error);
         });
     },
-    getPostsDraft(fetchPolicy = "no-cache") {
+    getPostsDraft() {
       this.postsDraftRequestState = REQUEST_STATE.PENDING;
       return apolloClient
         .query({
-          query: getPostsByStatusQuery,
+          query: getPostsQuery,
           variables: {
             blog: this.$route.params.blogId,
-            status: "DRAFT"
-          },
-          fetchPolicy
+            status: ["DRAFT"]
+          }
         })
         .then(result => {
           this.postsDraftRequestState = REQUEST_STATE.FINISHED_OK;

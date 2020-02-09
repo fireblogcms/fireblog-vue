@@ -359,7 +359,6 @@ export default {
     };
   },
   created() {
-    console.log("postForm - created");
     this.formId = formId;
     this.vuexFormGetValue = vuexFormGetValue;
     this.vuexFormGetValues = vuexFormGetValues;
