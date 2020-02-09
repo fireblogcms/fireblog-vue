@@ -21,10 +21,6 @@ export default {
       default: data => {
         return Promise.resolve(data);
       }
-    },
-    wordCountDomElement: {
-      type: Function,
-      required: true
     }
   },
   mounted() {
@@ -76,11 +72,8 @@ export default {
         element.innerHTML = toolTip;
         element.innerText = toolTip;
 
-        const wordCountPlugin = editor.plugins.get("WordCount");
-        const wordCountWrapper = this.wordCountDomElement();
-        wordCountWrapper.appendChild(wordCountPlugin.wordCountContainer);
-
         editor.setData(this.value);
+        this.$emit("editorReady", editor);
       })
       .catch(error => {
         console.error(error);

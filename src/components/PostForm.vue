@@ -21,7 +21,7 @@
         class="post-form__field-editor"
         :autosave="contentAutosave"
         :value="vuexFormGetValue('postForm', 'content')"
-        :wordCountDomElement="() => $refs.wordcount"
+        @editorReady="onEditorReady"
       />
     </form>
 
@@ -317,6 +317,7 @@ const randomHurraGifs = [
 ];
 
 const formId = "postForm";
+let pendingActions = null;
 
 export default {
   components: {
@@ -392,6 +393,15 @@ export default {
     hotkeys.unbind("command+s");
   },
   methods: {
+    onEditorReady(editor) {
+      const wordCountPlugin = editor.plugins.get("WordCount");
+      const wordCountWrapper = this.$refs.wordcount;
+      wordCountWrapper.appendChild(wordCountPlugin.wordCountContainer);
+      pendingActions = editor.plugins.get("PendingActions");
+      editor.plugins.get("PendingActions").on("change:hasAny", actions => {
+        console.log(Array.from(pendingActions));
+      });
+    },
     async init() {
       // no existing post, we are in CREATE MODE
       if (this.$route.name === "postCreate") {
@@ -494,6 +504,7 @@ export default {
         );
         return;
       }
+      const savingPendingAction = pendingActions.add("Saving post");
       this.savingPost = {
         state: REQUEST_STATE.PENDING,
         status
@@ -511,6 +522,7 @@ export default {
           }
         })
         .then(async result => {
+          pendingActions.remove(savingPendingAction);
           const post = result.data.savePost;
           this.existingPost = post;
           this.$store.commit("lastVisitedPost", post);
@@ -537,6 +549,7 @@ export default {
           return post;
         })
         .catch(error => {
+          pendingAction.remove();
           this.savingPost = {
             state: REQUEST_STATE.FINISHED_ERROR,
             status
