@@ -497,6 +497,10 @@ export default {
       return postToSave;
     },
     savePost(status) {
+      if (this.savingPost.state === REQUEST_STATE.PENDING) {
+        console.log("abort saving, this post is currently saving.");
+        return;
+      }
       if (!vuexFormGetValue(formId, "title").trim()) {
         appNotification(
           this.$t("views.postForm.fields.title.errors.required"),
@@ -549,7 +553,7 @@ export default {
           return post;
         })
         .catch(error => {
-          pendingAction.remove();
+          pendingActions.remove(savingPendingAction);
           this.savingPost = {
             state: REQUEST_STATE.FINISHED_ERROR,
             status
@@ -707,7 +711,7 @@ export default {
   background: white;
   top: 10px;
   padding: 30px;
-  padding-bottom: 0px;
+  padding-bottom: 20px;
   max-width: 880px;
   margin: auto;
   box-shadow: 1px 0px 1px 0px rgba(0, 0, 0, 0.05);
@@ -732,6 +736,7 @@ export default {
   box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.05);
   margin: auto;
   background: white;
+  padding-bottom: 80px;
 }
 .post-form__field-editor .ck-content {
   border: none !important;
@@ -752,7 +757,7 @@ export default {
   bottom: 0;
   background-color: white;
   text-align: right;
-  font-size: 11px;
+  font-size: 12px;
   padding: 5px;
 }
 
