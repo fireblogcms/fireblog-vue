@@ -78,7 +78,7 @@
         :class="{
           'is-loading':
             savingPost.state === 'PENDING' &&
-            savingPost.publicationStatus === 'PUBLISHED'
+            savingPost.status === 'PUBLISHED'
         }"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
@@ -94,7 +94,7 @@
         :class="{
           'is-loading':
             savingPost.state === 'PENDING' &&
-            savingPost.publicationStatus === 'DRAFT'
+            savingPost.status === 'DRAFT'
         }"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
@@ -110,7 +110,7 @@
         :class="{
           'is-loading':
             savingPost.state === 'PENDING' &&
-            savingPost.publicationStatus === 'PUBLISHED'
+            savingPost.status === 'PUBLISHED'
         }"
         :disabled="savingPost.state === 'PENDING'"
         type="submit"
@@ -189,7 +189,7 @@
             :class="{
               'is-loading':
                 savingPost.state === 'PENDING' &&
-                savingPost.publicationStatus === 'PUBLISHED'
+                savingPost.status === 'PUBLISHED'
             }"
           >
             {{

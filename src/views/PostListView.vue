@@ -217,6 +217,11 @@ export default {
   mounted() {
     this.initData();
   },
+  watch: {
+    $route: function(value) {
+      this.initData();
+    }
+  },
   beforeRouteEnter(to, from, next) {
     // if use is coming from a draft post, set "DRAFT" tab by default.
     next(vm => {
