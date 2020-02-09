@@ -22,7 +22,7 @@
     "apollo-link-error": "^1.1.11",
     "apollo-link-http": "^1.5.15",
     "apollo-upload-client": "^12.1.0",
-    "fireblog-ckeditor": "git+ssh://git@github.com/fireblogcms/fireblog-ckeditor#master",
+    "fireblog-ckeditor": "git+https://24877e8303ab244d4b2317f0644b6ade652e2a4e:x-oauth-basic@github.com/fireblogcms/fireblog-ckeditor",
     "graphql": "^14.4.1",
     "graphql-tag": "^2.10.1",
     "hotkeys-js": "^3.7.3",

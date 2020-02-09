@@ -4080,9 +4080,9 @@ find-up@^4.0.0, find-up@^4.1.0:
     locate-path "^5.0.0"
     path-exists "^4.0.0"
 
-"fireblog-ckeditor@git+ssh://git@github.com/fireblogcms/fireblog-ckeditor#master":
+"fireblog-ckeditor@git+https://24877e8303ab244d4b2317f0644b6ade652e2a4e:x-oauth-basic@github.com/fireblogcms/fireblog-ckeditor":
   version "1.0.0"
-  resolved "git+ssh://git@github.com/fireblogcms/fireblog-ckeditor#f3aabdf3dbb6909141576e0aefa8538a9a587c25"
+  resolved "git+https://24877e8303ab244d4b2317f0644b6ade652e2a4e:x-oauth-basic@github.com/fireblogcms/fireblog-ckeditor#b2b9915d467e7fdd38412dc68ce41c92ba08d8bd"
   dependencies:
     "@ckeditor/ckeditor5-code-block" "^16.0.0"
     "@ckeditor/ckeditor5-word-count" "^16.0.0"
