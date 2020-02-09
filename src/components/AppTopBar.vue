@@ -170,7 +170,7 @@ export default {
       return `${process.env.VUE_APP_GRAPHQL_POD_BASE_URL}/${this.$route.params.blogId}`;
     }
   },
-  created() {
+  mounted() {
     this.initData();
   },
   methods: {

@@ -44,7 +44,7 @@
     <!-- END TOPBAR LEFT BUTTONS -->
 
     <!-- TOPBAR RIGHT BUTTONS -->
-    <portal to="topbar-right">
+    <portal to="topbar-right" v-if="!loadingAsyncData">
       <!-- SAVE DRAFT BUTTON -->
       <button
         v-if="getPostStatus() === 'DRAFT'"
@@ -397,9 +397,7 @@ export default {
       const wordCountWrapper = this.$refs.wordcount;
       wordCountWrapper.appendChild(wordCountPlugin.wordCountContainer);
       pendingActions = editor.plugins.get("PendingActions");
-      editor.plugins.get("PendingActions").on("change:hasAny", actions => {
-        console.log(Array.from(pendingActions));
-      });
+      editor.plugins.get("PendingActions").on("change:hasAny", actions => {});
     },
     async init() {
       // no existing post, we are in CREATE MODE
@@ -423,6 +421,8 @@ export default {
           this.loadingAsyncData = false;
           const formValues = this.prepareFormValuesFromPost(this.existingPost);
           this.postFormInit(formValues);
+        } else {
+          this.$store.commit("comingFromPostCreateRoute", null);
         }
       }
     },
@@ -459,7 +459,6 @@ export default {
       vuexFormInit(formId, {
         initialValues: { ...formValues },
         onFormValueChange: ({ name, value }) => {
-          console.log("form value changed !");
           // @TODO that's the right place to autosave something on the server,
           // with some deboucing :).
           //console.log("name:", name, "value changed:", value);

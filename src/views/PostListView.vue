@@ -273,7 +273,6 @@ export default {
           }
         })
         .then(result => {
-          console.log("result", result);
           this.isFirstPost =
             result.data.posts.edges.length === 0 ? true : false;
           return result;
