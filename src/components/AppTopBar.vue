@@ -173,6 +173,11 @@ export default {
   mounted() {
     this.initData();
   },
+  watch: {
+    $route: function() {
+      this.dropdownMenuActive = false;
+    }
+  },
   methods: {
     onLogoClick() {
       this.$router.push("/");
