@@ -355,11 +355,14 @@ export default {
       editor.plugins.get("PendingActions").on("change:hasAny", actions => {});
       // If the user tries to leave the page before the data is saved, ask
       // them whether they are sure they want to proceed.
-      window.addEventListener("beforeunload", evt => {
+      window.onbeforeunload = evt => {
+        evt.preventDefault();
+        /*
         if (pendingActions.hasAny) {
           evt.preventDefault();
         }
-      });
+        */
+      };
     },
     async init() {
       // no existing post, we are in CREATE MODE
