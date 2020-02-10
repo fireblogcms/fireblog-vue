@@ -1,7 +1,7 @@
 <template>
-  <div class="post-form">
+  <div>
     <AppLoader v-if="loadingAsyncData" />
-    <form v-if="!loadingAsyncData" @submit.prevent>
+    <form class="post-form" v-if="!loadingAsyncData" @submit.prevent>
       <div class="post-form__field-title">
         <textarea-autosize
           maxlength="250"
@@ -334,13 +334,9 @@ export default {
       if (this.existingPost && this.existingPost.status === "PUBLISHED") {
         this.publish();
       } else {
-        this.saveAsDraft()
-          .then(() => {
-            toast(this, this.$t("views.postForm.draftSaved"));
-          })
-          .catch(e => {
-            console.log("Cannot be saved: form validation failed: " + e);
-          });
+        this.saveAsDraft().catch(e => {
+          console.log("Cannot be saved: form validation failed: " + e);
+        });
       }
       return false;
     });
@@ -357,6 +353,13 @@ export default {
       wordCountWrapper.appendChild(wordCountPlugin.wordCountContainer);
       pendingActions = editor.plugins.get("PendingActions");
       editor.plugins.get("PendingActions").on("change:hasAny", actions => {});
+      // If the user tries to leave the page before the data is saved, ask
+      // them whether they are sure they want to proceed.
+      window.addEventListener("beforeunload", evt => {
+        if (pendingActions.hasAny) {
+          evt.preventDefault();
+        }
+      });
     },
     async init() {
       // no existing post, we are in CREATE MODE
@@ -389,7 +392,6 @@ export default {
       vuexFormSetValue(formId, "title", value);
     },
     onContentChange(value) {
-      console.log("value", value);
       // Update form value on each key stroke !
       // Because if we are waiting on a debouced event like "autoSave",
       // user can save BEFORE data is registered to form, so data is lost -_-
@@ -477,6 +479,9 @@ export default {
             state: REQUEST_STATE.FINISHED_OK,
             status
           };
+          if (status === "DRAFT") {
+            toast(this, this.$t("views.postForm.draftSaved"));
+          }
           // redirect to update route if we were on "postCreate" route,
           // Now that our post exist for sure in database
           if (this.$route.name === "postCreate") {
@@ -645,7 +650,8 @@ export default {
 
 <style>
 .post-form {
-  margin-top: 30px;
+  padding-top: 30px;
+  padding-bottom: 70px;
 }
 
 .post-form__field-title {
