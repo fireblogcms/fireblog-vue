@@ -67,23 +67,21 @@ export default {
         previewsInData: false,
         providers: [ckeditorIframelyMediaProvider()]
       }
-    })
-      .then(editor => {
-        const element = document.querySelector(
-          ".ck-block-toolbar-button .ck-tooltip__text"
-        );
-        const toolTip = "Add media";
-        element.innerHTML = toolTip;
-        element.innerText = toolTip;
+    }).then(editor => {
+      const element = document.querySelector(
+        ".ck-block-toolbar-button .ck-tooltip__text"
+      );
+      const toolTip = "Add media";
+      element.innerHTML = toolTip;
+      element.innerText = toolTip;
 
-        editor.setData(this.value);
-        this.$emit("editorReady", editor);
+      editor.setData(this.value);
+      this.$emit("editorReady", editor);
 
-        editor.model.document.on("change:data", () => {
-          this.$emit("change", editor.getData());
-        });
-      })
-      .catch(error => {});
+      editor.model.document.on("change:data", () => {
+        this.$emit("change", editor.getData());
+      });
+    });
   }
 };
 </script>
