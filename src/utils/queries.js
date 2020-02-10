@@ -23,6 +23,26 @@ export const FullPostFragment = gql`
   }
 `;
 
+export const PostListFragment = gql`
+  fragment PostListFragment on Post {
+    _id
+    title
+    status
+    slug
+    teaser
+    image
+    publishedAt
+    updatedAt
+    createdAt
+    image
+    author {
+      _id
+      name
+      email
+    }
+  }
+`;
+
 export const FullBlogFragment = gql`
   fragment FullBlogFragment on Blog {
     _id
@@ -112,14 +132,14 @@ export const getPostQuery = gql`
  * We need to know if this is the first post for this blog.
  */
 export const getPostsQuery = gql`
-  ${FullPostFragment}
+  ${PostListFragment}
   query getPostsQuery($blog: ID!, $status: [PostPublicationStatus]!) {
     posts(blog: $blog, last: ${postsPerPage}, filter: { status: $status }) {
       totalCount
       edges {
         cursor
         node {
-          ...FullPostFragment
+          ...PostListFragment
         }
       }
     }

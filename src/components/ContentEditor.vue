@@ -78,10 +78,12 @@ export default {
 
         editor.setData(this.value);
         this.$emit("editorReady", editor);
+
+        editor.model.document.on("change:data", () => {
+          this.$emit("change", editor.getData());
+        });
       })
-      .catch(error => {
-        console.error(error);
-      });
+      .catch(error => {});
   }
 };
 </script>
