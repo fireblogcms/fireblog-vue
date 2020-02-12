@@ -278,6 +278,9 @@ const randomHurraGifs = [
 const formId = "postForm";
 let pendingActions = null;
 
+let stokeCountIndex = 0;
+const saveAfterKeyStrokesNumber = 50;
+
 export default {
   components: {
     ContentEditor,
@@ -399,6 +402,17 @@ export default {
       // Because if we are waiting on a debouced event like "autoSave",
       // user can save BEFORE data is registered to form, so data is lost -_-
       vuexFormSetValue(formId, "content", value);
+      this.autoSave();
+    },
+    autoSave() {
+      if (this.getPostStatus() !== "DRAFT") {
+        return;
+      }
+      stokeCountIndex++;
+      if (stokeCountIndex === saveAfterKeyStrokesNumber) {
+        this.savePost("DRAFT", { saveType: "auto" });
+        stokeCountIndex = 0;
+      }
     },
     // when user click "enter" in the title input,
     // automically move cursor to the textarea
@@ -444,7 +458,12 @@ export default {
       }
       return postToSave;
     },
-    savePost(status) {
+    savePost(
+      status,
+      options = {
+        saveType: "manual"
+      }
+    ) {
       if (this.savingPost.state === REQUEST_STATE.PENDING) {
         console.log("abort saving, this post is currently saving.");
         return;
@@ -482,7 +501,7 @@ export default {
             state: REQUEST_STATE.FINISHED_OK,
             status
           };
-          if (status === "DRAFT") {
+          if (status === "DRAFT" && options.saveType === "manual") {
             toast(this, this.$t("views.postForm.draftSaved"));
           }
           // redirect to update route if we were on "postCreate" route,
