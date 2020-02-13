@@ -374,24 +374,15 @@ export default {
       }
 
       // UPDATE MODE
-      // if update mode, we need to load existing post first.
-      // UNLESS we are coming from create page after first saving : all our values
-      // are already in our form so no need to rerender all the component.
-      // Yhis is because we DONT want to interrupt writing in this particular case,
-      // this could lead to data loss when autosave is enabled.
       if (this.$route.name === "postUpdate") {
-        if (!this.comingFromPostCreateRoute()) {
-          this.loadingAsyncData = true;
-          this.existingPost = await this.getExistingPost(
-            this.$route.params.postId
-          );
-          this.$store.commit("lastVisitedPost", this.existingPost);
-          this.loadingAsyncData = false;
-          const formValues = this.prepareFormValuesFromPost(this.existingPost);
-          this.postFormInit(formValues);
-        } else {
-          this.$store.commit("comingFromPostCreateRoute", null);
-        }
+        this.loadingAsyncData = true;
+        this.existingPost = await this.getExistingPost(
+          this.$route.params.postId
+        );
+        this.$store.commit("lastVisitedPost", this.existingPost);
+        this.loadingAsyncData = false;
+        const formValues = this.prepareFormValuesFromPost(this.existingPost);
+        this.postFormInit(formValues);
       }
     },
     onTitleInput(value) {
@@ -422,11 +413,7 @@ export default {
     postFormInit(formValues) {
       vuexFormInit(formId, {
         initialValues: { ...formValues },
-        onFormValueChange: ({ name, value }) => {
-          // @TODO that's the right place to autosave something on the server,
-          // with some deboucing :).
-          //console.log("name:", name, "value changed:", value);
-        }
+        onFormValueChange: ({ name, value }) => {}
       });
     },
     // fill form fields from a post object
@@ -504,21 +491,16 @@ export default {
           if (status === "DRAFT" && options.saveType === "manual") {
             toast(this, this.$t("views.postForm.draftSaved"));
           }
-          // redirect to update route if we were on "postCreate" route,
-          // Now that our post exist for sure in database
           if (this.$route.name === "postCreate") {
-            this.$router.replace(
-              {
-                name: "postUpdate",
-                params: {
-                  blogId: this.$route.params.blogId,
-                  postId: post._id
-                }
-              },
-              () => {
-                this.$store.commit("comingFromPostCreateRoute", post._id);
+            // this route change WON'T retrigger this.init(), so passing from
+            // postCreate to postUpdate page is a fluid experience for user
+            this.$router.replace({
+              name: "postUpdate",
+              params: {
+                blogId: this.$route.params.blogId,
+                postId: post._id
               }
-            );
+            });
           }
           return post;
         })
@@ -550,10 +532,14 @@ export default {
       let status = this.existingPost ? this.existingPost.status : "DRAFT";
       return status;
     },
-    comingFromPostCreateRoute() {
+    // when coming from create route, update route do NOT need
+    // to load post from database, we just have to keep our current
+    // form values.
+    skipLoadingExistingPost() {
       return (
-        this.$store.state.global.comingFromPostCreateRoute ===
-        this.$route.params.postId
+        this.$store.state.global.skipLoadingExistingPost &&
+        this.$store.state.global.skipLoadingExistingPost ===
+          this.$route.params.postId
       );
     },
     saveAsDraft() {
