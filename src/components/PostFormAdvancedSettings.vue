@@ -49,7 +49,7 @@
           <SlugField
             :value="vuexFormGetValue(formId, 'slug')"
             :error="vuexFormGetError(formId, 'slug')"
-            :showToggleLockButton="slugShowToggleLockButton"
+            :showToggleLockButton="true"
             :locked="slugIsLocked"
             @input="onSlugInput"
           />
@@ -113,8 +113,6 @@ export default {
       uploadingState: null,
       file: null,
       slugIsLocked:
-        this.existingPost && this.existingPost.status === "PUBLISHED",
-      slugShowToggleLockButton:
         this.existingPost && this.existingPost.status === "PUBLISHED"
     };
     return data;
@@ -129,7 +127,6 @@ export default {
       // relock field automatically on publication.
       if (this.existingPost.status === "PUBLISHED") {
         this.slugIsLocked = true;
-        this.slugShowToggleLockButton = true;
       }
     }
   },
