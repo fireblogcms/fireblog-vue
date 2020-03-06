@@ -1,7 +1,13 @@
 <template>
-  <div :class="{ 'is-active': value, fullscreen: fullscreen }" class="bulma-modal modal">
+  <div
+    :class="{ 'is-active': value, fullscreen: fullscreen }"
+    class="bulma-modal modal"
+  >
     <div @click="onCloseClick" class="modal-background"></div>
-    <div :class="{ [animation]: animation ? true : false }" class="modal-card animated">
+    <div
+      :class="{ [animation]: animation ? true : false }"
+      class="modal-card animated"
+    >
       <header v-if="this.$slots.title" class="modal-card-head">
         <p class="modal-card-title">
           <slot name="title" />
@@ -58,33 +64,34 @@ export default {
 };
 </script>
 
-<style>
-.bulma-modal.fullscreen .modal-content,
-.bulma-modal.fullscreen .modal-card {
-  width: 100%;
-  height: 100%;
-  border-radius: 6px;
-}
-
-.bulma-modal.fullscreen .modal-card-title {
-  padding: 0px 10px;
-}
-
-.bulma-modal.fullscreen .modal-card-body {
-  padding: 40px 0;
-}
-
-.bulma-modal.fullscreen .modal-close {
-  background: black;
-}
-.bulma-modal.fullscreen .modal-background {
-  background: white;
-}
+<style scoped>
 .bulma-modal .modal-card-foot {
   background-color: white;
   border: 0;
 }
 .bulma-modal .modal-card-head {
   background-color: white;
+}
+
+.bulma-modal.fullscreen > .modal-content,
+.bulma-modal.fullscreen > .modal-card {
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+}
+
+.bulma-modal.fullscreen > .modal-card-title {
+  padding: 0px 10px;
+}
+
+.bulma-modal.fullscreen > .modal-card-body {
+  padding: 40px 0;
+}
+
+.bulma-modal.fullscreen > .modal-close {
+  background: black;
+}
+.bulma-modal.fullscreen > .modal-background {
+  background: white;
 }
 </style>

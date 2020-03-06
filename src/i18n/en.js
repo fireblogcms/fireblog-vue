@@ -14,7 +14,7 @@ export default {
   "components.slugField.unlock": "Unlock",
   "components.slugField.unlockConfirmModal.cancelButton": "Cancel",
   "components.slugField.unlockConfirmModal.confirmButton": "Confirm",
-  "components.slugField.unlockConfirmModal.content": "Modal content",
+  "components.slugField.unlockConfirmModal.content": "Warning ! changing slug after post have been publish breaks existing links to your post and cause some '404 page not found' errors. Change this field only if you kwow what your are doing !",
   "components.slugField.unlockConfirmModal.title": "Slug change confirmation",
   "global.close": "Close",
   "global.deleted": "Deleted",

@@ -49,8 +49,8 @@
           <SlugField
             :value="vuexFormGetValue(formId, 'slug')"
             :error="vuexFormGetError(formId, 'slug')"
-            :showToggleLockButton="false"
-            :locked="false"
+            :showToggleLockButton="true"
+            :locked="slugIsLocked()"
             @input="onSlugInput"
           />
         </div>
@@ -121,6 +121,12 @@ export default {
     this.formId = formId;
   },
   methods: {
+    slugIsLocked() {
+      if (this.existingPost && this.existingPost.status === "PUBLISHED") {
+        return true;
+      }
+      return false;
+    },
     onUploaded(fileUrl) {
       vuexFormSetValue(formId, "image", fileUrl);
     },

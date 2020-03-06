@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'is-locked': inputDisabled}">
+  <div :class="{ 'is-locked': inputDisabled }">
     <div class="field">
       <label>
         {{ label }}
@@ -20,29 +20,40 @@
         />
       </div>
       <div v-if="showToggleLockButton" class="control">
-        <button
-          @click="onButtonClick"
-          class="button is-medium is-info"
-        >{{inputDisabled ? $t('components.slugField.unlock') : $t('components.slugField.lock') }}</button>
+        <button @click="onButtonClick" class="button is-medium is-info">
+          {{
+            inputDisabled
+              ? $t("components.slugField.unlock") + " 🔐"
+              : $t("components.slugField.lock") + " 🔓"
+          }}
+        </button>
       </div>
       <p class="help is-danger" v-if="error">{{ error }}</p>
 
       <BulmaModal :fullscreen="false" v-model="showUnlockConfirmModal">
         <template #title>
-          <div class="has-text-centered">{{ $t("components.slugField.unlockConfirmModal.title") }}</div>
+          <div class="has-text-centered">
+            {{ $t("components.slugField.unlockConfirmModal.title") }}
+          </div>
         </template>
         <template #body>
-          <div class="has-text-centered">{{ $t("components.slugField.unlockConfirmModal.content") }}</div>
+          <div class="has-text-centered">
+            {{ $t("components.slugField.unlockConfirmModal.content") }}
+          </div>
         </template>
         <template class="has-text-centered" #footer>
           <button
             @click="showUnlockConfirmModal = false"
-            class="button is-primary is-large"
-          >{{ $t("components.slugField.unlockConfirmModal.cancelButton") }}</button>
+            class="button is-light is-large"
+          >
+            {{ $t("components.slugField.unlockConfirmModal.cancelButton") }}
+          </button>
           <button
             @click="onConfirmUnlockClick"
-            class="button is-primary is-large"
-          >{{ $t("components.slugField.unlockConfirmModal.confirmButton") }}</button>
+            class="button is-primary is-large is-danger"
+          >
+            {{ $t("components.slugField.unlockConfirmModal.confirmButton") }}
+          </button>
         </template>
       </BulmaModal>
     </div>
@@ -90,6 +101,11 @@ export default {
       default: true
     }
   },
+  watch: {
+    locked: function(value) {
+      this.inputDisabled = value;
+    }
+  },
   data() {
     return {
       source: this.value,
@@ -114,7 +130,8 @@ export default {
       }
     },
     onConfirmUnlockClick() {
-      alert("confirm");
+      this.inputDisabled = false;
+      this.showUnlockConfirmModal = false;
     }
   },
   computed: {
