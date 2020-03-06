@@ -50,7 +50,7 @@
             :value="vuexFormGetValue(formId, 'slug')"
             :error="vuexFormGetError(formId, 'slug')"
             :showToggleLockButton="true"
-            :locked="slugIsLocked()"
+            :locked="slugIsLocked"
             @input="onSlugInput"
           />
         </div>
@@ -111,7 +111,11 @@ export default {
   data() {
     const data = {
       uploadingState: null,
-      file: null
+      file: null,
+      slugIsLocked:
+        this.existingPost && this.existingPost.status === "PUBLISHED"
+          ? true
+          : false
     };
     return data;
   },
@@ -120,13 +124,15 @@ export default {
     this.vuexFormGetValue = vuexFormGetValue;
     this.formId = formId;
   },
-  methods: {
-    slugIsLocked() {
-      if (this.existingPost && this.existingPost.status === "PUBLISHED") {
-        return true;
+  watch: {
+    "existingPost.status": function(value) {
+      // relock field automatically on publication.
+      if (this.existingPost.status === "PUBLISHED") {
+        this.slugIsLocked = true;
       }
-      return false;
-    },
+    }
+  },
+  methods: {
     onUploaded(fileUrl) {
       vuexFormSetValue(formId, "image", fileUrl);
     },
