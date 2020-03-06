@@ -153,7 +153,9 @@ export default {
   },
   computed: {
     blogApiUrl() {
-      return `${process.env.VUE_APP_GRAPHQL_POD_BASE_URL}/${this.$route.params.blogId}`;
+      return `${process.env.VUE_APP_GRAPHQL_POD_BASE_URL}/${
+        this.$route.params.blogId
+      }`;
     }
   },
   mounted() {

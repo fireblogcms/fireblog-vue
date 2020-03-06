@@ -1,9 +1,9 @@
 <template>
   <div class="api-usage-container">
-    <template v-if="initDataState ==='PENDING'">
+    <template v-if="initDataState === 'PENDING'">
       Loading stats...
     </template>
-    <template v-if="initDataState ==='FINISHED_OK'">
+    <template v-if="initDataState === 'FINISHED_OK'">
       <div class="flex-wrapper">
         <div class="single-chart">
           <svg viewBox="0 0 36 36">
@@ -24,7 +24,7 @@
           </svg>
         </div>
       </div>
-      <span>{{apiUsage.count}}/{{apiUsage.countTotal}} API calls</span>
+      <span>{{ apiUsage.count }}/{{ apiUsage.countTotal }} API calls</span>
     </template>
   </div>
 </template>
@@ -73,7 +73,8 @@ export default {
         .then(results => {
           this.initDataState = REQUEST_STATE.FINISHED_OK;
           this.apiUsage = results.data.apiUsage;
-          this.percentage = this.apiUsage.count / this.apiUsage.countTotal * 100;
+          this.percentage =
+            this.apiUsage.count / this.apiUsage.countTotal * 100;
         })
         .catch(e => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
@@ -98,7 +99,7 @@ export default {
 }
 .single-chart {
   width: 100%;
-  justify-content: space-around ;
+  justify-content: space-around;
 }
 .circle-bg {
   fill: none;
