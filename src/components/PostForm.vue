@@ -166,7 +166,7 @@
           <PostFormAdvancedSettings
             :existingPost="existingPost"
             :savingPost="savingPost"
-            @onCancelClick="publicationSettingsModal.show = false"
+            @onCancelClick="onCancelPublicationModalClick"
             @onUploadingStateChange="state => (uploadingState = state)"
           />
         </div>
@@ -303,7 +303,8 @@ let initialFormValues = {
   content: "",
   slug: "",
   teaser: "",
-  image: null
+  image: "",
+  slugIsLocked: false
 };
 
 const randomHurraGifs = [
@@ -313,7 +314,7 @@ const randomHurraGifs = [
   "https://66.media.tumblr.com/b53447fe9897178a2b4957a1ab32f6be/tumblr_n19pczDWI21ss6wowo9_250.gifv"
 ];
 
-const formId = "postForm";
+const FORM_ID = "postForm";
 let pendingActions = null;
 
 let stokeCountIndex = 0;
@@ -359,7 +360,7 @@ export default {
     };
   },
   created() {
-    this.formId = formId;
+    this.FORM_ID = FORM_ID;
     this.vuexFormGetValue = vuexFormGetValue;
     this.vuexFormGetValues = vuexFormGetValues;
     this.formatDate = formatDate;
@@ -424,13 +425,13 @@ export default {
       }
     },
     onTitleInput(value) {
-      vuexFormSetValue(formId, "title", value);
+      vuexFormSetValue(FORM_ID, "title", value);
     },
     onContentChange(value) {
       // Update form value on each key stroke !
       // Because if we are waiting on a debouced event like "autoSave",
       // user can save BEFORE data is registered to form, so data is lost -_-
-      vuexFormSetValue(formId, "content", value);
+      vuexFormSetValue(FORM_ID, "content", value);
       this.autoSave();
     },
     autoSave() {
@@ -448,8 +449,12 @@ export default {
     onTitleEnter() {
       this.$refs.contentEditor.$refs.editor.focus();
     },
+    onCancelPublicationModalClick() {
+      alert("ok");
+      this.publicationSettingsModal.show = false;
+    },
     postFormInit(formValues) {
-      vuexFormInit(formId, {
+      vuexFormInit(FORM_ID, {
         initialValues: { ...formValues },
         onFormValueChange: ({ name, value }) => {}
       });
@@ -457,6 +462,7 @@ export default {
     // fill form fields from a post object
     prepareFormValuesFromPost(post) {
       let values = {
+        ...initialFormValues,
         title: post.title ? post.title : "",
         content: post.content ? post.content : "",
         // slug is the slug value after being slugified by SlugField component
@@ -470,11 +476,11 @@ export default {
     // Prepare a post object from form form.values, for a save operation
     preparePostFromCurrentFormValues() {
       const postToSave = {
-        title: vuexFormGetValue(formId, "title"),
-        content: vuexFormGetValue(formId, "content"),
-        slug: vuexFormGetValue(formId, "slug"),
-        teaser: vuexFormGetValue(formId, "teaser"),
-        image: vuexFormGetValue(formId, "image")
+        title: vuexFormGetValue(FORM_ID, "title"),
+        content: vuexFormGetValue(FORM_ID, "content"),
+        slug: vuexFormGetValue(FORM_ID, "slug"),
+        teaser: vuexFormGetValue(FORM_ID, "teaser"),
+        image: vuexFormGetValue(FORM_ID, "image")
       };
       // API will know that this is an UPDATE and not a CREATE
       // if we add _id key to our post.
@@ -493,7 +499,7 @@ export default {
         console.log("abort saving, this post is currently saving.");
         return;
       }
-      if (!vuexFormGetValue(formId, "title").trim()) {
+      if (!vuexFormGetValue(FORM_ID, "title").trim()) {
         appNotification(
           this.$t("views.postForm.fields.title.errors.required"),
           "error"
@@ -618,28 +624,32 @@ export default {
      */
     showAdvancedSettings() {
       // we need at least the title to autocomplete the slug field
-      if (!vuexFormGetValue(formId, "title").trim()) {
+      if (!vuexFormGetValue(FORM_ID, "title").trim()) {
         appNotification(
           this.$t("views.postForm.fields.title.errors.required"),
           "error"
         );
+        return;
       }
       if (this.mediaLoadingCounter > 0) {
         this.showMediaCurrentlyLoadingModal();
       } else {
-        if (vuexFormGetValue(formId, "slug").trim().length === 0) {
+        if (vuexFormGetValue(FORM_ID, "slug").trim().length === 0) {
           vuexFormSetValue(
-            formId,
+            FORM_ID,
             "slug",
-            createSlug(vuexFormGetValue(formId, "title"))
+            createSlug(vuexFormGetValue(FORM_ID, "title"))
           );
         }
+        if (this.existingPost && this.existingPost.status === "PUBLISHED") {
+          vuexFormSetValue(FORM_ID, "slugIsLocked", true);
+        }
         // pre-fill teaser fied with the first sentence of the text.
-        if (vuexFormGetValue(formId, "teaser").trim().length === 0) {
+        if (vuexFormGetValue(FORM_ID, "teaser").trim().length === 0) {
           const teaserSuggestion = striptags(
-            vuexFormGetValue(formId, "content").substr(0, 250)
+            vuexFormGetValue(FORM_ID, "content").substr(0, 250)
           );
-          vuexFormSetValue(formId, "teaser", teaserSuggestion);
+          vuexFormSetValue(FORM_ID, "teaser", teaserSuggestion);
         }
         this.publicationSettingsModal.show = true;
       }
@@ -658,36 +668,36 @@ export default {
      * - PUBLISH
      */
     validatePostForm(action = "SAVE_DRAFT") {
-      vuexFormResetErrors(formId);
+      vuexFormResetErrors(FORM_ID);
       resetAppNotifications();
       // TITLE
-      if (!vuexFormGetValue(formId, "title").trim()) {
+      if (!vuexFormGetValue(FORM_ID, "title").trim()) {
         let message = this.$t("views.postForm.fields.title.errors.required");
-        vuexFormSetError(formId, "title", message);
+        vuexFormSetError(FORM_ID, "title", message);
         appNotification(message, "error");
       }
       if (action === "PUBLISH") {
-        if (!validateSlug(vuexFormGetValue(formId, "slug"))) {
+        if (!validateSlug(vuexFormGetValue(FORM_ID, "slug"))) {
           // SLUG
           let message = this.$t(
             "components.slugField.errors.invalidCharacters"
           );
-          vuexFormSetError(formId, "slug", message);
+          vuexFormSetError(FORM_ID, "slug", message);
           appNotification(message, "error");
         }
-        if (!vuexFormGetValue(formId, "slug").trim()) {
+        if (!vuexFormGetValue(FORM_ID, "slug").trim()) {
           let message = this.$t("components.slugField.errors.required");
-          vuexFormSetError(formId, "slug", message);
+          vuexFormSetError(FORM_ID, "slug", message);
           appNotification(message, "error");
         }
         // TEASER
-        if (!vuexFormGetValue(formId, "teaser").trim()) {
+        if (!vuexFormGetValue(FORM_ID, "teaser").trim()) {
           let message = this.$t("views.postForm.fields.teaser.errors.required");
-          vuexFormSetError(formId, "teaser", message);
+          vuexFormSetError(FORM_ID, "teaser", message);
           appNotification(message, "error");
         }
       }
-      const errors = vuexFormGetErrors(formId);
+      const errors = vuexFormGetErrors(FORM_ID);
       return errors;
     }
   }

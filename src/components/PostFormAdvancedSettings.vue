@@ -18,7 +18,7 @@
             <S3ImageUpload
               :blogId="$route.params.blogId"
               @onUploadingStateChange="onUploadingStateChange"
-              :initialImage="vuexFormGetValue(formId, 'image')"
+              :initialImage="vuexFormGetValue(FORM_ID, 'image')"
               @onUploaded="onUploaded"
             />
           </div>
@@ -39,19 +39,22 @@
               <textarea
                 maxlength="250"
                 @input="onTeaserInput"
-                :value="vuexFormGetValue(formId, 'teaser')"
+                :value="vuexFormGetValue(FORM_ID, 'teaser')"
                 class="textarea is-medium"
-                :class="{ 'is-danger': vuexFormGetError(formId, 'teaser') }"
+                :class="{ 'is-danger': vuexFormGetError(FORM_ID, 'teaser') }"
                 placeholder="Teaser"
               ></textarea>
             </div>
           </div>
+          isLocked: {{vuexFormGetValue(FORM_ID, 'slugIsLocked')}}
           <SlugField
-            :value="vuexFormGetValue(formId, 'slug')"
-            :error="vuexFormGetError(formId, 'slug')"
+            :value="vuexFormGetValue(FORM_ID, 'slug')"
+            :error="vuexFormGetError(FORM_ID, 'slug')"
             :showToggleLockButton="true"
-            :locked="slugIsLocked"
+            :locked="vuexFormGetValue(FORM_ID, 'slugIsLocked')"
             @input="onSlugInput"
+            @onUnlock="onSlugUnlock"
+            @onLock="onSlugLock"
           />
         </div>
         <!--
@@ -95,7 +98,7 @@ import {
 } from "../utils/vuexForm";
 import SlugField from "./SlugField";
 
-const formId = "postForm";
+const FORM_ID = "postForm";
 
 export default {
   props: {
@@ -111,34 +114,30 @@ export default {
   data() {
     const data = {
       uploadingState: null,
-      file: null,
-      slugIsLocked:
-        this.existingPost && this.existingPost.status === "PUBLISHED"
+      file: null
     };
     return data;
   },
   created() {
     this.vuexFormGetError = vuexFormGetError;
     this.vuexFormGetValue = vuexFormGetValue;
-    this.formId = formId;
-  },
-  watch: {
-    "existingPost.status": function(value) {
-      // relock field automatically on publication.
-      if (this.existingPost.status === "PUBLISHED") {
-        this.slugIsLocked = true;
-      }
-    }
+    this.FORM_ID = FORM_ID;
   },
   methods: {
     onUploaded(fileUrl) {
-      vuexFormSetValue(formId, "image", fileUrl);
+      vuexFormSetValue(FORM_ID, "image", fileUrl);
     },
     onTeaserInput(event) {
-      vuexFormSetValue(formId, "teaser", event.target.value);
+      vuexFormSetValue(FORM_ID, "teaser", event.target.value);
     },
     onSlugInput({ source, slug }) {
-      vuexFormSetValue(formId, "slug", slug);
+      vuexFormSetValue(FORM_ID, "slug", slug);
+    },
+    onSlugUnlock() {
+      vuexFormSetValue(FORM_ID, "slugIsLocked", false);
+    },
+    onSlugLock() {
+      vuexFormSetValue(FORM_ID, "slugIsLocked", true);
     },
     onUploadingStateChange(state) {
       this.uploadingState = state;

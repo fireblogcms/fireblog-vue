@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ 'is-locked': inputDisabled }">
+  <div :class="{ 'is-locked': locked }">
     <div class="field">
       <label>
         {{ label }}
@@ -12,7 +12,7 @@
         <input
           @input="onSlugInput"
           :value="value"
-          :disabled="inputDisabled"
+          :disabled="locked"
           class="input"
           :class="computedInputClass"
           type="text"
@@ -22,7 +22,7 @@
       <div v-if="showToggleLockButton" class="control">
         <button @click="onButtonClick" class="button is-medium is-info">
           {{
-            inputDisabled
+            locked
               ? $t("components.slugField.unlock") + " 🔐"
               : $t("components.slugField.lock") + " 🔓"
           }}
@@ -101,16 +101,10 @@ export default {
       default: true
     }
   },
-  watch: {
-    locked: function(value) {
-      this.inputDisabled = value;
-    }
-  },
   data() {
     return {
       source: this.value,
       slug: this.value,
-      inputDisabled: this.locked,
       showUnlockConfirmModal: false
     };
   },
@@ -123,14 +117,14 @@ export default {
       });
     },
     onButtonClick() {
-      if (this.inputDisabled) {
+      if (this.locked) {
         this.showUnlockConfirmModal = true;
       } else {
-        this.inputDisabled = true;
+        this.$emit("onLock");
       }
     },
     onConfirmUnlockClick() {
-      this.inputDisabled = false;
+      this.$emit("onUnlock");
       this.showUnlockConfirmModal = false;
     }
   },
