@@ -46,11 +46,11 @@
               ></textarea>
             </div>
           </div>
-          isLocked: {{vuexFormGetValue(FORM_ID, 'slugIsLocked')}}
+
           <SlugField
             :value="vuexFormGetValue(FORM_ID, 'slug')"
             :error="vuexFormGetError(FORM_ID, 'slug')"
-            :showToggleLockButton="true"
+            :showToggleLockButton="vuexFormGetValue(FORM_ID, 'slugShowToggleLockButton')"
             :locked="vuexFormGetValue(FORM_ID, 'slugIsLocked')"
             @input="onSlugInput"
             @onUnlock="onSlugUnlock"

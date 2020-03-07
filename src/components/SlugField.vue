@@ -20,11 +20,11 @@
         />
       </div>
       <div v-if="showToggleLockButton" class="control">
-        <button @click="onButtonClick" class="button is-medium is-info">
+        <button @click="onButtonClick" class="button is-medium is-primary is-light">
           {{
             locked
-              ? $t("components.slugField.unlock") + " 🔐"
-              : $t("components.slugField.lock") + " 🔓"
+              ? $t("components.slugField.unlock") + "  🔐"
+              : $t("components.slugField.lock") + "  🔓"
           }}
         </button>
       </div>

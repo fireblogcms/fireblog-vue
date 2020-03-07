@@ -304,7 +304,8 @@ let initialFormValues = {
   slug: "",
   teaser: "",
   image: "",
-  slugIsLocked: false
+  slugIsLocked: false,
+  slugShowToggleLockButton: false
 };
 
 const randomHurraGifs = [
@@ -642,8 +643,10 @@ export default {
           );
         }
         if (this.existingPost && this.existingPost.status === "PUBLISHED") {
+          vuexFormSetValue(FORM_ID, "slugShowToggleLockButton", true);
           vuexFormSetValue(FORM_ID, "slugIsLocked", true);
         }
+
         // pre-fill teaser fied with the first sentence of the text.
         if (vuexFormGetValue(FORM_ID, "teaser").trim().length === 0) {
           const teaserSuggestion = striptags(
