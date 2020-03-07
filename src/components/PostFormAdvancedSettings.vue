@@ -50,37 +50,30 @@
           <SlugField
             :value="vuexFormGetValue(FORM_ID, 'slug')"
             :error="vuexFormGetError(FORM_ID, 'slug')"
-            :showToggleLockButton="vuexFormGetValue(FORM_ID, 'slugShowToggleLockButton')"
+            :showToggleLockButton="
+              vuexFormGetValue(FORM_ID, 'slugShowToggleLockButton')
+            "
             :locked="vuexFormGetValue(FORM_ID, 'slugIsLocked')"
             @input="onSlugInput"
             @onUnlock="onSlugUnlock"
             @onLock="onSlugLock"
           />
         </div>
-        <!--
+      </div>
+      <hr />
+      <div class="columns">
         <div class="column">
-          <div class="post-preview-wrapper">
-            <div class="field-help">
-              <label class="label">{{ $t("views.postForm.previews.general.name") }}</label>
-              {{ $t("views.postForm.previews.general.description") }}
-            </div>
-            <div class="post-preview">
-              <div
-                v-if="this.form.values.current.image"
-                class="post-preview-image"
-                :style="{
-                  backgroundImage: `url(${this.form.values.current.image})`
-                }"
-              ></div>
-              <div class="post-preview-content">
-                <div>
-                  <strong>{{ form.values.current.title }}</strong>
-                </div>
-                <div class="content">{{ form.values.current.teaser }}</div>
-              </div>
-            </div>
+          <h3 class="title is-4">Preview Google result</h3>
+          <div class="box">
+            <PreviewGoogleResult
+              :title="vuexFormGetValue(FORM_ID, 'title')"
+              :description="vuexFormGetValue(FORM_ID, 'teaser')"
+              :url="
+                `https://example.com/post/${vuexFormGetValue(FORM_ID, 'slug')}`
+              "
+            />
           </div>
-        </div>-->
+        </div>
       </div>
     </form>
     <!-- debug form values -->
@@ -97,19 +90,21 @@ import {
   vuexFormSetValue
 } from "../utils/vuexForm";
 import SlugField from "./SlugField";
+import PreviewGoogleResult from "./PreviewGoogleResult";
 
 const FORM_ID = "postForm";
 
 export default {
+  components: {
+    PreviewGoogleResult,
+    S3ImageUpload,
+    SlugField
+  },
   props: {
     existingPost: {
       type: [Object, null],
       default: () => null
     }
-  },
-  components: {
-    S3ImageUpload,
-    SlugField
   },
   data() {
     const data = {

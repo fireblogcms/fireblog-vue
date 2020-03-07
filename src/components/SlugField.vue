@@ -20,7 +20,10 @@
         />
       </div>
       <div v-if="showToggleLockButton" class="control">
-        <button @click="onButtonClick" class="button is-medium is-primary is-light">
+        <button
+          @click="onButtonClick"
+          class="button is-medium is-primary is-light"
+        >
           {{
             locked
               ? $t("components.slugField.unlock") + "  🔐"
@@ -131,7 +134,7 @@ export default {
   computed: {
     computedHelp() {
       return this.$t("components.slugField.help", {
-        exampleUrl: `https://yourblog.com/post/<mark>${this.slug}</mark>`
+        exampleUrl: `https://example.com/post/<mark>${this.slug}</mark>`
       });
     },
     computedInputClass() {
