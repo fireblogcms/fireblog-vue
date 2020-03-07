@@ -173,9 +173,11 @@
       </template>
       <template #title>
         <div>
-          <span class="title is-3">{{
+          <span class="title is-3">
+            {{
             $t("views.postForm.advancedSettingsModal.title")
-          }}</span>
+          }}
+          </span>
           <!-- PUBLISH BUTTON -->
           <button
             class="button is-primary is-pulled-right is-medium"
@@ -189,11 +191,7 @@
                 savingPost.status === 'PUBLISHED'
             }"
           >
-            {{
-              existingPost && existingPost.status === "DRAFT"
-                ? $t("views.postForm.publishNowButton")
-                : $t("views.postForm.publishChangesButton")
-            }}
+         {{publishModalPublishButtonText}}
           </button>
 
           <button
@@ -305,7 +303,7 @@ let initialFormValues = {
   teaser: "",
   image: "",
   slugIsLocked: false,
-  slugShowToggleLockButton: false
+  slugShowToggleLockButton: true
 };
 
 const randomHurraGifs = [
@@ -388,6 +386,15 @@ export default {
     window.onbeforeunload = null;
     hotkeys.unbind("ctrl+s");
     hotkeys.unbind("command+s");
+  },
+  computed: {
+    publishModalPublishButtonText() {
+      let text = this.$t("views.postForm.publishNowButton");
+      if (this.existingPost && this.existingPost.status === "PUBLISHED") {
+        text = this.$t("views.postForm.publishChangesButton");
+      }
+      return text;
+    }
   },
   methods: {
     onEditorReady(editor) {
@@ -612,6 +619,8 @@ export default {
         // make sure there is not an autoSaveAsDraft triggere
         this.savePost("PUBLISHED").then(() => {
           this.publicationSettingsModal.show = false;
+          // make sure user can not change slug anymore without confirmation.
+          vuexFormSetValue(FORM_ID, "slugIsLocked", true);
           if (publishingChanges === true) {
             this.publishingChangesModal.show = true;
           } else {
@@ -642,8 +651,10 @@ export default {
             createSlug(vuexFormGetValue(FORM_ID, "title"))
           );
         }
-        if (this.existingPost && this.existingPost.status === "PUBLISHED") {
-          vuexFormSetValue(FORM_ID, "slugShowToggleLockButton", true);
+        // if post is published or has been published once, we lock slug field by default.
+        // if "publishedAt" is not null, we know the post has been published or is published.
+        if (this.existingPost && this.existingPost.publishedAt) {
+          //vuexFormSetValue(FORM_ID, "slugShowToggleLockButton", true);
           vuexFormSetValue(FORM_ID, "slugIsLocked", true);
         }
 
