@@ -14,8 +14,8 @@
           <div class="content has-text-centered">
             <!-- special text if this is the very first blog :) -->
             <template v-if="isMyFirstBlog">
-              <h2>Glad to see you here, {{ user.name }} 🤗</h2>
-              <h2 style="font-weight:200;">Let's create your first blog.</h2>
+              <h2>{{$t("views.blogCreate.gladToSeeYouHere")}}, {{ user.name }} 🤗</h2>
+              <h2 style="font-weight:200;">{{$t("views.blogCreate.createFirstBlog")}}</h2>
             </template>
 
             <br />
