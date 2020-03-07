@@ -4,7 +4,7 @@
       {{ computedUrl }}
     </div>
     <div class="google-preview__title">
-      {{ title }}
+      {{ computedTitle }}
     </div>
     <div class="google-preview__description">{{ computedDescription }}</div>
   </div>
@@ -45,6 +45,13 @@ export default {
         descriptionShortened += "...";
       }
       return descriptionShortened;
+    },
+    computedTitle() {
+      let titleShortened = this.title.substr(0, 60);
+      if (this.title.length > titleShortened.length) {
+        titleShortened += "...";
+      }
+      return titleShortened;
     }
   }
 };
