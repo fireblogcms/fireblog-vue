@@ -6,10 +6,9 @@
 
 <script>
 import Editor from "fireblog-ckeditor";
-import ContentEditor from "./ContentEditor";
 import { ckeditorS3UploadAdapterPlugin } from "../utils/ckeditorS3UploadAdapterPlugin";
 import { REQUEST_STATE, ckeditorIframelyMediaProvider } from "../utils/helpers";
-
+// import CKEditorInspector from "@ckeditor/ckeditor5-inspector";
 export default {
   props: {
     value: {
@@ -21,6 +20,15 @@ export default {
       default: data => {
         return Promise.resolve(data);
       }
+    }
+  },
+  methods: {
+    onClick() {
+      const position = editorInstance.model.document.selection.getFirstPosition();
+      const content = "<p>test</p>";
+      const viewFragment = editorInstance.data.processor.toView(content);
+      const modelFragment = editorInstance.data.toModel(viewFragment);
+      editorInstance.model.insertContent(modelFragment, position);
     }
   },
   mounted() {
@@ -68,6 +76,7 @@ export default {
         providers: [ckeditorIframelyMediaProvider()]
       }
     }).then(editor => {
+      // CKEditorInspector.attach(editor);
       const element = document.querySelector(
         ".ck-block-toolbar-button .ck-tooltip__text"
       );
@@ -78,8 +87,34 @@ export default {
       editor.setData(this.value);
       this.$emit("editorReady", editor);
 
-      editor.model.document.on("change:data", () => {
-        this.$emit("change", editor.getData());
+      editor.model.document.on("change:data", (eventInfo, data) => {
+        // Insert automatically a paragraph after an image or a block,
+        // Otherwise redactors are stuck at the bottom of the page and
+        // can't add a new line.
+        //
+        // No idea what i am doing, here, i mainly copy-pasted this code:
+        // https://github.com/ckeditor/ckeditor5/issues/1255#issuecomment-423499870
+        // and made some little adjustements
+        const changes = editor.model.document.differ.getChanges();
+        editor.model.change((writer, data) => {
+          for (const entry of changes) {
+            // if an image, table, blockQuote or media is inserted.
+            if (
+              entry.type === "insert" &&
+              ["image", "table", "blockQuote", "media"].includes(entry.name)
+            ) {
+              // Get last node of the doc
+              const docNodes = entry.position.root._children._nodes;
+              const lastDocNode = docNodes[docNodes.length - 1];
+              // add a empty paragraph automatically if this the last node of the doc.
+              if (lastDocNode.index === entry.position.index) {
+                const position = entry.position.nodeAfter;
+                const paragraph = writer.createElement("paragraph");
+                writer.insert(paragraph, position, "after");
+              }
+            }
+          }
+        });
       });
     });
   }
