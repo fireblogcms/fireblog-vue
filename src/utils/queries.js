@@ -238,3 +238,14 @@ export const createStripeCheckoutSessionMutation = gql`
     }
   }
 `;
+
+export const getPricesQuery = gql`
+  query getPricing {
+    prices {
+      planId
+      planAmount
+      productName
+      productMetadata
+    }
+  }
+`;

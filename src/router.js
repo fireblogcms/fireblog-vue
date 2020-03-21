@@ -12,6 +12,7 @@ const NotFoundView = () => import("./views/NotFoundView");
 const Auth0CallbackView = () => import("./views/Auth0CallbackView.vue");
 const LogoutView = () => import("./views/LogoutView");
 const LoginView = () => import("./views/LoginView");
+const SubscribeView = () => import("./views/SubscribeView");
 
 Vue.use(Router);
 
@@ -69,6 +70,11 @@ const router = new Router({
       path: "/blog/:blogId/post/:postId",
       name: "postUpdate",
       component: PostFormView
+    },
+    {
+      path: "/blog/:blogId/subscribe",
+      name: "subcribe",
+      component: SubscribeView
     },
     {
       path: "/profile",

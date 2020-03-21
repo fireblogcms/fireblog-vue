@@ -37,7 +37,9 @@
                     params: { blogId: $route.params.blogId }
                   })
                 "
-              >{{ $t("views.postList.writeNewPostButton").toUpperCase() }}</button>
+              >
+                {{ $t("views.postList.writeNewPostButton").toUpperCase() }}
+              </button>
               <!-- <button
                 class="button is-large is-primary is-box-shadowed"
                 @click="onSubscribeClick"
@@ -50,11 +52,10 @@
 
         <template v-if="isFirstPost === true">
           <div class="container">
-            <AppPanel :class="{'is-first': isFirstPost}">
-              <h2
-                style="font-weight:200"
-                class="title has-text-centered"
-              >{{ $t("views.postList.firstBlogSentence") }}</h2>
+            <AppPanel :class="{ 'is-first': isFirstPost }">
+              <h2 style="font-weight:200" class="title has-text-centered">
+                {{ $t("views.postList.firstBlogSentence") }}
+              </h2>
               <div class="has-text-centered">
                 <div style="margin:2rem">
                   <button
@@ -65,7 +66,9 @@
                         params: { blogId: $route.params.blogId }
                       })
                     "
-                  >{{ $t("views.postList.firstPostWriteButton") }}</button>
+                  >
+                    {{ $t("views.postList.firstPostWriteButton") }}
+                  </button>
                 </div>
               </div>
             </AppPanel>
@@ -81,13 +84,8 @@
                 >
                   <a>
                     {{ $t("views.postList.publishedTab") }}
-                    <span
-                      style="margin-left:10px"
-                      class="tag is-rounded"
-                    >
-                      {{
-                      postsPublished.totalCount
-                      }}
+                    <span style="margin-left:10px" class="tag is-rounded">
+                      {{ postsPublished.totalCount }}
                     </span>
                   </a>
                 </li>
@@ -97,13 +95,8 @@
                 >
                   <a>
                     {{ $t("views.postList.draftTab") }}
-                    <span
-                      style="margin-left:10px"
-                      class="tag is-rounded"
-                    >
-                      {{
-                      postsDraft.totalCount
-                      }}
+                    <span style="margin-left:10px" class="tag is-rounded">
+                      {{ postsDraft.totalCount }}
                     </span>
                   </a>
                 </li>
@@ -137,25 +130,26 @@
           <div class="message-body">
             <p>
               {{
-              $t("views.postList.deleteModal.content", {
-              postTitle: deleteModal.post.title
-              })
+                $t("views.postList.deleteModal.content", {
+                  postTitle: deleteModal.post.title
+                })
               }}.
             </p>
           </div>
         </div>
       </template>
       <template #footer>
-        <div
-          @click="deleteModal.show = false"
-          class="button is-primary"
-        >{{ $t("views.postList.deleteModal.cancelButton") }}</div>
+        <div @click="deleteModal.show = false" class="button is-primary">
+          {{ $t("views.postList.deleteModal.cancelButton") }}
+        </div>
         <div
           @click="onDeleteModalConfirmClick"
           class="button is-danger"
           :class="{ 'is-loading': deletePostRequestState === 'PENDING' }"
           :disabled="deletePostRequestState === 'PENDING' ? true : false"
-        >{{ $t("views.postList.deleteModal.confirmButton") }}</div>
+        >
+          {{ $t("views.postList.deleteModal.confirmButton") }}
+        </div>
       </template>
     </BulmaModal>
   </DefaultLayout>
