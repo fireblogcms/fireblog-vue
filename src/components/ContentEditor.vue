@@ -87,30 +87,18 @@ export default {
       editor.setData(this.value);
       this.$emit("editorReady", editor);
 
-      editor.model.document.on("change:data", (eventInfo, data) => {
-        // Insert automatically a paragraph after an image or a block,
-        // Otherwise redactors are stuck at the bottom of the page and
-        // can't add a new line.
-        //
-        // No idea what i am doing, here, i mainly copy-pasted this code:
-        // https://github.com/ckeditor/ckeditor5/issues/1255#issuecomment-423499870
-        // and made some little adjustements
+      editor.model.document.registerPostFixer(writer => {
         const changes = editor.model.document.differ.getChanges();
-        editor.model.change((writer, data) => {
+        editor.model.change(writer => {
           for (const entry of changes) {
             // if an image, table, blockQuote or media is inserted.
             if (
               entry.type === "insert" &&
               ["image", "table", "blockQuote", "media"].includes(entry.name)
             ) {
-              // Get last node of the doc
-              const docNodes = entry.position.root._children._nodes;
-              const lastDocNode = docNodes[docNodes.length - 1];
-              // add a empty paragraph automatically if this the last node of the doc.
-              if (lastDocNode.index === entry.position.index) {
-                const position = entry.position.nodeAfter;
-                const paragraph = writer.createElement("paragraph");
-                writer.insert(paragraph, position, "after");
+              const insertedElement = entry.position.nodeAfter;
+              if (!insertedElement.nextSibling) {
+                writer.insertElement("paragraph", insertedElement, "after");
               }
             }
           }
