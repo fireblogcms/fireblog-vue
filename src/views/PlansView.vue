@@ -2,6 +2,25 @@
   <DefaultLayout>
     <div class="container">
       <div class="section">
+        <h1 class="title is-1 has-text-centered">SUBSCRIPTIONS</h1>
+        <div style="margin-bottom:40px" class="feature has-text-centered">
+          <p>
+            <strong>All our plans includes following features: </strong> <br />
+            ✔️ Webhooks : rebuild automatically your JAMstack blog or site !
+            <br />
+            ✔️ A minimalist & powerful editor dedicated to long writing sessions
+            <br />
+            ✔️ A free and SEO-friendly
+            <a
+              target="_blank"
+              href="https://github.com/fireblogcms/gatsby-starter-fireblog"
+              >Gatsby stater theme</a
+            >
+            made with 💛, to boost your SEO
+            <br />
+            ✔️ 100 GO image storage
+          </p>
+        </div>
         <div class="columns has-text-centered">
           <template v-if="prices.length > 0">
             <div class="column" v-for="price in prices" :key="price.planId">
@@ -53,6 +72,12 @@ import { getPricesQuery } from "../utils/queries";
 import { ContentLoader } from "vue-content-loader";
 import { createStripeCheckoutSession } from "../utils/helpers";
 
+const features = [
+  "Webhooks : rebuild your JAMstack blog or site !",
+  "A simple editor dedicated to writing",
+  "A free and SEO-friendly Gatsby stater theme"
+];
+
 export default {
   components: {
     DefaultLayout,
@@ -65,6 +90,7 @@ export default {
   },
   created() {
     this.fetchData();
+    this.features = features;
   },
   mounted() {
     let stripeScript = document.createElement("script");
