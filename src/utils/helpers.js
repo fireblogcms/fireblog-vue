@@ -377,12 +377,20 @@ export function formatDate(date, type) {
   }
 }
 
-export function createStripeCheckoutSession(blogId) {
+export function createStripeCheckoutSession({
+  blogId,
+  planId,
+  successUrl,
+  cancelUrl
+}) {
   return apolloClient
     .mutate({
       mutation: createStripeCheckoutSessionMutation,
       variables: {
-        blogId
+        blogId,
+        successUrl,
+        cancelUrl,
+        planId
       }
     })
     .then(result => {

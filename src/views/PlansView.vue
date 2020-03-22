@@ -15,7 +15,8 @@
                   {{ (parseInt(price.planAmount) / 100).toFixed(2) }}$ / month
                 </div>
                 <p>
-                  {{ price.productMetadata.API_CALLS_MONTH }} API calls / month
+                  includes {{ price.productMetadata.API_CALLS_MONTH }} API calls
+                  / month
                 </p>
                 <hr />
                 <button
@@ -50,6 +51,7 @@ import DefaultLayout from "../layouts/DefaultLayout";
 import apolloClient from "../utils/apolloClient";
 import { getPricesQuery } from "../utils/queries";
 import { ContentLoader } from "vue-content-loader";
+import { createStripeCheckoutSession } from "../utils/helpers";
 
 export default {
   components: {
@@ -64,8 +66,31 @@ export default {
   created() {
     this.fetchData();
   },
+  mounted() {
+    let stripeScript = document.createElement("script");
+    stripeScript.setAttribute("src", "https://js.stripe.com/v3/");
+    document.head.appendChild(stripeScript);
+  },
   methods: {
-    onSubscribeClick(planId) {
+    async onSubscribeClick(planId) {
+      const stripe = Stripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY);
+      const sessionId = await createStripeCheckoutSession({
+        planId,
+        successUrl: "http://localhost:8080",
+        cancelUrl: "http://localhost:8080"
+      });
+      stripe
+        .redirectToCheckout({
+          sessionId
+        })
+        .then(r => {
+          console.log(r);
+        })
+        .catch(error => {
+          console.log(error);
+          this.$toasted.error(error);
+          throw new Error(error);
+        });
       alert("click");
     },
     fetchData() {
