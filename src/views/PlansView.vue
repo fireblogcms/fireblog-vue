@@ -23,9 +23,16 @@
               </div>
             </div>
           </template>
+          <!-- loading placeholder -->
           <template v-if="prices.length === 0">
             <div class="column" v-for="(v, i) in [0, 1, 2, 3]" :key="i">
-              <div class="box" style="min-height:250px"></div>
+              <div class="box">
+                <ContentLoader :height="250">
+                  <rect x="0" y="0" rx="3" ry="3" width="100%" height="60" />
+                  <rect x="0" y="80" rx="3" ry="3" width="100%" height="30" />
+                  <rect x="0" y="140" rx="3" ry="3" width="100%" height="30" />
+                </ContentLoader>
+              </div>
             </div>
           </template>
         </div>
@@ -38,10 +45,12 @@
 import DefaultLayout from "../layouts/DefaultLayout";
 import apolloClient from "../utils/apolloClient";
 import { getPricesQuery } from "../utils/queries";
+import { ContentLoader } from "vue-content-loader";
 
 export default {
   components: {
-    DefaultLayout
+    DefaultLayout,
+    ContentLoader
   },
   data() {
     return {
