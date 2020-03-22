@@ -88,6 +88,10 @@ export default {
       this.$emit("editorReady", editor);
 
       editor.model.document.registerPostFixer(writer => {
+        // Insert automatically a paragraph after an image or a block,
+        // Otherwise redactors are stuck at the bottom of the page and
+        // can't add a new line.
+        // @see https://github.com/ckeditor/ckeditor5/issues/407#issuecomment-602111695
         const changes = editor.model.document.differ.getChanges();
         editor.model.change(writer => {
           for (const entry of changes) {
@@ -99,6 +103,9 @@ export default {
               const insertedElement = entry.position.nodeAfter;
               if (!insertedElement.nextSibling) {
                 writer.insertElement("paragraph", insertedElement, "after");
+                // According to the ckeditor doc,  we have to return true
+                // if some changes have been made by our postFixer
+                return true;
               }
             }
           }
