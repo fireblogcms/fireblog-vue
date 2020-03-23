@@ -40,12 +40,6 @@
               >
                 {{ $t("views.postList.writeNewPostButton").toUpperCase() }}
               </button>
-              <!-- <button
-                class="button is-large is-primary is-box-shadowed"
-                @click="onSubscribeClick"
-              >
-                SUBSCRIBE
-              </button>-->
             </div>
           </div>
         </header>
@@ -163,8 +157,7 @@ import gql from "graphql-tag";
 import AppLoader from "../components/AppLoader";
 import {
   REQUEST_STATE,
-  appNotification,
-  createStripeCheckoutSession
+  appNotification
 } from "../utils/helpers";
 import {
   getPostsQuery,
@@ -388,15 +381,6 @@ export default {
         if (this.deleteModal.post.status === "DRAFT") {
           this.getPostsDraft();
         }
-      });
-    },
-    async onSubscribeClick() {
-      const stripe = Stripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY);
-      const sessionId = await createStripeCheckoutSession(
-        this.$route.params.blogId
-      );
-      const { error } = await stripe.redirectToCheckout({
-        sessionId
       });
     }
   }

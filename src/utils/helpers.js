@@ -378,6 +378,8 @@ export function formatDate(date, type) {
 }
 
 export function createStripeCheckoutSession({
+  userEmail,
+  userId,
   blogId,
   planId,
   successUrl,
@@ -387,10 +389,12 @@ export function createStripeCheckoutSession({
     .mutate({
       mutation: createStripeCheckoutSessionMutation,
       variables: {
+        userEmail,
+        userId,
         blogId,
+        planId,
         successUrl,
-        cancelUrl,
-        planId
+        cancelUrl
       }
     })
     .then(result => {

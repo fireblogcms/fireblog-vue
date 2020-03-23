@@ -73,7 +73,10 @@ import DefaultLayout from "../layouts/DefaultLayout";
 import apolloClient from "../utils/apolloClient";
 import { getPricesQuery } from "../utils/queries";
 import { ContentLoader } from "vue-content-loader";
-import { createStripeCheckoutSession } from "../utils/helpers";
+import {
+  getUser,
+  createStripeCheckoutSession
+} from "../utils/helpers";
 
 const features = [
   "Webhooks : rebuild your JAMstack blog or site !",
@@ -102,8 +105,10 @@ export default {
   },
   methods: {
     async onSubscribeClick(planId) {
+      const user = await getUser();
       const stripe = Stripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY);
       const sessionId = await createStripeCheckoutSession({
+        userEmail: user.email,
         planId,
         successUrl: "http://localhost:8080",
         cancelUrl: "http://localhost:8080"
