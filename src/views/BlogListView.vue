@@ -77,6 +77,14 @@
                     </div>
                     <button
                       class="button is-box-shadowed is-large"
+                      @click="onSubscribeClick(edge.node, $event)"
+                    >
+                      <span>{{
+                        $t("views.blogList.subscribeButton").toUpperCase()
+                      }}</span>
+                    </button>
+                    <button
+                      class="button is-box-shadowed is-large"
                       @click="onSettingsClick(edge.node, $event)"
                     >
                       <span class="settings-icon"></span>
@@ -167,6 +175,14 @@ export default {
     onSettingsClick(blog) {
       this.$router.push({
         name: "blogSettings",
+        params: {
+          blogId: blog._id
+        }
+      });
+    },
+    onSubscribeClick(blog) {
+      this.$router.push({
+        name: "plans",
         params: {
           blogId: blog._id
         }
