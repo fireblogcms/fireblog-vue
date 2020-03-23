@@ -16,9 +16,7 @@
               href="https://github.com/fireblogcms/gatsby-starter-fireblog"
               >Gatsby stater theme</a
             >
-            made with 💛, to boost your SEO
-            <br />
-            ✔️ 100 GO image storage
+            made with 💛to boost your SEO
           </p>
         </div>
         <div class="columns has-text-centered">
@@ -34,9 +32,14 @@
                   {{ (parseInt(price.planAmount) / 100).toFixed(2) }}$ / month
                 </div>
                 <p>
-                  includes {{ price.productMetadata.API_CALLS_MONTH }} API calls
-                  / month
+                  <strong>includes</strong> <br />{{
+                    price.productMetadata.API_CALLS_MONTH
+                  }}
+                  API calls / month <br />
+                  <span style="position:relative;top:1px;">➕</span>
+                  {{ price.productMetadata.STORAGE_GO }} Go Storage space
                 </p>
+
                 <hr />
                 <button
                   @click="onSubscribeClick(price.planId)"
@@ -117,7 +120,6 @@ export default {
           this.$toasted.error(error);
           throw new Error(error);
         });
-      alert("click");
     },
     fetchData() {
       return apolloClient
