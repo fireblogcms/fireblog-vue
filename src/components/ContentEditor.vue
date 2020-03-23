@@ -22,15 +22,6 @@ export default {
       }
     }
   },
-  methods: {
-    onClick() {
-      const position = editorInstance.model.document.selection.getFirstPosition();
-      const content = "<p>test</p>";
-      const viewFragment = editorInstance.data.processor.toView(content);
-      const modelFragment = editorInstance.data.toModel(viewFragment);
-      editorInstance.model.insertContent(modelFragment, position);
-    }
-  },
   mounted() {
     Editor.create(this.$refs.editor, {
       heading: {
@@ -86,6 +77,10 @@ export default {
 
       editor.setData(this.value);
       this.$emit("editorReady", editor);
+
+      editor.model.document.on("change:data", (eventInfo, data) => {
+        this.$emit("change", editor.getData());
+      });
 
       editor.model.document.registerPostFixer(writer => {
         // Insert automatically a paragraph after an image or a block,
