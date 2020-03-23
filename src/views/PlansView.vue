@@ -29,7 +29,7 @@
                 </div>
                 <br />
                 <div class="title is-4">
-                  {{ (parseInt(price.planAmount) / 100).toFixed(2) }}$ / month
+                  {{ (parseInt(price.planAmount) / 100).toFixed(2) }} EUR / month
                 </div>
                 <p>
                   <strong>includes</strong> <br />{{
