@@ -274,7 +274,6 @@ import {
   createSlug,
   ckeditorIframelyMediaProvider,
   validateSlug,
-  resetAppNotifications,
   toast,
   formatDate
 } from "../utils/helpers";
@@ -676,7 +675,6 @@ export default {
      */
     validatePostForm(action = "SAVE_DRAFT") {
       vuexFormResetErrors(FORM_ID);
-      resetAppNotifications();
       // TITLE
       if (!vuexFormGetValue(FORM_ID, "title").trim()) {
         let message = this.$t("views.postForm.fields.title.errors.required");
