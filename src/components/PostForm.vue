@@ -273,7 +273,6 @@ import {
   getBlog,
   createSlug,
   ckeditorIframelyMediaProvider,
-  appNotification,
   validateSlug,
   resetAppNotifications,
   toast,
@@ -508,10 +507,7 @@ export default {
         return;
       }
       if (!vuexFormGetValue(FORM_ID, "title").trim()) {
-        appNotification(
-          this.$t("views.postForm.fields.title.errors.required"),
-          "error"
-        );
+        toast(this, this.$t("views.postForm.fields.title.errors.required"), "error");
         return;
       }
       const savingPendingAction = pendingActions.add("Saving post");
@@ -541,7 +537,7 @@ export default {
             status
           };
           if (status === "DRAFT" && options.saveType === "manual") {
-            toast(this, this.$t("views.postForm.draftSaved"));
+            toast(this, this.$t("views.postForm.draftSaved"), "success");
           }
           if (this.$route.name === "postCreate") {
             // this route change WON'T retrigger this.init(), so passing from
@@ -562,7 +558,7 @@ export default {
             state: REQUEST_STATE.FINISHED_ERROR,
             status
           };
-          appNotification(error, "error");
+          toast(this, error, "error");
           throw new Error(error);
         });
     },
@@ -577,7 +573,7 @@ export default {
           return result.data.post;
         })
         .catch(error => {
-          appNotification("getExistingPost(): " + error, "error");
+          toast(this, "getExistingPost(): " + error, "error");
         });
     },
     getPostStatus() {
@@ -635,10 +631,7 @@ export default {
     showAdvancedSettings() {
       // we need at least the title to autocomplete the slug field
       if (!vuexFormGetValue(FORM_ID, "title").trim()) {
-        appNotification(
-          this.$t("views.postForm.fields.title.errors.required"),
-          "error"
-        );
+        toast(this, this.$t("views.postForm.fields.title.errors.required"), "error");
         return;
       }
       if (this.mediaLoadingCounter > 0) {
@@ -688,7 +681,7 @@ export default {
       if (!vuexFormGetValue(FORM_ID, "title").trim()) {
         let message = this.$t("views.postForm.fields.title.errors.required");
         vuexFormSetError(FORM_ID, "title", message);
-        appNotification(message, "error");
+        toast(this, message, "error");
       }
       if (action === "PUBLISH") {
         if (!validateSlug(vuexFormGetValue(FORM_ID, "slug"))) {
@@ -697,18 +690,18 @@ export default {
             "components.slugField.errors.invalidCharacters"
           );
           vuexFormSetError(FORM_ID, "slug", message);
-          appNotification(message, "error");
+          toast(this, message, "error");
         }
         if (!vuexFormGetValue(FORM_ID, "slug").trim()) {
           let message = this.$t("components.slugField.errors.required");
           vuexFormSetError(FORM_ID, "slug", message);
-          appNotification(message, "error");
+          toast(this, message, "error");
         }
         // TEASER
         if (!vuexFormGetValue(FORM_ID, "teaser").trim()) {
           let message = this.$t("views.postForm.fields.teaser.errors.required");
           vuexFormSetError(FORM_ID, "teaser", message);
-          appNotification(message, "error");
+          toast(this, message, "error");
         }
       }
       const errors = vuexFormGetErrors(FORM_ID);

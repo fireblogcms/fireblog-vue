@@ -18,7 +18,7 @@ const moduleGlobal = {
     postJustPublished(state, postId) {
       state.postJustPublished = postId;
     },
-    // @see appNotification() function
+    // @see toast() function
     notification(state, args) {
       state.notification = args;
     }

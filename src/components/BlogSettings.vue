@@ -11,7 +11,11 @@
 </template>
 
 <script>
-import { getBlog, REQUEST_STATE, appNotification } from "../utils/helpers";
+import {
+  getBlog,
+  REQUEST_STATE,
+  toast
+} from "../utils/helpers";
 import { vuexFormInitData } from "../utils/vuexForm";
 import AppLoader from "../components/AppLoader";
 import apolloClient from "../utils/apolloClient";
@@ -53,7 +57,7 @@ export default {
           this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
         .catch(error => {
-          appNotification(error, "error");
+          toast(this, error, "error");
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
         });
     }

@@ -341,15 +341,6 @@ export function toast(component, message, type, options = {}) {
     type,
     ...options
   });
-}
-
-export function appNotification(
-  message,
-  type = "info",
-  options = {
-    persistAfterRouteChange: false
-  }
-) {
   Store.commit("notification", { message, type, options });
 }
 

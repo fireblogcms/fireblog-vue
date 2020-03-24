@@ -75,7 +75,8 @@ import { getPricesQuery } from "../utils/queries";
 import { ContentLoader } from "vue-content-loader";
 import {
   getUser,
-  createStripeCheckoutSession
+  createStripeCheckoutSession,
+  toast
 } from "../utils/helpers";
 
 const features = [
@@ -122,7 +123,7 @@ export default {
         })
         .catch(error => {
           console.log(error);
-          this.$toasted.error(error);
+          toast(this, error, "error");
           throw new Error(error);
         });
     },
@@ -136,10 +137,7 @@ export default {
           return result;
         })
         .catch(error => {
-          appNotification(
-            "Sorry, an error occured while fetching pricing",
-            "error"
-          );
+          toast(this, "Sorry, an error occured while fetching pricing", "error");
           throw new Error(error);
         });
     }

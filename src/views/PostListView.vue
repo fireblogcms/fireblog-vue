@@ -155,11 +155,7 @@ import DefaultLayout from "../layouts/DefaultLayout";
 import IconBack from "../components/IconBack";
 import gql from "graphql-tag";
 import AppLoader from "../components/AppLoader";
-import {
-  REQUEST_STATE,
-  appNotification,
-  toast
-} from "../utils/helpers";
+import { REQUEST_STATE, toast } from "../utils/helpers";
 import {
   getPostsQuery,
   getBlogQuery,
@@ -279,10 +275,7 @@ export default {
           return result;
         })
         .catch(error => {
-          appNotification(
-            "Sorry, an error occured while fetching posts",
-            "error"
-          );
+          toast(this, "Sorry, an error occured while fetching posts", "error");
           throw new Error(error);
         });
     },
@@ -316,7 +309,7 @@ export default {
         })
         .catch(error => {
           this.postsPublishedRequestState = REQUEST_STATE.FINISHED_ERROR;
-          appNotification("Sorry, an error occured while fetching posts");
+          toast(this, "Sorry, an error occured while fetching posts", "error");
           throw new Error(error);
         });
     },
@@ -337,7 +330,7 @@ export default {
         })
         .catch(error => {
           this.postsDraftRequestState = REQUEST_STATE.FINISHED_ERROR;
-          appNotification("Sorry, an error occured while fetching posts");
+          toast(this, "Sorry, an error occured while fetching posts", "error");
           throw new Error(error);
         });
     },
@@ -354,10 +347,7 @@ export default {
         })
         .catch(error => {
           this.deletePostRequestState = REQUEST_STATE.FINISHED_ERROR;
-          appNotification(
-            "Sorry, an error occured while fetching posts",
-            "error"
-          );
+          toast(this, "Sorry, an error occured while fetching posts", "error");
           this.deleteModal.show = false;
           throw new Error(error);
         });

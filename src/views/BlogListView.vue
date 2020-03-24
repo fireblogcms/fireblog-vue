@@ -109,7 +109,7 @@ import BlogCreateForm from "../components/BlogCreateForm";
 import DefaultLayout from "../layouts/DefaultLayout";
 import AppLoader from "../components/AppLoader";
 import gql from "graphql-tag";
-import { REQUEST_STATE, appNotification } from "../utils/helpers";
+import { REQUEST_STATE, toast } from "../utils/helpers";
 import logger from "../utils/logger";
 import gradient from "random-gradient";
 import { getMyBlogs } from "../utils/helpers";
@@ -162,10 +162,7 @@ export default {
           return blogs;
         })
         .catch(error => {
-          appNotification(
-            "Sorry, an error occured while fetching blog:" + error,
-            "error"
-          );
+          toast(this, "Sorry, an error occured while fetching blog:" + error, "error");
           throw new Error(error);
         });
     },

@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { REQUEST_STATE, appNotification } from "../utils/helpers";
+import { REQUEST_STATE } from "../utils/helpers";
 import apolloClient from "../utils/apolloClient";
 import { getBlogApiUsageQuery } from "../utils/queries";
 import { getBlog } from "../utils/helpers";
