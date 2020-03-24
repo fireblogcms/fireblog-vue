@@ -202,7 +202,7 @@ export default {
     this.striptags = striptags;
     if (this.$route.query.status === "success") {
       toast(this, this.$t("views.postList.paymentSuccess"), "success");
-    } else {
+    } else if (this.$route.query.status === "cancel") {
       toast(this, this.$t("views.postList.paymentCancel"), "error");
     }
   },

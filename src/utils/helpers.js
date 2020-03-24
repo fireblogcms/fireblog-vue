@@ -341,7 +341,6 @@ export function toast(component, message, type, options = {}) {
     type,
     ...options
   });
-  Store.commit("notification", { message, type, options });
 }
 
 export function resetAppNotifications() {
