@@ -157,7 +157,8 @@ import gql from "graphql-tag";
 import AppLoader from "../components/AppLoader";
 import {
   REQUEST_STATE,
-  appNotification
+  appNotification,
+  toast
 } from "../utils/helpers";
 import {
   getPostsQuery,
@@ -203,6 +204,11 @@ export default {
   },
   created() {
     this.striptags = striptags;
+    if (this.$route.query.status === "success") {
+      toast(this, this.$t("views.postList.paymentSuccess"), "success");
+    } else {
+      toast(this, this.$t("views.postList.paymentCancel"), "error");
+    }
   },
   mounted() {
     this.initData();

@@ -110,8 +110,8 @@ export default {
       const sessionId = await createStripeCheckoutSession({
         userEmail: user.email,
         planId,
-        successUrl: "http://localhost:8080",
-        cancelUrl: "http://localhost:8080"
+        successUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}`,
+        cancelUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}`
       });
       stripe
         .redirectToCheckout({

@@ -2,7 +2,7 @@
 export default {
   "apiModal.getAllPublishedPosts": "Get all published posts",
   "apiModal.getASinglePostBySlug": "Get a single post by slug",
-  "apiModal.GetBlogInformations": "Get blog informations",
+  "apiModal.getBlogInformations": "Get blog informations",
   "apiModal.openGraphQLExplorer": "open GraphQL Explorer",
   "apiModal.title": "API GraphQL",
   "apiModal.tryItButton": "Try it!",
@@ -93,9 +93,9 @@ export default {
   "views.postForm.unpublishButton": "Unpublish",
   "views.postList.backToBlogLink": "My blogs",
   "views.postList.deleteButton": "Delete",
-  "views.postList.deleteModal.cancelButton": "Oups, no, cancel !",
+  "views.postList.deleteModal.cancelButton": "Oups, no, cancel!",
   "views.postList.deleteModal.confirmButton": "Delete",
-  "views.postList.deleteModal.content": "WARNING !\r\n \"{postTitle}\" will be deleted permanently.",
+  "views.postList.deleteModal.content": "WARNING!\r\n \"{postTitle}\" will be deleted permanently.",
   "views.postList.deleteModal.title": "Delete {postTitle}",
   "views.postList.draftTab": "Draft",
   "views.postList.firstBlogSentence": "Now it's time to write your first article!",
@@ -108,4 +108,6 @@ export default {
   "views.postList.title": "posts",
   "views.postList.updatedOn": "updated on {date}",
   "views.postList.writeNewPostButton": "Write a new post",
+  "views.postList.paymentSuccess": "The payment was successful.",
+  "views.postList.paymentCancel": "There was an error with the payment.",
 };

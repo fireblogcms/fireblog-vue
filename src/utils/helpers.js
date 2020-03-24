@@ -333,11 +333,12 @@ export function S3Upload({
     });
 }
 
-export function toast(component, message, options = {}) {
+export function toast(component, message, type, options = {}) {
   component.$toasted.show(message, {
     duration: 2000,
     position: "bottom-center",
-    className: "app-toast",
+    className: `app-toast-${type}`,
+    type,
     ...options
   });
 }

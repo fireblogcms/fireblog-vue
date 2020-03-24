@@ -107,4 +107,6 @@ export default {
   "views.postList.writeNewPostButton": "Écrire un nouveau post",
   "views.postList.title": "posts",
   "views.postList.updatedOn": "mis à jour le {date}",
+  "views.postList.paymentSuccess": "Le paiement a été accepté.",
+  "views.postList.paymentCancel": "Il y a eu une erreur avec le paiement.",
 };
