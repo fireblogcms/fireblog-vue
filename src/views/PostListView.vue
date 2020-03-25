@@ -29,6 +29,20 @@
             </div>
             <div class="column column-right">
               <button
+                class="button is-box-shadowed is-large"
+                @click="
+                  $router.push({
+                    name: 'blogSettings',
+                    params: { blogId: $route.params.blogId }
+                  })
+                "
+              >
+                <span class="settings-icon"></span>
+                <span>{{
+                  $t("views.blogList.settingsButton").toUpperCase()
+                }}</span>
+              </button>
+              <button
                 class="button is-large is-outline is-primary"
                 v-if="!isFirstPost"
                 @click="
@@ -406,5 +420,11 @@ export default {
 }
 .blog-title .column-right button {
   margin-left: 2rem;
+}
+.settings-icon {
+  margin-right: 0.7rem;
+  width: 30px;
+  height: 30px;
+  background: url("/images/icon-settings.svg") no-repeat;
 }
 </style>

@@ -83,15 +83,6 @@
                         $t("views.blogList.subscribeButton").toUpperCase()
                       }}</span>
                     </button>
-                    <button
-                      class="button is-box-shadowed is-large"
-                      @click="onSettingsClick(edge.node, $event)"
-                    >
-                      <span class="settings-icon"></span>
-                      <span>{{
-                        $t("views.blogList.settingsButton").toUpperCase()
-                      }}</span>
-                    </button>
                   </div>
                 </div>
               </div>
@@ -169,14 +160,6 @@ export default {
     onRowClick(item, event) {
       this.$router.push(this.buildLinkToPostList(item));
     },
-    onSettingsClick(blog) {
-      this.$router.push({
-        name: "blogSettings",
-        params: {
-          blogId: blog._id
-        }
-      });
-    },
     onSubscribeClick(blog) {
       this.$router.push({
         name: "plans",
@@ -250,13 +233,6 @@ export default {
 .plans-name {
   margin: 0 0 1rem 0;
   font-weight: 500;
-}
-
-.settings-icon {
-  margin-right: 0.7rem;
-  width: 30px;
-  height: 30px;
-  background: url("/images/icon-settings.svg") no-repeat;
 }
 
 @media screen and (max-width: 768px) {
