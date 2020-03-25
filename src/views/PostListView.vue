@@ -160,6 +160,31 @@
         </div>
       </template>
     </BulmaModal>
+    <BulmaModal
+      v-model="paymentSuccessModal.show"
+    >
+      <template #title>
+        <div class="has-text-centered">
+          {{ $t("views.postList.paymentSuccess") }}
+        </div>
+      </template>
+      <template #body>
+        <div class="has-text-centered">
+          <img
+            style="border-radius:5px"
+            src="https://camo.githubusercontent.com/581d9802c9e5716113238cc2fcaf938bf2dad338/68747470733a2f2f6d656469612e67697068792e636f6d2f6d656469612f6248757134736355373255496f2f67697068792e676966"
+          />
+        </div>
+      </template>
+      <template class="has-text-centered" #footer>
+        <button
+          @click="paymentSuccessModal.show = false"
+          class="button is-primary is-large"
+        >
+          {{ $t("global.okayButton") }}
+        </button>
+      </template>
+    </BulmaModal>
   </DefaultLayout>
 </template>
 
@@ -203,6 +228,9 @@ export default {
         data: null,
         post: null
       },
+      paymentSuccessModal: {
+        show: false
+      },
       blog: null,
       posts: null,
       postsPublished: null,
@@ -215,9 +243,7 @@ export default {
   created() {
     this.striptags = striptags;
     if (this.$route.query.status === "success") {
-      toast(this, this.$t("views.postList.paymentSuccess"), "success");
-    } else if (this.$route.query.status === "cancel") {
-      toast(this, this.$t("views.postList.paymentCancel"), "error");
+      this.paymentSuccessModal.show = true;
     }
   },
   mounted() {

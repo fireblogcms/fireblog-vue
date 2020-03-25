@@ -98,6 +98,9 @@ export default {
   created() {
     this.fetchData();
     this.features = features;
+    if (this.$route.query.status === "cancel") {
+      toast(this, this.$t("views.plans.paymentCancel"), "error");
+    }
   },
   mounted() {
     let stripeScript = document.createElement("script");
@@ -112,7 +115,7 @@ export default {
         userEmail: user.email,
         planId,
         successUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}`,
-        cancelUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}`
+        cancelUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}/plans`
       });
       stripe
         .redirectToCheckout({

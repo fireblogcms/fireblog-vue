@@ -227,7 +227,7 @@
           @click="publishingHurrahModal.show = false"
           class="button is-primary is-large"
         >
-          {{ $t("views.postForm.firstPublicationHurralModal.okayButton") }}
+          {{ $t("global.okayButton") }}
         </button>
       </template>
     </BulmaModal>
@@ -252,7 +252,7 @@
           @click="publishingChangesModal.show = false"
           class="button is-primary is-large"
         >
-          {{ $t("views.postForm.publishChangesHurralModal.okayButton") }}
+          {{ $t("global.okayButton") }}
         </button>
       </template>
     </BulmaModal>
