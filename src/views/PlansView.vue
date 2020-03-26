@@ -98,9 +98,6 @@ export default {
   created() {
     this.fetchData();
     this.features = features;
-    if (this.$route.query.status === "cancel") {
-      toast(this, this.$t("views.plans.paymentCancel"), "error");
-    }
   },
   mounted() {
     let stripeScript = document.createElement("script");

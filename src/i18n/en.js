@@ -108,5 +108,4 @@ export default {
   "views.postList.updatedOn": "updated on {date}",
   "views.postList.writeNewPostButton": "Write a new post",
   "views.postList.paymentSuccess": "Congratulations, you successfully subscribed to Fireblog!",
-  "views.plans.paymentCancel": "There was an error with the payment.",
 };

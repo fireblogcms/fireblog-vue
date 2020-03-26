@@ -108,5 +108,4 @@ export default {
   "views.postList.title": "posts",
   "views.postList.updatedOn": "mis à jour le {date}",
   "views.postList.paymentSuccess": "Félicitations, vous êtes désormais abonné à Fireblog!",
-  "views.plans.paymentCancel": "Il y a eu une erreur avec le paiement.",
 };
