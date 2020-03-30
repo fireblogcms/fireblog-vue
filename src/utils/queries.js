@@ -52,6 +52,7 @@ export const FullBlogFragment = gql`
     name
     updatedAt
     createdAt
+    subscription
     url
     webhooks {
       name

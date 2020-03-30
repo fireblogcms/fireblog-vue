@@ -39,14 +39,15 @@
                   <span style="position:relative;top:1px;">➕</span>
                   {{ price.productMetadata.STORAGE_GO }} Go Storage space
                 </p>
-
-                <hr />
-                <button
-                  @click="onSubscribeClick(price.planId)"
-                  class="button is-primary"
-                >
-                  Subscribe
-                </button>
+                <template v-if="subscribedPlanId !== price.planId">
+                  <hr />
+                  <button
+                    @click="onSubscribeClick(price.planId)"
+                    class="button is-primary"
+                  >
+                    Subscribe
+                  </button>
+                </template>
               </div>
             </div>
           </template>
@@ -74,6 +75,7 @@ import apolloClient from "../utils/apolloClient";
 import { getPricesQuery } from "../utils/queries";
 import { ContentLoader } from "vue-content-loader";
 import {
+  getBlog,
   getUser,
   createStripeCheckoutSession,
   toast
@@ -92,7 +94,8 @@ export default {
   },
   data() {
     return {
-      prices: []
+      prices: [],
+      subscribedPlanId: null
     };
   },
   created() {
@@ -129,13 +132,16 @@ export default {
           throw new Error(error);
         });
     },
-    fetchData() {
+    async fetchData() {
+      const blog = await getBlog(this.$route.params.blogId);
+      this.subscribedPlanId = blog.subscription;
       return apolloClient
         .query({
           query: getPricesQuery
         })
         .then(result => {
           this.prices = result.data.prices;
+          console.log("PRICES", this.prices);
           return result;
         })
         .catch(error => {
