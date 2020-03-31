@@ -1,7 +1,26 @@
 <template>
   <DefaultLayout>
+    <!-- TOPBAR LEFT BUTTONS -->
+    <portal to="topbar-left">
+      <span class="item tag is-large">
+        <router-link class="item" :to="{ name: 'blogList' }">
+          <img
+            class="is-hidden-mobile"
+            style="position:relative;height:20px !important;top:4px;"
+            src="/images/books.webp"
+          />
+          <IconBack />
+          {{ $t("views.postList.backToBlogLink") }}
+        </router-link>
+      </span>
+    </portal>
+    <!-- END TOPBAR LEFT BUTTONS -->
+
     <div class="container">
       <div class="section">
+        <div class="box" v-if="freeTrialPlan && isFreeTrialPlanSubscribed">
+          <p>You currently have the one month free trial {{ freeTrialPlan.productName }}</p>
+        </div>
         <h1 class="title is-1 has-text-centered is-uppercase">
           {{ $t("views.plans.title") }}
         </h1>
@@ -24,7 +43,7 @@
         <div class="columns has-text-centered">
           <template v-if="prices.length > 0">
             <div class="column" v-for="price in prices" :key="price.planId">
-              <div class="box" :class="{ 'box-subscribed-plan': isPlanSubscribedTo(price.planId) }">
+              <div class="box" :class="{ 'box-subscribed-plan': isPlanSubscribed(price.planId) }">
                 <h2 class="title is-4">{{ price.productName }}</h2>
                 <p class="title is-6 has-text-weight-bold">
                   {{ $t(price.productMetadata.SUBTITLE) }}
@@ -38,7 +57,7 @@
                 <button
                   @click="onSubscribeClick(price.planId)"
                   class="button is-primary button-subscribe"
-                  v-if="!isPlanSubscribedTo(price.planId)"
+                  v-if="!isPlanSubscribed(price.planId)"
                 >
                   {{ $t("global.subscribeButton") }}
                 </button>
@@ -65,6 +84,7 @@
 
 <script>
 import DefaultLayout from "../layouts/DefaultLayout";
+import IconBack from "../components/IconBack";
 import apolloClient from "../utils/apolloClient";
 import { getPricesQuery } from "../utils/queries";
 import { ContentLoader } from "vue-content-loader";
@@ -77,12 +97,14 @@ import {
 
 export default {
   components: {
+    IconBack,
     DefaultLayout,
     ContentLoader
   },
   data() {
     return {
       prices: [],
+      freeTrialPlan: null,
       subscribedPlanId: null
     };
   },
@@ -127,7 +149,10 @@ export default {
           query: getPricesQuery
         })
         .then(result => {
-          this.prices = result.data.prices;
+          // Get the prices and remove the free trial from the list
+          this.freeTrialPlan = result.data.prices[0];
+          this.prices = result.data.prices.slice(1);
+          console.log(this.freeTrialPlan);
           return result;
         })
         .catch(error => {
@@ -135,7 +160,10 @@ export default {
           throw new Error(error);
         });
     },
-    isPlanSubscribedTo(planId) {
+    isFreeTrialPlanSubscribed() {
+      return this.subscribedPlanId === this.freeTrialPlan.planId;
+    },
+    isPlanSubscribed(planId) {
       return this.subscribedPlanId === planId;
     }
   }
@@ -143,6 +171,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.tag-free-trial {
+  background-color: $primary;
+  color: white;
+}
 .features {
   margin-bottom: 3rem;
 }

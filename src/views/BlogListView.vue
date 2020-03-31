@@ -67,14 +67,7 @@
                     </div>
                   </div>
                   <div class="card-content">
-                    <div>
-                      <p class="plans-name">
-                        Plan : firestarter ({{
-                          $t("views.blogList.oneMonthFreeTrial")
-                        }})
-                      </p>
-                      <ApiUsage :blogId="edge.node._id"></ApiUsage>
-                    </div>
+                    <PlanInformations :blogId="edge.node._id"></PlanInformations>
                     <button
                       class="button is-box-shadowed is-large"
                       @click="onSubscribeClick(edge.node, $event)"
@@ -104,14 +97,14 @@ import { REQUEST_STATE, toast } from "../utils/helpers";
 import logger from "../utils/logger";
 import gradient from "random-gradient";
 import { getMyBlogs } from "../utils/helpers";
-import ApiUsage from "../components/ApiUsage";
+import PlanInformations from "../components/PlanInformations";
 
 export default {
   components: {
     DefaultLayout,
     BlogCreateForm,
     AppLoader,
-    ApiUsage
+    PlanInformations
   },
   data() {
     return {
@@ -228,11 +221,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-.plans-name {
-  margin: 0 0 1rem 0;
-  font-weight: 500;
 }
 
 @media screen and (max-width: 768px) {

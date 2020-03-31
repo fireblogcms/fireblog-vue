@@ -6,13 +6,8 @@
     <h2 class="title is-2">
       {{ $t("views.blogSettings.planSettings.title") }}
     </h2>
-    <div class="plans-informations">
-      <p class="plans-name">
-        Firestarter ({{
-          $t("views.blogList.oneMonthFreeTrial")
-        }})
-      </p>
-      <ApiUsage :blogId="blog._id"></ApiUsage>
+    <div class="plan-informations-container">
+      <PlanInformations :blogId="blog._id"></PlanInformations>
     </div>
     <button
       class="button is-outlined is-primary is-large"
@@ -27,7 +22,7 @@
 
 <script>
 import AppPanel from "../components/AppPanel";
-import ApiUsage from "../components/ApiUsage";
+import PlanInformations from "../components/PlanInformations";
 
 export default {
   props: {
@@ -38,7 +33,7 @@ export default {
   },
   components: {
     AppPanel,
-    ApiUsage
+    PlanInformations
   },
   methods: {
     onSubscribeClick(blog) {
@@ -54,11 +49,7 @@ export default {
 </script>
 
 <style scoped>
-.plans-informations {
+.plan-informations-container {
   margin-bottom: 2rem;
-}
-.plans-name {
-  margin: 0 0 1rem 0;
-  font-weight: 500;
 }
 </style>
