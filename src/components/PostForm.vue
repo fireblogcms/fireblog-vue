@@ -27,18 +27,16 @@
 
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
-      <span
-        @click="onBackToPostClick"
-        style="cursor:pointer"
-        class="item tag is-large"
-      >
-        <em>
+      <span class="item tag is-large">
+        <router-link class="item" :to="{ name: 'postList' }">
           <img
+            class="is-hidden-mobile"
             style="position:relative;height:20px !important;top:4px;"
             src="/images/book.png"
           />
-          <IconBack />posts
-        </em>
+          <IconBack />
+          {{ $t("views.postForm.backToBlogLink") }}
+        </router-link>
       </span>
     </portal>
     <!-- END TOPBAR LEFT BUTTONS -->
