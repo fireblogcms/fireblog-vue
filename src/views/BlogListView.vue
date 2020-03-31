@@ -79,9 +79,9 @@
                       class="button is-box-shadowed is-large"
                       @click="onSubscribeClick(edge.node, $event)"
                     >
-                      <span>{{
-                        $t("views.blogList.subscribeButton").toUpperCase()
-                      }}</span>
+                      <span>
+                        {{ $t("global.subscribeButton").toUpperCase() }}
+                      </span>
                     </button>
                   </div>
                 </div>

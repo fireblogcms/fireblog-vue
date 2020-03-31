@@ -2,52 +2,46 @@
   <DefaultLayout>
     <div class="container">
       <div class="section">
-        <h1 class="title is-1 has-text-centered">SUBSCRIPTIONS</h1>
-        <div style="margin-bottom:40px" class="feature has-text-centered">
+        <h1 class="title is-1 has-text-centered is-uppercase">
+          {{ $t("views.plans.title") }}
+        </h1>
+        <div class="features has-text-centered">
+          <p class="has-text-weight-bold">
+            {{ $t("views.plans.introduction") }}
+          </p>
+          <p>✔️ {{ $t("views.plans.webhooks") }}</p>
+          <p>✔️ {{ $t("views.plans.editor") }}</p>
           <p>
-            <strong>All our plans includes following features: </strong> <br />
-            ✔️ Webhooks : rebuild automatically your JAMstack blog or site !
-            <br />
-            ✔️ A minimalist & powerful editor dedicated to long writing sessions
-            <br />
-            ✔️ A free and SEO-friendly
+            ✔️ {{ $t("views.plans.gatsbyFirst") }}
             <a
               target="_blank"
               href="https://github.com/fireblogcms/gatsby-starter-fireblog"
-              >Gatsby stater theme</a
+              >Gatsby starter theme</a
             >
-            made with 💛to boost your SEO
+            {{ $t("views.plans.gatsbySecond") }}
           </p>
         </div>
         <div class="columns has-text-centered">
           <template v-if="prices.length > 0">
             <div class="column" v-for="price in prices" :key="price.planId">
-              <div class="box">
+              <div class="box" :class="{ 'box-subscribed-plan': isPlanSubscribedTo(price.planId) }">
                 <h2 class="title is-4">{{ price.productName }}</h2>
-                <div class="title is-6">
-                  <em>{{ price.productMetadata.SUBTITLE }}</em>
-                </div>
-                <br />
-                <div class="title is-4">
-                  {{ (parseInt(price.planAmount) / 100).toFixed(2) }} EUR / month
-                </div>
-                <p>
-                  <strong>includes</strong> <br />{{
-                    price.productMetadata.API_CALLS_MONTH
-                  }}
-                  API calls / month <br />
-                  <span style="position:relative;top:1px;">➕</span>
-                  {{ price.productMetadata.STORAGE_GO }} Go Storage space
+                <p class="title is-6 has-text-weight-bold">
+                  {{ $t(price.productMetadata.SUBTITLE) }}
                 </p>
-                <template v-if="subscribedPlanId !== price.planId">
-                  <hr />
-                  <button
-                    @click="onSubscribeClick(price.planId)"
-                    class="button is-primary"
-                  >
-                    Subscribe
-                  </button>
-                </template>
+                <p class="title is-4">
+                  {{ (parseInt(price.planAmount) / 100).toFixed(2) }} {{ $t("views.plans.eurosPerMonth") }}
+                </p>
+                <p class="has-text-weight-bold">{{ $t("views.plans.includes") }}</p>
+                <p>{{ price.productMetadata.API_CALLS_MONTH }} {{ $t("views.plans.apiCalls") }}</p>
+                <p>{{ price.productMetadata.STORAGE_GO }} {{ $t("views.plans.storage") }}</p>
+                <button
+                  @click="onSubscribeClick(price.planId)"
+                  class="button is-primary button-subscribe"
+                  v-if="!isPlanSubscribedTo(price.planId)"
+                >
+                  {{ $t("global.subscribeButton") }}
+                </button>
               </div>
             </div>
           </template>
@@ -81,12 +75,6 @@ import {
   toast
 } from "../utils/helpers";
 
-const features = [
-  "Webhooks : rebuild your JAMstack blog or site !",
-  "A simple editor dedicated to writing",
-  "A free and SEO-friendly Gatsby stater theme"
-];
-
 export default {
   components: {
     DefaultLayout,
@@ -100,7 +88,6 @@ export default {
   },
   created() {
     this.fetchData();
-    this.features = features;
   },
   mounted() {
     let stripeScript = document.createElement("script");
@@ -141,14 +128,32 @@ export default {
         })
         .then(result => {
           this.prices = result.data.prices;
-          console.log("PRICES", this.prices);
           return result;
         })
         .catch(error => {
           toast(this, "Sorry, an error occured while fetching pricing", "error");
           throw new Error(error);
         });
+    },
+    isPlanSubscribedTo(planId) {
+      return this.subscribedPlanId === planId;
     }
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.features {
+  margin-bottom: 3rem;
+}
+.box {
+  height: 100%;
+  border: 5px solid transparent;
+}
+.box-subscribed-plan {
+  border-color: $primary;
+}
+.button-subscribe {
+  margin-top: 2rem;
+}
+</style>

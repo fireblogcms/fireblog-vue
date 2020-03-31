@@ -19,7 +19,7 @@
       @click="onSubscribeClick(blog, $event)"
     >
       <span>{{
-        $t("views.blogList.subscribeButton")
+        $t("global.subscribeButton")
       }}</span>
     </button>
   </AppPanel>
