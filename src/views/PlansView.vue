@@ -17,10 +17,21 @@
     <!-- END TOPBAR LEFT BUTTONS -->
 
     <div class="container">
-      <div class="section">
-        <div class="box" v-if="freeTrialPlan && isFreeTrialPlanSubscribed">
-          <p>You currently have the one month free trial {{ freeTrialPlan.productName }}</p>
+      <div class="section" v-if="isFreeTrialPlanSubscribed()">
+        <div class="columns">
+          <div class="column is-three-fifths is-offset-one-fifth">
+            <div class="box">
+              <p>
+                {{ $t("views.plans.freeTrialFirst") }} 
+                {{ freeTrialPlan.productName }} 
+                ({{ $t(freeTrialPlan.productMetadata.SUBTITLE) }}). 
+                {{ $t("views.plans.freeTrialSecond") }}
+              </p>
+            </div>
+          </div>
         </div>
+      </div>
+      <div class="section">
         <h1 class="title is-1 has-text-centered is-uppercase">
           {{ $t("views.plans.title") }}
         </h1>
@@ -152,7 +163,6 @@ export default {
           // Get the prices and remove the free trial from the list
           this.freeTrialPlan = result.data.prices[0];
           this.prices = result.data.prices.slice(1);
-          console.log(this.freeTrialPlan);
           return result;
         })
         .catch(error => {
@@ -160,21 +170,17 @@ export default {
           throw new Error(error);
         });
     },
-    isFreeTrialPlanSubscribed() {
-      return this.subscribedPlanId === this.freeTrialPlan.planId;
-    },
     isPlanSubscribed(planId) {
       return this.subscribedPlanId === planId;
+    },
+    isFreeTrialPlanSubscribed() {
+      return this.freeTrialPlan && this.isPlanSubscribed(this.freeTrialPlan.planId);
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.tag-free-trial {
-  background-color: $primary;
-  color: white;
-}
 .features {
   margin-bottom: 3rem;
 }

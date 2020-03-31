@@ -6,7 +6,9 @@
     >
       {{ $t("components.planInformations.name") }} 
       {{ plan.productName }} 
-      ({{ $t(plan.productMetadata.SUBTITLE) }})
+      <template v-if="plan.productMetadata.SUBTITLE.includes('freeTrial')">
+        ({{ $t(plan.productMetadata.SUBTITLE) }})
+      </template>
     </p>
     <ApiUsage :blogId="blogId"></ApiUsage>
   </div>
