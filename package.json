@@ -11,7 +11,8 @@
     "deploy:staging": "git checkout master;git push;git checkout staging;git merge master;git push;git checkout master",
     "deploy:production": "git checkout master;git push;git checkout production;git merge master;git push;git checkout master",
     "test:unit": "vue-cli-service test:unit",
-    "test:e2e": "vue-cli-service test:e2e"
+    "test:e2e": "vue-cli-service test:e2e",
+    "test:e2e:headless": "vue-cli-service test:e2e --headless"
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.2.2",

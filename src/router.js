@@ -12,6 +12,7 @@ const NotFoundView = () => import("./views/NotFoundView");
 const Auth0CallbackView = () => import("./views/Auth0CallbackView.vue");
 const LogoutView = () => import("./views/LogoutView");
 const LoginView = () => import("./views/LoginView");
+const TestView = () => import("./views/TestView");
 
 Vue.use(Router);
 
@@ -28,6 +29,15 @@ const router = new Router({
       path: "/",
       name: "blogList",
       component: BlogListView
+    },
+    // used for e2e:test
+    {
+      path: "/test",
+      name: "test",
+      component: TestView,
+      meta: {
+        public: true
+      }
     },
     {
       path: "/login",
