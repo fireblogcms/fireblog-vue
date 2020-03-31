@@ -264,3 +264,14 @@ export const getPricesQuery = gql`
     }
   }
 `;
+
+export const getPlanQuery = gql`
+  query getPlanQuery($planId: String!) {
+    plan(planId: $planId) {
+      planId
+      planAmount
+      productName
+      productMetadata
+    }
+  }
+`;

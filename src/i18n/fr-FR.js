@@ -16,6 +16,8 @@ export default {
   "components.slugField.unlockConfirmModal.confirmButton": "Dévérrouiller",
   "components.slugField.unlockConfirmModal.content": "Attention ! changer l'url alors que le post a déjà été publié  cassera les liens existants vers votre article et causera des erreurs 404 de page non trouvée. Ne modifiez ce paramètre que si vous savez ce que vous faites !",
   "components.slugField.unlockConfirmModal.title": "Confirmer le changement de slug",
+  "components.planInformations.name": "Plan :",
+  "components.planInformations.freeTrial": "mois d'essai gratuit",
   "global.close": "Fermer",
   "global.deleted": "Supprimé",
   "global.draft": "Brouillon",

@@ -8,6 +8,7 @@ import {
   getUserQuery,
   getBlogQuery,
   getMyBlogsQuery,
+  getPlanQuery,
   getPostQuery
 } from "./queries";
 import Store from "../store";
@@ -158,6 +159,19 @@ export function getBlog(id) {
     })
     .then(r => {
       return r.data.blog;
+    });
+}
+
+export function getPlan(planId) {
+  return apolloClient
+    .query({
+      query: getPlanQuery,
+      variables: {
+        planId: planId
+      }
+    })
+    .then(r => {
+      return r.data.plan;
     });
 }
 

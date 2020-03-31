@@ -1,9 +1,12 @@
 <template>
   <div>
-    <p class="plan-name has-text-weight-bold">
-      Plan: firestarter ({{
-        $t("views.blogList.oneMonthFreeTrial")
-      }})
+    <p
+      class="plan-name has-text-weight-bold"
+      v-if="plan"
+    >
+      {{ $t("components.planInformations.name") }} 
+      {{ plan.productName }} 
+      ({{ $t(plan.productMetadata.SUBTITLE) }})
     </p>
     <ApiUsage :blogId="blogId"></ApiUsage>
   </div>
@@ -11,7 +14,7 @@
 
 <script>
 import ApiUsage from "../components/ApiUsage";
-import { getBlog } from "../utils/helpers";
+import { getBlog, getPlan } from "../utils/helpers";
 
 export default {
   components: {
@@ -23,12 +26,18 @@ export default {
       required: true
     }
   },
+  data() {
+    return {
+      plan: null
+    }
+  },
   mounted() {
     this.fetchData();
   },
   methods: {
     async fetchData() {
-      this.blog = await getBlog(this.blogId);
+      const blog = await getBlog(this.blogId);
+      this.plan = await getPlan(blog.subscription);
     }
   }
 };

@@ -24,7 +24,7 @@
           </svg>
         </div>
       </div>
-      <span>{{ apiUsage.count }}/{{ apiUsage.countTotal }} API calls</span>
+      <span>{{ apiUsage.count }}/{{ apiUsage.countTotal }} {{ $t("views.plans.apiCalls") }}</span>
     </template>
   </div>
 </template>

@@ -16,6 +16,8 @@ export default {
   "components.slugField.unlockConfirmModal.confirmButton": "Unlock field",
   "components.slugField.unlockConfirmModal.content": "Warning! Changing a post URL after it has been published can break existing links to your post and create some \"page not found\" errors. Change this URL only if you know what you are doing!",
   "components.slugField.unlockConfirmModal.title": "Slug change confirmation",
+  "components.planInformations.name": "Plan:",
+  "components.planInformations.freeTrial": "one month free trial",
   "global.close": "Close",
   "global.deleted": "Deleted",
   "global.draft": "Draft",
