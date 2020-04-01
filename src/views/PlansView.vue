@@ -134,6 +134,9 @@ export default {
       const sessionId = await createStripeCheckoutSession({
         userEmail: user.email,
         userId: user._id,
+        ...user.customerId && {
+          customerId: user.customerId
+        },
         blogId: this.$route.params.blogId,
         planId,
         successUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}`,

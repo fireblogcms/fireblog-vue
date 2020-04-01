@@ -381,6 +381,7 @@ export function formatDate(date, type) {
 export function createStripeCheckoutSession({
   userEmail,
   userId,
+  customerId,
   blogId,
   planId,
   successUrl,
@@ -392,6 +393,7 @@ export function createStripeCheckoutSession({
       variables: {
         userEmail,
         userId,
+        customerId,
         blogId,
         planId,
         successUrl,
