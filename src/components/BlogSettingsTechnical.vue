@@ -78,7 +78,7 @@ import {
   vuexFormGetErrors,
   vuexFormResetErrors
 } from "../utils/vuexForm";
-import { REQUEST_STATE, appNotification } from "../utils/helpers";
+import { REQUEST_STATE, toast } from "../utils/helpers";
 import AppPanel from "../components/AppPanel";
 import apolloClient from "../utils/apolloClient";
 import { updateBlogMutation } from "../utils/queries";
@@ -131,16 +131,10 @@ export default {
       this.updateBlog(update)
         .then(updatedBlog => {
           this.savingState = REQUEST_STATE.FINISHED_OK;
-          appNotification(
-            this.$t(
-              "views.blogSettings.technicalSettingsForm.notifications.saved"
-            ),
-            "info",
-            { persistAfterRouteChange: true }
-          );
+          toast(this, this.$t("views.blogSettings.technicalSettingsForm.notifications.saved"), "success");
         })
         .catch(e => {
-          appNotification(e, "error");
+          toast(this, e, "error");
           this.savingState = REQUEST_STATE.FINISHED_ERROR;
         });
     },
@@ -178,7 +172,7 @@ export default {
           return result.data.updateBlog;
         })
         .catch(error => {
-          appNotification(error, "error");
+          toast(this, error, "error");
           throw new Error(error);
         });
     }

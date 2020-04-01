@@ -52,6 +52,7 @@ export const FullBlogFragment = gql`
     name
     updatedAt
     createdAt
+    subscription
     url
     webhooks {
       name
@@ -233,12 +234,16 @@ export const getBlogApiUsageQuery = gql`
 
 export const createStripeCheckoutSessionMutation = gql`
   mutation(
+    $userEmail: String!
+    $userId: String
     $blogId: ID
     $planId: String!
     $successUrl: String!
     $cancelUrl: String!
   ) {
     createStripeCheckoutSession(
+      userEmail: $userEmail
+      userId: $userId
       blogId: $blogId
       planId: $planId
       successUrl: $successUrl
@@ -249,9 +254,20 @@ export const createStripeCheckoutSessionMutation = gql`
   }
 `;
 
-export const getPricesQuery = gql`
-  query getPricing {
-    prices {
+export const getPlansQuery = gql`
+  query getPlansQuery {
+    plans {
+      planId
+      planAmount
+      productName
+      productMetadata
+    }
+  }
+`;
+
+export const getPlanQuery = gql`
+  query getPlanQuery($planId: String!) {
+    plan(planId: $planId) {
       planId
       planAmount
       productName

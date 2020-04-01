@@ -4,18 +4,24 @@
     <template v-if="initDataState === 'FINISHED_OK'">
       <BlogSettingsGeneral :blog="blog" />
       <BlogSettingsTechnical :blog="blog" />
+      <BlogSettingsPlan :blog="blog" />
       <BlogSettingsDeleteBlog :blog="blog" />
     </template>
   </div>
 </template>
 
 <script>
-import { getBlog, REQUEST_STATE, appNotification } from "../utils/helpers";
+import {
+  getBlog,
+  REQUEST_STATE,
+  toast
+} from "../utils/helpers";
 import { vuexFormInitData } from "../utils/vuexForm";
 import AppLoader from "../components/AppLoader";
 import apolloClient from "../utils/apolloClient";
 import BlogSettingsGeneral from "../components/BlogSettingsGeneral";
 import BlogSettingsTechnical from "../components/BlogSettingsTechnical";
+import BlogSettingsPlan from "../components/BlogSettingsPlan";
 import BlogSettingsDeleteBlog from "../components/BlogSettingsDeleteBlog";
 import gql from "graphql-tag";
 import {
@@ -30,6 +36,7 @@ export default {
     AppLoader,
     BlogSettingsGeneral,
     BlogSettingsTechnical,
+    BlogSettingsPlan,
     BlogSettingsDeleteBlog
   },
   data() {
@@ -50,7 +57,7 @@ export default {
           this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
         .catch(error => {
-          appNotification(error, "error");
+          toast(this, error, "error");
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
         });
     }

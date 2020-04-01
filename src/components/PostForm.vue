@@ -27,18 +27,16 @@
 
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
-      <span
-        @click="onBackToPostClick"
-        style="cursor:pointer"
-        class="item tag is-large"
-      >
-        <em>
+      <span class="item tag is-large">
+        <router-link class="item" :to="{ name: 'postList' }">
           <img
+            class="is-hidden-mobile"
             style="position:relative;height:20px !important;top:4px;"
             src="/images/book.png"
           />
-          <IconBack />posts
-        </em>
+          <IconBack />
+          {{ $t("views.postForm.backToBlogLink") }}
+        </router-link>
       </span>
     </portal>
     <!-- END TOPBAR LEFT BUTTONS -->
@@ -227,7 +225,7 @@
           @click="publishingHurrahModal.show = false"
           class="button is-primary is-large"
         >
-          {{ $t("views.postForm.firstPublicationHurralModal.okayButton") }}
+          {{ $t("global.okayButton") }}
         </button>
       </template>
     </BulmaModal>
@@ -252,7 +250,7 @@
           @click="publishingChangesModal.show = false"
           class="button is-primary is-large"
         >
-          {{ $t("views.postForm.publishChangesHurralModal.okayButton") }}
+          {{ $t("global.okayButton") }}
         </button>
       </template>
     </BulmaModal>
@@ -273,9 +271,7 @@ import {
   getBlog,
   createSlug,
   ckeditorIframelyMediaProvider,
-  appNotification,
   validateSlug,
-  resetAppNotifications,
   toast,
   formatDate
 } from "../utils/helpers";
@@ -508,10 +504,7 @@ export default {
         return;
       }
       if (!vuexFormGetValue(FORM_ID, "title").trim()) {
-        appNotification(
-          this.$t("views.postForm.fields.title.errors.required"),
-          "error"
-        );
+        toast(this, this.$t("views.postForm.fields.title.errors.required"), "error");
         return;
       }
       const savingPendingAction = pendingActions.add("Saving post");
@@ -541,7 +534,7 @@ export default {
             status
           };
           if (status === "DRAFT" && options.saveType === "manual") {
-            toast(this, this.$t("views.postForm.draftSaved"));
+            toast(this, this.$t("views.postForm.draftSaved"), "success");
           }
           if (this.$route.name === "postCreate") {
             // this route change WON'T retrigger this.init(), so passing from
@@ -562,7 +555,7 @@ export default {
             state: REQUEST_STATE.FINISHED_ERROR,
             status
           };
-          appNotification(error, "error");
+          toast(this, error, "error");
           throw new Error(error);
         });
     },
@@ -577,7 +570,7 @@ export default {
           return result.data.post;
         })
         .catch(error => {
-          appNotification("getExistingPost(): " + error, "error");
+          toast(this, "getExistingPost(): " + error, "error");
         });
     },
     getPostStatus() {
@@ -635,10 +628,7 @@ export default {
     showAdvancedSettings() {
       // we need at least the title to autocomplete the slug field
       if (!vuexFormGetValue(FORM_ID, "title").trim()) {
-        appNotification(
-          this.$t("views.postForm.fields.title.errors.required"),
-          "error"
-        );
+        toast(this, this.$t("views.postForm.fields.title.errors.required"), "error");
         return;
       }
       if (this.mediaLoadingCounter > 0) {
@@ -683,12 +673,11 @@ export default {
      */
     validatePostForm(action = "SAVE_DRAFT") {
       vuexFormResetErrors(FORM_ID);
-      resetAppNotifications();
       // TITLE
       if (!vuexFormGetValue(FORM_ID, "title").trim()) {
         let message = this.$t("views.postForm.fields.title.errors.required");
         vuexFormSetError(FORM_ID, "title", message);
-        appNotification(message, "error");
+        toast(this, message, "error");
       }
       if (action === "PUBLISH") {
         if (!validateSlug(vuexFormGetValue(FORM_ID, "slug"))) {
@@ -697,18 +686,18 @@ export default {
             "components.slugField.errors.invalidCharacters"
           );
           vuexFormSetError(FORM_ID, "slug", message);
-          appNotification(message, "error");
+          toast(this, message, "error");
         }
         if (!vuexFormGetValue(FORM_ID, "slug").trim()) {
           let message = this.$t("components.slugField.errors.required");
           vuexFormSetError(FORM_ID, "slug", message);
-          appNotification(message, "error");
+          toast(this, message, "error");
         }
         // TEASER
         if (!vuexFormGetValue(FORM_ID, "teaser").trim()) {
           let message = this.$t("views.postForm.fields.teaser.errors.required");
           vuexFormSetError(FORM_ID, "teaser", message);
-          appNotification(message, "error");
+          toast(this, message, "error");
         }
       }
       const errors = vuexFormGetErrors(FORM_ID);

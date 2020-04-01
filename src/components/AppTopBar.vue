@@ -129,7 +129,7 @@ import {
   REQUEST_STATE,
   getBlog,
   getPost,
-  appNotification
+  toast
 } from "../utils/helpers";
 import apiExamples from "../apiExamples";
 import ApiButton from "../components/ApiButton";
@@ -179,7 +179,7 @@ export default {
         })
         .catch(error => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
-          appNotification(error, "error");
+          toast(this, error, "error");
           throw new Error(error);
         });
     },
