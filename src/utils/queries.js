@@ -66,6 +66,7 @@ export const getUserQuery = gql`
   query getUserQuery {
     me {
       _id
+      customerId
       name
       email
       createdAt

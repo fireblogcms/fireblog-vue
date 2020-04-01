@@ -70,7 +70,7 @@
                   class="button is-primary button-subscribe"
                   v-if="!isPlanSubscribed(plan.planId)"
                 >
-                  {{ $t("global.contactUsButton") }}
+                  {{ $t("global.subscribeButton") }}
                 </button>
               </div>
             </div>
@@ -129,9 +129,6 @@ export default {
   },
   methods: {
     async onSubscribeClick(planId) {
-      $crisp.push(['do', 'chat:open']);
-      return;
-
       const user = await getUser();
       const stripe = Stripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY);
       const sessionId = await createStripeCheckoutSession({
