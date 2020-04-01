@@ -24,7 +24,7 @@
           </svg>
         </div>
       </div>
-      <span>{{ apiUsage.count }}/{{ apiUsage.countTotal }} {{ $t("views.plans.apiCalls") }}</span>
+      <span>{{ apiUsage.count }}/{{ callsPerMonth }} {{ $t("views.plans.apiCalls") }}</span>
     </template>
   </div>
 </template>
@@ -39,13 +39,16 @@ export default {
     blogId: {
       type: String,
       required: true
+    },
+    callsPerMonth: {
+      type: String,
+      required: true
     }
   },
   data() {
     return {
       error: null,
       initDataState: REQUEST_STATE.NOT_STARTED,
-      apiStats: null,
       blog: null,
       percentage: 0
     };
@@ -74,7 +77,7 @@ export default {
           this.initDataState = REQUEST_STATE.FINISHED_OK;
           this.apiUsage = results.data.apiUsage;
           this.percentage =
-            this.apiUsage.count / this.apiUsage.countTotal * 100;
+            this.apiUsage.count / this.callsPerMonth * 100;
         })
         .catch(e => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;

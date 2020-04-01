@@ -10,7 +10,11 @@
         ({{ $t(plan.productMetadata.SUBTITLE) }})
       </template>
     </p>
-    <ApiUsage :blogId="blogId"></ApiUsage>
+    <ApiUsage
+      v-if="plan"
+      :blogId="blogId"
+      :callsPerMonth="plan.productMetadata.API_CALLS_MONTH"
+    ></ApiUsage>
   </div>
 </template>
 
