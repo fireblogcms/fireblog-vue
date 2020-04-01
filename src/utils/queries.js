@@ -235,9 +235,9 @@ export const getBlogApiUsageQuery = gql`
 export const createStripeCheckoutSessionMutation = gql`
   mutation(
     $userEmail: String!
-    $userId: String
-    $blogId: ID
-    $planId: String!
+    $userId: ID
+    $blogId: ID!
+    $planId: ID!
     $successUrl: String!
     $cancelUrl: String!
   ) {

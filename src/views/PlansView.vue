@@ -135,8 +135,8 @@ export default {
       const user = await getUser();
       const stripe = Stripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY);
       const sessionId = await createStripeCheckoutSession({
-        userId: user._id,
         userEmail: user.email,
+        userId: user._id,
         blogId: this.$route.params.blogId,
         planId,
         successUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}`,
