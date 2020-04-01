@@ -254,9 +254,9 @@ export const createStripeCheckoutSessionMutation = gql`
   }
 `;
 
-export const getPricesQuery = gql`
-  query getPricing {
-    prices {
+export const getPlansQuery = gql`
+  query getPlansQuery {
+    plans {
       planId
       planAmount
       productName
