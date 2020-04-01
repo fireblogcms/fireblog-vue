@@ -366,6 +366,8 @@ export default {
     this.init();
   },
   mounted() {
+   // Listen event before unload and call method confirmLeave
+    window.onbeforeunload= this.confirmLeave;
     // allow ctrl+s to be detected on inputs and textareas
     hotkeys.filter = () => true;
     // save shortcuts
@@ -397,6 +399,13 @@ export default {
     }
   },
   methods: {
+    confirmLeave(event) {
+        // Method of confirming that we are willing to leave the page.
+        event.preventDefault();
+        var confirmationMessage = "The changes you have made may not be saved.";
+        event.returnValue = confirmationMessage;
+        return confirmationMessage;
+    },
     onEditorReady(editor) {
       const wordCountPlugin = editor.plugins.get("WordCount");
       const wordCountWrapper = this.$refs.wordcount;
