@@ -7,8 +7,7 @@ const moduleGlobal = {
   state: {
     postJustPublished: null, // will be a postId
     // full post object for last edited post
-    lastVisitedPost: null,
-    notification: null
+    lastVisitedPost: null
   },
   mutations: {
     lastVisitedPost(state, post) {
@@ -17,10 +16,6 @@ const moduleGlobal = {
     // we display a special message the first a post is published.
     postJustPublished(state, postId) {
       state.postJustPublished = postId;
-    },
-    // @see appNotification() function
-    notification(state, args) {
-      state.notification = args;
     }
   }
 };

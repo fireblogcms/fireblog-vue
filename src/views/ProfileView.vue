@@ -26,7 +26,11 @@
 import apolloClient from "../utils/apolloClient";
 import AppPanel from "../components/AppPanel";
 import AppLoader from "../components/AppLoader";
-import { REQUEST_STATE, getUser } from "../utils/helpers";
+import {
+  REQUEST_STATE,
+  getUser,
+  toast
+} from "../utils/helpers";
 import gql from "graphql-tag";
 import logger from "../utils/logger";
 import DefaultLayout from "../layouts/DefaultLayout";
@@ -54,10 +58,7 @@ export default {
         })
         .catch(error => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
-          appNotification(
-            "Sorry, an error occured while loading page.",
-            "error"
-          );
+          toast(this, "Sorry, an error occured while loading page.", "error");
           throw new Error(error);
         });
     }
