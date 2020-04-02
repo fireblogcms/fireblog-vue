@@ -25,7 +25,8 @@ yarn build
 ### Run your tests
 
 ```
-yarn test
+yarn test:unit
+yarn test:e2e:headless
 ```
 
 ### Lints and fixes files
