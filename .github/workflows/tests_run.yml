@@ -31,7 +31,7 @@ jobs:
 
     - name: build project
       run: |
-        yarn install
+        yarn install --verbose
         yarn dev
         yarn build
         yarn test:unit
