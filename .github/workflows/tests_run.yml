@@ -32,7 +32,6 @@ jobs:
     - name: build project
       run: |
         yarn install
-        yarn dev
         yarn test:unit
         yarn test:e2e:headless
         yarn lint
