@@ -19,7 +19,9 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - name: .env configuration for local
       run: | 
+        ls -a
         cd $GITHUB_WORKSPACE
+        ls -a
         cp ".env.example" ".env"
 
     - name: install yarn
