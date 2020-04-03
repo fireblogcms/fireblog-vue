@@ -7,7 +7,7 @@
       {{ $t("views.blogSettings.planSettings.title") }}
     </h2>
     <div class="plan-informations-container">
-      <PlanInformations :blogId="blog._id"></PlanInformations>
+      <PlanInformations :blog="blog"></PlanInformations>
     </div>
     <button
       class="button is-outlined is-primary is-large"

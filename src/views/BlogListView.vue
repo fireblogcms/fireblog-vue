@@ -67,7 +67,7 @@
                     </div>
                   </div>
                   <div class="card-content">
-                    <PlanInformations :blogId="edge.node._id"></PlanInformations>
+                    <PlanInformations :blog="edge.node"></PlanInformations>
                     <button
                       class="button is-box-shadowed is-large"
                       @click="onSubscribeClick(edge.node, $event)"

@@ -12,7 +12,7 @@
     </p>
     <ApiUsage
       v-if="plan"
-      :blogId="blogId"
+      :blogId="blog._id"
       :callsPerMonth="plan.productMetadata.API_CALLS_MONTH"
     ></ApiUsage>
   </div>
@@ -20,15 +20,15 @@
 
 <script>
 import ApiUsage from "../components/ApiUsage";
-import { getBlog, getPlan } from "../utils/helpers";
+import { getPlan } from "../utils/helpers";
 
 export default {
   components: {
     ApiUsage
   },
   props: {
-    blogId: {
-      type: String,
+    blog: {
+      type: Object,
       required: true
     }
   },
@@ -42,8 +42,7 @@ export default {
   },
   methods: {
     async fetchData() {
-      const blog = await getBlog(this.blogId);
-      this.plan = await getPlan(blog.subscription);
+      this.plan = await getPlan(this.blog.subscription);
     }
   }
 };
