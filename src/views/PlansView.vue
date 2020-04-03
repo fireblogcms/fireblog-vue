@@ -77,7 +77,7 @@
                   class="button is-primary button-subscribe"
                   v-if="!isChangePlanAvailable && !isPlanSubscribed(plan.planId)"
                 >
-                  {{ $t("global.subscribeButton") }}
+                  {{ $t("global.contactUsButton") }}
                 </button>
               </div>
             </div>
@@ -124,7 +124,7 @@ export default {
       plans: [],
       freeTrialPlan: null,
       subscribedPlanId: null,
-      isChangePlanAvailable: +process.env.VUE_APP_CHANGE_PLAN_AVAILABLE
+      isChangePlanAvailable: process.env.VUE_APP_CHANGE_PLAN_AVAILABLE === "true"
     };
   },
   created() {
