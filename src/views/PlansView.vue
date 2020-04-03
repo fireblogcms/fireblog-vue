@@ -68,7 +68,14 @@
                 <button
                   @click="onSubscribeClick(plan.planId)"
                   class="button is-primary button-subscribe"
-                  v-if="!isPlanSubscribed(plan.planId)"
+                  v-if="isChangePlanAvailable && !isPlanSubscribed(plan.planId)"
+                >
+                  {{ $t("global.subscribeButton") }}
+                </button>
+                <button
+                  @click="onContactUsClick()"
+                  class="button is-primary button-subscribe"
+                  v-if="!isChangePlanAvailable && !isPlanSubscribed(plan.planId)"
                 >
                   {{ $t("global.subscribeButton") }}
                 </button>
@@ -116,7 +123,8 @@ export default {
     return {
       plans: [],
       freeTrialPlan: null,
-      subscribedPlanId: null
+      subscribedPlanId: null,
+      isChangePlanAvailable: +process.env.VUE_APP_CHANGE_PLAN_AVAILABLE
     };
   },
   created() {
@@ -154,6 +162,9 @@ export default {
           toast(this, error, "error");
           throw new Error(error);
         });
+    },
+    onContactUsClick() {
+      $crisp.push(['do', 'chat:open']);
     },
     async fetchData() {
       const blog = await getBlog(this.$route.params.blogId);

@@ -25,6 +25,7 @@ export default {
   "global.published": "Publié",
   "global.okayButton": "Ok !",
   "global.subscribeButton": "S'abonner",
+  "global.changePlanButton": "Changer de plan",
   "global.contactUsButton": "Contactez-nous",
   "topbar.accountMenu.myAccount": "Mon compte",
   "topbar.accountMenu.logout": "Se déconnecter",
