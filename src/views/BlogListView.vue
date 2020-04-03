@@ -67,22 +67,15 @@
                     </div>
                   </div>
                   <div class="card-content">
-                    <div>
-                      <p class="plans-name">
-                        Plan : firestarter ({{
-                          $t("views.blogList.oneMonthFreeTrial")
-                        }})
-                      </p>
-                      <ApiUsage :blogId="edge.node._id"></ApiUsage>
-                    </div>
+                    <PlanInformations :blog="edge.node"></PlanInformations>
                     <button
+                      v-if="isPlanFreeTrial(edge.node)"
                       class="button is-box-shadowed is-large"
-                      @click="onSettingsClick(edge.node, $event)"
+                      @click="onSubscribeClick(edge.node, $event)"
                     >
-                      <span class="settings-icon"></span>
-                      <span>{{
-                        $t("views.blogList.settingsButton").toUpperCase()
-                      }}</span>
+                      <span>
+                        {{ $t("global.subscribeButton").toUpperCase() }}
+                      </span>
                     </button>
                   </div>
                 </div>
@@ -101,18 +94,18 @@ import BlogCreateForm from "../components/BlogCreateForm";
 import DefaultLayout from "../layouts/DefaultLayout";
 import AppLoader from "../components/AppLoader";
 import gql from "graphql-tag";
-import { REQUEST_STATE, appNotification } from "../utils/helpers";
+import { REQUEST_STATE, toast } from "../utils/helpers";
 import logger from "../utils/logger";
 import gradient from "random-gradient";
 import { getMyBlogs } from "../utils/helpers";
-import ApiUsage from "../components/ApiUsage";
+import PlanInformations from "../components/PlanInformations";
 
 export default {
   components: {
     DefaultLayout,
     BlogCreateForm,
     AppLoader,
-    ApiUsage
+    PlanInformations
   },
   data() {
     return {
@@ -131,6 +124,9 @@ export default {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           throw new Error(error);
         });
+    },
+    isPlanFreeTrial(blog) {
+      return blog.subscription === process.env.VUE_APP_STRIPE_FREE_TRIAL_ID;
     },
     blogCardStyles(edge, index) {
       const styles = {
@@ -154,19 +150,16 @@ export default {
           return blogs;
         })
         .catch(error => {
-          appNotification(
-            "Sorry, an error occured while fetching blog:" + error,
-            "error"
-          );
+          toast(this, "Sorry, an error occured while fetching blog:" + error, "error");
           throw new Error(error);
         });
     },
     onRowClick(item, event) {
       this.$router.push(this.buildLinkToPostList(item));
     },
-    onSettingsClick(blog) {
+    onSubscribeClick(blog) {
       this.$router.push({
-        name: "blogSettings",
+        name: "plans",
         params: {
           blogId: blog._id
         }
@@ -232,18 +225,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-.plans-name {
-  margin: 0 0 1rem 0;
-  font-weight: 500;
-}
-
-.settings-icon {
-  margin-right: 0.7rem;
-  width: 30px;
-  height: 30px;
-  background: url("/images/icon-settings.svg") no-repeat;
 }
 
 @media screen and (max-width: 768px) {

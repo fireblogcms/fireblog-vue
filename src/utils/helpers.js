@@ -8,6 +8,7 @@ import {
   getUserQuery,
   getBlogQuery,
   getMyBlogsQuery,
+  getPlanQuery,
   getPostQuery
 } from "./queries";
 import Store from "../store";
@@ -158,6 +159,19 @@ export function getBlog(id) {
     })
     .then(r => {
       return r.data.blog;
+    });
+}
+
+export function getPlan(planId) {
+  return apolloClient
+    .query({
+      query: getPlanQuery,
+      variables: {
+        planId: planId
+      }
+    })
+    .then(r => {
+      return r.data.plan;
     });
 }
 
@@ -333,27 +347,14 @@ export function S3Upload({
     });
 }
 
-export function toast(component, message, options = {}) {
+export function toast(component, message, type, options = {}) {
   component.$toasted.show(message, {
     duration: 2000,
     position: "bottom-center",
-    className: "app-toast",
+    className: `app-toast-${type}`,
+    type,
     ...options
   });
-}
-
-export function appNotification(
-  message,
-  type = "info",
-  options = {
-    persistAfterRouteChange: false
-  }
-) {
-  Store.commit("notification", { message, type, options });
-}
-
-export function resetAppNotifications() {
-  Store.commit("notification", null);
 }
 
 export function validateSlug(slug) {
@@ -377,12 +378,26 @@ export function formatDate(date, type) {
   }
 }
 
-export function createStripeCheckoutSession(blogId) {
+export function createStripeCheckoutSession({
+  userEmail,
+  userId,
+  customerId,
+  blogId,
+  planId,
+  successUrl,
+  cancelUrl
+}) {
   return apolloClient
     .mutate({
       mutation: createStripeCheckoutSessionMutation,
       variables: {
-        blogId
+        userEmail,
+        userId,
+        customerId,
+        blogId,
+        planId,
+        successUrl,
+        cancelUrl
       }
     })
     .then(result => {

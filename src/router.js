@@ -13,6 +13,7 @@ const Auth0CallbackView = () => import("./views/Auth0CallbackView.vue");
 const LogoutView = () => import("./views/LogoutView");
 const LoginView = () => import("./views/LoginView");
 const TestView = () => import("./views/TestView");
+const PlansView = () => import("./views/PlansView");
 
 Vue.use(Router);
 
@@ -81,6 +82,11 @@ const router = new Router({
       component: PostFormView
     },
     {
+      path: "/blog/:blogId/plans",
+      name: "plans",
+      component: PlansView
+    },
+    {
       path: "/profile",
       name: "profile",
       component: ProfileView
@@ -124,18 +130,6 @@ router.beforeEach(async (to, from, next) => {
     await auth0.loginWithRedirect({
       redirect_uri: `${process.env.VUE_APP_BASE_URL}/auth0-callback`
     });
-  }
-});
-
-router.afterEach((to, from, next) => {
-  // clear notification on route Change, unless persistAfterRouteChange is requested..
-  if (Store.state.global.notification) {
-    if (
-      Store.state.global.notification.options &&
-      !Store.state.global.notification.options.persistAfterRouteChange
-    ) {
-      Store.commit("notification", null);
-    }
   }
 });
 
