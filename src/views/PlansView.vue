@@ -68,14 +68,14 @@
                 <button
                   @click="onSubscribeClick(plan.planId)"
                   class="button is-primary button-subscribe"
-                  v-if="isChangePlanAvailable && !isPlanSubscribed(plan.planId)"
+                  v-if="(isFreeTrialPlanSubscribed() || isChangePlanAvailable) && !isPlanSubscribed(plan.planId)"
                 >
                   {{ $t("global.subscribeButton") }}
                 </button>
                 <button
                   @click="onContactUsClick()"
                   class="button is-primary button-subscribe"
-                  v-if="!isChangePlanAvailable && !isPlanSubscribed(plan.planId)"
+                  v-if="!isFreeTrialPlanSubscribed() && !isChangePlanAvailable && !isPlanSubscribed(plan.planId)"
                 >
                   {{ $t("global.contactUsButton") }}
                 </button>
