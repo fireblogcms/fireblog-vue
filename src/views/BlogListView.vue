@@ -125,9 +125,6 @@ export default {
           throw new Error(error);
         });
     },
-    isPlanFreeTrial(blog) {
-      return blog.subscription === process.env.VUE_APP_STRIPE_FREE_TRIAL_ID;
-    },
     blogCardStyles(edge, index) {
       const styles = {
         backgroundSize: "cover",
