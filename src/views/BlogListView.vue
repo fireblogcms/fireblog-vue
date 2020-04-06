@@ -69,7 +69,7 @@
                   <div class="card-content">
                     <PlanInformations :blog="edge.node"></PlanInformations>
                     <button
-                      v-if="isPlanFreeTrial(edge.node)"
+                      v-if="!edge.node.subscription"
                       class="button is-box-shadowed is-large"
                       @click="onSubscribeClick(edge.node, $event)"
                     >
@@ -124,9 +124,6 @@ export default {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           throw new Error(error);
         });
-    },
-    isPlanFreeTrial(blog) {
-      return blog.subscription === process.env.VUE_APP_STRIPE_FREE_TRIAL_ID;
     },
     blogCardStyles(edge, index) {
       const styles = {

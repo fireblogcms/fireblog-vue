@@ -13,10 +13,10 @@
       class="button is-outlined is-primary is-large"
       @click="onSubscribeClick(blog, $event)"
     >
-      <span v-if="!isPlanFreeTrial">{{
+      <span v-if="blog.subscription">{{
         $t("global.changePlanButton")
       }}</span>
-      <span v-if="isPlanFreeTrial">{{
+      <span v-if="!blog.subscription">{{
         $t("global.subscribeButton")
       }}</span>
     </button>
@@ -36,11 +36,6 @@ export default {
     blog: {
       type: Object,
       required: true
-    }
-  },
-  computed: {
-    isPlanFreeTrial() {
-      return this.blog.subscription === process.env.VUE_APP_STRIPE_FREE_TRIAL_ID;
     }
   },
   methods: {
