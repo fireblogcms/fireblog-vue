@@ -13,7 +13,7 @@
 import AppLoader from "../components/AppLoader";
 
 import { auth0Client, syncAuth0UserWithServer } from "../utils/auth";
-import { REQUEST_STATE, appNotification } from "../utils/helpers";
+import { REQUEST_STATE, toast } from "../utils/helpers";
 import AppPanel from "../components/AppPanel";
 import apolloClient from "../utils/apolloClient";
 import logger from "../utils/logger";
@@ -53,7 +53,7 @@ export default {
         .catch(error => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           this.error = "Sorry, authentication failed";
-          appNotification(this.error, "error");
+          toast(this, this.error, "error");
           throw new Error(error);
         });
     }

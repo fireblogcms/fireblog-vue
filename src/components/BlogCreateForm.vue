@@ -5,7 +5,7 @@
     </template>
 
     <template v-if="initDataState === 'FINISHED_ERROR'">
-      <div class="notification is-danger">{{ initStateError }}</div>
+      <div class="is-danger">{{ initStateError }}</div>
     </template>
 
     <template v-if="initDataState === 'FINISHED_OK'">

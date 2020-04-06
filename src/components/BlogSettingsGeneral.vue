@@ -89,7 +89,11 @@
 
 <script>
 import AppPanel from "../components/AppPanel";
-import { getBlog, REQUEST_STATE, appNotification } from "../utils/helpers";
+import {
+  getBlog,
+  REQUEST_STATE,
+  toast
+} from "../utils/helpers";
 import {
   vuexFormInit,
   vuexFormSetValue,
@@ -173,7 +177,7 @@ export default {
           return result.data.updateBlog;
         })
         .catch(error => {
-          appNotification(error, "error");
+          toast(this, error, "error");
           throw new Error(error);
         });
     },
@@ -185,7 +189,7 @@ export default {
         const message = Object.keys(formErrors)
           .map(key => formErrors[key])
           .join(". ");
-        appNotification(message, "error");
+        toast(this, message, "error");
         return;
       }
 
@@ -199,11 +203,7 @@ export default {
       this.updateBlog(blog)
         .then(updatedBlog => {
           this.savingState = REQUEST_STATE.FINISHED_OK;
-          appNotification(
-            this.$t(
-              "views.blogSettings.generalSettingsForm.notifications.saved"
-            )
-          );
+          toast(this, this.$t("views.blogSettings.generalSettingsForm.notifications.saved"), "success");
         })
         .catch(e => {
           this.savingState = REQUEST_STATE.FINISHED_ERROR;

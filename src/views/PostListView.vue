@@ -29,6 +29,20 @@
             </div>
             <div class="column column-right">
               <button
+                class="button is-box-shadowed is-large"
+                @click="
+                  $router.push({
+                    name: 'blogSettings',
+                    params: { blogId: $route.params.blogId }
+                  })
+                "
+              >
+                <span class="settings-icon"></span>
+                <span>{{
+                  $t("views.blogList.settingsButton").toUpperCase()
+                }}</span>
+              </button>
+              <button
                 class="button is-large is-outline is-primary"
                 v-if="!isFirstPost"
                 @click="
@@ -37,24 +51,19 @@
                     params: { blogId: $route.params.blogId }
                   })
                 "
-              >{{ $t("views.postList.writeNewPostButton").toUpperCase() }}</button>
-              <!-- <button
-                class="button is-large is-primary is-box-shadowed"
-                @click="onSubscribeClick"
               >
-                SUBSCRIBE
-              </button>-->
+                {{ $t("views.postList.writeNewPostButton").toUpperCase() }}
+              </button>
             </div>
           </div>
         </header>
 
         <template v-if="isFirstPost === true">
           <div class="container">
-            <AppPanel :class="{'is-first': isFirstPost}">
-              <h2
-                style="font-weight:200"
-                class="title has-text-centered"
-              >{{ $t("views.postList.firstBlogSentence") }}</h2>
+            <AppPanel :class="{ 'is-first': isFirstPost }">
+              <h2 style="font-weight:200" class="title has-text-centered">
+                {{ $t("views.postList.firstBlogSentence") }}
+              </h2>
               <div class="has-text-centered">
                 <div style="margin:2rem">
                   <button
@@ -65,7 +74,9 @@
                         params: { blogId: $route.params.blogId }
                       })
                     "
-                  >{{ $t("views.postList.firstPostWriteButton") }}</button>
+                  >
+                    {{ $t("views.postList.firstPostWriteButton") }}
+                  </button>
                 </div>
               </div>
             </AppPanel>
@@ -81,13 +92,8 @@
                 >
                   <a>
                     {{ $t("views.postList.publishedTab") }}
-                    <span
-                      style="margin-left:10px"
-                      class="tag is-rounded"
-                    >
-                      {{
-                      postsPublished.totalCount
-                      }}
+                    <span style="margin-left:10px" class="tag is-rounded">
+                      {{ postsPublished.totalCount }}
                     </span>
                   </a>
                 </li>
@@ -97,13 +103,8 @@
                 >
                   <a>
                     {{ $t("views.postList.draftTab") }}
-                    <span
-                      style="margin-left:10px"
-                      class="tag is-rounded"
-                    >
-                      {{
-                      postsDraft.totalCount
-                      }}
+                    <span style="margin-left:10px" class="tag is-rounded">
+                      {{ postsDraft.totalCount }}
                     </span>
                   </a>
                 </li>
@@ -137,25 +138,51 @@
           <div class="message-body">
             <p>
               {{
-              $t("views.postList.deleteModal.content", {
-              postTitle: deleteModal.post.title
-              })
+                $t("views.postList.deleteModal.content", {
+                  postTitle: deleteModal.post.title
+                })
               }}.
             </p>
           </div>
         </div>
       </template>
       <template #footer>
-        <div
-          @click="deleteModal.show = false"
-          class="button is-primary"
-        >{{ $t("views.postList.deleteModal.cancelButton") }}</div>
+        <div @click="deleteModal.show = false" class="button is-primary">
+          {{ $t("views.postList.deleteModal.cancelButton") }}
+        </div>
         <div
           @click="onDeleteModalConfirmClick"
           class="button is-danger"
           :class="{ 'is-loading': deletePostRequestState === 'PENDING' }"
           :disabled="deletePostRequestState === 'PENDING' ? true : false"
-        >{{ $t("views.postList.deleteModal.confirmButton") }}</div>
+        >
+          {{ $t("views.postList.deleteModal.confirmButton") }}
+        </div>
+      </template>
+    </BulmaModal>
+    <BulmaModal
+      v-model="paymentSuccessModal.show"
+    >
+      <template #title>
+        <div class="has-text-centered">
+          {{ $t("views.postList.paymentSuccess") }}
+        </div>
+      </template>
+      <template #body>
+        <div class="has-text-centered">
+          <img
+            style="border-radius:5px"
+            src="https://camo.githubusercontent.com/581d9802c9e5716113238cc2fcaf938bf2dad338/68747470733a2f2f6d656469612e67697068792e636f6d2f6d656469612f6248757134736355373255496f2f67697068792e676966"
+          />
+        </div>
+      </template>
+      <template class="has-text-centered" #footer>
+        <button
+          @click="paymentSuccessModal.show = false"
+          class="button is-primary is-large"
+        >
+          {{ $t("global.okayButton") }}
+        </button>
       </template>
     </BulmaModal>
   </DefaultLayout>
@@ -167,11 +194,7 @@ import DefaultLayout from "../layouts/DefaultLayout";
 import IconBack from "../components/IconBack";
 import gql from "graphql-tag";
 import AppLoader from "../components/AppLoader";
-import {
-  REQUEST_STATE,
-  appNotification,
-  createStripeCheckoutSession
-} from "../utils/helpers";
+import { REQUEST_STATE, toast } from "../utils/helpers";
 import {
   getPostsQuery,
   getBlogQuery,
@@ -205,6 +228,9 @@ export default {
         data: null,
         post: null
       },
+      paymentSuccessModal: {
+        show: false
+      },
       blog: null,
       posts: null,
       postsPublished: null,
@@ -216,6 +242,9 @@ export default {
   },
   created() {
     this.striptags = striptags;
+    if (this.$route.query.status === "success") {
+      this.paymentSuccessModal.show = true;
+    }
   },
   mounted() {
     this.initData();
@@ -286,10 +315,7 @@ export default {
           return result;
         })
         .catch(error => {
-          appNotification(
-            "Sorry, an error occured while fetching posts",
-            "error"
-          );
+          toast(this, "Sorry, an error occured while fetching posts", "error");
           throw new Error(error);
         });
     },
@@ -323,7 +349,7 @@ export default {
         })
         .catch(error => {
           this.postsPublishedRequestState = REQUEST_STATE.FINISHED_ERROR;
-          appNotification("Sorry, an error occured while fetching posts");
+          toast(this, "Sorry, an error occured while fetching posts", "error");
           throw new Error(error);
         });
     },
@@ -344,7 +370,7 @@ export default {
         })
         .catch(error => {
           this.postsDraftRequestState = REQUEST_STATE.FINISHED_ERROR;
-          appNotification("Sorry, an error occured while fetching posts");
+          toast(this, "Sorry, an error occured while fetching posts", "error");
           throw new Error(error);
         });
     },
@@ -361,10 +387,7 @@ export default {
         })
         .catch(error => {
           this.deletePostRequestState = REQUEST_STATE.FINISHED_ERROR;
-          appNotification(
-            "Sorry, an error occured while fetching posts",
-            "error"
-          );
+          toast(this, "Sorry, an error occured while fetching posts", "error");
           this.deleteModal.show = false;
           throw new Error(error);
         });
@@ -395,15 +418,6 @@ export default {
           this.getPostsDraft();
         }
       });
-    },
-    async onSubscribeClick() {
-      const stripe = Stripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY);
-      const sessionId = await createStripeCheckoutSession(
-        this.$route.params.blogId
-      );
-      const { error } = await stripe.redirectToCheckout({
-        sessionId
-      });
     }
   }
 };
@@ -432,5 +446,11 @@ export default {
 }
 .blog-title .column-right button {
   margin-left: 2rem;
+}
+.settings-icon {
+  margin-right: 0.7rem;
+  width: 30px;
+  height: 30px;
+  background: url("/images/icon-settings.svg") no-repeat;
 }
 </style>

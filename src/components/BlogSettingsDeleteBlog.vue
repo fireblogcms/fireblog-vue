@@ -47,7 +47,7 @@
 <script>
 import AppPanel from "../components/AppPanel";
 import BulmaModal from "../components/BulmaModal";
-import { REQUEST_STATE } from "../utils/helpers";
+import { REQUEST_STATE, toast } from "../utils/helpers";
 import apolloClient from "../utils/apolloClient";
 import { deleteBlogMutation } from "../utils/queries";
 
@@ -93,7 +93,7 @@ export default {
             this.$router.push({ name: "blogList" });
           })
           .catch(e => {
-            appNotification(e, "error");
+            toast(this, e, "error");
             throw new Error(e);
           });
       } else {
