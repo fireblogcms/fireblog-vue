@@ -278,3 +278,12 @@ export const getPlanQuery = gql`
     }
   }
 `;
+
+export const getSubscriptionQuery = gql`
+  query getSubscriptionQuery($subscriptionId: String!) {
+    subscription(subscriptionId: $subscriptionId) {
+      subscriptionId
+      trialEnd
+    }
+  }
+`;

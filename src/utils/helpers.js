@@ -9,7 +9,8 @@ import {
   getBlogQuery,
   getMyBlogsQuery,
   getPlanQuery,
-  getPostQuery
+  getPostQuery,
+  getSubscriptionQuery
 } from "./queries";
 import Store from "../store";
 
@@ -185,6 +186,19 @@ export function getPost(id) {
     })
     .then(r => {
       return r.data.post;
+    });
+}
+
+export function getSubscription(subscriptionId) {
+  return apolloClient
+    .query({
+      query: getSubscriptionQuery,
+      variables: {
+        subscriptionId: subscriptionId
+      }
+    })
+    .then(result => {
+      return result.data.subscription;
     });
 }
 
