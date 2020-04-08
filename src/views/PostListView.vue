@@ -194,7 +194,7 @@ import DefaultLayout from "../layouts/DefaultLayout";
 import IconBack from "../components/IconBack";
 import gql from "graphql-tag";
 import AppLoader from "../components/AppLoader";
-import { REQUEST_STATE, toast, getSubscription } from "../utils/helpers";
+import { REQUEST_STATE, toast } from "../utils/helpers";
 import {
   getPostsQuery,
   getBlogQuery,
@@ -329,9 +329,6 @@ export default {
         })
         .then(result => {
           this.blog = result.data.blog;
-          getSubscription(this.blog.subscription).then(result => {
-            console.log("SUBSCRIPTION", result, result.trialEnd > Math.floor(Date.now() / 1000));
-          });
           return result;
         });
     },

@@ -52,7 +52,10 @@ export const FullBlogFragment = gql`
     name
     updatedAt
     createdAt
-    subscription
+    subscription {
+      id
+      trialEnd
+    }
     url
     webhooks {
       name
@@ -275,15 +278,6 @@ export const getPlanQuery = gql`
       planAmount
       productName
       productMetadata
-    }
-  }
-`;
-
-export const getSubscriptionQuery = gql`
-  query getSubscriptionQuery($subscriptionId: String!) {
-    subscription(subscriptionId: $subscriptionId) {
-      subscriptionId
-      trialEnd
     }
   }
 `;
