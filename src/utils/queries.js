@@ -54,6 +54,7 @@ export const FullBlogFragment = gql`
     createdAt
     subscription {
       id
+      planId
       trialEnd
     }
     url

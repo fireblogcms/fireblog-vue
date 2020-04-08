@@ -42,7 +42,7 @@ export default {
   },
   methods: {
     async fetchData() {
-      this.plan = await getPlan(this.blog.subscription || process.env.VUE_APP_STRIPE_FREE_TRIAL_ID);
+      this.plan = await getPlan(this.blog.subscription.planId || process.env.VUE_APP_STRIPE_FREE_TRIAL_ID);
     }
   }
 };

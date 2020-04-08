@@ -168,7 +168,7 @@ export default {
     },
     async fetchData() {
       const blog = await getBlog(this.$route.params.blogId);
-      this.subscribedPlanId = blog.subscription || process.env.VUE_APP_STRIPE_FREE_TRIAL_ID;
+      this.subscribedPlanId = blog.subscription.planId || process.env.VUE_APP_STRIPE_FREE_TRIAL_ID;
       return apolloClient
         .query({
           query: getPlansQuery
