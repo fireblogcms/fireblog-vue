@@ -24,7 +24,6 @@
               <p>
                 {{ $t("views.plans.freeTrialFirst") }} 
                 {{ plans[0].productName }} 
-                ({{ $t("components.planInformations.freeTrial") }}). 
                 {{ $t("views.plans.freeTrialSecond") }}
               </p>
             </div>
