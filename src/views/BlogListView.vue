@@ -69,7 +69,7 @@
                   <div class="card-content">
                     <PlanInformations :blog="edge.node"></PlanInformations>
                     <button
-                      v-if="!edge.node.subscription"
+                      v-if="edge.node.subscription.trialEnd"
                       class="button is-box-shadowed is-large"
                       @click="onSubscribeClick(edge.node, $event)"
                     >

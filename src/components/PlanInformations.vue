@@ -6,8 +6,10 @@
     >
       {{ $t("components.planInformations.name") }} 
       {{ plan.productName }} 
-      <template v-if="plan.productMetadata.SUBTITLE.includes('freeTrial')">
-        ({{ $t(plan.productMetadata.SUBTITLE) }})
+      <template v-if="blog.subscription.trialEnd">
+        ({{ $t("components.planInformations.freeTrial") }} 
+        {{ numberDaysLeftTrial }} 
+        {{ $t("components.planInformations.daysLeftTrial") }})
       </template>
     </p>
     <ApiUsage
@@ -34,15 +36,22 @@ export default {
   },
   data() {
     return {
-      plan: null
+      plan: null,
+      numberDaysLeftTrial: null
     }
   },
   mounted() {
     this.fetchData();
+
+    if (this.blog.subscription.trialEnd) {
+      this.numberDaysLeftTrial = Math.round(
+        (this.blog.subscription.trialEnd - Math.floor(new Date() / 1000)) / (3600 * 24)
+      );
+    }
   },
   methods: {
     async fetchData() {
-      this.plan = await getPlan(this.blog.subscription || process.env.VUE_APP_STRIPE_FREE_TRIAL_ID);
+      this.plan = await getPlan(this.blog.subscription.planId);
     }
   }
 };
