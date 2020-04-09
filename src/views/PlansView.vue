@@ -17,14 +17,14 @@
     <!-- END TOPBAR LEFT BUTTONS -->
 
     <div class="container">
-      <div class="section" v-if="isFreeTrialPlanSubscribed()">
+      <div class="section" v-if="plans.length > 0 && isTrialing()">
         <div class="columns">
-          <div class="column is-three-fifths is-offset-one-fifth">
-            <div class="box">
+          <div class="column is-8 is-offset-2">
+            <div class="box box-trial-message">
               <p>
                 {{ $t("views.plans.freeTrialFirst") }} 
-                {{ freeTrialPlan.productName }} 
-                ({{ $t(freeTrialPlan.productMetadata.SUBTITLE) }}). 
+                {{ plans[0].productName }} 
+                ({{ $t("components.planInformations.freeTrial") }}). 
                 {{ $t("views.plans.freeTrialSecond") }}
               </p>
             </div>
@@ -68,14 +68,14 @@
                 <button
                   @click="onSubscribeClick(plan.planId)"
                   class="button is-primary button-subscribe"
-                  v-if="(isFreeTrialPlanSubscribed() || isChangePlanAvailable) && !isPlanSubscribed(plan.planId)"
+                  v-if="isChangePlanAvailable && !isPlanSubscribed(plan.planId)"
                 >
                   {{ $t("global.subscribeButton") }}
                 </button>
                 <button
                   @click="onContactUsClick()"
                   class="button is-primary button-subscribe"
-                  v-if="!isFreeTrialPlanSubscribed() && !isChangePlanAvailable && !isPlanSubscribed(plan.planId)"
+                  v-if="!isChangePlanAvailable && !isPlanSubscribed(plan.planId)"
                 >
                   {{ $t("global.contactUsButton") }}
                 </button>
@@ -121,9 +121,8 @@ export default {
   },
   data() {
     return {
+      blog: null,
       plans: [],
-      freeTrialPlan: null,
-      subscribedPlanId: null,
       isChangePlanAvailable: process.env.VUE_APP_CHANGE_PLAN_AVAILABLE === "true"
     };
   },
@@ -167,16 +166,13 @@ export default {
       $crisp.push(['do', 'chat:open']);
     },
     async fetchData() {
-      const blog = await getBlog(this.$route.params.blogId);
-      this.subscribedPlanId = blog.subscription.planId || process.env.VUE_APP_STRIPE_FREE_TRIAL_ID;
+      this.blog = await getBlog(this.$route.params.blogId);
       return apolloClient
         .query({
           query: getPlansQuery
         })
         .then(result => {
-          // Get the plans and remove the free trial from the list
-          this.freeTrialPlan = result.data.plans[0];
-          this.plans = result.data.plans.slice(1);
+          this.plans = result.data.plans;
           return result;
         })
         .catch(error => {
@@ -185,10 +181,10 @@ export default {
         });
     },
     isPlanSubscribed(planId) {
-      return this.subscribedPlanId === planId;
+      return !this.blog.subscription.trialEnd && this.blog.subscription.planId === planId;
     },
-    isFreeTrialPlanSubscribed() {
-      return this.freeTrialPlan && this.isPlanSubscribed(this.freeTrialPlan.planId);
+    isTrialing() {
+      return this.blog && this.blog.subscription.trialEnd;
     }
   }
 };
@@ -201,6 +197,9 @@ export default {
 .box {
   height: 100%;
   border: 5px solid transparent;
+}
+.box-trial-message {
+  text-align: center;
 }
 .box-subscribed-plan {
   border-color: $primary;

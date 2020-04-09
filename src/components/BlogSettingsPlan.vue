@@ -13,10 +13,10 @@
       class="button is-outlined is-primary is-large"
       @click="onSubscribeClick(blog, $event)"
     >
-      <span v-if="blog.subscription">{{
+      <span v-if="!blog.subscription.trialEnd">{{
         $t("global.changePlanButton")
       }}</span>
-      <span v-if="!blog.subscription">{{
+      <span v-if="blog.subscription.trialEnd">{{
         $t("global.subscribeButton")
       }}</span>
     </button>
