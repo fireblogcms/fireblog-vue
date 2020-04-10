@@ -686,72 +686,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@ckeditor/ckeditor5-code-block@^16.0.0":
-  version "16.0.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-code-block/-/ckeditor5-code-block-16.0.0.tgz#207f4eef708e931df3b883b3f0de9e7db4246233"
-  integrity sha512-QegxC4FdY+TDnQrzxcvSF/9m0uJD2jJJe2sq0QsKHp5LJOXMu6rzCGfWQdADTHMUhFyBWwmCw4e3xYupd/rwIw==
-  dependencies:
-    "@ckeditor/ckeditor5-core" "^16.0.0"
-    "@ckeditor/ckeditor5-enter" "^16.0.0"
-    "@ckeditor/ckeditor5-ui" "^16.0.0"
-    "@ckeditor/ckeditor5-utils" "^16.0.0"
-    lodash-es "^4.17.10"
-
-"@ckeditor/ckeditor5-core@^16.0.0":
-  version "16.0.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-core/-/ckeditor5-core-16.0.0.tgz#c9ff37b883ca293ac5998e04a89e2ac613042e09"
-  integrity sha512-JKYnoXgfULjfAGRgVmf9/at3gGikfzKwGp4O8RpE3NYGeb/xH6hSgj2mUE9QwqyAY5at1QLnio5ZvU2HiWL4pA==
-  dependencies:
-    "@ckeditor/ckeditor5-engine" "^16.0.0"
-    "@ckeditor/ckeditor5-utils" "^16.0.0"
-    lodash-es "^4.17.10"
-
-"@ckeditor/ckeditor5-engine@^16.0.0":
-  version "16.0.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-engine/-/ckeditor5-engine-16.0.0.tgz#68d8fabb4fa31541c9870cc94b021c5cb0f72d4f"
-  integrity sha512-2p0DT/1B+UyVAwNkkaNaG4wGkrR0TNQuPJ1c5TEMWb9NVk3mhIOJ+6lPVl0ApP3tmMALol+pLmXLX5aht6Ewnw==
-  dependencies:
-    "@ckeditor/ckeditor5-utils" "^16.0.0"
-    lodash-es "^4.17.10"
-
-"@ckeditor/ckeditor5-enter@^16.0.0":
-  version "16.0.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-enter/-/ckeditor5-enter-16.0.0.tgz#55f63463ce8d7031adb675f8b574d1db45efe292"
-  integrity sha512-LZjXu4RMpFFU7zudggTO/bfHtQEz7pYN1zYr/amDTR2zwsQs0jlTSh2UFtJHz4bVM10KliYKqUYcC1w97d9Qow==
-  dependencies:
-    "@ckeditor/ckeditor5-core" "^16.0.0"
-    "@ckeditor/ckeditor5-engine" "^16.0.0"
-    "@ckeditor/ckeditor5-utils" "^16.0.0"
-
 "@ckeditor/ckeditor5-inspector@^1.5.0":
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-inspector/-/ckeditor5-inspector-1.5.0.tgz#2bbc04687be4fa57ca822abef7f52fe750e89e60"
   integrity sha512-/A+K0zyp7wz2kXzQsCfr5GQdnfyFtl4BV9Kr4gdVwfug2c9xqWOeXEtFGEXe9BUj9ijv17flANh7n4UctC+gqg==
-
-"@ckeditor/ckeditor5-ui@^16.0.0":
-  version "16.0.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-ui/-/ckeditor5-ui-16.0.0.tgz#b656202e407ec1d6aebbdb96568e73dacc771cef"
-  integrity sha512-7mwIRajaN9Mf6S5ZkqWAOt/Rqy6GNS3WxhwaayMym7b1XI4oVIrxEKoun3DoKnKp3bTBMcWdQFJfsRvja2X2hA==
-  dependencies:
-    "@ckeditor/ckeditor5-core" "^16.0.0"
-    "@ckeditor/ckeditor5-utils" "^16.0.0"
-    lodash-es "^4.17.10"
-
-"@ckeditor/ckeditor5-utils@^16.0.0":
-  version "16.0.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-utils/-/ckeditor5-utils-16.0.0.tgz#9f7851d0271deebe3db3a5f8f1ca1c1ad6cfdcbc"
-  integrity sha512-EMrKmVmxfyuttGlbZI0eK7stYigbo2kFCasN0m2apg/Pn4Dwil0pennWuJ964zvZ8te1Pyt33cweQZlYzSqvYQ==
-  dependencies:
-    lodash-es "^4.17.10"
-
-"@ckeditor/ckeditor5-word-count@^16.0.0":
-  version "16.0.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-word-count/-/ckeditor5-word-count-16.0.0.tgz#64865a4bed4d42d06ab45153c95e7e1a6994fbc4"
-  integrity sha512-3nYuHdFPMe8mRApPbcddnJ+3yL1I8msRqkjs6MK9q+movUF5GmsXqh9cZBEobZ/s1LxXa72GkwQM4K1ESd0EbQ==
-  dependencies:
-    "@ckeditor/ckeditor5-core" "^16.0.0"
-    "@ckeditor/ckeditor5-ui" "^16.0.0"
-    lodash-es "^4.17.10"
 
 "@cnakazawa/watch@^1.0.3":
   version "1.0.4"
@@ -4913,12 +4851,9 @@ find-up@^4.0.0, find-up@^4.1.0:
     locate-path "^5.0.0"
     path-exists "^4.0.0"
 
-"fireblog-ckeditor@git+https://24877e8303ab244d4b2317f0644b6ade652e2a4e:x-oauth-basic@github.com/fireblogcms/fireblog-ckeditor#v16.0.0":
-  version "16.0.0"
-  resolved "git+https://24877e8303ab244d4b2317f0644b6ade652e2a4e:x-oauth-basic@github.com/fireblogcms/fireblog-ckeditor#98ec53876443dd767e20eefe969ef4031d99b558"
-  dependencies:
-    "@ckeditor/ckeditor5-code-block" "^16.0.0"
-    "@ckeditor/ckeditor5-word-count" "^16.0.0"
+"fireblog-ckeditor@git+https://24877e8303ab244d4b2317f0644b6ade652e2a4e:x-oauth-basic@github.com/fireblogcms/fireblog-ckeditor#v18.1.0":
+  version "18.1.0"
+  resolved "git+https://24877e8303ab244d4b2317f0644b6ade652e2a4e:x-oauth-basic@github.com/fireblogcms/fireblog-ckeditor#a70fe5cf068447725d6307427b61867f253d9874"
 
 flat-cache@^1.2.1:
   version "1.3.4"
@@ -7111,11 +7046,6 @@ locate-path@^5.0.0:
   integrity sha512-t7hw9pI+WvuwNJXwk5zVHpyhIqzg2qTlklJOf0mVxGSbe3Fp2VieZcduNYjaLDoy6p9uGpQEGWG87WpMKlNq8g==
   dependencies:
     p-locate "^4.1.0"
-
-lodash-es@^4.17.10:
-  version "4.17.15"
-  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.15.tgz#21bd96839354412f23d7a10340e5eac6ee455d78"
-  integrity sha512-rlrc3yU3+JNOpZ9zj5pQtxnx2THmvRykwL4Xlxoa8I9lHBlVbbyPhgyPMioxVZ4NqyxaVVtaJnzsyOidQIhyyQ==
 
 lodash.defaultsdeep@^4.6.1:
   version "4.6.1"
