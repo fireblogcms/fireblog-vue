@@ -1,30 +1,55 @@
 <template>
-  <div class="resources-use-container">
+  <div>
     <template v-if="initDataState === 'PENDING'">
       Loading stats...
     </template>
     <template v-if="initDataState === 'FINISHED_OK'">
-      <div class="flex-wrapper">
-        <div class="single-chart">
-          <svg viewBox="0 0 36 36">
-            <path
-              class="circle-bg"
-              d="M18 2.0845
-                a 15.9155 15.9155 0 0 1 0 31.831
-                a 15.9155 15.9155 0 0 1 0 -31.831"
-            />
-            <path
-              class="circle"
-              stroke="#4CC790"
-              :stroke-dasharray="percentage + ', 100'"
-              d="M18 2.0845
-                a 15.9155 15.9155 0 0 1 0 31.831
-                a 15.9155 15.9155 0 0 1 0 -31.831"
-            />
-          </svg>
+      <div class="data-container">
+        <div class="flex-wrapper">
+          <div class="single-chart">
+            <svg viewBox="0 0 36 36">
+              <path
+                class="circle-bg"
+                d="M18 2.0845
+                  a 15.9155 15.9155 0 0 1 0 31.831
+                  a 15.9155 15.9155 0 0 1 0 -31.831"
+              />
+              <path
+                class="circle"
+                stroke="#4CC790"
+                :stroke-dasharray="countPercentage + ', 100'"
+                d="M18 2.0845
+                  a 15.9155 15.9155 0 0 1 0 31.831
+                  a 15.9155 15.9155 0 0 1 0 -31.831"
+              />
+            </svg>
+          </div>
         </div>
+        <span>{{ resourcesUse.count }}/{{ callsPerMonth }} {{ $t("views.plans.apiCalls") }}</span>
       </div>
-      <span>{{ resourcesUse.count }}/{{ callsPerMonth }} {{ $t("views.plans.apiCalls") }}</span>
+      <div class="data-container">
+        <div class="flex-wrapper">
+          <div class="single-chart">
+            <svg viewBox="0 0 36 36">
+              <path
+                class="circle-bg"
+                d="M18 2.0845
+                  a 15.9155 15.9155 0 0 1 0 31.831
+                  a 15.9155 15.9155 0 0 1 0 -31.831"
+              />
+              <path
+                class="circle"
+                stroke="#FF6600"
+                :stroke-dasharray="sizePercentage + ', 100'"
+                d="M18 2.0845
+                  a 15.9155 15.9155 0 0 1 0 31.831
+                  a 15.9155 15.9155 0 0 1 0 -31.831"
+              />
+            </svg>
+          </div>
+        </div>
+        <span>{{ resourcesUse.size }}/{{ sizePerMonth }} {{ $t("views.plans.storage") }}</span>
+      </div>
     </template>
   </div>
 </template>
@@ -43,6 +68,10 @@ export default {
     callsPerMonth: {
       type: String,
       required: true
+    },
+    sizePerMonth: {
+      type: String,
+      required: true
     }
   },
   data() {
@@ -50,7 +79,8 @@ export default {
       error: null,
       initDataState: REQUEST_STATE.NOT_STARTED,
       blog: null,
-      percentage: 0
+      countPercentage: 0,
+      sizePercentage: 0
     };
   },
   async created() {
@@ -76,7 +106,8 @@ export default {
         .then(results => {
           this.initDataState = REQUEST_STATE.FINISHED_OK;
           this.resourcesUse = results.data.resourcesUse;
-          this.percentage = this.resourcesUse.count / this.callsPerMonth * 100;
+          this.countPercentage = this.resourcesUse.count / this.callsPerMonth * 100;
+          this.sizePercentage = this.resourcesUse.size / this.sizePerMonth * 100;
         })
         .catch(e => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
@@ -88,9 +119,12 @@ export default {
 </script>
 
 <style scoped>
-.resources-use-container {
+.data-container {
   display: flex;
   align-items: center;
+}
+.data-container + .data-container {
+  margin-top: .5rem;
 }
 .flex-wrapper {
   display: flex;

@@ -16,6 +16,7 @@
       v-if="plan"
       :blogId="blog._id"
       :callsPerMonth="plan.productMetadata.API_CALLS_MONTH"
+      :sizePerMonth="plan.productMetadata.STORAGE_GB"
     ></ResourcesUse>
   </div>
 </template>

@@ -232,6 +232,7 @@ export const getBlogResourcesUseQuery = gql`
   query getBlogResourcesUseQuery($blog: ID!, $from: DateTime!, $to: DateTime!) {
     resourcesUse(blog: $blog, from: $from, to: $to) {
       count
+      size
     }
   }
 `;
