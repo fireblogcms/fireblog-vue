@@ -1,5 +1,5 @@
 <template>
-  <div class="api-usage-container">
+  <div class="resources-use-container">
     <template v-if="initDataState === 'PENDING'">
       Loading stats...
     </template>
@@ -24,7 +24,7 @@
           </svg>
         </div>
       </div>
-      <span>{{ apiUsage.count }}/{{ callsPerMonth }} {{ $t("views.plans.apiCalls") }}</span>
+      <span>{{ resourcesUse.count }}/{{ callsPerMonth }} {{ $t("views.plans.apiCalls") }}</span>
     </template>
   </div>
 </template>
@@ -32,7 +32,7 @@
 <script>
 import { REQUEST_STATE } from "../utils/helpers";
 import apolloClient from "../utils/apolloClient";
-import { getBlogApiUsageQuery } from "../utils/queries";
+import { getBlogResourcesUseQuery } from "../utils/queries";
 import { getBlog } from "../utils/helpers";
 export default {
   props: {
@@ -66,7 +66,7 @@ export default {
       var to = new Date(date.getFullYear(), date.getMonth() + 1, 0);
       return apolloClient
         .query({
-          query: getBlogApiUsageQuery,
+          query: getBlogResourcesUseQuery,
           variables: {
             blog: this.blogId,
             from,
@@ -75,9 +75,8 @@ export default {
         })
         .then(results => {
           this.initDataState = REQUEST_STATE.FINISHED_OK;
-          this.apiUsage = results.data.apiUsage;
-          this.percentage =
-            this.apiUsage.count / this.callsPerMonth * 100;
+          this.resourcesUse = results.data.resourcesUse;
+          this.percentage = this.resourcesUse.count / this.callsPerMonth * 100;
         })
         .catch(e => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
@@ -89,7 +88,7 @@ export default {
 </script>
 
 <style scoped>
-.api-usage-container {
+.resources-use-container {
   display: flex;
   align-items: center;
 }
