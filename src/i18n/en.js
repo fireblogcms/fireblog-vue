@@ -30,7 +30,6 @@ export default {
   "global.contactUsButton": "Contact us",
   "topbar.accountMenu.myAccount": "My account",
   "topbar.accountMenu.logout": "Logout",
-  "views.apiUsage.title:": "Api Usage",
   "views.blogCreate.cancelButton": "Cancel",
   "views.blogCreate.createButton": "Create my blog",
   "views.blogCreate.createFirstBlog": "Let's create your first blog.",

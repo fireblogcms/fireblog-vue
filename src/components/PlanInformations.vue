@@ -12,21 +12,22 @@
         {{ $t("components.planInformations.daysLeftTrial") }})
       </template>
     </p>
-    <ApiUsage
+    <ResourcesUse
       v-if="plan"
       :blogId="blog._id"
       :callsPerMonth="plan.productMetadata.API_CALLS_MONTH"
-    ></ApiUsage>
+      :sizePerMonth="plan.productMetadata.STORAGE_GB"
+    ></ResourcesUse>
   </div>
 </template>
 
 <script>
-import ApiUsage from "../components/ApiUsage";
+import ResourcesUse from "../components/ResourcesUse";
 import { getPlan } from "../utils/helpers";
 
 export default {
   components: {
-    ApiUsage
+    ResourcesUse
   },
   props: {
     blog: {
