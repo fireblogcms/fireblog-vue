@@ -228,11 +228,11 @@ export const deleteBlogMutation = gql`
 /**
  * We need to know if this is the first post for this blog.
  */
-export const getBlogApiUsageQuery = gql`
-  query getBlogApiUsageQuery($blog: ID!, $from: DateTime!, $to: DateTime!) {
-    apiUsage(blog: $blog, from: $from, to: $to) {
+export const getBlogResourcesUseQuery = gql`
+  query getBlogResourcesUseQuery($blog: ID!, $from: DateTime!, $to: DateTime!) {
+    resourcesUse(blog: $blog, from: $from, to: $to) {
       count
-      countTotal
+      size
     }
   }
 `;
