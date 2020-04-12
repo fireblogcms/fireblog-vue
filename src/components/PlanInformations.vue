@@ -3,7 +3,7 @@
     <p class="plan-name has-text-weight-bold" v-if="plan">
       {{ $t("components.planInformations.name") }}
       {{ plan.productName }}
-      <template v-if="blog.subscription.trialEnd">
+      <template v-if="blog.subscription && blog.subscription.trialEnd">
         ({{ $t("components.planInformations.freeTrial") }}
         {{ numberDaysLeftTrial }}
         {{ $t("components.planInformations.daysLeftTrial") }})
@@ -41,7 +41,7 @@ export default {
   mounted() {
     this.fetchData();
 
-    if (this.blog.subscription.trialEnd) {
+    if (this.blog.subscription && this.blog.subscription.trialEnd) {
       this.numberDaysLeftTrial = Math.round(
         (this.blog.subscription.trialEnd - Math.floor(new Date() / 1000)) /
           (3600 * 24)
@@ -50,7 +50,9 @@ export default {
   },
   methods: {
     async fetchData() {
-      this.plan = await getPlan(this.blog.subscription.planId);
+      if (this.blog.subscription) {
+        this.plan = await getPlan(this.blog.subscription.planId);
+      }
     }
   }
 };

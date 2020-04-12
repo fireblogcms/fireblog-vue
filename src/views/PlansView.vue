@@ -204,7 +204,9 @@ export default {
       );
     },
     isTrialing() {
-      return this.blog && this.blog.subscription.trialEnd;
+      return (
+        this.blog && this.blog.subscription && this.blog.subscription.trialEnd
+      );
     }
   }
 };

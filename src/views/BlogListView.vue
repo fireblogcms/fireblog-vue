@@ -69,7 +69,10 @@
                   <div class="card-content">
                     <PlanInformations :blog="edge.node"></PlanInformations>
                     <button
-                      v-if="edge.node.subscription.trialEnd"
+                      v-if="
+                        edge.node.subscription &&
+                          edge.node.subscription.trialEnd
+                      "
                       class="button is-box-shadowed is-large"
                       @click="onSubscribeClick(edge.node, $event)"
                     >
@@ -150,7 +153,11 @@ export default {
           return blogs;
         })
         .catch(error => {
-          toast(this, "Sorry, an error occured while fetching blog:" + error, "error");
+          toast(
+            this,
+            "Sorry, an error occured while fetching blog:" + error,
+            "error"
+          );
           throw new Error(error);
         });
     },
