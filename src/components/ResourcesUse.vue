@@ -48,7 +48,11 @@
             </svg>
           </div>
         </div>
-        <span>{{ resourcesUse.size }}/{{ sizePerMonth }} {{ $t("views.plans.storage") }}</span>
+        <span>
+          {{ formatBytes(resourcesUse.size) }}/{{ sizePerMonth }} 
+          {{ $t("views.plans.storageUnitGB") }} 
+          {{ $t("views.plans.storage") }}
+        </span>
       </div>
     </template>
   </div>
@@ -107,12 +111,26 @@ export default {
           this.initDataState = REQUEST_STATE.FINISHED_OK;
           this.resourcesUse = results.data.resourcesUse;
           this.countPercentage = this.resourcesUse.count / this.callsPerMonth * 100;
-          this.sizePercentage = this.resourcesUse.size / this.sizePerMonth * 100;
+          this.sizePercentage = this.resourcesUse.size / (1073741824 * this.sizePerMonth) * 100;
         })
         .catch(e => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           throw new Error(e);
         });
+    },
+    formatBytes(bytes) {
+      if (bytes === 0) {
+        return bytes;
+      } else {
+        let i = Math.floor(Math.log(bytes) / Math.log(1024));
+        let sizes = [
+          'views.plans.storageUnitB',
+          'views.plans.storageUnitKB',
+          'views.plans.storageUnitMB',
+          ''
+        ];
+        return `${ (bytes / Math.pow(1024, i)).toFixed(2) * 1 } ${ this.$t(sizes[i]) }`;
+      }
     }
   }
 };

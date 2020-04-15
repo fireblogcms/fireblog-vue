@@ -127,5 +127,9 @@ export default {
   "views.plans.includes": "includes",
   "views.plans.eurosPerMonth": "€ per month",
   "views.plans.apiCalls": "API calls",
-  "views.plans.storage": "GB storage",
+  "views.plans.storageUnitB": "B",
+  "views.plans.storageUnitKB": "KB",
+  "views.plans.storageUnitMB": "MB",
+  "views.plans.storageUnitGB": "GB",
+  "views.plans.storage": "storage",
 };
