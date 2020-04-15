@@ -22,8 +22,8 @@
           <div class="column is-8 is-offset-2">
             <div class="box box-trial-message">
               <p>
-                {{ $t("views.plans.freeTrialFirst") }} 
-                {{ plans[0].productName }} 
+                {{ $t("views.plans.freeTrialFirst") }}
+                {{ plans[0].productName }}
                 {{ $t("views.plans.freeTrialSecond") }}
               </p>
             </div>
@@ -52,29 +52,42 @@
         </div>
         <div class="columns has-text-centered">
           <template v-if="plans.length > 0">
-            <div class="column" v-for="plan in plans" :key="plan.planId">
-              <div class="box" :class="{ 'box-subscribed-plan': isPlanSubscribed(plan.planId) }">
+            <div class="column" v-for="plan in plans" :key="plan.id">
+              <div
+                class="box"
+                :class="{
+                  'box-subscribed-plan': isPlanSubscribed(plan.id)
+                }"
+              >
                 <h2 class="title is-4">{{ plan.productName }}</h2>
                 <p class="title is-6 has-text-weight-bold">
-                  {{ $t(plan.productMetadata.SUBTITLE) }}
+                  {{ $t(plan.metadata.SUBTITLE) }}
                 </p>
                 <p class="title is-4">
-                  {{ (parseInt(plan.planAmount) / 100).toFixed(2) }} {{ $t("views.plans.eurosPerMonth") }}
+                  {{ (parseInt(plan.amount) / 100).toFixed(2) }}
+                  {{ $t("views.plans.eurosPerMonth") }}
                 </p>
-                <p class="has-text-weight-bold">{{ $t("views.plans.includes") }}</p>
-                <p>{{ plan.productMetadata.API_CALLS_MONTH }} {{ $t("views.plans.apiCalls") }}</p>
-                <p>{{ plan.productMetadata.STORAGE_GO }} {{ $t("views.plans.storage") }}</p>
+                <p class="has-text-weight-bold">
+                  {{ $t("views.plans.includes") }}
+                </p>
+                <p>
+                  {{ plan.metadata.API_CALLS_MONTH }}
+                  {{ $t("views.plans.apiCalls") }}
+                </p>
+                <p>
+                  {{ plan.metadata.STORAGE_GO }} {{ $t("views.plans.storage") }}
+                </p>
                 <button
-                  @click="onSubscribeClick(plan.planId)"
+                  @click="onSubscribeClick(plan.id)"
                   class="button is-primary button-subscribe"
-                  v-if="isChangePlanAvailable && !isPlanSubscribed(plan.planId)"
+                  v-if="isChangePlanAvailable && !isPlanSubscribed(plan.id)"
                 >
                   {{ $t("global.subscribeButton") }}
                 </button>
                 <button
                   @click="onContactUsClick()"
                   class="button is-primary button-subscribe"
-                  v-if="!isChangePlanAvailable && !isPlanSubscribed(plan.planId)"
+                  v-if="!isChangePlanAvailable && !isPlanSubscribed(plan.id)"
                 >
                   {{ $t("global.contactUsButton") }}
                 </button>
@@ -122,7 +135,8 @@ export default {
     return {
       blog: null,
       plans: [],
-      isChangePlanAvailable: process.env.VUE_APP_CHANGE_PLAN_AVAILABLE === "true"
+      isChangePlanAvailable:
+        process.env.VUE_APP_CHANGE_PLAN_AVAILABLE === "true"
     };
   },
   created() {
@@ -140,9 +154,9 @@ export default {
       const sessionId = await createStripeCheckoutSession({
         userEmail: user.email,
         userId: user._id,
-        ...user.customerId && {
+        ...(user.customerId && {
           customerId: user.customerId
-        },
+        }),
         blogId: this.$route.params.blogId,
         planId,
         successUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}`,
@@ -162,7 +176,7 @@ export default {
         });
     },
     onContactUsClick() {
-      $crisp.push(['do', 'chat:open']);
+      $crisp.push(["do", "chat:open"]);
     },
     async fetchData() {
       this.blog = await getBlog(this.$route.params.blogId);
@@ -175,15 +189,24 @@ export default {
           return result;
         })
         .catch(error => {
-          toast(this, "Sorry, an error occured while fetching pricing", "error");
+          toast(
+            this,
+            "Sorry, an error occured while fetching pricing",
+            "error"
+          );
           throw new Error(error);
         });
     },
     isPlanSubscribed(planId) {
-      return !this.blog.subscription.trialEnd && this.blog.subscription.planId === planId;
+      return (
+        !this.blog.subscription.trialEnd &&
+        this.blog.subscription.planId === planId
+      );
     },
     isTrialing() {
-      return this.blog && this.blog.subscription.trialEnd;
+      return (
+        this.blog && this.blog.subscription && this.blog.subscription.trialEnd
+      );
     }
   }
 };

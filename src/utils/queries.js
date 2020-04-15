@@ -264,10 +264,10 @@ export const createStripeCheckoutSessionMutation = gql`
 export const getPlansQuery = gql`
   query getPlansQuery {
     plans {
-      planId
-      planAmount
+      id
+      amount
+      metadata
       productName
-      productMetadata
     }
   }
 `;
@@ -275,10 +275,10 @@ export const getPlansQuery = gql`
 export const getPlanQuery = gql`
   query getPlanQuery($planId: String!) {
     plan(planId: $planId) {
-      planId
-      planAmount
+      id
+      amount
+      metadata
       productName
-      productMetadata
     }
   }
 `;

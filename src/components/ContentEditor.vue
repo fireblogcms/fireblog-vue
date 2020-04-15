@@ -24,6 +24,23 @@ export default {
   },
   mounted() {
     Editor.create(this.$refs.editor, {
+      codeBlock: {
+        languages: [
+          { language: "plaintext", label: "Plain text" }, // The default language.
+          { language: "javascript", label: "JavaScript" },
+          { language: "typescript", label: "TypeScript" },
+          { language: "graphql", label: "GraphQL" },
+          { language: "php", label: "PHP" },
+          { language: "ruby", label: "Ruby" },
+          { language: "python", label: "Python" },
+          { language: "c", label: "C" },
+          { language: "cs", label: "C#" },
+          { language: "cpp", label: "C++" },
+          { language: "css", label: "CSS" },
+          { language: "xml", label: "HTML/XML" },
+          { language: "java", label: "Java" }
+        ]
+      },
       heading: {
         options: [
           {
