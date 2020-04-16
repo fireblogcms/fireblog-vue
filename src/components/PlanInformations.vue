@@ -43,8 +43,8 @@ export default {
 
     if (this.blog.subscription && this.blog.subscription.trialEnd) {
       this.numberDaysLeftTrial = Math.round(
-        (this.blog.subscription.trialEnd - Math.floor(new Date() / 1000)) /
-          (3600 * 24)
+        (new Date(this.blog.subscription.trialEnd) - new Date()) /
+        (1000 * 60 * 60 * 24)
       );
     }
   },

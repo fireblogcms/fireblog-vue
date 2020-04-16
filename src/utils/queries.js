@@ -273,7 +273,7 @@ export const getPlansQuery = gql`
 `;
 
 export const getPlanQuery = gql`
-  query getPlanQuery($planId: String!) {
+  query getPlanQuery($planId: String) {
     plan(planId: $planId) {
       id
       amount
