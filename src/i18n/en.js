@@ -114,7 +114,7 @@ export default {
   "views.postList.paymentSuccess": "Congratulations, you successfully subscribed to Fireblog!",
   "views.plans.title": "Plans",
   "views.plans.freeTrialFirst": "Your current plan is",
-  "views.plans.freeTrialSecond": "(one month free trial). Feel free to subscribe to one of our plans!",
+  "views.plans.freeTrialSecond": "(21 days free trial). Feel free to subscribe to one of our plans!",
   "views.plans.introduction": "All of our plans include the following features:",
   "views.plans.webhooks": "Webhooks: rebuild automatically your JAMstack blog or site!",
   "views.plans.editor": "A minimalist & powerful editor dedicated to long writing sessions",

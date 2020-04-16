@@ -17,13 +17,13 @@
     <!-- END TOPBAR LEFT BUTTONS -->
 
     <div class="container">
-      <div class="section" v-if="plans.length > 0 && isTrialing()">
+      <div class="section" v-if="freePlan">
         <div class="columns">
           <div class="column is-8 is-offset-2">
             <div class="box box-trial-message">
               <p>
                 {{ $t("views.plans.freeTrialFirst") }}
-                {{ plans[0].productName }}
+                {{ freePlan.productName }}
                 {{ $t("views.plans.freeTrialSecond") }}
               </p>
             </div>
@@ -121,6 +121,7 @@ import { ContentLoader } from "vue-content-loader";
 import {
   getBlog,
   getUser,
+  getPlan,
   createStripeCheckoutSession,
   toast
 } from "../utils/helpers";
@@ -134,6 +135,7 @@ export default {
   data() {
     return {
       blog: null,
+      freePlan: null,
       plans: [],
       isChangePlanAvailable:
         process.env.VUE_APP_CHANGE_PLAN_AVAILABLE === "true"
@@ -180,6 +182,9 @@ export default {
     },
     async fetchData() {
       this.blog = await getBlog(this.$route.params.blogId);
+      if (this.isTrialing()) {
+        this.freePlan = await getPlan();
+      }
       return apolloClient
         .query({
           query: getPlansQuery

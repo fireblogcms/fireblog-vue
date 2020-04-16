@@ -114,7 +114,7 @@ export default {
   "views.postList.paymentSuccess": "Félicitations, vous êtes désormais abonné à Fireblog!",
   "views.plans.title": "Plans",
   "views.plans.freeTrialFirst": "Votre plan actuel est",
-  "views.plans.freeTrialSecond": "(mois d'essai gratuit). N'hésitez pas à souscrire à l'une de nos offres !",
+  "views.plans.freeTrialSecond": "(21 jours d'essai gratuit). N'hésitez pas à souscrire à l'une de nos offres !",
   "views.plans.introduction": "Tous nos plans comprennent les fonctionnalités suivantes :",
   "views.plans.webhooks": "Webhooks : reconstruisez automatiquement votre blog ou site JAMstack !",
   "views.plans.editor": "Un éditeur minimaliste & performant dédié aux longues sessions d'écriture",
