@@ -75,7 +75,9 @@
                   {{ $t("views.plans.apiCalls") }}
                 </p>
                 <p>
-                  {{ plan.metadata.STORAGE_GO }} {{ $t("views.plans.storage") }}
+                  {{ plan.metadata.STORAGE_GB }} 
+                  {{ $t("views.plans.storageUnitGB") }} 
+                  {{ $t("views.plans.storage") }}
                 </p>
                 <button
                   @click="onSubscribeClick(plan.id)"
