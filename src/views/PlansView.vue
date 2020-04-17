@@ -64,7 +64,7 @@
                   {{ $t(plan.metadata.SUBTITLE) }}
                 </p>
                 <p class="title is-4">
-                  {{ (parseInt(plan.amount) / 100).toFixed(2) }}
+                  {{ (parseInt(plan.amountTaxes) / 100).toFixed(2) }}
                   {{ $t("views.plans.eurosPerMonth") }}
                 </p>
                 <p class="has-text-weight-bold">
@@ -80,7 +80,7 @@
                   {{ $t("views.plans.storage") }}
                 </p>
                 <button
-                  @click="onSubscribeClick(plan.id)"
+                  @click="onSubscribeClick(plan)"
                   class="button is-primary button-subscribe"
                   v-if="isChangePlanAvailable && !isPlanSubscribed(plan.id)"
                 >
@@ -111,12 +111,19 @@
         </div>
       </div>
     </div>
+
+    <ChangePlanModal
+      :show="changePlanModal.show"
+      :plan="changePlanModal.plan"
+      @changePlan="changePlan"
+    />
   </DefaultLayout>
 </template>
 
 <script>
 import DefaultLayout from "../layouts/DefaultLayout";
 import IconBack from "../components/IconBack";
+import ChangePlanModal from "../components/ChangePlanModal";
 import apolloClient from "../utils/apolloClient";
 import {
   getPlansQuery,
@@ -135,13 +142,18 @@ export default {
   components: {
     IconBack,
     DefaultLayout,
-    ContentLoader
+    ContentLoader,
+    ChangePlanModal
   },
   data() {
     return {
-      blog: null,
+      blog: {},
       freePlan: null,
       plans: [],
+      changePlanModal: {
+        show: false,
+        plan: {}
+      },
       isChangePlanAvailable:
         process.env.VUE_APP_CHANGE_PLAN_AVAILABLE === "true"
     };
@@ -155,7 +167,7 @@ export default {
     document.head.appendChild(stripeScript);
   },
   methods: {
-    async onSubscribeClick(planId) {
+    async onSubscribeClick(plan) {
       const user = await getUser();
       if (!this.blog.subscription.id) {
         const stripe = Stripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY);
@@ -166,7 +178,7 @@ export default {
             customerId: user.customerId
           }),
           blogId: this.$route.params.blogId,
-          planId,
+          planId: plan.id,
           successUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}`,
           cancelUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}/plans`
         });
@@ -183,35 +195,43 @@ export default {
             throw new Error(error);
           });
       } else {
-        const subscription = {
-          id: this.blog.subscription.id,
-          planId
+        this.changePlanModal = {
+          show: true,
+          plan
         };
-        return apolloClient
-          .mutate({
-            mutation: updateBlogMutation,
-            variables: {
-              blog: {
-                _id: this.$route.params.blogId,
-                subscription
-              }
-            }
-          })
-          .then(result => {
-            return result.data.updateBlog;
-          })
-          .catch(error => {
-            toast(this, error, "error");
-            throw new Error(error);
-          });
       }
+    },
+    changePlan(plan) {
+      const subscription = {
+        id: this.blog.subscription.id,
+        planId: plan.id
+      };
+      return apolloClient
+        .mutate({
+          mutation: updateBlogMutation,
+          variables: {
+            blog: {
+              _id: this.$route.params.blogId,
+              subscription
+            }
+          }
+        })
+        .then(result => {
+          this.blog.subscription.planId = result.data.updateBlog.subscription.planId;
+          this.changePlanModal.show = false;
+          return result.data.updateBlog;
+        })
+        .catch(error => {
+          toast(this, error, "error");
+          throw new Error(error);
+        });
     },
     onContactUsClick() {
       $crisp.push(["do", "chat:open"]);
     },
     async fetchData() {
       this.blog = await getBlog(this.$route.params.blogId);
-      if (this.isTrialing()) {
+      if (this.blog.subscription.trialEnd) {
         this.freePlan = await getPlan();
       }
       return apolloClient
@@ -235,11 +255,6 @@ export default {
       return (
         !this.blog.subscription.trialEnd &&
         this.blog.subscription.planId === planId
-      );
-    },
-    isTrialing() {
-      return (
-        this.blog && this.blog.subscription && this.blog.subscription.trialEnd
       );
     }
   }

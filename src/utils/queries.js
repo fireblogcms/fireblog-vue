@@ -266,6 +266,7 @@ export const getPlansQuery = gql`
     plans {
       id
       amount
+      amountTaxes
       metadata
       productName
     }
@@ -277,6 +278,7 @@ export const getPlanQuery = gql`
     plan(planId: $planId) {
       id
       amount
+      amountTaxes
       metadata
       productName
     }
