@@ -217,8 +217,11 @@ export default {
           }
         })
         .then(result => {
-          this.blog.subscription.planId = result.data.updateBlog.subscription.planId;
-          this.changePlanModal.show = false;
+          this.$router.push({
+            name: "postList",
+            params: { blogId: result.data.updateBlog._id },
+            query: { status: "success" }
+          });
           return result.data.updateBlog;
         })
         .catch(error => {
