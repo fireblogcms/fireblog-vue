@@ -118,7 +118,10 @@
 import DefaultLayout from "../layouts/DefaultLayout";
 import IconBack from "../components/IconBack";
 import apolloClient from "../utils/apolloClient";
-import { getPlansQuery } from "../utils/queries";
+import {
+  getPlansQuery,
+  updateBlogMutation
+} from "../utils/queries";
 import { ContentLoader } from "vue-content-loader";
 import {
   getBlog,
@@ -154,30 +157,54 @@ export default {
   methods: {
     async onSubscribeClick(planId) {
       const user = await getUser();
-      const stripe = Stripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY);
-      const sessionId = await createStripeCheckoutSession({
-        userEmail: user.email,
-        userId: user._id,
-        ...(user.customerId && {
-          customerId: user.customerId
-        }),
-        blogId: this.$route.params.blogId,
-        planId,
-        successUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}`,
-        cancelUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}/plans`
-      });
-      stripe
-        .redirectToCheckout({
-          sessionId
-        })
-        .then(r => {
-          console.log(r);
-        })
-        .catch(error => {
-          console.log(error);
-          toast(this, error, "error");
-          throw new Error(error);
+      if (!user.customerId) {
+        const stripe = Stripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY);
+        const sessionId = await createStripeCheckoutSession({
+          userEmail: user.email,
+          userId: user._id,
+          ...(user.customerId && {
+            customerId: user.customerId
+          }),
+          blogId: this.$route.params.blogId,
+          planId,
+          successUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}`,
+          cancelUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}/plans`
         });
+        stripe
+          .redirectToCheckout({
+            sessionId
+          })
+          .then(r => {
+            console.log(r);
+          })
+          .catch(error => {
+            console.log(error);
+            toast(this, error, "error");
+            throw new Error(error);
+          });
+      } else {
+        const subscription = {
+          id: this.blog.subscription.id,
+          planId
+        };
+        return apolloClient
+          .mutate({
+            mutation: updateBlogMutation,
+            variables: {
+              blog: {
+                _id: this.$route.params.blogId,
+                subscription
+              }
+            }
+          })
+          .then(result => {
+            return result.data.updateBlog;
+          })
+          .catch(error => {
+            toast(this, error, "error");
+            throw new Error(error);
+          });
+      }
     },
     onContactUsClick() {
       $crisp.push(["do", "chat:open"]);
