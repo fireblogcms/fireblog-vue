@@ -157,7 +157,7 @@ export default {
   methods: {
     async onSubscribeClick(planId) {
       const user = await getUser();
-      if (!user.customerId) {
+      if (!this.blog.subscription.id) {
         const stripe = Stripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY);
         const sessionId = await createStripeCheckoutSession({
           userEmail: user.email,
