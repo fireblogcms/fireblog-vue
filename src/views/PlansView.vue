@@ -17,14 +17,13 @@
     <!-- END TOPBAR LEFT BUTTONS -->
 
     <div class="container">
-      <div class="section" v-if="isFreeTrialPlanSubscribed()">
+      <div class="section" v-if="freePlan">
         <div class="columns">
-          <div class="column is-three-fifths is-offset-one-fifth">
-            <div class="box">
+          <div class="column is-8 is-offset-2">
+            <div class="box box-trial-message">
               <p>
-                {{ $t("views.plans.freeTrialFirst") }} 
-                {{ freeTrialPlan.productName }} 
-                ({{ $t(freeTrialPlan.productMetadata.SUBTITLE) }}). 
+                {{ $t("views.plans.freeTrialFirst") }}
+                {{ freePlan.productName }}
                 {{ $t("views.plans.freeTrialSecond") }}
               </p>
             </div>
@@ -53,29 +52,44 @@
         </div>
         <div class="columns has-text-centered">
           <template v-if="plans.length > 0">
-            <div class="column" v-for="plan in plans" :key="plan.planId">
-              <div class="box" :class="{ 'box-subscribed-plan': isPlanSubscribed(plan.planId) }">
+            <div class="column" v-for="plan in plans" :key="plan.id">
+              <div
+                class="box"
+                :class="{
+                  'box-subscribed-plan': isPlanSubscribed(plan.id)
+                }"
+              >
                 <h2 class="title is-4">{{ plan.productName }}</h2>
                 <p class="title is-6 has-text-weight-bold">
-                  {{ $t(plan.productMetadata.SUBTITLE) }}
+                  {{ $t(plan.metadata.SUBTITLE) }}
                 </p>
                 <p class="title is-4">
-                  {{ (parseInt(plan.planAmount) / 100).toFixed(2) }} {{ $t("views.plans.eurosPerMonth") }}
+                  {{ (parseInt(plan.amountTaxes) / 100).toFixed(2) }}
+                  {{ $t("views.plans.eurosPerMonth") }}
                 </p>
-                <p class="has-text-weight-bold">{{ $t("views.plans.includes") }}</p>
-                <p>{{ plan.productMetadata.API_CALLS_MONTH }} {{ $t("views.plans.apiCalls") }}</p>
-                <p>{{ plan.productMetadata.STORAGE_GO }} {{ $t("views.plans.storage") }}</p>
+                <p class="has-text-weight-bold">
+                  {{ $t("views.plans.includes") }}
+                </p>
+                <p>
+                  {{ plan.metadata.API_CALLS_MONTH }}
+                  {{ $t("views.plans.apiCalls") }}
+                </p>
+                <p>
+                  {{ plan.metadata.STORAGE_GB }} 
+                  {{ $t("views.plans.storageUnitGB") }} 
+                  {{ $t("views.plans.storage") }}
+                </p>
                 <button
-                  @click="onSubscribeClick(plan.planId)"
+                  @click="onSubscribeClick(plan)"
                   class="button is-primary button-subscribe"
-                  v-if="(isFreeTrialPlanSubscribed() || isChangePlanAvailable) && !isPlanSubscribed(plan.planId)"
+                  v-if="isChangePlanAvailable && !isPlanSubscribed(plan.id)"
                 >
                   {{ $t("global.subscribeButton") }}
                 </button>
                 <button
                   @click="onContactUsClick()"
                   class="button is-primary button-subscribe"
-                  v-if="!isFreeTrialPlanSubscribed() && !isChangePlanAvailable && !isPlanSubscribed(plan.planId)"
+                  v-if="!isChangePlanAvailable && !isPlanSubscribed(plan.id)"
                 >
                   {{ $t("global.contactUsButton") }}
                 </button>
@@ -97,18 +111,30 @@
         </div>
       </div>
     </div>
+
+    <ChangePlanModal
+      :show="changePlanModal.show"
+      :plan="changePlanModal.plan"
+      @showUpdate="(value) => changePlanModal.show = value"
+      @changePlan="changePlan"
+    />
   </DefaultLayout>
 </template>
 
 <script>
 import DefaultLayout from "../layouts/DefaultLayout";
 import IconBack from "../components/IconBack";
+import ChangePlanModal from "../components/ChangePlanModal";
 import apolloClient from "../utils/apolloClient";
-import { getPlansQuery } from "../utils/queries";
+import {
+  getPlansQuery,
+  updateBlogMutation
+} from "../utils/queries";
 import { ContentLoader } from "vue-content-loader";
 import {
   getBlog,
   getUser,
+  getPlan,
   createStripeCheckoutSession,
   toast
 } from "../utils/helpers";
@@ -117,14 +143,20 @@ export default {
   components: {
     IconBack,
     DefaultLayout,
-    ContentLoader
+    ContentLoader,
+    ChangePlanModal
   },
   data() {
     return {
+      blog: {},
+      freePlan: null,
       plans: [],
-      freeTrialPlan: null,
-      subscribedPlanId: null,
-      isChangePlanAvailable: process.env.VUE_APP_CHANGE_PLAN_AVAILABLE === "true"
+      changePlanModal: {
+        show: false,
+        plan: {}
+      },
+      isChangePlanAvailable:
+        process.env.VUE_APP_CHANGE_PLAN_AVAILABLE === "true"
     };
   },
   created() {
@@ -136,59 +168,98 @@ export default {
     document.head.appendChild(stripeScript);
   },
   methods: {
-    async onSubscribeClick(planId) {
+    async onSubscribeClick(plan) {
       const user = await getUser();
-      const stripe = Stripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY);
-      const sessionId = await createStripeCheckoutSession({
-        userEmail: user.email,
-        userId: user._id,
-        ...user.customerId && {
-          customerId: user.customerId
-        },
-        blogId: this.$route.params.blogId,
-        planId,
-        successUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}`,
-        cancelUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}/plans`
-      });
-      stripe
-        .redirectToCheckout({
-          sessionId
+      if (!this.blog.subscription.id) {
+        const stripe = Stripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY);
+        const sessionId = await createStripeCheckoutSession({
+          userEmail: user.email,
+          userId: user._id,
+          ...(user.customerId && {
+            customerId: user.customerId
+          }),
+          blogId: this.$route.params.blogId,
+          planId: plan.id,
+          successUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}`,
+          cancelUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}/plans`
+        });
+        stripe
+          .redirectToCheckout({
+            sessionId
+          })
+          .then(r => {
+            console.log(r);
+          })
+          .catch(error => {
+            console.log(error);
+            toast(this, error, "error");
+            throw new Error(error);
+          });
+      } else {
+        this.changePlanModal = {
+          show: true,
+          plan
+        };
+      }
+    },
+    changePlan(plan) {
+      const subscription = {
+        id: this.blog.subscription.id,
+        planId: plan.id
+      };
+      return apolloClient
+        .mutate({
+          mutation: updateBlogMutation,
+          variables: {
+            blog: {
+              _id: this.$route.params.blogId,
+              subscription
+            }
+          }
         })
-        .then(r => {
-          console.log(r);
+        .then(result => {
+          this.$router.push({
+            name: "postList",
+            params: { blogId: result.data.updateBlog._id },
+            query: { status: "success" }
+          });
+          return result.data.updateBlog;
         })
         .catch(error => {
-          console.log(error);
           toast(this, error, "error");
           throw new Error(error);
         });
     },
     onContactUsClick() {
-      $crisp.push(['do', 'chat:open']);
+      $crisp.push(["do", "chat:open"]);
     },
     async fetchData() {
-      const blog = await getBlog(this.$route.params.blogId);
-      this.subscribedPlanId = blog.subscription || process.env.VUE_APP_STRIPE_FREE_TRIAL_ID;
+      this.blog = await getBlog(this.$route.params.blogId);
+      if (this.blog.subscription.trialEnd) {
+        this.freePlan = await getPlan();
+      }
       return apolloClient
         .query({
           query: getPlansQuery
         })
         .then(result => {
-          // Get the plans and remove the free trial from the list
-          this.freeTrialPlan = result.data.plans[0];
-          this.plans = result.data.plans.slice(1);
+          this.plans = result.data.plans;
           return result;
         })
         .catch(error => {
-          toast(this, "Sorry, an error occured while fetching pricing", "error");
+          toast(
+            this,
+            "Sorry, an error occured while fetching pricing",
+            "error"
+          );
           throw new Error(error);
         });
     },
     isPlanSubscribed(planId) {
-      return this.subscribedPlanId === planId;
-    },
-    isFreeTrialPlanSubscribed() {
-      return this.freeTrialPlan && this.isPlanSubscribed(this.freeTrialPlan.planId);
+      return (
+        !this.blog.subscription.trialEnd &&
+        this.blog.subscription.planId === planId
+      );
     }
   }
 };
@@ -201,6 +272,9 @@ export default {
 .box {
   height: 100%;
   border: 5px solid transparent;
+}
+.box-trial-message {
+  text-align: center;
 }
 .box-subscribed-plan {
   border-color: $primary;

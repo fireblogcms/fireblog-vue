@@ -1,30 +1,30 @@
 <template>
   <div>
-    <p
-      class="plan-name has-text-weight-bold"
-      v-if="plan"
-    >
-      {{ $t("components.planInformations.name") }} 
-      {{ plan.productName }} 
-      <template v-if="plan.productMetadata.SUBTITLE.includes('freeTrial')">
-        ({{ $t(plan.productMetadata.SUBTITLE) }})
+    <p class="plan-name has-text-weight-bold" v-if="plan">
+      {{ $t("components.planInformations.name") }}
+      {{ plan.productName }}
+      <template v-if="blog.subscription && blog.subscription.trialEnd">
+        ({{ $t("components.planInformations.freeTrial") }}
+        {{ numberDaysLeftTrial }}
+        {{ $t("components.planInformations.daysLeftTrial") }})
       </template>
     </p>
-    <ApiUsage
+    <ResourcesUse
       v-if="plan"
       :blogId="blog._id"
-      :callsPerMonth="plan.productMetadata.API_CALLS_MONTH"
-    ></ApiUsage>
+      :callsPerMonth="plan.metadata.API_CALLS_MONTH"
+      :sizePerMonth="plan.metadata.STORAGE_GB"
+    />
   </div>
 </template>
 
 <script>
-import ApiUsage from "../components/ApiUsage";
+import ResourcesUse from "../components/ResourcesUse";
 import { getPlan } from "../utils/helpers";
 
 export default {
   components: {
-    ApiUsage
+    ResourcesUse
   },
   props: {
     blog: {
@@ -34,15 +34,25 @@ export default {
   },
   data() {
     return {
-      plan: null
-    }
+      plan: null,
+      numberDaysLeftTrial: null
+    };
   },
   mounted() {
     this.fetchData();
+
+    if (this.blog.subscription && this.blog.subscription.trialEnd) {
+      this.numberDaysLeftTrial = Math.round(
+        (new Date(this.blog.subscription.trialEnd) - new Date()) /
+        (1000 * 60 * 60 * 24)
+      );
+    }
   },
   methods: {
     async fetchData() {
-      this.plan = await getPlan(this.blog.subscription || process.env.VUE_APP_STRIPE_FREE_TRIAL_ID);
+      if (this.blog.subscription) {
+        this.plan = await getPlan(this.blog.subscription.planId);
+      }
     }
   }
 };

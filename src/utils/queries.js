@@ -52,7 +52,11 @@ export const FullBlogFragment = gql`
     name
     updatedAt
     createdAt
-    subscription
+    subscription {
+      id
+      planId
+      trialEnd
+    }
     url
     webhooks {
       name
@@ -224,11 +228,11 @@ export const deleteBlogMutation = gql`
 /**
  * We need to know if this is the first post for this blog.
  */
-export const getBlogApiUsageQuery = gql`
-  query getBlogApiUsageQuery($blog: ID!, $from: DateTime!, $to: DateTime!) {
-    apiUsage(blog: $blog, from: $from, to: $to) {
+export const getBlogResourcesUseQuery = gql`
+  query getBlogResourcesUseQuery($blog: ID!, $from: DateTime!, $to: DateTime!) {
+    resourcesUse(blog: $blog, from: $from, to: $to) {
       count
-      countTotal
+      size
     }
   }
 `;
@@ -260,21 +264,23 @@ export const createStripeCheckoutSessionMutation = gql`
 export const getPlansQuery = gql`
   query getPlansQuery {
     plans {
-      planId
-      planAmount
+      id
+      amount
+      amountTaxes
+      metadata
       productName
-      productMetadata
     }
   }
 `;
 
 export const getPlanQuery = gql`
-  query getPlanQuery($planId: String!) {
+  query getPlanQuery($planId: String) {
     plan(planId: $planId) {
-      planId
-      planAmount
+      id
+      amount
+      amountTaxes
+      metadata
       productName
-      productMetadata
     }
   }
 `;

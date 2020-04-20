@@ -123,7 +123,7 @@ export function getUser() {
       return result.data.me;
     })
     .catch(e => {
-      console.log("MERDE", e);
+      console.log("User login error", e);
     });
 }
 
