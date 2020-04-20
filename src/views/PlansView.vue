@@ -115,6 +115,7 @@
     <ChangePlanModal
       :show="changePlanModal.show"
       :plan="changePlanModal.plan"
+      @showUpdate="(value) => changePlanModal.show = value"
       @changePlan="changePlan"
     />
   </DefaultLayout>

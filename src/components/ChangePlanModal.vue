@@ -1,5 +1,5 @@
 <template>
-  <BulmaModal v-model="show">
+  <BulmaModal v-model="modalShow">
     <template #title>
       <div class="has-text-centered">
         {{ $t("components.changePlanModal.title") }}
@@ -39,6 +39,19 @@ export default {
     plan: {
       type: Object,
       required: true
+    }
+  },
+  data() {
+    return {
+      modalShow: this.show
+    }
+  },
+  watch: {
+    show: function(value) {
+      this.modalShow = value;
+    },
+    modalShow: function(value) {
+      this.$emit("showUpdate", value);
     }
   },
   methods: {
