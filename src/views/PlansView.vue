@@ -83,7 +83,7 @@
                 </div>
                 <button
                   @click="onSubscribeClick(plan)"
-                  class="button is-primary button-subscribe"
+                  class="button is-primary"
                   v-if="!isPlanSubscribed(plan.id)"
                 >
                   {{ $t("global.subscribeButton") }}
