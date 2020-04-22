@@ -4,3 +4,6 @@
 // overrides some bulma css rules, that we cannot override with bulma variables.
 @import "./_bulma-overrides.scss";
 @import "./_global.scss";
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
