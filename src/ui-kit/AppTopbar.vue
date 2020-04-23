@@ -26,7 +26,7 @@
         -->
       </portal-target>
 
-      <Button
+      <AppButton
         size="small"
         v-if="apiHelpIsVisible()"
         @click="onApiClick"
@@ -36,17 +36,17 @@
           src="/images/graphql.svg"
         />
         <span>API</span>
-      </Button>
+      </AppButton>
     </div>
   </div>
 </template>
 
 <script>
-import Button from "@/ui-kit/Button";
+import AppButton from "@/ui-kit/AppButton";
 
 export default {
   components: {
-    Button
+    AppButton
   },
   methods: {
     onLogoClick() {
