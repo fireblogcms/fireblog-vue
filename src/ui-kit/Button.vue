@@ -1,6 +1,13 @@
 <template>
   <button
-    class="py-3 px-6 text-2xl border-2 border-solid rounded-md"
+    class="flex items-center border-2 border-solid rounded-md focus:outline-none focus:shadow-outline"
+    :class="{
+      'py-3 px-6 text-2xl': size === '',
+      'py-1 px-4 text-xl': size === 'small',
+      'bg-white border-transparent': type === '',
+      'bg-primary border-primary text-white hover:bg-primary-darker hover:border-primary-darker active:bg-primary-dark active:border-primary-dark': type === 'primary',
+      'bg-white border-primary text-primary hover:border-primary-darker hover:text-primary-darker active:border-primary-dark active:text-primary-dark': type === 'primary-outlined'
+    }"
     @click="onClick"
   >
     <slot></slot>
@@ -9,6 +16,16 @@
 
 <script>
 export default {
+  props: {
+    type: {
+      type: String,
+      default: ""
+    },
+    size: {
+      type: String,
+      default: ""
+    }
+  },
   methods: {
     onClick() {
       this.$emit("click");
@@ -16,26 +33,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.btn-primary {
-  @apply bg-primary border-primary text-white;
-}
-.btn-primary:active,
-.btn-primary:hover {
-  @apply bg-primary-darker border-primary-darker;
-}
-.btn-primary:focus {
-  @apply outline-none;
-}
-.btn-primary-outlined {
-  @apply border-primary text-primary;
-}
-.btn-primary-outlined:active,
-.btn-primary-outlined:hover {
-  @apply border-primary-darker text-primary-darker;
-}
-.btn-primary-outlined:focus {
-  @apply outline-none;
-}
-</style>

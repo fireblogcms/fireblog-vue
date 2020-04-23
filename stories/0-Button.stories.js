@@ -1,6 +1,6 @@
 import { action } from "@storybook/addon-actions";
 import "../.storybook/utils.css";
-import Button from "../src/ui-kit/Button";
+import Button from "@/ui-kit/Button";
 
 export default {
   title: "Button",
@@ -13,15 +13,21 @@ export const Default = () => ({
   methods: { action: action("clicked") }
 });
 
+export const DefaultSmall = () => ({
+  components: { Button },
+  template: '<Button size="small" @click="action">Default small</Button>',
+  methods: { action: action("clicked") }
+});
+
 export const Primary = () => ({
   components: { Button },
-  template: '<Button class="btn-primary" @click="action">Primary</Button>',
+  template: '<Button type="primary" @click="action">Primary</Button>',
   methods: { action: action("clicked") }
 });
 
 export const PrimaryOutlined = () => ({
   components: { Button },
   template:
-    '<Button class="btn-primary-outlined" @click="action">Primary Outlined</Button>',
+    '<Button type="primary-outlined" @click="action">Primary Outlined</Button>',
   methods: { action: action("clicked") }
 });

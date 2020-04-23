@@ -1,16 +1,18 @@
 <template>
   <div id="default-layout">
-    <AppTopBar v-show="TopbarIsVisible()" />
+    <AppTopbar v-show="TopbarIsVisible()" />
     <slot />
   </div>
 </template>
 
 <script>
 import AppTopBar from "@/components/AppTopBar";
+import AppTopbar from "@/ui-kit/AppTopbar";
 
 export default {
   components: {
-    AppTopBar
+    // AppTopBar,
+    AppTopbar
   },
   methods: {
     TopbarIsVisible() {
