@@ -20,7 +20,7 @@ export default {
   "components.planInformations.freeTrial": "free trial:",
   "components.planInformations.daysLeftTrial": "days left",
   "components.changePlanModal.title": "Subscribe to another plan",
-  "components.changePlanModal.body": "You are about to change your current plan for {planName} for an amount of {planAmount} € per month. If you proceed, you will receive an email with the new invoice.",
+  "components.changePlanModal.body": "You are about to change your current plan for {planName} for an amount of {planAmount} € per month. You will receive an email with the new invoice.",
   "global.close": "Close",
   "global.deleted": "Deleted",
   "global.draft": "Draft",

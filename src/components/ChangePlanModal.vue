@@ -7,17 +7,16 @@
     </template>
     <template #body>
       <div class="has-text-centered">
-        {{ $t("components.changePlanModal.body", {
-          planName: plan.productName,
-          planAmount: (parseInt(plan.amountTaxes) / 100).toFixed(2)
-        }) }}
+        {{
+          $t("components.changePlanModal.body", {
+            planName: plan.productName,
+            planAmount: (parseInt(plan.amountTaxes) / 100).toFixed(2)
+          })
+        }}
       </div>
     </template>
     <template class="has-text-centered" #footer>
-      <button
-        @click="changePlan"
-        class="button is-primary is-large"
-      >
+      <button @click="changePlan" class="button is-primary is-large">
         {{ $t("global.subscribeButton") }}
       </button>
     </template>
@@ -44,7 +43,7 @@ export default {
   data() {
     return {
       modalShow: this.show
-    }
+    };
   },
   watch: {
     show: function(value) {
@@ -59,5 +58,5 @@ export default {
       this.$emit("changePlan", this.plan);
     }
   }
-}
+};
 </script>

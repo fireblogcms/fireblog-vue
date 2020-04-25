@@ -20,7 +20,7 @@ export default {
   "components.planInformations.freeTrial": "essai gratuit :",
   "components.planInformations.daysLeftTrial": "jours restants",
   "components.changePlanModal.title": "S'abonner à un autre plan",
-  "components.changePlanModal.body": "Vous êtes sur le point de changer votre plan actuel pour {planName} pour un montant de {planAmount} € par mois. Si vous procédez, vous recevrez un e-mail avec la nouvelle facture.",
+  "components.changePlanModal.body": "Vous êtes sur le point de changer votre plan actuel pour {planName} pour un montant de {planAmount} € par mois. Vous recevrez un e-mail avec la nouvelle facture.",
   "global.close": "Fermer",
   "global.deleted": "Supprimé",
   "global.draft": "Brouillon",
