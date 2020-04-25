@@ -229,12 +229,6 @@ export default {
           throw new Error(error);
         });
     },
-<<<<<<< HEAD
-    onContactUsClick() {
-      $crisp.push(["do", "chat:open"]);
-    },
-=======
->>>>>>> master
     async fetchData() {
       this.blog = await getBlog(this.$route.params.blogId);
       if (this.blog.subscription.trialEnd) {
