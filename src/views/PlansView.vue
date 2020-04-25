@@ -121,10 +121,7 @@ import DefaultLayout from "../layouts/DefaultLayout";
 import IconBack from "../components/IconBack";
 import ChangePlanModal from "../components/ChangePlanModal";
 import apolloClient from "../utils/apolloClient";
-import {
-  getPlansQuery,
-  updateBlogMutation
-} from "../utils/queries";
+import { getPlansQuery, updateBlogMutation } from "../utils/queries";
 import { ContentLoader } from "vue-content-loader";
 import {
   getBlog,
@@ -149,13 +146,7 @@ export default {
       changePlanModal: {
         show: false,
         plan: {}
-<<<<<<< HEAD
-      },
-      isChangePlanAvailable:
-        process.env.VUE_APP_CHANGE_PLAN_AVAILABLE === "true"
-=======
       }
->>>>>>> master
     };
   },
   created() {
