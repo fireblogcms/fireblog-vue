@@ -38,17 +38,9 @@
           <p class="has-text-weight-bold">
             {{ $t("views.plans.introduction") }}
           </p>
-          <p>✔️ {{ $t("views.plans.webhooks") }}</p>
-          <p>✔️ {{ $t("views.plans.editor") }}</p>
-          <p>
-            ✔️ {{ $t("views.plans.gatsbyFirst") }}
-            <a
-              target="_blank"
-              href="https://github.com/fireblogcms/gatsby-starter-fireblog"
-              >Gatsby starter theme</a
-            >
-            {{ $t("views.plans.gatsbySecond") }}
-          </p>
+          <p>✔️ {{ $t("views.plans.benefices.webhooks") }}</p>
+          <p>✔️ {{ $t("views.plans.benefices.editor") }}</p>
+          <p>✔️ <span v-html="$t('views.plans.benefices.gatsby')" /></p>
         </div>
         <div class="columns has-text-centered">
           <template v-if="plans.length > 0">
