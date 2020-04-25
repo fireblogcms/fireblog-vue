@@ -67,31 +67,26 @@
                   {{ (parseInt(plan.amountTaxes) / 100).toFixed(2) }}
                   {{ $t("views.plans.eurosPerMonth") }}
                 </p>
-                <p class="has-text-weight-bold">
-                  {{ $t("views.plans.includes") }}
-                </p>
-                <p>
-                  {{ plan.metadata.API_CALLS_MONTH }}
-                  {{ $t("views.plans.apiCalls") }}
-                </p>
-                <p>
-                  {{ plan.metadata.STORAGE_GB }} 
-                  {{ $t("views.plans.storageUnitGB") }} 
-                  {{ $t("views.plans.storage") }}
-                </p>
+                <div class="plan-data">
+                  <p class="has-text-weight-bold">
+                    {{ $t("views.plans.includes") }}
+                  </p>
+                  <p>
+                    {{ plan.metadata.API_CALLS_MONTH }}
+                    {{ $t("views.plans.apiCalls") }}
+                  </p>
+                  <p>
+                    {{ plan.metadata.STORAGE_GB }}
+                    {{ $t("views.plans.storageUnitGB") }}
+                    {{ $t("views.plans.storage") }}
+                  </p>
+                </div>
                 <button
                   @click="onSubscribeClick(plan)"
-                  class="button is-primary button-subscribe"
-                  v-if="isChangePlanAvailable && !isPlanSubscribed(plan.id)"
+                  class="button is-primary"
+                  v-if="!isPlanSubscribed(plan.id)"
                 >
                   {{ $t("global.subscribeButton") }}
-                </button>
-                <button
-                  @click="onContactUsClick()"
-                  class="button is-primary button-subscribe"
-                  v-if="!isChangePlanAvailable && !isPlanSubscribed(plan.id)"
-                >
-                  {{ $t("global.contactUsButton") }}
                 </button>
               </div>
             </div>
@@ -115,7 +110,7 @@
     <ChangePlanModal
       :show="changePlanModal.show"
       :plan="changePlanModal.plan"
-      @showUpdate="(value) => changePlanModal.show = value"
+      @showUpdate="value => (changePlanModal.show = value)"
       @changePlan="changePlan"
     />
   </DefaultLayout>
@@ -154,9 +149,13 @@ export default {
       changePlanModal: {
         show: false,
         plan: {}
+<<<<<<< HEAD
       },
       isChangePlanAvailable:
         process.env.VUE_APP_CHANGE_PLAN_AVAILABLE === "true"
+=======
+      }
+>>>>>>> master
     };
   },
   created() {
@@ -230,9 +229,12 @@ export default {
           throw new Error(error);
         });
     },
+<<<<<<< HEAD
     onContactUsClick() {
       $crisp.push(["do", "chat:open"]);
     },
+=======
+>>>>>>> master
     async fetchData() {
       this.blog = await getBlog(this.$route.params.blogId);
       if (this.blog.subscription.trialEnd) {
@@ -279,7 +281,7 @@ export default {
 .box-subscribed-plan {
   border-color: $primary;
 }
-.button-subscribe {
-  margin-top: 2rem;
+.plan-data {
+  margin-bottom: 2rem;
 }
 </style>

@@ -1,24 +1,34 @@
 <template>
   <DefaultLayout>
-    <AppLoader v-if="initDataState === 'PENDING'">Loading profile</AppLoader>
-    <AppPanel v-if="initDataState === 'FINISHED_OK'" class="container section is-small">
-      <div style="padding:40px" class="has-text-centered">
-        <div class="col-md-2">
-          <img
-            style="border-radius:200px;"
-            width="200"
-            :src="me.picture"
-            alt="User's profile picture"
-          />
+    <div class="container is-small">
+      <template v-if="initDataState === 'PENDING'">
+        <AppLoader>Loading profile</AppLoader>
+      </template>
+      <template v-if="initDataState === 'FINISHED_OK'">
+        <div class="section">
+          <AppPanel>
+            <div class="section">
+              <div class="content has-text-centered">
+                <div class="column">
+                  <img
+                    style="border-radius:200px;"
+                    width="200"
+                    :src="me.picture"
+                    alt="User's profile picture"
+                  />
+                </div>
+                <div class="column">
+                  <div class="content">
+                    <h2>name: {{ me.name }}</h2>
+                    <p>email: {{ me.email }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </AppPanel>
         </div>
-        <div class="column">
-          <div class="content">
-            <h2>name: {{ me.name }}</h2>
-            <p>email: {{ me.email }}</p>
-          </div>
-        </div>
-      </div>
-    </AppPanel>
+      </template>
+    </div>
   </DefaultLayout>
 </template>
 
