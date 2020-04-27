@@ -39,7 +39,7 @@
           <span>API</span>
         </AppButton>
 
-        <div v-if="me" class="relative cursor-pointer">
+        <div v-if="me" class="relative cursor-pointer ml-6">
           <div @click="dropdownMenuActive = !dropdownMenuActive" >
             <img
               v-if="me.picture"
@@ -90,8 +90,11 @@
     </div>
 
     <!-- GRAPHQL API DOCUMENTATION -->
-    <Modal :showing="false" @close="showModal = false">
-      <div>TEST</div>
+    <Modal :showing="showingApiModal" @close="showingApiModal = false">
+      <div slot="header">
+        <span class="text-4xl font-bold">API</span>
+      </div>
+      <div slot="body"></div>
       <!-- <template #title>
         <span class="title is-2">API</span>
         <a
@@ -102,7 +105,7 @@
         <button
           :href="blogApiUrl"
           target="_blank"
-          @click="showApiModal = false"
+          @click="showingApiModal = false"
           class="button is-pulled-right"
           style="margin-right:20px;"
         >{{ $t("global.close") }}</button>
@@ -142,9 +145,11 @@
 import AppButton from "@/ui-kit/AppButton";
 import Modal from "@/ui-kit/Modal";
 import {
+  getBlog,
   getUser,
   toast
 } from "../utils/helpers";
+import apiExamples from "../apiExamples";
 
 export default {
   components: {
@@ -154,7 +159,9 @@ export default {
   data() {
     return {
       dropdownMenuActive: false,
-      me: null
+      me: null,
+      showingApiModal: false,
+      apiModalExampleList: []
     }
   },
   mounted() {
@@ -169,7 +176,6 @@ export default {
     async initData() {
       getUser()
         .then(user => {
-          console.log("ME", user);
           this.me = user;
         })
         .catch(error => {
@@ -188,24 +194,24 @@ export default {
       return false;
     },
     async onApiClick() {
-      // const context = {
-      //   slug: "{{POST_SLUG}}",
-      //   locale: navigator.language || navigator.userLanguage
-      // };
-      // if (this.$route.name === "postList") {
-      //   const blog = await getBlog(this.$route.params.blogId);
-      //   context.locale = blog.contentDefaultLocale;
-      // }
-      // if (this.$route.name === "postUpdate") {
-      //   const [blog, post] = await Promise.all([
-      //     getBlog(this.$route.params.blogId),
-      //     getPost(this.$route.params.postId)
-      //   ]);
-      //   context.locale = blog.contentDefaultLocale;
-      //   context.slug = post.slug;
-      // }
-      // this.apiModalExampleList = apiExamples(context);
-      // this.showApiModal = true;
+      const context = {
+        slug: "{{POST_SLUG}}",
+        locale: navigator.language || navigator.userLanguage
+      };
+      if (this.$route.name === "postList") {
+        const blog = await getBlog(this.$route.params.blogId);
+        context.locale = blog.contentDefaultLocale;
+      }
+      if (this.$route.name === "postUpdate") {
+        const [blog, post] = await Promise.all([
+          getBlog(this.$route.params.blogId),
+          getPost(this.$route.params.postId)
+        ]);
+        context.locale = blog.contentDefaultLocale;
+        context.slug = post.slug;
+      }
+      this.apiModalExampleList = apiExamples(context);
+      this.showingApiModal = true;
     }
   }
 }
