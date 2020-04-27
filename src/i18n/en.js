@@ -30,6 +30,7 @@ export default {
   "global.subscribeButton": "Subscribe",
   "global.changePlanButton": "Change plan",
   "global.contactUsButton": "Contact us",
+  "topbar.accountMenu.myBlogs": "My blogs",
   "topbar.accountMenu.myAccount": "My account",
   "topbar.accountMenu.logout": "Logout",
   "views.blogCreate.cancelButton": "Cancel",

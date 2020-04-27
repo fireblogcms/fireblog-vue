@@ -12,6 +12,9 @@ module.exports = {
         secondary: {
           default: "#ffdd57"
         }
+      },
+      minWidth: {
+        "15": "15rem"
       }
     }
   },
