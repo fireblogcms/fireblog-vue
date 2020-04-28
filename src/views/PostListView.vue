@@ -2,7 +2,7 @@
   <DefaultLayout>
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
-      <Breadcrumb
+      <AppBreadcrumb
         image="/images/books.webp"
         link="blogList"
         :name="$t('views.postList.backToBlogLink')"
@@ -183,7 +183,7 @@
 </template>
 
 <script>
-import Breadcrumb from "@/ui-kit/Breadcrumb";
+import AppBreadcrumb from "@/ui-kit/AppBreadcrumb";
 import apolloClient from "../utils/apolloClient";
 import DefaultLayout from "../layouts/DefaultLayout";
 import gql from "graphql-tag";
@@ -204,7 +204,7 @@ export default {
   components: {
     AppLoader,
     AppPanel,
-    Breadcrumb,
+    AppBreadcrumb,
     BulmaModal,
     PostListPane,
     DefaultLayout

@@ -90,7 +90,7 @@
     </div>
 
     <!-- GRAPHQL API DOCUMENTATION -->
-    <Modal :showing="showingApiModal" @close="showingApiModal = false">
+    <AppModal :showing="showingApiModal" @close="showingApiModal = false">
       <div class="flex items-center justify-between flex-1" slot="header">
         <span class="text-4xl font-bold">API</span>
           <a
@@ -125,14 +125,14 @@
             <pre class="locale-graphql"><code>{{example.snippet}}</code></pre>
           </div>
       </div>
-    </Modal>
+    </AppModal>
   </div>
 </template>
 
 <script>
 import AppButton from "@/ui-kit/AppButton";
 import AppInput from "@/ui-kit/AppInput";
-import Modal from "@/ui-kit/Modal";
+import AppModal from "@/ui-kit/AppModal";
 import {
   getBlog,
   getUser,
@@ -144,7 +144,7 @@ export default {
   components: {
     AppButton,
     AppInput,
-    Modal
+    AppModal
   },
   data() {
     return {

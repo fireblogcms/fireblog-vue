@@ -16,73 +16,54 @@
     <template
       v-if="initDataState === 'FINISHED_OK' && blogs && blogs.edges.length > 0"
     >
-      <div class="container">
-        <div>
-          <header style="padding: 0 1rem 2rem 1rem">
-            <div class="columns">
-              <div class="column">
-                <h1
-                  style="padding-bottom:2rem;"
-                  class="title is-2 is-uppercase"
-                >
-                  <img
-                    height="70"
-                    style="position:relative;top:25px;padding-right:1rem"
-                    src="/images/books-icon.png"
-                  />
-                  {{ $t("views.blogList.title") }}
-                </h1>
-              </div>
-              <div class="column">
-                <button
-                  class="button is-primary is-box-shadowed is-large main-call-to-action"
-                  @click="$router.push({ name: 'blogCreate' })"
-                >
-                  <!--<img width="40" style="margin-right:10px" src="/images/book.png" />-->
-                  {{ $t("views.blogList.createNewBlogButton").toUpperCase() }}
-                </button>
+      <div class="mx-20">
+        <div class="flex items-center justify-between py-12">
+          <div class="flex items-center">
+            <img
+              class="w-16 h-16 mr-10"
+              src="/images/books-icon.png"
+            />
+            <h1 class="text-5xl font-bold uppercase">{{ $t("views.blogList.title") }}</h1>
+          </div>
+          <AppButton
+            type="primary"
+            @click="$router.push({ name: 'blogCreate' })"
+          >
+            {{ $t("views.blogList.createNewBlogButton").toUpperCase() }}
+          </AppButton>
+        </div>
+        <div class="flex flex-col items-center py-10">
+          <div
+            v-for="(edge, index) in blogs.edges"
+            class="card w-8/12"
+            :key="edge.node._id"
+          >
+            <div
+              class="card-image"
+              :style="blogCardStyles(edge, index)"
+              @click="onRowClick(edge, $event)"
+            >
+              <div class="blog-infos">
+                <h2 class="title">{{ edge.node.name }}</h2>
+                <h3 class="subtitle" v-if="edge.node.description">
+                  {{ edge.node.description }}
+                </h3>
               </div>
             </div>
-          </header>
-          <div class="container">
-            <div class="columns">
-              <div
-                class="column is-three-fifths is-offset-one-fifth centered-column"
+            <div class="card-content">
+              <PlanInformations :blog="edge.node"></PlanInformations>
+              <button
+                v-if="
+                  edge.node.subscription &&
+                    edge.node.subscription.trialEnd
+                "
+                class="button is-box-shadowed is-large"
+                @click="onSubscribeClick(edge.node, $event)"
               >
-                <div
-                  v-for="(edge, index) in blogs.edges"
-                  class="card"
-                  :key="edge.node._id"
-                >
-                  <div
-                    class="card-image"
-                    :style="blogCardStyles(edge, index)"
-                    @click="onRowClick(edge, $event)"
-                  >
-                    <div class="blog-infos">
-                      <h2 class="title">{{ edge.node.name }}</h2>
-                      <h3 class="subtitle" v-if="edge.node.description">
-                        {{ edge.node.description }}
-                      </h3>
-                    </div>
-                  </div>
-                  <div class="card-content">
-                    <PlanInformations :blog="edge.node"></PlanInformations>
-                    <button
-                      v-if="
-                        edge.node.subscription &&
-                          edge.node.subscription.trialEnd
-                      "
-                      class="button is-box-shadowed is-large"
-                      @click="onSubscribeClick(edge.node, $event)"
-                    >
-                      <span>
-                        {{ $t("global.subscribeButton").toUpperCase() }}
-                      </span>
-                    </button>
-                  </div>
-                </div>
-              </div>
+                <span>
+                  {{ $t("global.subscribeButton").toUpperCase() }}
+                </span>
+              </button>
             </div>
           </div>
         </div>
@@ -92,6 +73,7 @@
 </template>
 
 <script>
+import AppButton from "@/ui-kit/AppButton";
 import apolloClient from "../utils/apolloClient";
 import BlogCreateForm from "../components/BlogCreateForm";
 import DefaultLayout from "../layouts/DefaultLayout";
@@ -105,6 +87,7 @@ import PlanInformations from "../components/PlanInformations";
 
 export default {
   components: {
+    AppButton,
     DefaultLayout,
     BlogCreateForm,
     AppLoader,
