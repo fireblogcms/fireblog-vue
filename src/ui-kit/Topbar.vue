@@ -148,10 +148,10 @@ export default {
   },
   data() {
     return {
+      apiModalExampleList: [],
       dropdownMenuActive: false,
       me: null,
-      showingApiModal: false,
-      apiModalExampleList: []
+      showingApiModal: false
     }
   },
   computed: {

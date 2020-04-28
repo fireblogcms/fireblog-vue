@@ -36,8 +36,8 @@ export default {
   },
   props: {
     showing: {
-      required: true,
-      type: Boolean
+      type: Boolean,
+      required: true
     }
   },
   methods: {
@@ -49,12 +49,12 @@ export default {
 </script>
 
 <style>
-  .fade-enter-active,
-  .fade-leave-active {
-    transition: all 0.4s;
-  }
-  .fade-enter,
-  .fade-leave-to {
-    opacity: 0;
-  }
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.4s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
 </style>

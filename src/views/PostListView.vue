@@ -2,17 +2,11 @@
   <DefaultLayout>
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
-      <span class="item tag is-large">
-        <router-link class="item" :to="{ name: 'blogList' }">
-          <img
-            class="is-hidden-mobile"
-            style="position:relative;height:20px !important;top:4px;"
-            src="/images/books.webp"
-          />
-          <IconBack />
-          {{ $t("views.postList.backToBlogLink") }}
-        </router-link>
-      </span>
+      <Breadcrumb
+        image="/images/books.webp"
+        link="blogList"
+        :name="$t('views.postList.backToBlogLink')"
+      />
     </portal>
     <!-- END TOPBAR LEFT BUTTONS -->
 
@@ -189,9 +183,9 @@
 </template>
 
 <script>
+import Breadcrumb from "@/ui-kit/Breadcrumb";
 import apolloClient from "../utils/apolloClient";
 import DefaultLayout from "../layouts/DefaultLayout";
-import IconBack from "../components/IconBack";
 import gql from "graphql-tag";
 import AppLoader from "../components/AppLoader";
 import { REQUEST_STATE, toast } from "../utils/helpers";
@@ -210,8 +204,8 @@ export default {
   components: {
     AppLoader,
     AppPanel,
+    Breadcrumb,
     BulmaModal,
-    IconBack,
     PostListPane,
     DefaultLayout
   },
