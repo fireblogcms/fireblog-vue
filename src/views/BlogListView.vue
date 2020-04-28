@@ -32,40 +32,37 @@
             {{ $t("views.blogList.createNewBlogButton").toUpperCase() }}
           </AppButton>
         </div>
-        <div class="flex flex-col items-center py-10">
-          <div
-            v-for="(edge, index) in blogs.edges"
-            class="card w-8/12"
+        <div class="pt-10 flex flex-col items-center">
+          <AppCard
+            v-for="edge in blogs.edges"
             :key="edge.node._id"
+            class="mb-16"
           >
             <div
-              class="card-image"
-              :style="blogCardStyles(edge, index)"
+              class="h-64 flex items-center cursor-pointer bg-cover bg-center"
+              :style="blogCardStyle(edge)"
               @click="onRowClick(edge, $event)"
             >
-              <div class="blog-infos">
-                <h2 class="title">{{ edge.node.name }}</h2>
-                <h3 class="subtitle" v-if="edge.node.description">
+              <div class="w-full text-center text-white py-2 bg-blackOpacity50">
+                <p class="text-3xl font-bold">{{ edge.node.name }}</p>
+                <p class="text-xl italic" v-if="edge.node.description">
                   {{ edge.node.description }}
-                </h3>
+                </p>
               </div>
             </div>
-            <div class="card-content">
+            <div class="p-6 flex items-center justify-between">
               <PlanInformations :blog="edge.node"></PlanInformations>
-              <button
-                v-if="
-                  edge.node.subscription &&
-                    edge.node.subscription.trialEnd
-                "
-                class="button is-box-shadowed is-large"
+              <AppButton
+                type="primary-outlined"
+                v-if="edge.node.subscription.trialEnd"
                 @click="onSubscribeClick(edge.node, $event)"
               >
                 <span>
                   {{ $t("global.subscribeButton").toUpperCase() }}
                 </span>
-              </button>
+              </AppButton>
             </div>
-          </div>
+          </AppCard>
         </div>
       </div>
     </template>
@@ -74,6 +71,7 @@
 
 <script>
 import AppButton from "@/ui-kit/AppButton";
+import AppCard from "@/ui-kit/AppCard";
 import apolloClient from "../utils/apolloClient";
 import BlogCreateForm from "../components/BlogCreateForm";
 import DefaultLayout from "../layouts/DefaultLayout";
@@ -88,6 +86,7 @@ import PlanInformations from "../components/PlanInformations";
 export default {
   components: {
     AppButton,
+    AppCard,
     DefaultLayout,
     BlogCreateForm,
     AppLoader,
@@ -111,17 +110,14 @@ export default {
           throw new Error(error);
         });
     },
-    blogCardStyles(edge, index) {
-      const styles = {
-        backgroundSize: "cover",
-        backgroundPosition: "center"
-      };
+    blogCardStyle(edge) {
+      const style = {};
       if (edge.node.image) {
-        styles.backgroundImage = `url(${edge.node.image})`;
+        style.backgroundImage = `url(${edge.node.image})`;
       } else {
-        styles.background = gradient(edge.node._id);
+        style.background = gradient(edge.node._id);
       }
-      return styles;
+      return style;
     },
     buildLinkToPostList(item) {
       return { name: "postList", params: { blogId: item.node._id } };
@@ -158,71 +154,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.main-call-to-action {
-  float: right;
-  margin-top: 30px;
-}
-
-@media screen and (max-width: 768px) {
-  .main-call-to-action {
-    float: none;
-    margin-top: 0px;
-  }
-}
-
-.centered-column {
-  padding-bottom: 5rem;
-}
-
-.card-image {
-  min-height: 20rem;
-  position: relative;
-  cursor: pointer;
-}
-
-.card-image .blog-infos {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 0.7rem;
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
-}
-
-.blog-infos .title,
-.blog-infos .subtitle {
-  color: white;
-}
-
-.blog-infos .subtitle {
-  font-style: italic;
-}
-
-.card {
-  border-radius: 5px;
-  margin-bottom: 40px;
-}
-
-.card-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-@media screen and (max-width: 768px) {
-  .card-content {
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .card-content button {
-    margin-top: 2rem;
-  }
-}
-</style>

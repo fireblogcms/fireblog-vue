@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p class="plan-name has-text-weight-bold" v-if="plan">
+    <p class="mb-4 font-bold" v-if="plan">
       {{ $t("components.planInformations.name") }}
       {{ plan.productName }}
       <template v-if="blog.subscription.trialEnd">
@@ -55,9 +55,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.plan-name {
-  margin: 0 0 1rem 0;
-}
-</style>

@@ -11,10 +11,14 @@ module.exports = {
         },
         secondary: {
           default: "#ffdd57"
+        },
+        blackOpacity50: {
+          default: "rgba(0, 0, 0, .5)"
         }
       },
       minWidth: {
-        "15": "15rem"
+        "15": "15rem",
+        "6/10": "60%"
       },
       maxHeight: {
         "9/10": "90vh"

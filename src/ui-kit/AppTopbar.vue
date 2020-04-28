@@ -29,7 +29,7 @@
 
         <AppButton
           size="small"
-          v-if="apiHelpIsVisible()"
+          v-if="isApiHelpVisible()"
           @click="onApiClick"
         >
           <img
@@ -183,7 +183,7 @@ export default {
     onLogoClick() {
       this.$router.push("/");
     },
-    apiHelpIsVisible() {
+    isApiHelpVisible() {
       const authorizedNames = ["postList", "postUpdate", "postCreate"];
       if (authorizedNames.includes(this.$route.name)) {
         return true;
