@@ -3,7 +3,7 @@ export default {
   "apiModal.getAllPublishedPosts": "Get all published posts",
   "apiModal.getASinglePostBySlug": "Get a single post by slug",
   "apiModal.getBlogInformations": "Get blog informations",
-  "apiModal.openGraphQLExplorer": "open GraphQL Explorer",
+  "apiModal.openGraphQLExplorer": "Open GraphQL Explorer",
   "apiModal.title": "API GraphQL",
   "apiModal.tryItButton": "Try it!",
   "components.slugField.errors.invalidCharacters": "Slug can only contains minuscules and '-' characters.",

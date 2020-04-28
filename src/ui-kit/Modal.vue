@@ -1,5 +1,5 @@
 <template>
-  <transition name="fade">
+  <Transition name="fade">
     <div v-if="showing">
       <div class="fixed inset-0 w-full h-screen bg-white opacity-50"></div>
       <div
@@ -7,23 +7,33 @@
         @click.self="close"
       >
         <div class="w-1/2 bg-white shadow-lg rounded-lg">
-          <div class="p-6 border-b-2 border-gray-300">
+          <div class="p-6 flex justify-between">
             <slot name="header" />
+            <AppButton
+              aria-label="close"
+              size="small"
+              class="ml-4"
+              @click="close"
+            >
+              ×
+            </AppButton>
           </div>
           <div class="p-6">
             <slot name="body" />
           </div>
-          <div class="p-6">
-            <slot name="footer" />
-          </div>
         </div>
       </div>
     </div>
-  </transition>
+  </Transition>
 </template>
 
 <script>
+import AppButton from "@/ui-kit/AppButton";
+
 export default {
+  components: {
+    AppButton
+  },
   props: {
     showing: {
       required: true,

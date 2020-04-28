@@ -91,10 +91,19 @@
 
     <!-- GRAPHQL API DOCUMENTATION -->
     <Modal :showing="showingApiModal" @close="showingApiModal = false">
-      <div slot="header">
+      <div class="flex items-center justify-between flex-1" slot="header">
         <span class="text-4xl font-bold">API</span>
+          <a
+            :href="blogApiUrl" 
+            target="_blank"
+            class="hover:text-current"
+          >
+            <AppButton type="primary" size="small">
+              {{ $t("apiModal.openGraphQLExplorer") }}
+            </AppButton>
+          </a>
       </div>
-      <div slot="body"></div>
+      <!-- <div slot="body"></div> -->
       <!-- <template #title>
         <span class="title is-2">API</span>
         <a
@@ -162,6 +171,13 @@ export default {
       me: null,
       showingApiModal: false,
       apiModalExampleList: []
+    }
+  },
+  computed: {
+    blogApiUrl() {
+      return `${process.env.VUE_APP_GRAPHQL_POD_BASE_URL}/${
+        this.$route.params.blogId
+      }`;
     }
   },
   mounted() {
