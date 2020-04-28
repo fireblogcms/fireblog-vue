@@ -103,55 +103,35 @@
             </AppButton>
           </a>
       </div>
-      <!-- <div slot="body"></div> -->
-      <!-- <template #title>
-        <span class="title is-2">API</span>
-        <a
-          :href="blogApiUrl"
-          target="_blank"
-          class="button is-primary is-pulled-right"
-        >{{ $t("apiModal.openGraphQLExplorer") }}</a>
-        <button
-          :href="blogApiUrl"
-          target="_blank"
-          @click="showingApiModal = false"
-          class="button is-pulled-right"
-          style="margin-right:20px;"
-        >{{ $t("global.close") }}</button>
-      </template>
-      <template #body>
-        <div class="container">
-          <h2 class="title is-4">GraphQL endpoint</h2>
-          <div class="field">
-            <div class="control">
-              <input readonly="true" class="input" type="text" :value="blogApiUrl" />
-            </div>
-          </div>
+      <div slot="body">
+        <p class="text-2xl font-bold mb-4">GraphQL endpoint</p>
+        <AppInput type="text" readonly="true" :value="blogApiUrl" />
           <div
-            ref="apiModal"
             :id="`example-${example.id}`"
             v-for="example in apiModalExampleList"
             :key="example.id"
           >
-            <h2 style="margin-top:20px" class="title is-4">
-              {{ example.label }}
+            <div class="my-4 flex">
+              <span class="text-2xl font-bold mr-4">{{ example.label }}</span>
               <a
-                style="margin-left:10px;position:relative;top:-2px"
                 :href="`${blogApiUrl}?query=${encodeURI(example.snippet)}`"
                 target="_blank"
-                class="button is-info is-outlined"
-              >{{ $t("apiModal.tryItButton") }}</a>
-            </h2>
+              >
+                <AppButton type="primary-outlined" size="small">
+                  {{ $t("apiModal.tryItButton") }}
+                </AppButton>
+              </a>
+            </div>
             <pre class="locale-graphql"><code>{{example.snippet}}</code></pre>
           </div>
-        </div>
-      </template> -->
+      </div>
     </Modal>
   </div>
 </template>
 
 <script>
 import AppButton from "@/ui-kit/AppButton";
+import AppInput from "@/ui-kit/AppInput";
 import Modal from "@/ui-kit/Modal";
 import {
   getBlog,
@@ -163,6 +143,7 @@ import apiExamples from "../apiExamples";
 export default {
   components: {
     AppButton,
+    AppInput,
     Modal
   },
   data() {

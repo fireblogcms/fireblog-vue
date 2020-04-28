@@ -6,8 +6,8 @@
         class="fixed inset-0 w-full h-screen flex items-center justify-center"
         @click.self="close"
       >
-        <div class="w-1/2 bg-white shadow-lg rounded-lg">
-          <div class="p-6 flex justify-between">
+        <div class="w-1/2 max-h-9/10 flex flex-col bg-white shadow-lg rounded-lg">
+          <div class="p-6 flex items-center justify-between">
             <slot name="header" />
             <AppButton
               aria-label="close"
@@ -18,7 +18,7 @@
               ×
             </AppButton>
           </div>
-          <div class="p-6">
+          <div class="p-6 overflow-y-auto">
             <slot name="body" />
           </div>
         </div>
