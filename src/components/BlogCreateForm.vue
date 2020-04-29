@@ -1,85 +1,71 @@
 <template>
-  <div class="blog-create-form section">
+  <div>
     <template v-if="initDataState === 'PENDING'">
       <AppLoader>Loading</AppLoader>
     </template>
 
     <template v-if="initDataState === 'FINISHED_ERROR'">
-      <div class="is-danger">{{ initStateError }}</div>
+      <div class="text-red-600">{{ initStateError }}</div>
     </template>
 
     <template v-if="initDataState === 'FINISHED_OK'">
-      <AppPanel>
-        <div class="section">
-          <div class="content has-text-centered">
-            <!-- special text if this is the very first blog :) -->
-            <template v-if="isMyFirstBlog">
-              <h2>{{$t("views.blogCreate.gladToSeeYouHere")}}, {{ user.name }} 🤗</h2>
-              <h2 style="font-weight:200;">{{$t("views.blogCreate.createFirstBlog")}}</h2>
-            </template>
-
-            <br />
-
-            <div class="field">
-              <div class="label-wrapper">
-                <label class="label is-large">{{$t("views.blogCreate.fields.title.label")}}</label>
-                <p class="help">{{$t("views.blogCreate.fields.title.help")}}</p>
-              </div>
-              <div class="control">
-                <input
-                  v-model="inputs.name"
-                  class="input is-large"
-                  :class="{ 'is-danger': formErrors.name }"
-                  type="text"
-                  maxlength="250"
-                  :placeholder="generate()"
-                />
-              </div>
-              <p class="help is-danger" v-if="formErrors.name">{{ formErrors.name }}</p>
-            </div>
-
-            <div class="field">
-              <div class="control has-text-centered">
-                <div class="label-wrapper">
-                  <label class="label is-large">{{$t("views.blogCreate.fields.description.label")}}</label>
-                  <p class="help">{{$t("views.blogCreate.fields.description.help")}}</p>
-                </div>
-                <textarea
-                  v-model="inputs.description"
-                  class="input is-large textarea"
-                  :class="{ 'is-danger': formErrors.description }"
-                  type="text"
-                  maxlength="250"
-                ></textarea>
-              </div>
-              <p class="help is-danger" v-if="formErrors.description">{{ formErrors.description }}</p>
-            </div>
-
-            <br />
-
-            <div class="buttons are-medium is-centered">
-              <button
-                v-if="!isMyFirstBlog"
-                class="button is-outlined"
-                @click="$router.push('/')"
-              >{{$t("views.blogCreate.cancelButton").toUpperCase()}}</button>
-              <button
-                :disabled="savingBlogState === 'PENDING'"
-                :class="{ 'is-loading': savingBlogState === 'PENDING' }"
-                class="button is-primary"
-                @click="onCreateClick"
-              >{{$t("views.blogCreate.createButton").toUpperCase()}}</button>
-            </div>
-
-            <!-- Any other Bulma elements you want -->
-          </div>
+      <div class="text-center">
+        <!-- special text if this is the very first blog :) -->
+        <div v-if="isMyFirstBlog" class="mb-12">
+          <p class="text-3xl font-bold">{{ $t("views.blogCreate.gladToSeeYouHere") }}, {{ user.name }} 🤗</p>
+          <p class="text-2xl">{{ $t("views.blogCreate.createFirstBlog") }}</p>
         </div>
-      </AppPanel>
+
+        <div>
+          <label class="text-2xl font-bold">{{ $t("views.blogCreate.fields.title.label") }}</label>
+          <p class="text-sm mb-4">{{ $t("views.blogCreate.fields.title.help") }}</p>
+          <AppInput
+            v-model="inputs.name"
+            :error="formErrors.name"
+            type="text"
+            maxlength="250"
+            :placeholder="generate()"
+          />
+        </div>
+
+        <div class="mt-10 mb-16">
+          <label class="text-2xl font-bold">{{ $t("views.blogCreate.fields.description.label") }}</label>
+          <p class="text-sm mb-4">{{ $t("views.blogCreate.fields.description.help") }}</p>
+          <AppTextarea
+            v-model="inputs.description"
+            type="text"
+            maxlength="250"
+          />
+        </div>
+
+        <div class="flex justify-center">
+          <AppButton
+            v-if="!isMyFirstBlog"
+            type="primary-outlined"
+            class="mx-4"
+            @click="$router.push('/')"
+          >
+            {{ $t("views.blogCreate.cancelButton").toUpperCase() }}
+          </AppButton>
+          <AppButton
+            :disabled="savingBlogState === 'PENDING'"
+            class="mx-4"
+            :class="{ 'is-loading': savingBlogState === 'PENDING' }"
+            type="primary"
+            @click="onCreateClick"
+          >
+            {{ $t("views.blogCreate.createButton").toUpperCase() }}
+          </AppButton>
+        </div>
+      </div>
     </template>
   </div>
 </template>
 
 <script>
+import AppButton from "@/ui-kit/AppButton";
+import AppInput from "@/ui-kit/AppInput";
+import AppTextarea from "@/ui-kit/AppTextarea";
 import { generate } from "../utils/fantasyName.js";
 import apolloClient from "../utils/apolloClient";
 import { getUser, REQUEST_STATE } from "../utils/helpers";
@@ -90,13 +76,14 @@ import {
   createBlogMutation
 } from "../utils/queries";
 import AppLoader from "../components/AppLoader";
-import AppPanel from "../components/AppPanel";
 import logger from "../utils/logger";
 
 export default {
   components: {
-    AppLoader,
-    AppPanel
+    AppButton,
+    AppInput,
+    AppTextarea,
+    AppLoader
   },
   props: {
     isMyFirstBlog: {
@@ -106,7 +93,7 @@ export default {
   data() {
     return {
       errors: [],
-      formErrors: [],
+      formErrors: {},
       initDataState: REQUEST_STATE.NOT_STARTED,
       initStateError: null,
       savingBlogState: REQUEST_STATE.NOT_STARTED,
@@ -138,9 +125,9 @@ export default {
         });
     },
     getFormErrors() {
-      const errors = [];
+      const errors = {};
       if (!this.inputs.name.trim()) {
-        errors["name"] = "Name is required";
+        errors.name = this.$t("views.blogCreate.fields.title.required");
       }
       return errors;
     },
@@ -174,14 +161,6 @@ export default {
           );
           throw new Error(error);
         });
-    },
-    onGenerateCLick() {
-      this.$refs.randomNameLink.addEventListener("mousedown", function(e) {
-        if (e.detail > 1) {
-          e.preventDefault();
-        }
-      });
-      this.inputs.name = generate();
     }
   }
 };

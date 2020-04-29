@@ -40,6 +40,7 @@ export default {
   "views.blogCreate.fields.description.label": "De quoi parle votre blog ?",
   "views.blogCreate.fields.title.label": "Quel est le nom de votre blog ?",
   "views.blogCreate.fields.title.help": "Ce nom apparaîtra dans les résultats des moteurs de recherche ou lors du partage du lien de votre blog sur les réseaux sociaux.",
+  "views.blogCreate.fields.title.required": "Le nom est requis",
   "views.blogCreate.gladToSeeYouHere": "Ravi de vous voir ici",
   "views.blogList.createNewBlogButton": "Créer un nouveau blog",
   "views.blogList.title": "Mes blogs",

@@ -1,7 +1,7 @@
 <template>
   <div id="default-layout" class="flex flex-col">
     <AppTopbar v-show="isTopbarVisible()" />
-    <div class="bg-gray-100 flex-1">
+    <div class="flex-1 bg-gray-100">
       <slot />
     </div>
   </div>

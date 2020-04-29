@@ -2,15 +2,15 @@
   <DefaultLayout>
     <AppLoader v-if="initDataState === 'PENDING'">Loading blogs</AppLoader>
 
-    <!-- if this is the fiirs blog, display form to create a blog -->
+    <!-- if this is the first blog, display form to create a blog -->
     <template
       v-if="
         initDataState === 'FINISHED_OK' && blogs && blogs.edges.length === 0
       "
     >
-      <div class="container is-small">
+      <AppPanel>
         <BlogCreateForm :isMyFirstBlog="true" />
-      </div>
+      </AppPanel>
     </template>
     <!-- else, display the blog list -->
     <template
@@ -72,6 +72,7 @@
 <script>
 import AppButton from "@/ui-kit/AppButton";
 import AppCard from "@/ui-kit/AppCard";
+import AppPanel from "@/ui-kit/AppPanel";
 import apolloClient from "../utils/apolloClient";
 import BlogCreateForm from "../components/BlogCreateForm";
 import DefaultLayout from "../layouts/DefaultLayout";
@@ -87,6 +88,7 @@ export default {
   components: {
     AppButton,
     AppCard,
+    AppPanel,
     DefaultLayout,
     BlogCreateForm,
     AppLoader,

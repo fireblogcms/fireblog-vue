@@ -17,6 +17,7 @@
                   a 15.9155 15.9155 0 0 1 0 -31.831"
               />
               <path
+                class="circle"
                 fill="none"
                 stroke="#4cc790"
                 stroke-linecap="round"
@@ -44,6 +45,7 @@
                   a 15.9155 15.9155 0 0 1 0 -31.831"
               />
               <path
+                class="circle"
                 fill="none"
                 stroke="#ff6600"
                 stroke-linecap="round"
@@ -143,3 +145,14 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.circle {
+  animation: progress 1s ease-out forwards;
+}
+@keyframes progress {
+  0% {
+    stroke-dasharray: 0 100;
+  }
+}
+</style>
