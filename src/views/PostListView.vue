@@ -184,21 +184,21 @@
 
 <script>
 import AppBreadcrumb from "@/ui-kit/AppBreadcrumb";
-import apolloClient from "../utils/apolloClient";
-import DefaultLayout from "../layouts/DefaultLayout";
+import apolloClient from "@/utils/apolloClient";
+import DefaultLayout from "@/layouts/DefaultLayout";
 import gql from "graphql-tag";
-import AppLoader from "../components/AppLoader";
-import { REQUEST_STATE, toast } from "../utils/helpers";
+import AppLoader from "@/components/AppLoader";
+import { REQUEST_STATE, toast } from "@/utils/helpers";
 import {
   getPostsQuery,
   getBlogQuery,
   deletePostMutation
-} from "../utils/queries";
-import AppPanel from "../components/AppPanel";
+} from "@/utils/queries";
+import AppPanel from "@/components/AppPanel";
 import striptags from "striptags";
-import logger from "../utils/logger";
-import BulmaModal from "../components/BulmaModal";
-import PostListPane from "../components/PostListPane";
+import logger from "@/utils/logger";
+import BulmaModal from "@/components/BulmaModal";
+import PostListPane from "@/components/PostListPane";
 
 export default {
   components: {

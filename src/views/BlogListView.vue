@@ -73,16 +73,16 @@
 import AppButton from "@/ui-kit/AppButton";
 import AppCard from "@/ui-kit/AppCard";
 import AppPanel from "@/ui-kit/AppPanel";
-import apolloClient from "../utils/apolloClient";
-import BlogCreateForm from "../components/BlogCreateForm";
-import DefaultLayout from "../layouts/DefaultLayout";
-import AppLoader from "../components/AppLoader";
+import apolloClient from "@/utils/apolloClient";
+import BlogCreateForm from "@/components/BlogCreateForm";
+import DefaultLayout from "@/layouts/DefaultLayout";
+import AppLoader from "@/components/AppLoader";
 import gql from "graphql-tag";
-import { REQUEST_STATE, toast } from "../utils/helpers";
-import logger from "../utils/logger";
+import { REQUEST_STATE, toast } from "@/utils/helpers";
+import logger from "@/utils/logger";
 import gradient from "random-gradient";
-import { getMyBlogs } from "../utils/helpers";
-import PlanInformations from "../components/PlanInformations";
+import { getMyBlogs } from "@/utils/helpers";
+import PlanInformations from "@/components/PlanInformations";
 
 export default {
   components: {

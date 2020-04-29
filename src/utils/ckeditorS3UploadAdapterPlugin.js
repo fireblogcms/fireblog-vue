@@ -1,5 +1,5 @@
 import { REQUEST_STATE, S3Upload } from "./helpers";
-import Router from "../router";
+import Router from "@/router";
 
 /**
  * Upload an image directly from ckEditor to S3 servers with an XMLHttpRequest

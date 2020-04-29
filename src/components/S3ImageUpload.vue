@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { REQUEST_STATE, S3Upload } from "../utils/helpers";
+import { REQUEST_STATE, S3Upload } from "@/utils/helpers";
 
 export default {
   props: {

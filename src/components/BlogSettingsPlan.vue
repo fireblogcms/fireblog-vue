@@ -24,8 +24,8 @@
 </template>
 
 <script>
-import AppPanel from "../components/AppPanel";
-import PlanInformations from "../components/PlanInformations";
+import AppPanel from "@/components/AppPanel";
+import PlanInformations from "@/components/PlanInformations";
 
 export default {
   components: {

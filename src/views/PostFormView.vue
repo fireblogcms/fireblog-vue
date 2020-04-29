@@ -6,7 +6,7 @@
 
 <script>
 import PostForm from "@/components/PostForm";
-import DefaultLayout from "../layouts/DefaultLayout";
+import DefaultLayout from "@/layouts/DefaultLayout";
 
 export default {
   name: "PostFormView",

@@ -1,6 +1,6 @@
 import apolloClient from "./apolloClient";
 import gql from "graphql-tag";
-import Router from "../router";
+import Router from "@/router";
 
 const uploadQuery = gql`
   mutation uploadQuery($file: Upload!, $blogId: ID!) {

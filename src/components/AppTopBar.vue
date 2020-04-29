@@ -123,18 +123,18 @@
 
 <script>
 import gql from "graphql-tag";
-import apolloClient from "../utils/apolloClient";
+import apolloClient from "@/utils/apolloClient";
 import {
   getUser,
   REQUEST_STATE,
   getBlog,
   getPost,
   toast
-} from "../utils/helpers";
-import apiExamples from "../apiExamples";
-import ApiButton from "../components/ApiButton";
-import BulmaModal from "../components/BulmaModal";
-import logger from "../utils/logger";
+} from "@/utils/helpers";
+import apiExamples from "@/apiExamples";
+import ApiButton from "@/components/ApiButton";
+import BulmaModal from "@/components/BulmaModal";
+import logger from "@/utils/logger";
 
 export default {
   components: {

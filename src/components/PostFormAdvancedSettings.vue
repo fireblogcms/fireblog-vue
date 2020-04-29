@@ -83,12 +83,12 @@
 
 <script>
 import S3ImageUpload from "./S3ImageUpload";
-import { REQUEST_STATE } from "../utils/helpers";
+import { REQUEST_STATE } from "@/utils/helpers";
 import {
   vuexFormGetValue,
   vuexFormGetError,
   vuexFormSetValue
-} from "../utils/vuexForm";
+} from "@/utils/vuexForm";
 import SlugField from "./SlugField";
 import PreviewGoogleResult from "./PreviewGoogleResult";
 

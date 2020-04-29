@@ -33,17 +33,17 @@
 </template>
 
 <script>
-import apolloClient from "../utils/apolloClient";
-import AppPanel from "../components/AppPanel";
-import AppLoader from "../components/AppLoader";
+import apolloClient from "@/utils/apolloClient";
+import AppPanel from "@/components/AppPanel";
+import AppLoader from "@/components/AppLoader";
 import {
   REQUEST_STATE,
   getUser,
   toast
-} from "../utils/helpers";
+} from "@/utils/helpers";
 import gql from "graphql-tag";
-import logger from "../utils/logger";
-import DefaultLayout from "../layouts/DefaultLayout";
+import logger from "@/utils/logger";
+import DefaultLayout from "@/layouts/DefaultLayout";
 
 export default {
   components: {

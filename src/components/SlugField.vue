@@ -64,9 +64,9 @@
 </template>
 
 <script>
-import i18n from "../i18n";
-import { createSlug } from "../utils/helpers";
-import BulmaModal from "../components/BulmaModal";
+import i18n from "@/i18n";
+import { createSlug } from "@/utils/helpers";
+import BulmaModal from "@/components/BulmaModal";
 
 export default {
   components: {

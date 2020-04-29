@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import ResourcesUse from "../components/ResourcesUse";
-import { getPlan } from "../utils/helpers";
+import ResourcesUse from "@/components/ResourcesUse";
+import { getPlan } from "@/utils/helpers";
 
 export default {
   components: {

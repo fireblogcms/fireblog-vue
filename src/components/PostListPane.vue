@@ -80,7 +80,7 @@
 import AppLoader from "./AppLoader";
 import AppList from "./AppList";
 import striptags from "striptags";
-import { formatDate } from "../utils/helpers";
+import { formatDate } from "@/utils/helpers";
 
 export default {
   components: {

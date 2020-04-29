@@ -260,8 +260,8 @@
 <script>
 import Editor from "fireblog-ckeditor";
 import ContentEditor from "./ContentEditor";
-import { ckeditorS3UploadAdapterPlugin } from "../utils/ckeditorS3UploadAdapterPlugin";
-import AppLoader from "../components/AppLoader";
+import { ckeditorS3UploadAdapterPlugin } from "@/utils/ckeditorS3UploadAdapterPlugin";
+import AppLoader from "@/components/AppLoader";
 import hotkeys from "hotkeys-js";
 import IconBack from "./IconBack";
 
@@ -274,7 +274,7 @@ import {
   validateSlug,
   toast,
   formatDate
-} from "../utils/helpers";
+} from "@/utils/helpers";
 import {
   vuexFormInit,
   vuexFormSetValue,
@@ -284,10 +284,10 @@ import {
   vuexFormGetErrors,
   vuexFormGetValues,
   vuexFormGetInitialValues
-} from "../utils/vuexForm";
-import { savePostMutation } from "../utils/queries";
-import apolloClient from "../utils/apolloClient";
-import { getPostQuery } from "../utils/queries";
+} from "@/utils/vuexForm";
+import { savePostMutation } from "@/utils/queries";
+import apolloClient from "@/utils/apolloClient";
+import { getPostQuery } from "@/utils/queries";
 import PostFormAdvancedSettings from "./PostFormAdvancedSettings";
 import striptags from "striptags";
 import BulmaModal from "./BulmaModal";

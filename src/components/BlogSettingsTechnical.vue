@@ -77,11 +77,11 @@ import {
   vuexFormGetError,
   vuexFormGetErrors,
   vuexFormResetErrors
-} from "../utils/vuexForm";
-import { REQUEST_STATE, toast } from "../utils/helpers";
-import AppPanel from "../components/AppPanel";
-import apolloClient from "../utils/apolloClient";
-import { updateBlogMutation } from "../utils/queries";
+} from "@/utils/vuexForm";
+import { REQUEST_STATE, toast } from "@/utils/helpers";
+import AppPanel from "@/components/AppPanel";
+import apolloClient from "@/utils/apolloClient";
+import { updateBlogMutation } from "@/utils/queries";
 
 const formId = "technicalSettingsForm";
 const initialFormValues = {

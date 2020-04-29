@@ -21,10 +21,10 @@
 </template>
 
 <script>
-import BlogSettings from "../components/BlogSettings";
-import IconBack from "../components/IconBack";
-import { REQUEST_STATE } from "../utils/helpers";
-import DefaultLayout from "../layouts/DefaultLayout";
+import BlogSettings from "@/components/BlogSettings";
+import IconBack from "@/components/IconBack";
+import { REQUEST_STATE } from "@/utils/helpers";
+import DefaultLayout from "@/layouts/DefaultLayout";
 
 export default {
   components: {

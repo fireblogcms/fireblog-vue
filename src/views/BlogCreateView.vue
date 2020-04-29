@@ -8,8 +8,8 @@
 
 <script>
 import AppPanel from "@/ui-kit/AppPanel";
-import BlogCreateForm from "../components/BlogCreateForm";
-import DefaultLayout from "../layouts/DefaultLayout";
+import BlogCreateForm from "@/components/BlogCreateForm";
+import DefaultLayout from "@/layouts/DefaultLayout";
 
 export default {
   components: {

@@ -137,8 +137,8 @@ import {
   getBlog,
   getUser,
   toast
-} from "../utils/helpers";
-import apiExamples from "../apiExamples";
+} from "@/utils/helpers";
+import apiExamples from "@/apiExamples";
 
 export default {
   components: {

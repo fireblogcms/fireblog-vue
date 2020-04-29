@@ -117,14 +117,14 @@
 </template>
 
 <script>
-import DefaultLayout from "../layouts/DefaultLayout";
-import IconBack from "../components/IconBack";
-import ChangePlanModal from "../components/ChangePlanModal";
-import apolloClient from "../utils/apolloClient";
+import DefaultLayout from "@/layouts/DefaultLayout";
+import IconBack from "@/components/IconBack";
+import ChangePlanModal from "@/components/ChangePlanModal";
+import apolloClient from "@/utils/apolloClient";
 import {
   getPlansQuery,
   updateBlogMutation
-} from "../utils/queries";
+} from "@/utils/queries";
 import { ContentLoader } from "vue-content-loader";
 import {
   getBlog,
@@ -132,7 +132,7 @@ import {
   getPlan,
   createStripeCheckoutSession,
   toast
-} from "../utils/helpers";
+} from "@/utils/helpers";
 
 export default {
   components: {

@@ -47,6 +47,7 @@
           >
             {{ $t("views.blogCreate.cancelButton").toUpperCase() }}
           </AppButton>
+          <!-- TODO: Add button with loader and remove disabled attribute -->
           <AppButton
             :disabled="savingBlogState === 'PENDING'"
             class="mx-4"
@@ -66,17 +67,17 @@
 import AppButton from "@/ui-kit/AppButton";
 import AppInput from "@/ui-kit/AppInput";
 import AppTextarea from "@/ui-kit/AppTextarea";
-import { generate } from "../utils/fantasyName.js";
-import apolloClient from "../utils/apolloClient";
-import { getUser, REQUEST_STATE } from "../utils/helpers";
+import { generate } from "@/utils/fantasyName.js";
+import apolloClient from "@/utils/apolloClient";
+import { getUser, REQUEST_STATE } from "@/utils/helpers";
 import gql from "graphql-tag";
 import {
   getMyBlogsQuery,
   getUserQuery,
   createBlogMutation
-} from "../utils/queries";
-import AppLoader from "../components/AppLoader";
-import logger from "../utils/logger";
+} from "@/utils/queries";
+import AppLoader from "@/components/AppLoader";
+import logger from "@/utils/logger";
 
 export default {
   components: {

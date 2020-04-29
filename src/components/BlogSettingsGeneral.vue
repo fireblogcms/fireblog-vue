@@ -88,12 +88,12 @@
 </template>
 
 <script>
-import AppPanel from "../components/AppPanel";
+import AppPanel from "@/components/AppPanel";
 import {
   getBlog,
   REQUEST_STATE,
   toast
-} from "../utils/helpers";
+} from "@/utils/helpers";
 import {
   vuexFormInit,
   vuexFormSetValue,
@@ -102,13 +102,13 @@ import {
   vuexFormGetError,
   vuexFormGetErrors,
   vuexFormResetErrors
-} from "../utils/vuexForm";
-import AppLoader from "../components/AppLoader";
-import apolloClient from "../utils/apolloClient";
+} from "@/utils/vuexForm";
+import AppLoader from "@/components/AppLoader";
+import apolloClient from "@/utils/apolloClient";
 import gql from "graphql-tag";
 import BulmaModal from "./BulmaModal";
 import S3ImageUpload from "./S3ImageUpload";
-import { updateBlogMutation } from "../utils/queries";
+import { updateBlogMutation } from "@/utils/queries";
 
 const formId = "blogSettingsGeneral";
 

@@ -1,4 +1,4 @@
-import Store from "../store";
+import Store from "@/store";
 import Vue from "vue";
 
 export const formsStoreKey = "forms";

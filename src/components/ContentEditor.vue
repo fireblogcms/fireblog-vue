@@ -6,8 +6,8 @@
 
 <script>
 import Editor from "fireblog-ckeditor";
-import { ckeditorS3UploadAdapterPlugin } from "../utils/ckeditorS3UploadAdapterPlugin";
-import { REQUEST_STATE, ckeditorIframelyMediaProvider } from "../utils/helpers";
+import { ckeditorS3UploadAdapterPlugin } from "@/utils/ckeditorS3UploadAdapterPlugin";
+import { REQUEST_STATE, ckeditorIframelyMediaProvider } from "@/utils/helpers";
 // import CKEditorInspector from "@ckeditor/ckeditor5-inspector";
 export default {
   props: {

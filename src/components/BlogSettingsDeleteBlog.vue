@@ -45,11 +45,11 @@
 </template>
 
 <script>
-import AppPanel from "../components/AppPanel";
-import BulmaModal from "../components/BulmaModal";
-import { REQUEST_STATE, toast } from "../utils/helpers";
-import apolloClient from "../utils/apolloClient";
-import { deleteBlogMutation } from "../utils/queries";
+import AppPanel from "@/components/AppPanel";
+import BulmaModal from "@/components/BulmaModal";
+import { REQUEST_STATE, toast } from "@/utils/helpers";
+import apolloClient from "@/utils/apolloClient";
+import { deleteBlogMutation } from "@/utils/queries";
 
 export default {
   components: {
