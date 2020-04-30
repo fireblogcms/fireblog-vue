@@ -1,9 +1,9 @@
 <template>
-  <AppCard>
+  <AppCard :image="cardBackground(blog)">
     <div
-      class="h-64 flex items-center cursor-pointer bg-cover bg-center"
-      :style="blogCardStyle(blog)"
+      class="h-full flex items-center cursor-pointer"
       @click="onCardImageClick(blog)"
+      slot="header"
     >
       <div class="w-full text-center text-white py-2 bg-blackOpacity50">
         <p class="text-3xl font-bold">{{ blog.name }}</p>
@@ -12,7 +12,7 @@
         </p>
       </div>
     </div>
-    <div class="p-6 flex items-center justify-between">
+    <div class="flex items-center justify-between" slot="content">
       <PlanInformations :blog="blog"></PlanInformations>
       <AppButton
         type="primary-outlined"
@@ -46,14 +46,8 @@ export default {
     }
   },
   methods: {
-    blogCardStyle(blog) {
-      const style = {};
-      if (blog.image) {
-        style.backgroundImage = `url(${blog.image})`;
-      } else {
-        style.background = gradient(blog._id);
-      }
-      return style;
+    cardBackground(blog) {
+      return blog.image || gradient(blog._id);
     },
     onCardImageClick(blog) {
       this.$router.push({
