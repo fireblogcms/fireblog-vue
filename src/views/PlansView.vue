@@ -118,7 +118,6 @@
 import AppButton from "@/ui-kit/AppButton";
 import AppBreadcrumb from "@/ui-kit/AppBreadcrumb";
 import DefaultLayout from "@/layouts/DefaultLayout";
-import IconBack from "@/components/IconBack";
 import ChangePlanModal from "@/components/ChangePlanModal";
 import apolloClient from "@/utils/apolloClient";
 import {
