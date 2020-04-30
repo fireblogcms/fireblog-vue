@@ -1,43 +1,12 @@
 <template>
   <div>
-    <AppLoader v-if="loadingAsyncData" />
-    <form class="post-form" v-if="!loadingAsyncData" @submit.prevent>
-      <div class="post-form__field-title">
-        <textarea-autosize
-          maxlength="250"
-          @keydown.enter.native.prevent="onTitleEnter"
-          autofocus
-          rows="1"
-          :placeholder="$t('views.postForm.fields.title.placeholder')"
-          type="text"
-          id="title"
-          @input="onTitleInput"
-          :value="vuexFormGetValue('postForm', 'title')"
-        />
-      </div>
-      <!--      -->
-      <ContentEditor
-        ref="contentEditor"
-        class="post-form__field-editor"
-        :value="vuexFormGetValue('postForm', 'content')"
-        @change="onContentChange"
-        @editorReady="onEditorReady"
-      />
-    </form>
-
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
-      <span class="item tag is-large">
-        <router-link class="item" :to="{ name: 'postList' }">
-          <img
-            class="is-hidden-mobile"
-            style="position:relative;height:20px !important;top:4px;"
-            src="/images/book.png"
-          />
-          <IconBack />
-          {{ $t("views.postForm.backToBlogLink") }}
-        </router-link>
-      </span>
+      <AppBreadcrumb
+        image="/images/book.png"
+        link="postList"
+        :name="$t('views.postForm.backToBlogLink')"
+      />
     </portal>
     <!-- END TOPBAR LEFT BUTTONS -->
 
@@ -113,6 +82,32 @@
         {{ $t("views.postForm.publishChangesButton").toUpperCase() }}
       </button>
     </portal>
+
+    <AppLoader v-if="loadingAsyncData" />
+    <form class="post-form" v-if="!loadingAsyncData" @submit.prevent>
+      <div class="post-form__field-title">
+        <textarea-autosize
+          maxlength="250"
+          @keydown.enter.native.prevent="onTitleEnter"
+          autofocus
+          rows="1"
+          :placeholder="$t('views.postForm.fields.title.placeholder')"
+          type="text"
+          id="title"
+          @input="onTitleInput"
+          :value="vuexFormGetValue('postForm', 'title')"
+        />
+      </div>
+      <!--      -->
+      <ContentEditor
+        ref="contentEditor"
+        class="post-form__field-editor"
+        :value="vuexFormGetValue('postForm', 'content')"
+        @change="onContentChange"
+        @editorReady="onEditorReady"
+      />
+    </form>
+
     <footer class="post-form__document-infos">
       <div class="container">
         <div class="item">
@@ -258,12 +253,12 @@
 </template>
 
 <script>
+import AppBreadcrumb from "@/ui-kit/AppBreadcrumb";
 import Editor from "fireblog-ckeditor";
 import ContentEditor from "./ContentEditor";
 import { ckeditorS3UploadAdapterPlugin } from "@/utils/ckeditorS3UploadAdapterPlugin";
 import AppLoader from "@/components/AppLoader";
 import hotkeys from "hotkeys-js";
-import IconBack from "./IconBack";
 
 import {
   REQUEST_STATE,
@@ -317,11 +312,11 @@ const saveAfterKeyStrokesNumber = 50;
 
 export default {
   components: {
-    ContentEditor,
+    AppBreadcrumb,
     AppLoader,
-    IconBack,
-    PostFormAdvancedSettings,
-    BulmaModal
+    BulmaModal,
+    ContentEditor,
+    PostFormAdvancedSettings
   },
   data() {
     return {

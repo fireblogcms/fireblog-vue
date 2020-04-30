@@ -55,7 +55,6 @@ import DefaultLayout from "@/layouts/DefaultLayout";
 import AppLoader from "@/components/AppLoader";
 import gql from "graphql-tag";
 import { REQUEST_STATE, toast } from "@/utils/helpers";
-import logger from "@/utils/logger";
 import { getMyBlogs } from "@/utils/helpers";
 
 export default {

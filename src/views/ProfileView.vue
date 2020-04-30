@@ -29,7 +29,6 @@ import {
   toast
 } from "@/utils/helpers";
 import gql from "graphql-tag";
-import logger from "@/utils/logger";
 import DefaultLayout from "@/layouts/DefaultLayout";
 
 export default {

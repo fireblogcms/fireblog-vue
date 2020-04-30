@@ -16,7 +16,6 @@ import { auth0Client, syncAuth0UserWithServer } from "@/utils/auth";
 import { REQUEST_STATE, toast } from "@/utils/helpers";
 import AppPanel from "@/components/AppPanel";
 import apolloClient from "@/utils/apolloClient";
-import logger from "@/utils/logger";
 
 export default {
   components: {

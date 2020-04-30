@@ -196,7 +196,6 @@ import {
 } from "@/utils/queries";
 import AppPanel from "@/components/AppPanel";
 import striptags from "striptags";
-import logger from "@/utils/logger";
 import BulmaModal from "@/components/BulmaModal";
 import PostListPane from "@/components/PostListPane";
 
