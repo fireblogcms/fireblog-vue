@@ -16,6 +16,9 @@ module.exports = {
           default: "rgba(0, 0, 0, .5)"
         }
       },
+      boxShadow: {
+        bottom: "0 6px 4px -4px rgba(0, 0, 0, .08)"
+      },
       minWidth: {
         "15": "15rem"
       },

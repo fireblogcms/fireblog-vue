@@ -1,13 +1,12 @@
 <template>
-  <div class="relative z-50" :class="`route-${$route.name}`">
-    <div class="flex justify-between bg-primary px-10 py-2">
+  <div class="relative z-50 bg-white shadow-bottom" :class="`route-${$route.name}`">
+    <div class="flex justify-between px-10 py-4">
       <div class="flex items-center">
-        <div
-          class="flex items-center justify-center bg-white w-16 h-16 rounded-full cursor-pointer"
+        <img
+          class="w-16 rounded-full cursor-pointer"
+          src="/logo-solo.png"
           @click="onLogoClick"
-        >
-          <img class="w-16" src="/logo-solo.png" />
-        </div>
+        />
         <div class="text-xs bg-secondary rounded-sm px-2 py-1 ml-2 mb-6 mr-6">
           Bêta version
         </div>
