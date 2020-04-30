@@ -3,7 +3,7 @@
     <div class="container">
       <div class="topbar-left">
         <figure @click="onLogoClick" style="float:left;cursor:pointer;" class="image">
-          <img style="width:60px" src="/logo-solo.png" alt />
+          <img style="width:60px" src="/images/logo-solo.png" alt />
         </figure>
         <span
           style="position:relative;top:5px;margin-right:20px;"

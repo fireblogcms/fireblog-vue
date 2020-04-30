@@ -2,17 +2,11 @@
   <DefaultLayout>
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
-      <span class="item tag is-large">
-        <router-link class="item" :to="{ name: 'blogList' }">
-          <img
-            class="is-hidden-mobile"
-            style="position:relative;height:20px !important;top:4px;"
-            src="/images/books.webp"
-          />
-          <IconBack />
-          {{ $t("views.postList.backToBlogLink") }}
-        </router-link>
-      </span>
+      <AppBreadcrumb
+        image="/images/books.png"
+        link="blogList"
+        :name="$t('views.postList.backToBlogLink')"
+      />
     </portal>
     <!-- END TOPBAR LEFT BUTTONS -->
 
@@ -117,6 +111,7 @@
 </template>
 
 <script>
+import AppBreadcrumb from "@/ui-kit/AppBreadcrumb";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import IconBack from "@/components/IconBack";
 import ChangePlanModal from "@/components/ChangePlanModal";
@@ -136,7 +131,7 @@ import {
 
 export default {
   components: {
-    IconBack,
+    AppBreadcrumb,
     DefaultLayout,
     ContentLoader,
     ChangePlanModal

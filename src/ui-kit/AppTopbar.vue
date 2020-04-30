@@ -4,7 +4,7 @@
       <div class="flex items-center">
         <img
           class="w-16 rounded-full cursor-pointer"
-          src="/logo-solo.png"
+          src="/images/logo-solo.png"
           @click="onLogoClick"
         />
         <div class="text-xs bg-secondary rounded-sm px-2 py-1 ml-2 mb-6 mr-6">

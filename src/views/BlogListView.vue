@@ -21,7 +21,7 @@
           <div class="flex items-center">
             <img
               class="w-16 h-16 mr-10"
-              src="/images/books-icon.png"
+              src="/images/books.png"
             />
             <h1 class="text-5xl font-bold uppercase">{{ $t("views.blogList.title") }}</h1>
           </div>

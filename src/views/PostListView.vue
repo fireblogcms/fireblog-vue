@@ -3,7 +3,7 @@
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
       <AppBreadcrumb
-        image="/images/books.webp"
+        image="/images/books.png"
         link="blogList"
         :name="$t('views.postList.backToBlogLink')"
       />

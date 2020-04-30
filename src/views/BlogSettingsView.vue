@@ -7,7 +7,7 @@
           <img
             class="is-hidden-mobile"
             style="position:relative;height:20px !important;top:4px;"
-            src="/images/books.webp"
+            src="/images/books.png"
           />
           <IconBack />
           {{ $t("views.postList.backToBlogLink") }}
