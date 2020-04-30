@@ -32,6 +32,7 @@ export default {
   "global.contactUsButton": "Contact us",
   "global.label.name": "Name:",
   "global.label.email": "Email address:",
+  "global.pageNotFound": "Page not found",
   "topbar.accountMenu.myBlogs": "My blogs",
   "topbar.accountMenu.myAccount": "My account",
   "topbar.accountMenu.logout": "Logout",
