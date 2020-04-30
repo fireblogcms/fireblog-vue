@@ -1,40 +1,27 @@
 <template>
   <DefaultLayout>
-    <div class="container is-small">
-      <template v-if="initDataState === 'PENDING'">
-        <AppLoader>Loading profile</AppLoader>
-      </template>
-      <template v-if="initDataState === 'FINISHED_OK'">
-        <div class="section">
-          <AppPanel>
-            <div class="section">
-              <div class="content has-text-centered">
-                <div class="column">
-                  <img
-                    style="border-radius:200px;"
-                    width="200"
-                    :src="me.picture"
-                    alt="User's profile picture"
-                  />
-                </div>
-                <div class="column">
-                  <div class="content">
-                    <h2>name: {{ me.name }}</h2>
-                    <p>email: {{ me.email }}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </AppPanel>
+    <template v-if="initDataState === 'PENDING'">
+      <AppLoader>Loading profile</AppLoader>
+    </template>
+    <template v-if="initDataState === 'FINISHED_OK'">
+      <AppPanel>
+        <div class="flex flex-col items-center">
+          <img
+            class="w-64 h-64 mb-10 rounded-full"
+            :src="me.picture"
+            alt="User's profile picture"
+          />
+          <p class="text-3xl font-bold mb-2">{{ $t("global.label.name") }} {{ me.name }}</p>
+          <p class="text-2xl">{{ $t("global.label.email") }} {{ me.email }}</p>
         </div>
-      </template>
-    </div>
+      </AppPanel>
+    </template>
   </DefaultLayout>
 </template>
 
 <script>
+import AppPanel from "@/ui-kit/AppPanel";
 import apolloClient from "@/utils/apolloClient";
-import AppPanel from "@/components/AppPanel";
 import AppLoader from "@/components/AppLoader";
 import {
   REQUEST_STATE,
