@@ -16,8 +16,8 @@
     <template
       v-if="initDataState === 'FINISHED_OK' && blogs && blogs.edges.length > 0"
     >
-      <div class="mx-20">
-        <div class="flex items-center justify-between py-12">
+      <div class="mx-20 my-12">
+        <div class="flex items-center justify-between pb-12">
           <div class="flex items-center">
             <img
               class="w-16 h-16 mr-10"

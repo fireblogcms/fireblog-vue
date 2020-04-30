@@ -1,6 +1,6 @@
 <template>
   <button
-    class="flex items-center border-2 border-solid rounded-md focus:outline-none focus:shadow-outline"
+    class="flex items-center border-2 rounded-md focus:outline-none focus:shadow-outline"
     :class="{
       'py-3 px-6 text-2xl': size === '',
       'py-1 px-4 text-xl': size === 'small',
