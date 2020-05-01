@@ -31,3 +31,17 @@ export const PrimaryOutlined = () => ({
     '<AppButton color="primary-outlined" @click="action">Primary outlined</AppButton>',
   methods: { action: action("clicked") }
 });
+
+export const PrimaryLoading = () => ({
+  components: { AppButton },
+  template:
+    '<AppButton color="primary" :loading="true" @click="action">Primary outlined</AppButton>',
+  methods: { action: action("clicked") }
+});
+
+export const PrimaryOutlinedLoading = () => ({
+  components: { AppButton },
+  template:
+    '<AppButton color="primary-outlined" :loading="true" @click="action">Primary outlined</AppButton>',
+  methods: { action: action("clicked") }
+});

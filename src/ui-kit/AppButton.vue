@@ -1,5 +1,5 @@
 <template>
-  <span class="relative">
+  <span class="relative inline-block">
     <button
       class="flex items-center border-2 rounded-md focus:outline-none focus:shadow-outline"
       :class="{
