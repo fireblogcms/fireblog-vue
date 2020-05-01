@@ -1,15 +1,13 @@
 <template>
   <div>
-    <AppPanel
-      class="container is-small"
-      style="margin-top:40px;margin-bottom:40px;padding:40px;border: solid red 1px;background:rgba(255,0,0,0.1)"
-    >
+    <AppPanel>
       <h2 class="title is-2">{{ $t("views.blogSettings.dangerZone.title") }}</h2>
       <button
         @click="onDeleteBlogClick"
         class="button is-danger is-large"
       >{{ $t("views.blogSettings.dangerZone.deleteButton") }}</button>
     </AppPanel>
+
     <BulmaModal class="api-modal" v-model="showDeleteBlogModal">
       <template
         #title
@@ -45,7 +43,7 @@
 </template>
 
 <script>
-import AppPanel from "@/components/AppPanel";
+import AppPanel from "@/ui-kit/AppPanel";
 import BulmaModal from "@/components/BulmaModal";
 import { REQUEST_STATE, toast } from "@/utils/helpers";
 import apolloClient from "@/utils/apolloClient";

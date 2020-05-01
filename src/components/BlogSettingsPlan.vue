@@ -1,8 +1,5 @@
 <template>
-  <AppPanel
-    style="margin-top:40px;margin-bottom:40px;padding:40px;"
-    class="container is-small"
-  >
+  <AppPanel class="py-0">
     <h2 class="title is-2">
       {{ $t("views.blogSettings.planSettings.title") }}
     </h2>
@@ -24,7 +21,7 @@
 </template>
 
 <script>
-import AppPanel from "@/components/AppPanel";
+import AppPanel from "@/ui-kit/AppPanel";
 import PlanInformations from "@/components/PlanInformations";
 
 export default {

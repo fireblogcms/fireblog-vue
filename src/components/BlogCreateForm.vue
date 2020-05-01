@@ -8,7 +8,7 @@
 
     <div>
       <label class="text-2xl font-bold">{{ $t("views.blogCreate.fields.title.label") }}</label>
-      <p class="text-sm mb-4">{{ $t("views.blogCreate.fields.title.help") }}</p>
+      <p class="mb-4 text-sm">{{ $t("views.blogCreate.fields.title.help") }}</p>
       <AppInput
         v-model="inputs.name"
         :error="formErrors.name"
@@ -20,7 +20,7 @@
 
     <div class="mt-10 mb-16">
       <label class="text-2xl font-bold">{{ $t("views.blogCreate.fields.description.label") }}</label>
-      <p class="text-sm mb-4">{{ $t("views.blogCreate.fields.description.help") }}</p>
+      <p class="mb-4 text-sm">{{ $t("views.blogCreate.fields.description.help") }}</p>
       <AppTextarea
         v-model="inputs.description"
         type="text"
@@ -31,7 +31,7 @@
     <div class="flex justify-center">
       <AppButton
         v-if="!isMyFirstBlog"
-        type="primary-outlined"
+        color="primary-outlined"
         class="mx-4"
         @click="$router.push('/')"
       >
@@ -40,7 +40,7 @@
       <AppButton
         :loading="savingBlogState === 'PENDING'"
         class="mx-4"
-        type="primary"
+        color="primary"
         @click="onCreateClick"
       >
         {{ $t("views.blogCreate.createButton").toUpperCase() }}

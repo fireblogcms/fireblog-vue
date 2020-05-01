@@ -58,7 +58,7 @@ export default {
   "views.blogSettings.dangerZone.deleteModal.title": "Delete {blogName}",
   "views.blogSettings.generalSettingsForm.title": "General settings",
   "views.blogSettings.generalSettingsForm.fields.description.help": "This description will appear in search engine results or when sharing blog's link on social networks.",
-  "views.blogSettings.generalSettingsForm.fields.description.label": "Description",
+  "views.blogSettings.generalSettingsForm.fields.description.label": "Description (250 characters maximum)",
   "views.blogSettings.generalSettingsForm.fields.image.help": "This image will appear when sharing blog's link on social networks.",
   "views.blogSettings.generalSettingsForm.fields.image.label": "Image",
   "views.blogSettings.generalSettingsForm.fields.name.errors.required": "Field name is required",

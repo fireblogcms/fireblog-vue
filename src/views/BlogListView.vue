@@ -26,7 +26,7 @@
             <h1 class="text-5xl font-bold uppercase">{{ $t("views.blogList.title") }}</h1>
           </div>
           <AppButton
-            type="primary"
+            color="primary"
             @click="$router.push({ name: 'blogCreate' })"
           >
             {{ $t("views.blogList.createNewBlogButton").toUpperCase() }}

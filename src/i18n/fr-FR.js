@@ -58,7 +58,7 @@ export default {
   "views.blogSettings.dangerZone.deleteModal.title": "Supprimer le blog {blogName}",
   "views.blogSettings.generalSettingsForm.title": "Réglages généraux",
   "views.blogSettings.generalSettingsForm.fields.description.help": "Celle-ci sera affichée par les moteurs de recherche ou quand le lien de votre blog sera partagé sur les réseaux sociaux.",
-  "views.blogSettings.generalSettingsForm.fields.description.label": "Une description qui donne envie de lire votre blog",
+  "views.blogSettings.generalSettingsForm.fields.description.label": "Description (250 caractères maximum)",
   "views.blogSettings.generalSettingsForm.fields.image.help": "Celle-ci sera affichée quand le lien de votre blog sera partagé sur les réseaux sociaux.",
   "views.blogSettings.generalSettingsForm.fields.image.label": "Une belle image qui représente votre blog",
   "views.blogSettings.generalSettingsForm.fields.name.errors.required": "Le champ nom est requis",

@@ -21,13 +21,13 @@ export const DefaultSmall = () => ({
 
 export const Primary = () => ({
   components: { AppButton },
-  template: '<AppButton type="primary" @click="action">Primary</AppButton>',
+  template: '<AppButton color="primary" @click="action">Primary</AppButton>',
   methods: { action: action("clicked") }
 });
 
 export const PrimaryOutlined = () => ({
   components: { AppButton },
   template:
-    '<AppButton type="primary-outlined" @click="action">Primary outlined</AppButton>',
+    '<AppButton color="primary-outlined" @click="action">Primary outlined</AppButton>',
   methods: { action: action("clicked") }
 });

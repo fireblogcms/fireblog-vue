@@ -15,7 +15,7 @@
     <div class="flex items-center justify-between" slot="content">
       <PlanInformations :blog="blog"></PlanInformations>
       <AppButton
-        type="primary-outlined"
+        color="primary-outlined"
         v-if="blog.subscription.trialEnd"
         @click="onSubscribeClick(blog)"
       >

@@ -72,7 +72,7 @@
           </div>
           <AppButton
             @click="onSubscribeClick(plan)"
-            type="primary"
+            color="primary"
             size="small"
             class=""
             v-if="!isPlanSubscribed(plan.id)"

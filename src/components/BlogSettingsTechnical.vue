@@ -1,36 +1,9 @@
 <template>
-  <AppPanel
-    style="margin-top:40px;margin-bottom:40px;padding:40px;"
-    class="container is-small"
-  >
+  <AppPanel class="pt-0">
     <h2 class="title is-2">
       {{ $t("views.blogSettings.technicalSettingsForm.title") }}
     </h2>
     <form @submit.prevent="onFormSubmit">
-      <!--
-      <div class="field">
-        <label class="label">
-          {{
-          $t("views.blogSettings.technicalSettingsForm.fields.url.label")
-          }}
-        </label>
-        
-        <div class="control">
-          <input
-            :value="vuexFormGetValue(formId, 'url')"
-            @input="vuexFormSetValue(formId, 'url', $event.target.value)"
-            :class="{'is-danger': vuexFormGetError(formId, 'url')}"
-            class="input is-large"
-            type="text"
-            maxlength="100"
-          />
-        </div>
-        <p
-          class="help is-danger"
-          v-if="vuexFormGetError(formId, 'url')"
-        >{{ vuexFormGetError(formId, 'url')}}</p>
-      </div>
-      -->
       <div class="field">
         <div class="label-wrapper">
           <label class="label">{{
@@ -69,6 +42,7 @@
 </template>
 
 <script>
+import AppPanel from "@/ui-kit/AppPanel";
 import {
   vuexFormInit,
   vuexFormSetValue,
@@ -79,7 +53,6 @@ import {
   vuexFormResetErrors
 } from "@/utils/vuexForm";
 import { REQUEST_STATE, toast } from "@/utils/helpers";
-import AppPanel from "@/components/AppPanel";
 import apolloClient from "@/utils/apolloClient";
 import { updateBlogMutation } from "@/utils/queries";
 

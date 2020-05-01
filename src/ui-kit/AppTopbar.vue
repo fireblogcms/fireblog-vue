@@ -97,7 +97,7 @@
             target="_blank"
             class="hover:text-current"
           >
-            <AppButton type="primary" size="small">
+            <AppButton color="primary" size="small">
               {{ $t("apiModal.openGraphQLExplorer") }}
             </AppButton>
           </a>
@@ -116,7 +116,7 @@
                 :href="`${blogApiUrl}?query=${encodeURI(example.snippet)}`"
                 target="_blank"
               >
-                <AppButton type="primary-outlined" size="small">
+                <AppButton color="primary-outlined" size="small">
                   {{ $t("apiModal.tryItButton") }}
                 </AppButton>
               </a>
