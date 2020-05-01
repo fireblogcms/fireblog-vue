@@ -1,8 +1,5 @@
 <template>
   <div>
-    <template v-if="initDataState === 'PENDING'">
-      Loading stats...
-    </template>
     <template v-if="initDataState === 'FINISHED_OK'">
       <div class="flex items-center">
         <div class="flex w-10 h-10 mr-5">
