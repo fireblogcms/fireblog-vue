@@ -103,7 +103,6 @@ import {
   vuexFormGetErrors,
   vuexFormResetErrors
 } from "@/utils/vuexForm";
-import AppLoader from "@/components/AppLoader";
 import apolloClient from "@/utils/apolloClient";
 import gql from "graphql-tag";
 import BulmaModal from "./BulmaModal";

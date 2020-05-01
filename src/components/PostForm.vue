@@ -254,10 +254,10 @@
 
 <script>
 import AppBreadcrumb from "@/ui-kit/AppBreadcrumb";
+import AppLoader from "@/ui-kit/AppLoader";
 import Editor from "fireblog-ckeditor";
 import ContentEditor from "./ContentEditor";
 import { ckeditorS3UploadAdapterPlugin } from "@/utils/ckeditorS3UploadAdapterPlugin";
-import AppLoader from "@/components/AppLoader";
 import hotkeys from "hotkeys-js";
 
 import {

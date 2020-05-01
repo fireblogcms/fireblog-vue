@@ -1,6 +1,6 @@
 <template>
   <DefaultLayout>
-    <AppLoader v-if="initDataState === 'PENDING'">Loading blogs</AppLoader>
+    <AppLoader v-if="initDataState === 'PENDING'" />
 
     <!-- if this is the first blog, display form to create a blog -->
     <template
@@ -47,12 +47,12 @@
 
 <script>
 import AppButton from "@/ui-kit/AppButton";
+import AppLoader from "@/ui-kit/AppLoader";
 import AppPanel from "@/ui-kit/AppPanel";
 import BlogCard from "@/components/BlogCard";
 import apolloClient from "@/utils/apolloClient";
 import BlogCreateForm from "@/components/BlogCreateForm";
 import DefaultLayout from "@/layouts/DefaultLayout";
-import AppLoader from "@/components/AppLoader";
 import gql from "graphql-tag";
 import { REQUEST_STATE, toast } from "@/utils/helpers";
 import { getMyBlogs } from "@/utils/helpers";

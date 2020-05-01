@@ -184,10 +184,10 @@
 
 <script>
 import AppBreadcrumb from "@/ui-kit/AppBreadcrumb";
+import AppLoader from "@/ui-kit/AppLoader";
 import apolloClient from "@/utils/apolloClient";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import gql from "graphql-tag";
-import AppLoader from "@/components/AppLoader";
 import { REQUEST_STATE, toast } from "@/utils/helpers";
 import {
   getPostsQuery,
@@ -201,9 +201,9 @@ import PostListPane from "@/components/PostListPane";
 
 export default {
   components: {
+    AppBreadcrumb,
     AppLoader,
     AppPanel,
-    AppBreadcrumb,
     BulmaModal,
     PostListPane,
     DefaultLayout

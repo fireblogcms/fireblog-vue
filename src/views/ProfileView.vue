@@ -1,7 +1,7 @@
 <template>
   <DefaultLayout>
     <template v-if="initDataState === 'PENDING'">
-      <AppLoader>Loading profile</AppLoader>
+      <AppLoader />
     </template>
     <template v-if="initDataState === 'FINISHED_OK'">
       <AppPanel>
@@ -20,9 +20,9 @@
 </template>
 
 <script>
+import AppLoader from "@/ui-kit/AppLoader";
 import AppPanel from "@/ui-kit/AppPanel";
 import apolloClient from "@/utils/apolloClient";
-import AppLoader from "@/components/AppLoader";
 import {
   REQUEST_STATE,
   getUser,
@@ -33,8 +33,8 @@ import DefaultLayout from "@/layouts/DefaultLayout";
 
 export default {
   components: {
-    AppPanel,
     AppLoader,
+    AppPanel,
     DefaultLayout
   },
   data() {

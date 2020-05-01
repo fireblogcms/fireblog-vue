@@ -1,6 +1,6 @@
 <template>
   <div class="container" style="border-top-left-radius:0; margin:30px;">
-    <AppLoader v-show="postsRequestState === 'PENDING'" />
+    <AppLoader v-if="postsRequestState === 'PENDING'" />
     <template
       v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length === 0"
     >
@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import AppLoader from "./AppLoader";
+import AppLoader from "@/ui-kit/AppLoader";
 import AppList from "./AppList";
 import striptags from "striptags";
 import { formatDate } from "@/utils/helpers";
