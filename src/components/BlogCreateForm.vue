@@ -37,9 +37,8 @@
       >
         {{ $t("views.blogCreate.cancelButton").toUpperCase() }}
       </AppButton>
-      <!-- TODO: Add button with loader and remove disabled attribute -->
       <AppButton
-        :disabled="savingBlogState === 'PENDING'"
+        :loading="savingBlogState === 'PENDING'"
         class="mx-4"
         type="primary"
         @click="onCreateClick"
@@ -124,11 +123,12 @@ export default {
           }
         })
         .then(async result => {
-          this.$router.push({
-            name: "postList",
-            params: { blogId: result.data.createBlog._id }
-          });
-          this.savingBlogState = REQUEST_STATE.FINISHED_OK;
+          this.$router
+            .push({
+              name: "postList",
+              params: { blogId: result.data.createBlog._id }
+            })
+            .then(() => this.savingBlogState = REQUEST_STATE.FINISHED_OK);
         })
         .catch(error => {
           this.savingBlogState = REQUEST_STATE.FINISHED_ERROR;

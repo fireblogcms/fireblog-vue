@@ -2,7 +2,7 @@
   <DefaultLayout>
     <AppPanel>
       <p class="my-16 text-6xl text-center font-bold uppercase">
-        Page not found
+        {{ $t("global.pageNotFound") }}
       </p>
     </AppPanel>
   </DefaultLayout>
