@@ -1,7 +1,9 @@
 <template>
-  <div class="container section">
-    <div class="has-text-centered" v-if="error">
-      <router-link :to="{ name: 'logout' }">Retry to login</router-link>
+  <div class="h-screen bg-gray-100">
+    <div class="py-10 text-center" v-if="error">
+      <router-link :to="{ name: 'logout' }">
+        {{ $t("global.retryLogin") }}
+      </router-link>
     </div>
     <AppLoader v-if="initDataState === 'PENDING'" />
   </div>
@@ -28,7 +30,6 @@ export default {
   },
   methods: {
     async initData() {
-      this.error = null;
       this.initDataState = REQUEST_STATE.PENDING;
       const auth0 = await auth0Client();
       auth0

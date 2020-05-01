@@ -33,6 +33,7 @@ export default {
   "global.label.name": "Name:",
   "global.label.email": "Email address:",
   "global.pageNotFound": "Page not found",
+  "global.retryLogin": "Retry to login",
   "topbar.accountMenu.myBlogs": "My blogs",
   "topbar.accountMenu.myAccount": "My account",
   "topbar.accountMenu.logout": "Logout",
