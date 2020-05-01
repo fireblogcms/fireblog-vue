@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="flex items-center justify-between" slot="content">
-      <PlanInformations :blog="blog"></PlanInformations>
+      <PlanInformations :blog="blog" />
       <AppButton
         color="primary-outlined"
         v-if="blog.subscription.trialEnd"

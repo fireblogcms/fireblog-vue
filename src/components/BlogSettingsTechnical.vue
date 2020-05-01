@@ -1,22 +1,17 @@
 <template>
   <AppPanel class="pt-0">
-    <h2 class="title is-2">
+    <h2 class="text-4xl font-bold">
       {{ $t("views.blogSettings.technicalSettingsForm.title") }}
     </h2>
     <form @submit.prevent="onFormSubmit">
-      <div class="field">
-        <div class="label-wrapper">
-          <label class="label">{{
-            $t("views.blogSettings.technicalSettingsForm.fields.webhooks.label")
-          }}</label>
-          <p class="help">
-            {{
-              $t(
-                "views.blogSettings.technicalSettingsForm.fields.webhooks.help"
-              )
-            }}
-          </p>
-        </div>
+      <div class="mt-6 mb-10">
+        <label class="text-md font-bold">
+          {{ $t("views.blogSettings.technicalSettingsForm.fields.webhooks.label") }}
+        </label>
+        <p class="mb-4 text-sm">
+          {{ $t("views.blogSettings.technicalSettingsForm.fields.webhooks.help") }}
+        </p>
+        <!-- TODO: Replace by AppTextarea -->
         <textarea
           :value="vuexFormGetValue(formId, 'staticBuildWebhooks')"
           @input="
@@ -26,22 +21,19 @@
           placeholder="e.g. Hello world"
         ></textarea>
       </div>
-      <div>
-        <button
-          style="margin-top:20px;"
-          class="button is-outlined is-primary is-large"
-          :class="{ 'is-loading': savingState === 'PENDING' }"
-          :disabled="savingState === 'PENDING'"
-          type="submit"
-        >
-          {{ $t("views.blogSettings.technicalSettingsForm.saveButton") }}
-        </button>
-      </div>
+      <AppButton
+        color="primary-outlined"
+        :loading="savingState === 'PENDING'"
+        type="submit"
+      >
+        {{ $t("views.blogSettings.technicalSettingsForm.saveButton") }}
+      </AppButton>
     </form>
   </AppPanel>
 </template>
 
 <script>
+import AppButton from "@/ui-kit/AppButton";
 import AppPanel from "@/ui-kit/AppPanel";
 import {
   vuexFormInit,
@@ -64,6 +56,7 @@ const initialFormValues = {
 
 export default {
   components: {
+    AppButton,
     AppPanel
   },
   props: {

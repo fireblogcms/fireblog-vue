@@ -1,11 +1,15 @@
 <template>
   <div>
     <AppPanel>
-      <h2 class="title is-2">{{ $t("views.blogSettings.dangerZone.title") }}</h2>
-      <button
+      <h2 class="mb-6 text-4xl font-bold">
+        {{ $t("views.blogSettings.dangerZone.title") }}
+      </h2>
+      <AppButton
+        color="primary"
         @click="onDeleteBlogClick"
-        class="button is-danger is-large"
-      >{{ $t("views.blogSettings.dangerZone.deleteButton") }}</button>
+      >
+        {{ $t("views.blogSettings.dangerZone.deleteButton") }}
+      </AppButton>
     </AppPanel>
 
     <BulmaModal class="api-modal" v-model="showDeleteBlogModal">
@@ -43,6 +47,7 @@
 </template>
 
 <script>
+import AppButton from "@/ui-kit/AppButton";
 import AppPanel from "@/ui-kit/AppPanel";
 import BulmaModal from "@/components/BulmaModal";
 import { REQUEST_STATE, toast } from "@/utils/helpers";
@@ -51,6 +56,7 @@ import { deleteBlogMutation } from "@/utils/queries";
 
 export default {
   components: {
+    AppButton,
     AppPanel,
     BulmaModal
   },
