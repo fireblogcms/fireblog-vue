@@ -4851,9 +4851,9 @@ find-up@^4.0.0, find-up@^4.1.0:
     locate-path "^5.0.0"
     path-exists "^4.0.0"
 
-"fireblog-ckeditor@git+https://24877e8303ab244d4b2317f0644b6ade652e2a4e:x-oauth-basic@github.com/fireblogcms/fireblog-ckeditor#v18.1.0":
-  version "18.1.0"
-  resolved "git+https://24877e8303ab244d4b2317f0644b6ade652e2a4e:x-oauth-basic@github.com/fireblogcms/fireblog-ckeditor#a70fe5cf068447725d6307427b61867f253d9874"
+"fireblog-ckeditor@git+https://24877e8303ab244d4b2317f0644b6ade652e2a4e:x-oauth-basic@github.com/fireblogcms/fireblog-ckeditor#v19.0.0":
+  version "19.0.0"
+  resolved "git+https://24877e8303ab244d4b2317f0644b6ade652e2a4e:x-oauth-basic@github.com/fireblogcms/fireblog-ckeditor#d7a7c3a87a987be55d9a9d99261d8c1a7af8bf25"
 
 flat-cache@^1.2.1:
   version "1.3.4"
