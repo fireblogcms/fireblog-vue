@@ -17,6 +17,7 @@
         <input
           class="file-input"
           type="file"
+          accept="image/*"
           @change="processImage($event)"
           name="resume"
         />
@@ -41,19 +42,19 @@ export default {
   props: {
     blogId: {
       type: String,
-      required: true
+      required: true,
     },
     initialImage: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
       uploadProgress: 0,
       uploadedImage: null,
       file: null,
-      uploadingState: REQUEST_STATE.NOT_STARTED
+      uploadingState: REQUEST_STATE.NOT_STARTED,
     };
   },
   methods: {
@@ -67,14 +68,14 @@ export default {
         this.$emit("onProgress", {
           total: event.total,
           loaded: event.loaded,
-          percentage
+          percentage,
         });
       };
 
       return S3Upload({
         blogId: this.blogId,
         file: this.file,
-        onProgress
+        onProgress,
       })
         .then(({ fileUrl, uploadPolicy }) => {
           this.uploadingState = REQUEST_STATE.FINISHED_OK;
@@ -82,13 +83,13 @@ export default {
           this.uploadedImage = fileUrl;
           this.$emit("onUploaded", fileUrl);
         })
-        .catch(error => {
+        .catch((error) => {
           this.uploadingState = REQUEST_STATE.FINISHED_ERROR;
           appNotifcation("error", error);
           this.$emit("onUploadingStateChange", this.uploadingState);
         });
-    }
-  }
+    },
+  },
 };
 </script>
 
