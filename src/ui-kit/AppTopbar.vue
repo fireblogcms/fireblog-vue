@@ -1,5 +1,5 @@
 <template>
-  <div class="relative z-50 bg-white shadow-bottom" :class="`route-${$route.name}`">
+  <div class="relative z-20 bg-white shadow-bottom" :class="`route-${$route.name}`">
     <div class="flex justify-between px-10 py-4">
       <div class="flex items-center">
         <img
@@ -50,7 +50,7 @@
           <div
             v-if="dropdownMenuActive"
             v-click-outside="() => dropdownMenuActive = false"
-            class="absolute right-0 min-w-15 mt-2 py-3 flex flex-col bg-white rounded-md shadow-md"
+            class="absolute right-0 min-w-15 mt-2 py-3 flex flex-col bg-white rounded-md shadow-around"
             role="menu"
           >
             <router-link

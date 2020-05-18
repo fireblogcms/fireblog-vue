@@ -25,7 +25,7 @@
       }"
       v-if="loading"
     >
-      <img class="w-10 h-10" :src="`/images/${loader}.svg`" />
+      <img class="w-6 h-6" :src="`/images/${loader}.svg`" />
     </div>
   </span>
 </template>

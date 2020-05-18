@@ -119,27 +119,6 @@
       </div>
     </footer>
 
-    <BulmaModal v-model="modal.show">
-      <template #title>{{ modal.title }}</template>
-      <template #body>{{ modal.content }}</template>
-      <template #footer>
-        <div
-          v-if="modal.confirmText && modal.confirmCallback"
-          @click="modal.confirmCallback"
-          class="button is-danger"
-        >
-          {{ modal.confirmText }}
-        </div>
-        <div
-          v-if="modal.cancelText && modal.cancelCallback"
-          @click="modal.cancelCallback"
-          class="button is-primary"
-        >
-          {{ modal.cancelText }}
-        </div>
-      </template>
-    </BulmaModal>
-
     <!-- ADVANCED SETTINGS MODAL -->
     <BulmaModal
       v-if="!loadingAsyncData"
@@ -192,56 +171,37 @@
       <template #footer />
     </BulmaModal>
 
-    <!-- HURRAH MODAL FOR FIRST PUBLICATION -->
-    <BulmaModal
-      class="hurrah-modal"
-      v-model="publishingHurrahModal.show"
-      :whiteFooter="true"
-    >
-      <template #title>
-        <div class="has-text-centered">
-          {{ $t("views.postForm.firstPublicationHurralModal.title") }}
-        </div>
-      </template>
-      <template #body>
-        <div class="has-text-centered">
-          <img style="border-radius:5px" :src="getRandomHurrahGif()" />
-        </div>
-      </template>
-      <template class="has-text-centered" #footer>
-        <button
-          @click="publishingHurrahModal.show = false"
-          class="button is-primary is-large"
+    <!-- SUCCESS MODAL FOR FIRST PUBLICATION -->
+    <AppModal name="publishingSuccessModal">
+      <div class="text-4xl font-bold" slot="header">
+        {{ $t("views.postForm.firstPublicationHurralModal.title") }}
+      </div>
+      <div class="flex flex-col items-center" slot="body">
+        <img class="h-64 mb-10 rounded" :src="getRandomHurrahGif()" />
+        <AppButton
+          color="primary"
+          @click="closePublishingSuccessModal"
         >
           {{ $t("global.okayButton") }}
-        </button>
-      </template>
-    </BulmaModal>
+        </AppButton>
+      </div>
+    </AppModal>
 
-    <!-- HURRAH MODAL WHEN PUBLISHING CHANGES ON ALREADY PUBLISHED POST -->
-    <BulmaModal
-      class="publishing-changes-modal"
-      v-model="publishingChangesModal.show"
-    >
-      <template #title>
-        <div class="has-text-centered">
-          {{ $t("views.postForm.publishChangesHurralModal.title") }}
-        </div>
-      </template>
-      <template #body>
-        <div class="has-text-centered">
-          <img style="border-radius:5px" :src="getRandomHurrahGif()" />
-        </div>
-      </template>
-      <template class="has-text-centered" #footer>
-        <button
-          @click="publishingChangesModal.show = false"
-          class="button is-primary is-large"
+    <!-- SUCCESS MODAL WHEN PUBLISHING CHANGES ON ALREADY PUBLISHED POST -->
+    <AppModal name="publishingChangesSuccessModal">
+      <div class="text-4xl font-bold" slot="header">
+        {{ $t("views.postForm.publishChangesHurralModal.title") }}
+      </div>
+      <div class="flex flex-col items-center" slot="body">
+        <img class="h-64 mb-10 rounded" :src="getRandomHurrahGif()" />
+        <AppButton
+          color="primary"
+          @click="closePublishingChangesSuccessModal"
         >
           {{ $t("global.okayButton") }}
-        </button>
-      </template>
-    </BulmaModal>
+        </AppButton>
+      </div>
+    </AppModal>
   </div>
 </template>
 
@@ -249,6 +209,7 @@
 import AppBreadcrumb from "@/ui-kit/AppBreadcrumb";
 import AppButton from "@/ui-kit/AppButton";
 import AppLoader from "@/ui-kit/AppLoader";
+import AppModal from "@/ui-kit/AppModal";
 import Editor from "fireblog-ckeditor";
 import ContentEditor from "./ContentEditor";
 import { ckeditorS3UploadAdapterPlugin } from "@/utils/ckeditorS3UploadAdapterPlugin";
@@ -308,6 +269,7 @@ export default {
     AppBreadcrumb,
     AppButton,
     AppLoader,
+    AppModal,
     BulmaModal,
     ContentEditor,
     PostFormAdvancedSettings
@@ -323,22 +285,7 @@ export default {
         state: REQUEST_STATE.NOT_STARTED,
         status: null
       },
-      modal: {
-        show: false,
-        title: null,
-        content: null,
-        confirmText: null,
-        confirmCallback: () => {},
-        cancelText: null,
-        cancelCallback: () => {}
-      },
       publicationSettingsModal: {
-        show: false
-      },
-      publishingHurrahModal: {
-        show: false
-      },
-      publishingChangesModal: {
         show: false
       }
     };
@@ -452,8 +399,13 @@ export default {
       this.$refs.contentEditor.$refs.editor.focus();
     },
     onCancelPublicationModalClick() {
-      alert("ok");
       this.publicationSettingsModal.show = false;
+    },
+    closePublishingChangesSuccessModal() {
+      this.$store.commit("modalShowing/close", "publishingChangesSuccessModal");
+    },
+    closePublishingSuccessModal() {
+      this.$store.commit("modalShowing/close", "publishingSuccessModal");
     },
     postFormInit(formValues) {
       vuexFormInit(FORM_ID, {
@@ -613,9 +565,9 @@ export default {
           // make sure user can not change slug anymore without confirmation.
           vuexFormSetValue(FORM_ID, "slugIsLocked", true);
           if (publishingChanges === true) {
-            this.publishingChangesModal.show = true;
+            this.$store.commit("modalShowing/open", "publishingChangesSuccessModal");
           } else {
-            this.publishingHurrahModal.show = true;
+            this.$store.commit("modalShowing/open", "publishingSuccessModal");
           }
         });
       }

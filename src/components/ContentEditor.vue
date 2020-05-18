@@ -134,7 +134,9 @@ export default {
   min-height: 100vh;
   box-shadow: none;
   border: none !important;
+  outline: none !important;
   padding: 0;
+  font-size: 1.25rem;
 }
 /* Replace "P" paragraph icon to a "+" to add media */
 button.ck-block-toolbar-button {
