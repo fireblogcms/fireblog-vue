@@ -1,6 +1,6 @@
 <template>
   <Transition name="fade">
-    <div v-if="showing">
+    <div v-show="showing">
       <div class="fixed inset-0 w-full h-screen bg-white opacity-50"></div>
       <div
         class="fixed inset-0 w-full h-screen flex items-center justify-center"
@@ -35,14 +35,19 @@ export default {
     AppButton
   },
   props: {
-    showing: {
-      type: Boolean,
+    name: {
+      type: String,
       required: true
+    }
+  },
+  computed: {
+    showing() {
+      return this.$store.state.modalShowing.modals[this.name];
     }
   },
   methods: {
     close() {
-      this.$emit('close');
+      this.$store.commit("modalShowing/close", this.name);
     }
   }
 };

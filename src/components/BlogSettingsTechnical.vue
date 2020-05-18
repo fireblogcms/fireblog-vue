@@ -11,15 +11,12 @@
         <p class="mb-4 text-sm">
           {{ $t("views.blogSettings.technicalSettingsForm.fields.webhooks.help") }}
         </p>
-        <!-- TODO: Replace by AppTextarea -->
-        <textarea
+        <AppTextarea
           :value="vuexFormGetValue(formId, 'staticBuildWebhooks')"
-          @input="
-            vuexFormSetValue(formId, 'staticBuildWebhooks', $event.target.value)
-          "
-          class="textarea"
+          @input="vuexFormSetValue(formId, 'staticBuildWebhooks', $event)"
+          maxlength="250"
           placeholder="e.g. Hello world"
-        ></textarea>
+        />
       </div>
       <AppButton
         color="primary-outlined"
@@ -35,6 +32,7 @@
 <script>
 import AppButton from "@/ui-kit/AppButton";
 import AppPanel from "@/ui-kit/AppPanel";
+import AppTextarea from "@/ui-kit/AppTextarea";
 import {
   vuexFormInit,
   vuexFormSetValue,
@@ -57,7 +55,8 @@ const initialFormValues = {
 export default {
   components: {
     AppButton,
-    AppPanel
+    AppPanel,
+    AppTextarea
   },
   props: {
     blog: {

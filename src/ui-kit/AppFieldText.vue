@@ -1,5 +1,8 @@
 <template>
   <div>
+    <label v-if="label" class="font-bold">
+      {{ label }}
+    </label>
     <input
       class="shadow-sm appearance-none border rounded w-full p-3 text-current focus:outline-none focus:shadow-outline"
       type="text"
@@ -17,6 +20,9 @@
 export default {
   props: {
     error: {
+      type: String
+    },
+    label: {
       type: String
     },
     value: {

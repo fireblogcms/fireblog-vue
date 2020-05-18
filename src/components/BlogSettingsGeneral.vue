@@ -10,18 +10,13 @@
             {{ $t("views.blogSettings.generalSettingsForm.fields.name.label") }}
           </label>
         </p>
-        <!-- TODO: Replace by AppInput -->
-        <input
+        <AppFieldText
           :value="vuexFormGetValue(formId, 'name')"
-          @input="vuexFormSetValue(formId, 'name', $event.target.value)"
-          class="input is-large"
-          :class="{ 'is-danger': vuexFormGetError(formId, 'name') }"
+          @input="vuexFormSetValue(formId, 'name', $event)"
+          :error="vuexFormGetError(formId, 'name')"
           type="text"
           maxlength="100"
         />
-        <p class="help is-danger" v-if="vuexFormGetError(formId, 'name')">
-          {{ vuexFormGetError(formId, "name") }}
-        </p>
       </div>
 
       <div class="mb-6">
@@ -31,14 +26,9 @@
         <p class="mb-4 text-sm">
           {{ $t("views.blogSettings.generalSettingsForm.fields.description.help") }}
         </p>
-        <!-- TODO: Replace by AppTextarea -->
-        <textarea
-          class="textarea"
+        <AppTextarea
           :value="vuexFormGetValue(formId, 'description')"
-          @input="
-            vuexFormSetValue(formId, 'description', $event.target.value)
-          "
-          type="text"
+          @input="vuexFormSetValue(formId, 'description', $event)"
           maxlength="250"
         />
       </div>
@@ -73,7 +63,9 @@
 
 <script>
 import AppButton from "@/ui-kit/AppButton";
+import AppFieldText from "@/ui-kit/AppFieldText";
 import AppPanel from "@/ui-kit/AppPanel";
+import AppTextarea from "@/ui-kit/AppTextarea";
 import {
   getBlog,
   REQUEST_STATE,
@@ -104,7 +96,9 @@ const initialFormValues = {
 export default {
   components: {
     AppButton,
+    AppFieldText,
     AppPanel,
+    AppTextarea,
     S3ImageUpload
   },
   props: {

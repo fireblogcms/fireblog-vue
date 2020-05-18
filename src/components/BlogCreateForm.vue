@@ -12,7 +12,6 @@
       <AppFieldText
         v-model="inputs.name"
         :error="formErrors.name"
-        type="text"
         maxlength="250"
         :placeholder="generate()"
       />

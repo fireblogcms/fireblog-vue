@@ -89,7 +89,7 @@
     </div>
 
     <!-- GRAPHQL API DOCUMENTATION -->
-    <AppModal :showing="showingApiModal" @close="showingApiModal = false">
+    <AppModal name="graphQLApiModal">
       <div class="flex items-center justify-between flex-1" slot="header">
         <span class="text-4xl font-bold">API</span>
           <a
@@ -105,24 +105,24 @@
       <div slot="body">
         <p class="text-2xl font-bold mb-4">GraphQL endpoint</p>
         <AppFieldText readonly="true" :value="blogApiUrl" />
-          <div
-            :id="`example-${example.id}`"
-            v-for="example in apiModalExampleList"
-            :key="example.id"
-          >
-            <div class="my-4 flex">
-              <span class="text-2xl font-bold mr-4">{{ example.label }}</span>
-              <a
-                :href="`${blogApiUrl}?query=${encodeURI(example.snippet)}`"
-                target="_blank"
-              >
-                <AppButton color="primary-outlined" size="small">
-                  {{ $t("apiModal.tryItButton") }}
-                </AppButton>
-              </a>
-            </div>
-            <pre class="locale-graphql"><code>{{example.snippet}}</code></pre>
+        <div
+          :id="`example-${example.id}`"
+          v-for="example in apiModalExampleList"
+          :key="example.id"
+        >
+          <div class="my-4 flex">
+            <span class="text-2xl font-bold mr-4">{{ example.label }}</span>
+            <a
+              :href="`${blogApiUrl}?query=${encodeURI(example.snippet)}`"
+              target="_blank"
+            >
+              <AppButton color="primary-outlined" size="small">
+                {{ $t("apiModal.tryItButton") }}
+              </AppButton>
+            </a>
           </div>
+          <pre class="locale-graphql"><code>{{example.snippet}}</code></pre>
+        </div>
       </div>
     </AppModal>
   </div>
@@ -149,8 +149,7 @@ export default {
     return {
       apiModalExampleList: [],
       dropdownMenuActive: false,
-      me: null,
-      showingApiModal: false
+      me: null
     }
   },
   computed: {
@@ -207,7 +206,7 @@ export default {
         context.slug = post.slug;
       }
       this.apiModalExampleList = apiExamples(context);
-      this.showingApiModal = true;
+      this.$store.commit("modalShowing/open", "graphQLApiModal");
     }
   }
 }
