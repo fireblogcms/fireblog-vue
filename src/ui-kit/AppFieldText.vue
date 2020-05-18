@@ -2,6 +2,7 @@
   <div>
     <input
       class="shadow-sm appearance-none border rounded w-full p-3 text-current focus:outline-none focus:shadow-outline"
+      type="text"
       :value="value"
       @input="$emit('input', $event.target.value)"
       v-bind="$attrs"

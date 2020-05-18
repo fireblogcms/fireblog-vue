@@ -104,7 +104,7 @@
       </div>
       <div slot="body">
         <p class="text-2xl font-bold mb-4">GraphQL endpoint</p>
-        <AppInput type="text" readonly="true" :value="blogApiUrl" />
+        <AppFieldText readonly="true" :value="blogApiUrl" />
           <div
             :id="`example-${example.id}`"
             v-for="example in apiModalExampleList"
@@ -130,7 +130,7 @@
 
 <script>
 import AppButton from "@/ui-kit/AppButton";
-import AppInput from "@/ui-kit/AppInput";
+import AppFieldText from "@/ui-kit/AppFieldText";
 import AppModal from "@/ui-kit/AppModal";
 import {
   getBlog,
@@ -142,7 +142,7 @@ import apiExamples from "@/apiExamples";
 export default {
   components: {
     AppButton,
-    AppInput,
+    AppFieldText,
     AppModal
   },
   data() {

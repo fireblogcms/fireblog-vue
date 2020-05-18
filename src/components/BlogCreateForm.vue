@@ -9,7 +9,7 @@
     <div>
       <label class="text-2xl font-bold">{{ $t("views.blogCreate.fields.title.label") }}</label>
       <p class="mb-4 text-sm">{{ $t("views.blogCreate.fields.title.help") }}</p>
-      <AppInput
+      <AppFieldText
         v-model="inputs.name"
         :error="formErrors.name"
         type="text"
@@ -51,7 +51,7 @@
 
 <script>
 import AppButton from "@/ui-kit/AppButton";
-import AppInput from "@/ui-kit/AppInput";
+import AppFieldText from "@/ui-kit/AppFieldText";
 import AppTextarea from "@/ui-kit/AppTextarea";
 import { generate } from "@/utils/fantasyName.js";
 import apolloClient from "@/utils/apolloClient";
@@ -66,7 +66,7 @@ import {
 export default {
   components: {
     AppButton,
-    AppInput,
+    AppFieldText,
     AppTextarea
   },
   props: {
