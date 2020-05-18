@@ -13,103 +13,96 @@
     <!-- TOPBAR RIGHT BUTTONS -->
     <portal to="topbar-right" v-if="!loadingAsyncData">
       <!-- SAVE DRAFT BUTTON -->
-      <button
+      <AppButton
         v-if="getPostStatus() === 'DRAFT'"
-        class="button is-outlined item"
+        :loading="savingPost.state === 'PENDING' && savingPost.status === 'DRAFT'"
+        class="mr-4"
+        color="primary-outlined"
+        size="small"
         @click="saveAsDraft"
-        :class="{
-          'is-loading':
-            savingPost.state === 'PENDING' && savingPost.status === 'DRAFT'
-        }"
-        :disabled="savingPost.state === 'PENDING'"
       >
         {{ $t("views.postForm.saveDraft").toUpperCase() }}
-      </button>
+      </AppButton>
 
       <!-- ADVANCED OPTIONS BUTTON -->
-      <button
-        @click="showAdvancedSettings()"
+      <AppButton
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
-        class="button item is-outlined"
         :disabled="savingPost.state === 'PENDING'"
-        type="submit"
+        class="mr-4"
+        color="primary-outlined"
+        size="small"
+        @click="showAdvancedSettings"
       >
         {{ $t("views.postForm.advancedSettingsButton").toUpperCase() }}
-      </button>
+      </AppButton>
 
-      <!-- BEGIN PUBLICATION BUTTON (launch advanced settings modal)       -->
-      <button
-        @click="showAdvancedSettings()"
+      <!-- BEGIN PUBLICATION BUTTON (launch advanced settings modal) -->
+      <AppButton
         v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
-        class="button item is-primary is-light"
-        :class="{
-          'is-loading':
-            savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'
-        }"
-        :disabled="savingPost.state === 'PENDING'"
-        type="submit"
+        :loading="savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'"
+        class="mr-4"
+        color="primary"
+        size="small"
+        @click="showAdvancedSettings"
       >
         {{ $t("views.postForm.publicationButton").toUpperCase() }}
-      </button>
+      </AppButton>
 
       <!-- UNPUBLISH BUTTON  -->
-      <button
-        @click="onUnpublishClick()"
+      <AppButton
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
-        class="button item is-outlined"
-        :class="{
-          'is-loading':
-            savingPost.state === 'PENDING' && savingPost.status === 'DRAFT'
-        }"
-        :disabled="savingPost.state === 'PENDING'"
-        type="submit"
+        :loading="savingPost.state === 'PENDING' && savingPost.status === 'DRAFT'"
+        class="mr-4"
+        color="primary-outlined"
+        size="small"
+        @click="onUnpublishClick"
       >
         {{ $t("views.postForm.unpublishButton").toUpperCase() }}
-      </button>
+      </AppButton>
 
       <!-- PUBLISH CHANGES BUTTON -->
-      <button
-        @click="publish()"
+      <AppButton
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
-        class="button item is-outlined is-primary"
-        :class="{
-          'is-loading':
-            savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'
-        }"
-        :disabled="savingPost.state === 'PENDING'"
-        type="submit"
+        :loading="savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'"
+        class="mr-4"
+        color="primary-outlined"
+        size="small"
+        @click="publish"
       >
         {{ $t("views.postForm.publishChangesButton").toUpperCase() }}
-      </button>
+      </AppButton>
     </portal>
 
     <AppLoader v-if="loadingAsyncData" />
-    <form class="post-form" v-if="!loadingAsyncData" @submit.prevent>
-      <div class="post-form__field-title">
-        <textarea-autosize
-          maxlength="250"
-          @keydown.enter.native.prevent="onTitleEnter"
-          autofocus
-          rows="1"
-          :placeholder="$t('views.postForm.fields.title.placeholder')"
-          type="text"
-          id="title"
-          @input="onTitleInput"
-          :value="vuexFormGetValue('postForm', 'title')"
-        />
-      </div>
-      <!--      -->
-      <ContentEditor
-        ref="contentEditor"
-        class="post-form__field-editor"
-        :value="vuexFormGetValue('postForm', 'content')"
-        @change="onContentChange"
-        @editorReady="onEditorReady"
-      />
-    </form>
 
-    <footer class="post-form__document-infos">
-      <div class="container">
+    <div class="container mt-10 mb-16 flex flex-col items-center">
+      <div class="w-8/12 py-10 px-12 bg-white shadow-lg rounded-lg">
+        <form v-if="!loadingAsyncData" @submit.prevent>
+          <textarea-autosize
+            class="w-full text-6xl font-serif outline-none"
+            maxlength="250"
+            @keydown.enter.native.prevent="onTitleEnter"
+            autofocus
+            rows="1"
+            :placeholder="$t('views.postForm.fields.title.placeholder')"
+            type="text"
+            id="title"
+            @input="onTitleInput"
+            :value="vuexFormGetValue('postForm', 'title')"
+          />
+          <ContentEditor
+            ref="contentEditor"
+            class="post-form__field-editor"
+            :value="vuexFormGetValue('postForm', 'content')"
+            @change="onContentChange"
+            @editorReady="onEditorReady"
+          />
+        </form>
+      </div>
+    </div>
+
+    <footer class="flex justify-center fixed bottom-0 w-full p-1 text-sm bg-white">
+      <div class="w-7/12 flex justify-between">
         <div class="item">
           {{ $t("global." + getPostStatus().toLowerCase()) }}
           <span v-if="savingPost.state === 'PENDING'">Saving...</span>
@@ -254,12 +247,12 @@
 
 <script>
 import AppBreadcrumb from "@/ui-kit/AppBreadcrumb";
+import AppButton from "@/ui-kit/AppButton";
 import AppLoader from "@/ui-kit/AppLoader";
 import Editor from "fireblog-ckeditor";
 import ContentEditor from "./ContentEditor";
 import { ckeditorS3UploadAdapterPlugin } from "@/utils/ckeditorS3UploadAdapterPlugin";
 import hotkeys from "hotkeys-js";
-
 import {
   REQUEST_STATE,
   getUser,
@@ -313,6 +306,7 @@ const saveAfterKeyStrokesNumber = 50;
 export default {
   components: {
     AppBreadcrumb,
+    AppButton,
     AppLoader,
     BulmaModal,
     ContentEditor,
@@ -712,73 +706,6 @@ export default {
 </script>
 
 <style>
-.post-form {
-  padding-top: 30px;
-  padding-bottom: 70px;
-}
-
-.post-form__field-title {
-  text-align: center;
-  position: relative;
-  background: white;
-  top: 10px;
-  padding: 30px;
-  padding-bottom: 20px;
-  max-width: 880px;
-  margin: auto;
-  box-shadow: 1px 0px 1px 0px rgba(0, 0, 0, 0.05);
-}
-.post-form__field-title textarea {
-  width: 100%;
-  font-family: Roslindale, serif;
-  text-align: left;
-  font-size: 53px;
-  border: none !important;
-  border-color: none;
-  outline: none !important;
-}
-
-.post-form__field-editor #editor {
-  color: #222;
-  font-family: Source Sans Pro, Helvetica Neue, Helvetica, Arial, sans-serif;
-  min-height: 100vh;
-  max-width: 880px;
-  padding: 32px;
-  padding-top: 0;
-  box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.05);
-  margin: auto;
-  background: white;
-  padding-bottom: 80px;
-}
-.post-form__field-editor .ck-content {
-  border: none !important;
-  border-color: none;
-  outline: none !important;
-  border-color: #a0c0e4;
-  border-radius: 2px;
-  outline: none;
-  padding: 1px;
-  margin: 0;
-  resize: none; /*remove the resize handle on the bottom right*/
-  line-height: 1.8;
-}
-
-.post-form__document-infos {
-  position: fixed;
-  width: 100%;
-  bottom: 0;
-  background-color: white;
-  text-align: right;
-  font-size: 12px;
-  padding: 5px;
-}
-
-.post-form__document-infos .container {
-  display: flex;
-  justify-content: space-between;
-  width: 800px;
-}
-
 .post-form__document-infos__word-count .ck-word-count {
   display: flex;
   justify-content: space-between;

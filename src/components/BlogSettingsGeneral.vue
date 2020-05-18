@@ -82,7 +82,6 @@ import {
 } from "@/utils/vuexForm";
 import apolloClient from "@/utils/apolloClient";
 import gql from "graphql-tag";
-import BulmaModal from "./BulmaModal";
 import S3ImageUpload from "./S3ImageUpload";
 import { updateBlogMutation } from "@/utils/queries";
 
