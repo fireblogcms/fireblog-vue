@@ -22,7 +22,6 @@
       <p class="mb-4 text-sm">{{ $t("views.blogCreate.fields.description.help") }}</p>
       <AppTextarea
         v-model="inputs.description"
-        type="text"
         maxlength="250"
       />
     </div>

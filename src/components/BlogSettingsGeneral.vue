@@ -14,7 +14,6 @@
           :value="vuexFormGetValue(formId, 'name')"
           @input="vuexFormSetValue(formId, 'name', $event)"
           :error="vuexFormGetError(formId, 'name')"
-          type="text"
           maxlength="100"
         />
       </div>
