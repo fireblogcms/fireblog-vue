@@ -10,121 +10,108 @@
     </portal>
     <!-- END TOPBAR LEFT BUTTONS -->
 
-    <template v-if="initDataState === 'PENDING'">
-      <AppLoader />
-    </template>
+    <AppLoader v-if="initDataState === 'PENDING'" />
+
     <template v-if="initDataState === 'FINISHED_OK'">
-      <div>
-        <header class="container" style="padding: 2rem 1rem">
-          <div class="blog-title columns">
-            <div class="column">
-              <img class="is-hidden-mobile" src="/images/book.png" />
-              <h1 class="title is-2 is-uppercase">{{ blog.name }}</h1>
-            </div>
-            <div class="column column-right">
-              <button
-                class="button is-box-shadowed is-large"
-                @click="
-                  $router.push({
-                    name: 'blogSettings',
-                    params: { blogId: $route.params.blogId }
-                  })
-                "
-              >
-                <span class="settings-icon"></span>
-                <span>{{
-                  $t("views.blogList.settingsButton").toUpperCase()
-                }}</span>
-              </button>
-              <button
-                class="button is-large is-outline is-primary"
-                v-if="!isFirstPost"
-                @click="
-                  $router.push({
-                    name: 'postCreate',
-                    params: { blogId: $route.params.blogId }
-                  })
-                "
-              >
-                {{ $t("views.postList.writeNewPostButton").toUpperCase() }}
-              </button>
-            </div>
+      <div class="container my-10">
+        <div class="flex items-center justify-between pb-6">
+          <div class="flex items-center">
+            <img
+              class="w-16 h-16 mr-10"
+              src="/images/book.png"
+            />
+            <h1 class="text-5xl font-bold uppercase">
+              {{ blog.name }}
+            </h1>
           </div>
-        </header>
-
-        <template v-if="isFirstPost === true">
-          <div class="container">
-            <AppPanel :class="{ 'is-first': isFirstPost }">
-              <h2 style="font-weight:200" class="title has-text-centered">
-                {{ $t("views.postList.firstBlogSentence") }}
-              </h2>
-              <div class="has-text-centered">
-                <div style="margin:2rem">
-                  <button
-                    class="button is-large is-primary is-box-shadowed"
-                    @click="
-                      $router.push({
-                        name: 'postCreate',
-                        params: { blogId: $route.params.blogId }
-                      })
-                    "
-                  >
-                    {{ $t("views.postList.firstPostWriteButton") }}
-                  </button>
-                </div>
-              </div>
-            </AppPanel>
+          <div class="flex">
+            <AppButton
+              class="mr-4"
+              @click="$router.push({
+                name: 'blogSettings',
+                params: { blogId: $route.params.blogId }
+              })"
+            >
+              <img
+                class="w-8 mr-2"
+                src="/images/icon-settings.svg"
+              />
+              <span>
+                {{ $t("views.blogList.settingsButton").toUpperCase() }}
+              </span>
+            </AppButton>
+            <AppButton
+              v-if="!isFirstPost"
+              color="primary"
+              @click="$router.push({
+                name: 'postCreate',
+                params: { blogId: $route.params.blogId }
+              })"
+            >
+              {{ $t("views.postList.writeNewPostButton").toUpperCase() }}
+            </AppButton>
           </div>
-        </template>
-        <template v-if="!isFirstPost">
-          <section class="container">
-            <div class="tabs is-boxed is-medium">
-              <ul>
-                <li
-                  @click="onStatusClick('PUBLISHED')"
-                  :class="{ 'is-active': activeStatus == 'PUBLISHED' }"
-                >
-                  <a>
-                    {{ $t("views.postList.publishedTab") }}
-                    <span style="margin-left:10px" class="tag is-rounded">
-                      {{ postsPublished.totalCount }}
-                    </span>
-                  </a>
-                </li>
-                <li
-                  @click="onStatusClick('DRAFT')"
-                  :class="{ 'is-active': activeStatus == 'DRAFT' }"
-                >
-                  <a>
-                    {{ $t("views.postList.draftTab") }}
-                    <span style="margin-left:10px" class="tag is-rounded">
-                      {{ postsDraft.totalCount }}
-                    </span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <AppPanel style="border-top-left-radius:0;min-height:200px">
-              <PostListPane
-                :postsRequestState="postsPublishedRequestState"
-                @onDeleteClick="onDeleteClick"
-                @onRowClick="onRowClick"
-                v-show="activeStatus === 'PUBLISHED'"
-                :posts="postsPublished"
-              />
-              <PostListPane
-                @onDeleteClick="onDeleteClick"
-                @onRowClick="onRowClick"
-                :postsRequestState="postsDraftRequestState"
-                v-show="activeStatus === 'DRAFT'"
-                :posts="postsDraft"
-              />
-            </AppPanel>
-          </section>
-        </template>
+        </div>
       </div>
+
+      <AppPanel v-if="isFirstPost" class="mb-20">
+        <h2 class="text-center text-3xl font-bold">
+          {{ $t("views.postList.firstBlogSentence") }}
+        </h2>
+        <div class="mt-8 flex justify-center">
+          <AppButton
+            color="primary"
+            @click="$router.push({
+              name: 'postCreate',
+              params: { blogId: $route.params.blogId }
+            })"
+          >
+            {{ $t("views.postList.firstPostWriteButton").toUpperCase() }}
+          </AppButton>
+        </div>
+      </AppPanel>
+
+      <template v-if="!isFirstPost">
+        <ul class="container flex">
+          <li
+            class="py-4 px-10 flex items-center rounded-t-lg cursor-pointer text-xl font-bold"
+            @click="onStatusClick('PUBLISHED')"
+            :class="{ 'bg-white': activeStatus == 'PUBLISHED' }"
+          >
+            <span>{{ $t("views.postList.publishedTab") }}</span>
+            <div class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-400 text-sm">
+              {{ postsPublished.totalCount }}
+            </div>
+          </li>
+          <li
+            class="py-4 px-10 flex items-center rounded-t-lg cursor-pointer text-xl font-bold"
+            @click="onStatusClick('DRAFT')"
+            :class="{ 'bg-white': activeStatus == 'DRAFT' }"
+          >
+            <span>{{ $t("views.postList.draftTab") }}</span>
+            <div class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-400 text-sm">
+              {{ postsDraft.totalCount }}
+            </div>
+          </li>
+        </ul>
+
+        <div class="container mb-20 py-16 px-10 bg-white shadow-lg rounded-lg rounded-tl-none">
+          <PostList
+            :postsRequestState="postsPublishedRequestState"
+            @onDeleteClick="onDeleteClick"
+            v-show="activeStatus === 'PUBLISHED'"
+            :posts="postsPublished"
+          />
+          <PostList
+            @onDeleteClick="onDeleteClick"
+            :postsRequestState="postsDraftRequestState"
+            v-show="activeStatus === 'DRAFT'"
+            :posts="postsDraft"
+          />
+        </div>
+      </template>
     </template>
+
     <BulmaModal v-if="deleteModal.show" v-model="deleteModal.show">
       <template #title>{{ deleteModal.title }}</template>
       <template #body>
@@ -154,6 +141,7 @@
         </div>
       </template>
     </BulmaModal>
+
     <BulmaModal
       v-model="paymentSuccessModal.show"
     >
@@ -184,7 +172,9 @@
 
 <script>
 import AppBreadcrumb from "@/ui-kit/AppBreadcrumb";
+import AppButton from "@/ui-kit/AppButton";
 import AppLoader from "@/ui-kit/AppLoader";
+import AppPanel from "@/ui-kit/AppPanel";
 import apolloClient from "@/utils/apolloClient";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import gql from "graphql-tag";
@@ -194,18 +184,18 @@ import {
   getBlogQuery,
   deletePostMutation
 } from "@/utils/queries";
-import AppPanel from "@/components/AppPanel";
 import striptags from "striptags";
 import BulmaModal from "@/components/BulmaModal";
-import PostListPane from "@/components/PostListPane";
+import PostList from "@/components/PostList";
 
 export default {
   components: {
     AppBreadcrumb,
+    AppButton,
     AppLoader,
     AppPanel,
     BulmaModal,
-    PostListPane,
+    PostList,
     DefaultLayout
   },
   data() {
@@ -282,15 +272,6 @@ export default {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           throw new Error(error);
         });
-    },
-    buildLinkToPost(item) {
-      return {
-        name: "postUpdate",
-        params: { blogId: this.$route.params.blogId, postId: item.node._id }
-      };
-    },
-    onRowClick(item) {
-      this.$router.push(this.buildLinkToPost(item));
     },
     async getAllPosts() {
       return apolloClient
@@ -415,35 +396,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.app-panel:not(.is-first) {
-  border-top: none;
-}
-.tabs {
-  margin-bottom: 0;
-}
-#app .tabs li a {
-  text-decoration: none;
-}
-.blog-title .column {
-  display: flex;
-  align-items: center;
-}
-.blog-title .column-right {
-  justify-content: flex-end;
-}
-.blog-title img {
-  height: 4rem;
-  padding-right: 1rem;
-}
-.blog-title .column-right button {
-  margin-left: 2rem;
-}
-.settings-icon {
-  margin-right: 0.7rem;
-  width: 30px;
-  height: 30px;
-  background: url("/images/icon-settings.svg") no-repeat;
-}
-</style>

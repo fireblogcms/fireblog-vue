@@ -1,5 +1,6 @@
 <template>
   <span class="relative inline-block">
+    <!-- Click stop is important for the post list for example so the parent's click is not triggered -->
     <button
       class="flex items-center border-2 rounded-md focus:outline-none focus:shadow-outline"
       :class="{
@@ -13,7 +14,7 @@
         'cursor-default opacity-50': $attrs.disabled
       }"
       v-bind="$attrs"
-      @click="onClick"
+      @click.stop="onClick"
     >
       <slot></slot>
     </button>
