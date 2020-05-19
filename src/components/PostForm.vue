@@ -65,7 +65,7 @@
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
         :loading="savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'"
         class="mr-4"
-        color="primary-outlined"
+        color="primary"
         size="small"
         @click="publish"
       >
