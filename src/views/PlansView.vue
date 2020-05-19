@@ -105,20 +105,35 @@
       </div>
     </div>
 
-    <ChangePlanModal
-      :show="changePlanModal.show"
-      :plan="changePlanModal.plan"
-      @showUpdate="(value) => changePlanModal.show = value"
-      @changePlan="changePlan"
-    />
+    <!-- CHANGE PLAN MODAL -->
+    <AppModal name="changePlanModal">
+      <div class="text-4xl font-bold" slot="header">
+        {{ $t("views.plans.changePlanModal.title") }}
+      </div>
+      <div class="flex flex-col items-center" slot="body">
+        <p class="text-xl">
+          {{ $t("views.plans.changePlanModal.body", {
+            planName: changePlanModal.plan.productName,
+            planAmount: (parseInt(changePlanModal.plan.amountTaxes) / 100).toFixed(2)
+          }) }}
+        </p>
+        <AppButton
+          class="mt-10"
+          color="primary"
+          @click="changePlan(changePlanModal.plan)"
+        >
+          {{ $t("global.subscribeButton") }}
+        </AppButton>
+      </div>
+    </AppModal>
   </DefaultLayout>
 </template>
 
 <script>
 import AppButton from "@/ui-kit/AppButton";
 import AppBreadcrumb from "@/ui-kit/AppBreadcrumb";
+import AppModal from "@/ui-kit/AppModal";
 import DefaultLayout from "@/layouts/DefaultLayout";
-import ChangePlanModal from "@/components/ChangePlanModal";
 import apolloClient from "@/utils/apolloClient";
 import {
   getPlansQuery,
@@ -137,9 +152,9 @@ export default {
   components: {
     AppButton,
     AppBreadcrumb,
+    AppModal,
     DefaultLayout,
-    ContentLoader,
-    ChangePlanModal
+    ContentLoader
   },
   data() {
     return {
@@ -147,7 +162,6 @@ export default {
       freePlan: null,
       plans: [],
       changePlanModal: {
-        show: false,
         plan: {}
       }
     };
@@ -190,9 +204,9 @@ export default {
           });
       } else {
         this.changePlanModal = {
-          show: true,
           plan
         };
+        this.$store.commit("modalShowing/open", "changePlanModal");
       }
     },
     changePlan(plan) {

@@ -18,8 +18,6 @@ export default {
   "components.planInformations.name": "Plan:",
   "components.planInformations.freeTrial": "free trial:",
   "components.planInformations.daysLeftTrial": "days left",
-  "components.changePlanModal.title": "Subscribe to another plan",
-  "components.changePlanModal.body": "You are about to change your current plan for {planName} for an amount of {planAmount} € per month. If you proceed, you will receive an email with the new invoice.",
   "global.cancel": "Cancel",
   "global.close": "Close",
   "global.delete": "Delete",
@@ -140,4 +138,6 @@ export default {
   "views.plans.storageUnitMB": "MB",
   "views.plans.storageUnitGB": "GB",
   "views.plans.storage": "storage",
+  "views.plans.changePlanModal.title": "Subscribe to another plan",
+  "views.plans.changePlanModal.body": "You are about to change your current plan for {planName} for an amount of {planAmount} € per month. If you proceed, you will receive an email with the new invoice.",
 };

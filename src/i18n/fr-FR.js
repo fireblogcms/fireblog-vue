@@ -18,8 +18,6 @@ export default {
   "components.planInformations.name": "Plan :",
   "components.planInformations.freeTrial": "essai gratuit :",
   "components.planInformations.daysLeftTrial": "jours restants",
-  "components.changePlanModal.title": "S'abonner à un autre plan",
-  "components.changePlanModal.body": "Vous êtes sur le point de changer votre plan actuel pour {planName} pour un montant de {planAmount} € par mois. Si vous procédez, vous recevrez un e-mail avec la nouvelle facture.",
   "global.cancel": "Annuler",
   "global.close": "Fermer",
   "global.delete": "Supprimer",
@@ -140,4 +138,6 @@ export default {
   "views.plans.storageUnitMB": "Mo",
   "views.plans.storageUnitGB": "Go",
   "views.plans.storage": "de stockage",
+  "views.plans.changePlanModal.title": "S'abonner à un autre plan",
+  "views.plans.changePlanModal.body": "Vous êtes sur le point de changer votre plan actuel pour {planName} pour un montant de {planAmount} € par mois. Si vous procédez, vous recevrez un e-mail avec la nouvelle facture.",
 };
