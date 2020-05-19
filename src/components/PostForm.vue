@@ -75,7 +75,7 @@
 
     <AppLoader v-if="loadingAsyncData" />
 
-    <div class="container mt-10 mb-16 flex flex-col items-center">
+    <div class="container mx-auto mt-10 mb-16 flex flex-col items-center">
       <div class="w-8/12 py-10 px-12 bg-white shadow-lg rounded-lg">
         <form v-if="!loadingAsyncData" @submit.prevent>
           <textarea-autosize

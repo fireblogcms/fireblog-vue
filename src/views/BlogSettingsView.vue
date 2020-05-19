@@ -3,9 +3,9 @@
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
       <AppBreadcrumb
-        image="/images/books.png"
-        link="blogList"
-        :name="$t('views.postList.backToBlogLink')"
+        image="/images/book.png"
+        link="postList"
+        :name="$t('views.postForm.backToBlogLink')"
       />
     </portal>
     <!-- END TOPBAR LEFT BUTTONS -->

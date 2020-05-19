@@ -13,7 +13,7 @@
     <AppLoader v-if="initDataState === 'PENDING'" />
 
     <template v-if="initDataState === 'FINISHED_OK'">
-      <div class="container my-10">
+      <div class="container mx-auto my-10">
         <div class="flex items-center justify-between pb-6">
           <div class="flex items-center">
             <img
@@ -72,7 +72,7 @@
       </AppPanel>
 
       <template v-if="!isFirstPost">
-        <ul class="container flex">
+        <ul class="container mx-auto flex">
           <li
             class="py-4 px-10 flex items-center rounded-t-lg cursor-pointer text-xl font-bold"
             @click="onStatusClick('PUBLISHED')"
@@ -95,7 +95,7 @@
           </li>
         </ul>
 
-        <div class="container mb-20 py-16 px-10 bg-white shadow-lg rounded-lg rounded-tl-none">
+        <div class="container mx-auto mb-20 py-16 px-10 bg-white shadow-lg rounded-lg rounded-tl-none">
           <PostList
             :postsRequestState="postsPublishedRequestState"
             @onDeleteClick="onDeleteClick"

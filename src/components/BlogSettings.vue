@@ -1,6 +1,7 @@
 <template>
   <div>
     <AppLoader v-if="initDataState === 'PENDING'" />
+
     <template v-if="initDataState === 'FINISHED_OK'">
       <BlogSettingsGeneral :blog="blog" />
       <BlogSettingsTechnical :blog="blog" />
