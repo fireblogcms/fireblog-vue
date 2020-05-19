@@ -211,11 +211,14 @@ export default {
           }
         })
         .then(result => {
-          this.$router.push({
-            name: "postList",
-            params: { blogId: result.data.updateBlog._id },
-            query: { status: "success" }
-          });
+          this.$router
+            .push({
+              name: "postList",
+              params: { blogId: result.data.updateBlog._id }
+            })
+            .then(() => {
+              this.$store.commit("modalShowing/open", "paymentSuccessModal");
+            });
           return result.data.updateBlog;
         })
         .catch(error => {

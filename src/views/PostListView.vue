@@ -112,61 +112,57 @@
       </template>
     </template>
 
-    <BulmaModal v-if="deleteModal.show" v-model="deleteModal.show">
-      <template #title>{{ deleteModal.title }}</template>
-      <template #body>
-        <div class="message is-danger">
-          <div class="message-body">
-            <p>
-              {{
-                $t("views.postList.deleteModal.content", {
-                  postTitle: deleteModal.post.title
-                })
-              }}.
-            </p>
-          </div>
-        </div>
-      </template>
-      <template #footer>
-        <div @click="deleteModal.show = false" class="button is-primary">
-          {{ $t("views.postList.deleteModal.cancelButton") }}
-        </div>
-        <div
-          @click="onDeleteModalConfirmClick"
-          class="button is-danger"
-          :class="{ 'is-loading': deletePostRequestState === 'PENDING' }"
-          :disabled="deletePostRequestState === 'PENDING' ? true : false"
-        >
-          {{ $t("views.postList.deleteModal.confirmButton") }}
-        </div>
-      </template>
-    </BulmaModal>
 
-    <BulmaModal
-      v-model="paymentSuccessModal.show"
-    >
-      <template #title>
-        <div class="has-text-centered">
-          {{ $t("views.postList.paymentSuccess") }}
+    <!-- DELETE POST MODAL -->
+    <AppModal name="deletePostModal" v-if="deleteModal.post">
+      <div class="text-4xl font-bold" slot="header">
+        {{ deleteModal.title }}
+      </div>
+      <div class="flex flex-col items-center" slot="body">
+        <p class="text-xl">
+          {{
+            $t("views.postList.deleteModal.content", {
+              postTitle: deleteModal.post.title
+            })
+          }}
+        </p>
+        <div class="flex mt-10">
+          <AppButton
+            color="primary-outlined"
+            class="mr-4"
+            @click="closeDeletePostModal"
+          >
+            {{ $t("global.cancel") }}
+          </AppButton>
+          <AppButton
+            :loading="deletePostRequestState === 'PENDING'"
+            color="primary"
+            @click="onDeleteModalConfirmClick"
+          >
+            {{ $t("views.postList.deleteModal.confirmButton") }}
+          </AppButton>
         </div>
-      </template>
-      <template #body>
-        <div class="has-text-centered">
-          <img
-            style="border-radius:5px"
-            src="https://camo.githubusercontent.com/581d9802c9e5716113238cc2fcaf938bf2dad338/68747470733a2f2f6d656469612e67697068792e636f6d2f6d656469612f6248757134736355373255496f2f67697068792e676966"
-          />
-        </div>
-      </template>
-      <template class="has-text-centered" #footer>
-        <button
-          @click="paymentSuccessModal.show = false"
-          class="button is-primary is-large"
+      </div>
+    </AppModal>
+
+    <!-- PAYMENT SUCCESS MODAL -->
+    <AppModal name="paymentSuccessModal">
+      <div class="text-4xl font-bold" slot="header">
+        {{ $t("views.postList.paymentSuccess") }}
+      </div>
+      <div class="flex flex-col items-center" slot="body">
+        <img
+          class="h-64 mb-10 rounded"
+          src="https://camo.githubusercontent.com/581d9802c9e5716113238cc2fcaf938bf2dad338/68747470733a2f2f6d656469612e67697068792e636f6d2f6d656469612f6248757134736355373255496f2f67697068792e676966"
+        />
+        <AppButton
+          color="primary"
+          @click="closePaymentSuccessModal"
         >
           {{ $t("global.okayButton") }}
-        </button>
-      </template>
-    </BulmaModal>
+        </AppButton>
+      </div>
+    </AppModal>
   </DefaultLayout>
 </template>
 
@@ -174,6 +170,7 @@
 import AppBreadcrumb from "@/ui-kit/AppBreadcrumb";
 import AppButton from "@/ui-kit/AppButton";
 import AppLoader from "@/ui-kit/AppLoader";
+import AppModal from "@/ui-kit/AppModal";
 import AppPanel from "@/ui-kit/AppPanel";
 import apolloClient from "@/utils/apolloClient";
 import DefaultLayout from "@/layouts/DefaultLayout";
@@ -185,7 +182,6 @@ import {
   deletePostMutation
 } from "@/utils/queries";
 import striptags from "striptags";
-import BulmaModal from "@/components/BulmaModal";
 import PostList from "@/components/PostList";
 
 export default {
@@ -193,10 +189,10 @@ export default {
     AppBreadcrumb,
     AppButton,
     AppLoader,
+    AppModal,
     AppPanel,
-    BulmaModal,
-    PostList,
-    DefaultLayout
+    DefaultLayout,
+    PostList
   },
   data() {
     return {
@@ -206,13 +202,9 @@ export default {
       postsPublishedRequestState: REQUEST_STATE.NOT_STARTED,
       deletePostRequestState: REQUEST_STATE.NOT_STARTED,
       deleteModal: {
-        show: false,
         title: null,
         data: null,
         post: null
-      },
-      paymentSuccessModal: {
-        show: false
       },
       blog: null,
       posts: null,
@@ -225,9 +217,6 @@ export default {
   },
   created() {
     this.striptags = striptags;
-    if (this.$route.query.status === "success") {
-      this.paymentSuccessModal.show = true;
-    }
   },
   mounted() {
     this.initData();
@@ -348,6 +337,12 @@ export default {
           throw new Error(error);
         });
     },
+    closeDeletePostModal() {
+      this.$store.commit("modalShowing/close", "deletePostModal");
+    },
+    closePaymentSuccessModal() {
+      this.$store.commit("modalShowing/close", "paymentSuccessModal");
+    },
     deletePost(post) {
       this.deletePostRequestState = REQUEST_STATE.PENDING;
       return apolloClient
@@ -362,7 +357,7 @@ export default {
         .catch(error => {
           this.deletePostRequestState = REQUEST_STATE.FINISHED_ERROR;
           toast(this, "Sorry, an error occured while fetching posts", "error");
-          this.deleteModal.show = false;
+          this.closeDeletePostModal();
           throw new Error(error);
         });
     },
@@ -377,14 +372,14 @@ export default {
     },
     onDeleteClick(post) {
       this.deleteModal.post = post;
-      this.deleteModal.show = true;
       this.deleteModal.title = this.$t("views.postList.deleteModal.title", {
         postTitle: post.title
       });
+      this.$store.commit("modalShowing/open", "deletePostModal");
     },
     onDeleteModalConfirmClick() {
       this.deletePost(this.deleteModal.post).then(() => {
-        this.deleteModal.show = false;
+        this.closeDeletePostModal();
         if (this.deleteModal.post.status === "PUBLISHED") {
           this.getPostsPublished();
         }
