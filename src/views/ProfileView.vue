@@ -1,21 +1,18 @@
 <template>
   <DefaultLayout>
-    <template v-if="initDataState === 'PENDING'">
-      <AppLoader />
-    </template>
-    <template v-if="initDataState === 'FINISHED_OK'">
-      <AppPanel>
-        <div class="flex flex-col items-center">
-          <img
-            class="w-64 h-64 mb-10 rounded-full"
-            :src="me.picture"
-            alt="User's profile picture"
-          />
-          <p class="text-3xl font-bold mb-2">{{ $t("global.label.name") }} {{ me.name }}</p>
-          <p class="text-2xl">{{ $t("global.label.email") }} {{ me.email }}</p>
-        </div>
-      </AppPanel>
-    </template>
+    <AppLoader v-if="initDataState === 'PENDING'" />
+
+    <AppPanel v-if="initDataState === 'FINISHED_OK'">
+      <div class="flex flex-col items-center">
+        <img
+          class="w-64 h-64 mb-10 rounded-full"
+          :src="me.picture"
+          alt="User's profile picture"
+        />
+        <p class="text-3xl font-bold mb-2">{{ $t("global.label.name") }} {{ me.name }}</p>
+        <p class="text-2xl">{{ $t("global.label.email") }} {{ me.email }}</p>
+      </div>
+    </AppPanel>
   </DefaultLayout>
 </template>
 

@@ -33,6 +33,7 @@ export default {
   "global.label.email": "Adresse e-mail :",
   "global.pageNotFound": "Page non trouvée",
   "global.retryLogin": "Réessayez de vous connecter",
+  "global.chooseFile": "Choisir le fichier",
   "topbar.accountMenu.myBlogs": "Mes blogs",
   "topbar.accountMenu.myAccount": "Mon compte",
   "topbar.accountMenu.logout": "Se déconnecter",

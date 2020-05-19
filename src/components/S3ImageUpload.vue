@@ -1,36 +1,38 @@
 <template>
-  <div class="cloudinary-image-direct-upload">
-    <img v-if="uploadedImage" class="image" :src="uploadedImage" />
-    <img v-if="!uploadedImage" class="image" :src="initialImage" />
+  <div class="flex flex-col items-center">
+    <img v-if="uploadedImage" class="w-64" :src="uploadedImage" />
+    <img v-if="!uploadedImage" class="w-64" :src="initialImage" />
 
-    <div v-show="uploadingState === 'PENDING'">
-      <progress
-        style="border-radius:0"
-        class="progress is-primary"
-        :value="uploadProgress"
-        max="100"
-        >{{ uploadProgress }}</progress
-      >
-    </div>
-    <div class="file is-large is-boxed has-name is-centered">
-      <label class="file-label" style="width: 100%">
-        <input
-          class="file-input"
-          type="file"
-          @change="processImage($event)"
-          name="resume"
+    <progress
+      v-show="uploadingState === 'PENDING'"
+      class="w-64"
+      :value="uploadProgress"
+      max="100"
+    >
+      {{ uploadProgress }}
+    </progress>
+
+    <label class="mt-6 cursor-pointer">
+      <input
+        class="hidden"
+        type="file"
+        @change="processImage($event)"
+        name="file"
+      />
+      <div class="flex items-center border-2 rounded-md bg-white border-gray-200 py-3 px-6 text-2xl">
+        <img
+          class="w-6 mr-4"
+          src="/images/icon-upload.svg"
         />
-        <span class="file-cta">
-          <span class="file-icon">
-            <img src="/images/icon-upload.svg" />
-          </span>
-          <span class="file-label">Upload image</span>
+        <span>
+          {{ $t("global.chooseFile") }}
         </span>
-        <span v-if="this.file && false" class="file-name">
-          {{ this.file.name }}
-        </span>
-      </label>
-    </div>
+      </div>
+    </label>
+
+    <p v-if="file" class="text-sm">
+      {{ file.name }}
+    </p>
   </div>
 </template>
 
@@ -91,9 +93,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.file-icon img {
-  color: white;
-}
-</style>

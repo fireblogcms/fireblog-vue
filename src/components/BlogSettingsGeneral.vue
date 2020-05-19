@@ -40,7 +40,6 @@
           {{ $t("views.blogSettings.generalSettingsForm.fields.image.help") }}
         </p>
         <S3ImageUpload
-          class="w-1/2"
           :blogId="$route.params.blogId"
           @onUploadingStateChange="onUploadingStateChange"
           :initialImage="vuexFormGetValue(formId, 'image')"
