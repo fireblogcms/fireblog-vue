@@ -1,12 +1,14 @@
 <template>
-  <div class="google-preview">
-    <div class="google-preview__url">
+  <div>
+    <p class="text-sm">
       {{ computedUrl }}
-    </div>
-    <div class="google-preview__title">
+    </p>
+    <p class="pt-2 text-xl text-indigo-700">
       {{ computedTitle }}
-    </div>
-    <div class="google-preview__description">{{ computedDescription }}</div>
+    </p>
+    <p class="text-sm">
+      {{ computedDescription }}
+    </p>
   </div>
 </template>
 
@@ -56,27 +58,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.google-preview {
-  max-width: 600px;
-}
-.google-preview__url {
-  font-size: 14px;
-  padding-top: 1px;
-  line-height: 1.3;
-  color: #3c4043;
-}
-.google-preview__title {
-  font-size: 20px;
-  line-height: 1.3;
-  padding-top: 4px;
-  color: rgb(26, 13, 171);
-}
-.google-preview__description {
-  line-height: 1.57;
-  word-wrap: break-word;
-  color: rgb(60, 64, 67);
-  font-size: 14px;
-}
-</style>
