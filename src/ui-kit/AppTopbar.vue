@@ -92,15 +92,15 @@
     <AppModal name="graphQLApiModal">
       <div class="flex items-center justify-between flex-1" slot="header">
         <span class="text-4xl font-bold">API</span>
-          <a
-            :href="blogApiUrl" 
-            target="_blank"
-            class="hover:text-current"
-          >
-            <AppButton color="primary" size="small">
-              {{ $t("apiModal.openGraphQLExplorer") }}
-            </AppButton>
-          </a>
+        <a
+          :href="blogApiUrl" 
+          target="_blank"
+          class="hover:text-current"
+        >
+          <AppButton color="primary" size="small">
+            {{ $t("apiModal.openGraphQLExplorer") }}
+          </AppButton>
+        </a>
       </div>
       <div slot="body">
         <p class="text-2xl font-bold mb-4">GraphQL endpoint</p>

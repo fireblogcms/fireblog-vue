@@ -5,10 +5,17 @@
       class="z-30 fixed inset-0 w-full h-screen flex items-center justify-center"
       @click.self="close"
     >
-      <div class="w-1/2 max-h-9/10 flex flex-col bg-white shadow-lg rounded-lg">
+      <div
+        class="flex flex-col bg-white"
+        :class="{
+          'w-1/2 max-h-9/10 shadow-lg rounded-lg': !fullscreen,
+          'w-full h-screen': fullscreen
+        }"
+      >
         <div class="p-6 flex items-center justify-between">
           <slot name="header" />
           <AppButton
+            v-if="!fullscreen"
             aria-label="close"
             size="small"
             class="ml-4"
@@ -33,6 +40,10 @@ export default {
     AppButton
   },
   props: {
+    fullscreen: {
+      type: Boolean,
+      default: false
+    },
     name: {
       type: String,
       required: true

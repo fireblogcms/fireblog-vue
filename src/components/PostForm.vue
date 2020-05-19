@@ -120,56 +120,43 @@
     </footer>
 
     <!-- ADVANCED SETTINGS MODAL -->
-    <BulmaModal
+    <AppModal
       v-if="!loadingAsyncData"
-      class="publication-settings-modal animated zoomIn"
+      name="publishingOptionsModal"
       :fullscreen="true"
-      v-model="publicationSettingsModal.show"
     >
-      <template #body>
-        <div class="container">
-          <PostFormAdvancedSettings
-            :existingPost="existingPost"
-            :savingPost="savingPost"
-            @onCancelClick="onCancelPublicationModalClick"
-            @onUploadingStateChange="state => (uploadingState = state)"
-          />
-        </div>
-      </template>
-      <template #title>
-        <div>
-          <span class="title is-3">
-            {{
-            $t("views.postForm.advancedSettingsModal.title")
-          }}
-          </span>
-          <!-- PUBLISH BUTTON -->
-          <button
-            class="button is-primary is-pulled-right is-medium"
-            @click="publish"
-            :disabled="
-              savingPost.state === 'PENDING' || uploadingState === 'PENDING'
-            "
-            :class="{
-              'is-loading':
-                savingPost.state === 'PENDING' &&
-                savingPost.status === 'PUBLISHED'
-            }"
-          >
-         {{publishModalPublishButtonText}}
-          </button>
-
-          <button
-            style="margin-right:20px;"
-            @click="publicationSettingsModal.show = false"
-            class="button is-pulled-right is-medium"
+      <div class="flex items-center justify-between flex-1" slot="header">
+        <span class="text-4xl font-bold">
+          {{ $t("views.postForm.advancedSettingsModal.title") }}
+        </span>
+        <div class="flex">
+          <AppButton
+            color="primary-outlined"
+            size="small"
+            class="mr-4"
+            @click="closePublishingOptionsModal"
           >
             {{ $t("views.postForm.publicationCancel") }}
-          </button>
+          </AppButton>
+          <AppButton
+            color="primary"
+            size="small"
+            :loading="savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'"
+            @click="publish"
+          >
+            {{ publishModalPublishButtonText }}
+          </AppButton>
         </div>
+      </div>
+      <template #body>
+        <PostFormAdvancedSettings
+          :existingPost="existingPost"
+          :savingPost="savingPost"
+          @onCancelClick="closePublishingOptionsModal"
+          @onUploadingStateChange="state => (uploadingState = state)"
+        />
       </template>
-      <template #footer />
-    </BulmaModal>
+    </AppModal>
 
     <!-- SUCCESS MODAL FOR FIRST PUBLICATION -->
     <AppModal name="publishingSuccessModal">
@@ -239,7 +226,6 @@ import apolloClient from "@/utils/apolloClient";
 import { getPostQuery } from "@/utils/queries";
 import PostFormAdvancedSettings from "./PostFormAdvancedSettings";
 import striptags from "striptags";
-import BulmaModal from "./BulmaModal";
 
 let initialFormValues = {
   title: "",
@@ -270,7 +256,6 @@ export default {
     AppButton,
     AppLoader,
     AppModal,
-    BulmaModal,
     ContentEditor,
     PostFormAdvancedSettings
   },
@@ -284,9 +269,6 @@ export default {
       savingPost: {
         state: REQUEST_STATE.NOT_STARTED,
         status: null
-      },
-      publicationSettingsModal: {
-        show: false
       }
     };
   },
@@ -398,8 +380,8 @@ export default {
     onTitleEnter() {
       this.$refs.contentEditor.$refs.editor.focus();
     },
-    onCancelPublicationModalClick() {
-      this.publicationSettingsModal.show = false;
+    closePublishingOptionsModal() {
+      this.$store.commit("modalShowing/close", "publishingOptionsModal");
     },
     closePublishingChangesSuccessModal() {
       this.$store.commit("modalShowing/close", "publishingChangesSuccessModal");
@@ -561,7 +543,7 @@ export default {
       } else {
         // make sure there is not an autoSaveAsDraft triggere
         this.savePost("PUBLISHED").then(() => {
-          this.publicationSettingsModal.show = false;
+          this.closePublishingOptionsModal();
           // make sure user can not change slug anymore without confirmation.
           vuexFormSetValue(FORM_ID, "slugIsLocked", true);
           if (publishingChanges === true) {
@@ -605,7 +587,7 @@ export default {
           );
           vuexFormSetValue(FORM_ID, "teaser", teaserSuggestion);
         }
-        this.publicationSettingsModal.show = true;
+        this.$store.commit("modalShowing/open", "publishingOptionsModal");
       }
     },
     onUnpublishClick() {
