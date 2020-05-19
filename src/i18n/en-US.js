@@ -76,6 +76,7 @@ export default {
   "views.postForm.backToBlogLink": "My posts",
   "views.postForm.advancedSettingsButton": "Options",
   "views.postForm.advancedSettingsModal.title": "Publication settings",
+  "views.postForm.advancedSettingsModal.previewGoogle": "Preview Google result",
   "views.postForm.changesNotSavedModal.title": "Some changes have not been saved",
   "views.postForm.changesNotSavedModal.content": "If you quit now, last changes will be lost",
   "views.postForm.changesNotSavedModal.saveAndQuit": "Save and quit",

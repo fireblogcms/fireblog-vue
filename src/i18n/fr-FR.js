@@ -76,6 +76,7 @@ export default {
   "views.postForm.backToBlogLink": "Mes posts",
   "views.postForm.advancedSettingsButton": "Options",
   "views.postForm.advancedSettingsModal.title": "Options de publication",
+  "views.postForm.advancedSettingsModal.previewGoogle": "Aperçu de résultat Google",
   "views.postForm.changesNotSavedModal.content": "Si vous quittez maintenant, vos changement seront perdus.",
   "views.postForm.changesNotSavedModal.quitWithoutSaving": "Quitter sans sauvegarder",
   "views.postForm.changesNotSavedModal.saveAndQuit": "Sauvegarder et quitter",
