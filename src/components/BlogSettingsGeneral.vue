@@ -1,99 +1,74 @@
 <template>
-  <AppPanel
-    style="margin-top:40px;margin-bottom:40px;padding:40px;"
-    class="container is-small"
-  >
-    <h2 class="title is-2">
+  <AppPanel>
+    <h2 class="text-4xl font-bold">
       {{ $t("views.blogSettings.generalSettingsForm.title") }}
     </h2>
     <form @submit.prevent="onFormSubmit">
-      <div class="field">
-        <div class="label-wrapper">
-          <label class="label">
+      <div class="my-6">
+        <p class="mb-2">
+          <label class="text-md font-bold">
             {{ $t("views.blogSettings.generalSettingsForm.fields.name.label") }}
           </label>
-        </div>
-        <div class="control is-danger">
-          <input
-            :value="vuexFormGetValue(formId, 'name')"
-            @input="vuexFormSetValue(formId, 'name', $event.target.value)"
-            class="input is-large"
-            :class="{ 'is-danger': vuexFormGetError(formId, 'name') }"
-            type="text"
-            maxlength="100"
-          />
-        </div>
-        <p class="help is-danger" v-if="vuexFormGetError(formId, 'name')">
-          {{ vuexFormGetError(formId, "name") }}
         </p>
-      </div>
-      <div class="field">
-        <div class="label-wrapper">
-          <label class="label">Description (250 caractères maximum)</label>
-          <p class="help">
-            {{
-              $t(
-                "views.blogSettings.generalSettingsForm.fields.description.help"
-              )
-            }}
-          </p>
-        </div>
-        <div class="control">
-          <textarea
-            class="textarea"
-            :value="vuexFormGetValue(formId, 'description')"
-            @input="
-              vuexFormSetValue(formId, 'description', $event.target.value)
-            "
-            type="text"
-            maxlength="250"
-          ></textarea>
-        </div>
+        <AppFieldText
+          :value="vuexFormGetValue(formId, 'name')"
+          @input="vuexFormSetValue(formId, 'name', $event)"
+          :error="vuexFormGetError(formId, 'name')"
+          maxlength="100"
+        />
       </div>
 
-      <div class="field">
-        <div class="label-wrapper">
-          <label class="label">
-            {{
-              $t("views.blogSettings.generalSettingsForm.fields.image.label")
-            }}
-          </label>
-          <p class="help">
-            {{ $t("views.blogSettings.generalSettingsForm.fields.image.help") }}
-          </p>
-        </div>
+      <div class="mb-6">
+        <label class="text-md font-bold">
+          {{ $t("views.blogSettings.generalSettingsForm.fields.description.label") }}
+        </label>
+        <p class="mb-4 text-sm">
+          {{ $t("views.blogSettings.generalSettingsForm.fields.description.help") }}
+        </p>
+        <AppTextarea
+          :value="vuexFormGetValue(formId, 'description')"
+          @input="vuexFormSetValue(formId, 'description', $event)"
+          maxlength="250"
+        />
+      </div>
+
+      <div class="mb-10">
+        <label class="text-md font-bold">
+          {{ $t("views.blogSettings.generalSettingsForm.fields.image.label") }}
+        </label>
+        <p class="mb-4 text-sm">
+          {{ $t("views.blogSettings.generalSettingsForm.fields.image.help") }}
+        </p>
         <S3ImageUpload
-          style="max-width:600px;"
           :blogId="$route.params.blogId"
           @onUploadingStateChange="onUploadingStateChange"
           :initialImage="vuexFormGetValue(formId, 'image')"
           @onUploaded="onUploaded"
         />
       </div>
-      <div>
-        <button
-          style="margin-top:20px;"
-          class="button is-outlined is-primary is-large"
-          :class="{ 'is-loading': savingState === 'PENDING' }"
-          :disabled="
-            uploadBlogImageState === 'PENDING' || savingState === 'PENDING'
-          "
-          type="submit"
-        >
-          {{ $t("views.blogSettings.generalSettingsForm.saveButton") }}
-        </button>
-      </div>
+
+      <AppButton
+        type="submit"
+        color="primary-outlined"
+        :loading="savingState === 'PENDING'"
+        :disabled="uploadBlogImageState === 'PENDING'"
+      >
+        {{ $t("views.blogSettings.generalSettingsForm.saveButton") }}
+      </AppButton>
     </form>
   </AppPanel>
 </template>
 
 <script>
-import AppPanel from "../components/AppPanel";
+import AppButton from "@/ui-kit/AppButton";
+import AppFieldText from "@/ui-kit/AppFieldText";
+import AppPanel from "@/ui-kit/AppPanel";
+import AppTextarea from "@/ui-kit/AppTextarea";
 import {
   getBlog,
   REQUEST_STATE,
   toast
-} from "../utils/helpers";
+} from "@/utils/helpers";
 import {
   vuexFormInit,
   vuexFormSetValue,
@@ -102,16 +77,13 @@ import {
   vuexFormGetError,
   vuexFormGetErrors,
   vuexFormResetErrors
-} from "../utils/vuexForm";
-import AppLoader from "../components/AppLoader";
-import apolloClient from "../utils/apolloClient";
+} from "@/utils/vuexForm";
+import apolloClient from "@/utils/apolloClient";
 import gql from "graphql-tag";
-import BulmaModal from "./BulmaModal";
 import S3ImageUpload from "./S3ImageUpload";
-import { updateBlogMutation } from "../utils/queries";
+import { updateBlogMutation } from "@/utils/queries";
 
 const formId = "blogSettingsGeneral";
-
 const initialFormValues = {
   name: "",
   description: "",
@@ -119,16 +91,18 @@ const initialFormValues = {
 };
 
 export default {
+  components: {
+    AppButton,
+    AppFieldText,
+    AppPanel,
+    AppTextarea,
+    S3ImageUpload
+  },
   props: {
     blog: {
       type: Object,
       required: true
     }
-  },
-  components: {
-    AppPanel,
-    AppPanel,
-    S3ImageUpload
   },
   data() {
     return {

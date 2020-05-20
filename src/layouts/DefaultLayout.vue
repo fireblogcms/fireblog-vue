@@ -1,25 +1,23 @@
 <template>
-  <div id="default-layout">
-    <AppTopBar v-show="TopbarIsVisible()" />
-    <slot />
+  <div id="default-layout" class="flex flex-col">
+    <AppTopbar v-show="isTopbarVisible()" />
+    <div class="flex-1">
+      <slot />
+    </div>
   </div>
 </template>
 
 <script>
-import AppTopBar from "@/components/AppTopBar";
+import AppTopbar from "@/ui-kit/AppTopbar";
 
 export default {
   components: {
-    AppTopBar
+    AppTopbar
   },
   methods: {
-    TopbarIsVisible() {
-      let visible = true;
+    isTopbarVisible() {
       const hideForRoutes = ["auth0Callback"];
-      if (hideForRoutes.includes(this.$route.name)) {
-        visible = false;
-      }
-      return visible;
+      return !hideForRoutes.includes(this.$route.name);
     }
   }
 };

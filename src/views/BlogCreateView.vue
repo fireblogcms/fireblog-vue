@@ -1,17 +1,19 @@
 <template>
   <DefaultLayout>
-    <div class="container is-small">
+    <AppPanel>
       <BlogCreateForm />
-    </div>
+    </AppPanel>
   </DefaultLayout>
 </template>
 
 <script>
-import BlogCreateForm from "../components/BlogCreateForm";
-import DefaultLayout from "../layouts/DefaultLayout";
+import AppPanel from "@/ui-kit/AppPanel";
+import BlogCreateForm from "@/components/BlogCreateForm";
+import DefaultLayout from "@/layouts/DefaultLayout";
 
 export default {
   components: {
+    AppPanel,
     BlogCreateForm,
     DefaultLayout
   }

@@ -1,6 +1,7 @@
 <template>
   <div>
-    <AppLoader v-if="initDataState === 'PENDING'">Loading</AppLoader>
+    <AppLoader v-if="initDataState === 'PENDING'" />
+
     <template v-if="initDataState === 'FINISHED_OK'">
       <BlogSettingsGeneral :blog="blog" />
       <BlogSettingsTechnical :blog="blog" />
@@ -11,25 +12,25 @@
 </template>
 
 <script>
+import AppLoader from "@/ui-kit/AppLoader";
 import {
   getBlog,
   REQUEST_STATE,
   toast
-} from "../utils/helpers";
-import { vuexFormInitData } from "../utils/vuexForm";
-import AppLoader from "../components/AppLoader";
-import apolloClient from "../utils/apolloClient";
-import BlogSettingsGeneral from "../components/BlogSettingsGeneral";
-import BlogSettingsTechnical from "../components/BlogSettingsTechnical";
-import BlogSettingsPlan from "../components/BlogSettingsPlan";
-import BlogSettingsDeleteBlog from "../components/BlogSettingsDeleteBlog";
+} from "@/utils/helpers";
+import { vuexFormInitData } from "@/utils/vuexForm";
+import apolloClient from "@/utils/apolloClient";
+import BlogSettingsGeneral from "@/components/BlogSettingsGeneral";
+import BlogSettingsTechnical from "@/components/BlogSettingsTechnical";
+import BlogSettingsPlan from "@/components/BlogSettingsPlan";
+import BlogSettingsDeleteBlog from "@/components/BlogSettingsDeleteBlog";
 import gql from "graphql-tag";
 import {
   deleteBlogMutation,
   getMyBlogsQuery,
   getUserQuery,
   updateBlogMutation
-} from "../utils/queries";
+} from "@/utils/queries";
 
 export default {
   components: {

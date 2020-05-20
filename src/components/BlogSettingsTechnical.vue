@@ -1,74 +1,38 @@
 <template>
-  <AppPanel
-    style="margin-top:40px;margin-bottom:40px;padding:40px;"
-    class="container is-small"
-  >
-    <h2 class="title is-2">
+  <AppPanel class="pt-0">
+    <h2 class="text-4xl font-bold">
       {{ $t("views.blogSettings.technicalSettingsForm.title") }}
     </h2>
     <form @submit.prevent="onFormSubmit">
-      <!--
-      <div class="field">
-        <label class="label">
-          {{
-          $t("views.blogSettings.technicalSettingsForm.fields.url.label")
-          }}
+      <div class="mt-6 mb-10">
+        <label class="text-md font-bold">
+          {{ $t("views.blogSettings.technicalSettingsForm.fields.webhooks.label") }}
         </label>
-        
-        <div class="control">
-          <input
-            :value="vuexFormGetValue(formId, 'url')"
-            @input="vuexFormSetValue(formId, 'url', $event.target.value)"
-            :class="{'is-danger': vuexFormGetError(formId, 'url')}"
-            class="input is-large"
-            type="text"
-            maxlength="100"
-          />
-        </div>
-        <p
-          class="help is-danger"
-          v-if="vuexFormGetError(formId, 'url')"
-        >{{ vuexFormGetError(formId, 'url')}}</p>
-      </div>
-      -->
-      <div class="field">
-        <div class="label-wrapper">
-          <label class="label">{{
-            $t("views.blogSettings.technicalSettingsForm.fields.webhooks.label")
-          }}</label>
-          <p class="help">
-            {{
-              $t(
-                "views.blogSettings.technicalSettingsForm.fields.webhooks.help"
-              )
-            }}
-          </p>
-        </div>
-        <textarea
+        <p class="mb-4 text-sm">
+          {{ $t("views.blogSettings.technicalSettingsForm.fields.webhooks.help") }}
+        </p>
+        <AppTextarea
           :value="vuexFormGetValue(formId, 'staticBuildWebhooks')"
-          @input="
-            vuexFormSetValue(formId, 'staticBuildWebhooks', $event.target.value)
-          "
-          class="textarea"
+          @input="vuexFormSetValue(formId, 'staticBuildWebhooks', $event)"
+          maxlength="250"
           placeholder="e.g. Hello world"
-        ></textarea>
+        />
       </div>
-      <div>
-        <button
-          style="margin-top:20px;"
-          class="button is-outlined is-primary is-large"
-          :class="{ 'is-loading': savingState === 'PENDING' }"
-          :disabled="savingState === 'PENDING'"
-          type="submit"
-        >
-          {{ $t("views.blogSettings.technicalSettingsForm.saveButton") }}
-        </button>
-      </div>
+      <AppButton
+        color="primary-outlined"
+        :loading="savingState === 'PENDING'"
+        type="submit"
+      >
+        {{ $t("views.blogSettings.technicalSettingsForm.saveButton") }}
+      </AppButton>
     </form>
   </AppPanel>
 </template>
 
 <script>
+import AppButton from "@/ui-kit/AppButton";
+import AppPanel from "@/ui-kit/AppPanel";
+import AppTextarea from "@/ui-kit/AppTextarea";
 import {
   vuexFormInit,
   vuexFormSetValue,
@@ -77,11 +41,10 @@ import {
   vuexFormGetError,
   vuexFormGetErrors,
   vuexFormResetErrors
-} from "../utils/vuexForm";
-import { REQUEST_STATE, toast } from "../utils/helpers";
-import AppPanel from "../components/AppPanel";
-import apolloClient from "../utils/apolloClient";
-import { updateBlogMutation } from "../utils/queries";
+} from "@/utils/vuexForm";
+import { REQUEST_STATE, toast } from "@/utils/helpers";
+import apolloClient from "@/utils/apolloClient";
+import { updateBlogMutation } from "@/utils/queries";
 
 const formId = "technicalSettingsForm";
 const initialFormValues = {
@@ -91,7 +54,9 @@ const initialFormValues = {
 
 export default {
   components: {
-    AppPanel
+    AppButton,
+    AppPanel,
+    AppTextarea
   },
   props: {
     blog: {

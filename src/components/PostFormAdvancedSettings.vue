@@ -1,53 +1,41 @@
 <template>
   <div>
     <form @submit.prevent>
-      <div class="columns">
-        <div class="column">
+      <div class="flex">
+        <div class="w-1/2 mr-3">
           <!-- IMAGE UPLOAD FIELD -->
-          <div class="field featured-image">
-            <div class="label-wrapper">
-              <label>
-                <strong>{{
-                  $t("views.postForm.fields.featuredImage.label")
-                }}</strong>
-              </label>
-              <p class="help">
-                {{ $t("views.postForm.fields.featuredImage.help") }}
-              </p>
-            </div>
-            <S3ImageUpload
-              :blogId="$route.params.blogId"
-              @onUploadingStateChange="onUploadingStateChange"
-              :initialImage="vuexFormGetValue(FORM_ID, 'image')"
-              @onUploaded="onUploaded"
-            />
-          </div>
+          <label class="font-bold">
+            {{ $t("views.postForm.fields.featuredImage.label") }}
+          </label>
+          <p class="text-sm italic mb-2">
+            {{ $t("views.postForm.fields.featuredImage.help") }}
+          </p>
+          <S3ImageUpload
+            :blogId="$route.params.blogId"
+            @onUploadingStateChange="onUploadingStateChange"
+            :initialImage="vuexFormGetValue(FORM_ID, 'image')"
+            @onUploaded="onUploaded"
+          />
         </div>
-        <div class="column">
+        <div class="w-1/2 ml-3">
           <!-- TEASER FIELD -->
-          <div class="field">
-            <div class="label-wrapper">
-              <label>
-                <strong>{{ $t("views.postForm.fields.teaser.label") }}</strong>
-                <p class="help">
-                  {{ $t("views.postForm.fields.teaser.help") }}
-                </p>
-              </label>
-            </div>
-            <div class="control">
-              <!-- limited to 250 because of google, facebook, twitter and co preview card limitation -->
-              <textarea
-                maxlength="250"
-                @input="onTeaserInput"
-                :value="vuexFormGetValue(FORM_ID, 'teaser')"
-                class="textarea is-medium"
-                :class="{ 'is-danger': vuexFormGetError(FORM_ID, 'teaser') }"
-                placeholder="Teaser"
-              ></textarea>
-            </div>
-          </div>
+          <label class="font-bold">
+            {{ $t("views.postForm.fields.teaser.label") }}
+          </label>
+          <p class="text-sm italic mb-2">
+            {{ $t("views.postForm.fields.teaser.help") }}
+          </p>
+          <!-- limited to 250 because of google, facebook, twitter and co preview card limitation -->
+          <AppTextarea
+            :value="vuexFormGetValue(FORM_ID, 'teaser')"
+            @input="onTeaserInput"
+            placeholder="Teaser"
+            maxlength="250"
+          />
 
+          <!-- SLUG FIELD -->
           <SlugField
+            class="mt-4"
             :value="vuexFormGetValue(FORM_ID, 'slug')"
             :error="vuexFormGetError(FORM_ID, 'slug')"
             :showToggleLockButton="
@@ -60,35 +48,31 @@
           />
         </div>
       </div>
-      <hr />
-      <div class="columns">
-        <div class="column">
-          <h3 class="title is-4">Preview Google result</h3>
-          <div class="box">
-            <PreviewGoogleResult
-              :title="vuexFormGetValue(FORM_ID, 'title')"
-              :description="vuexFormGetValue(FORM_ID, 'teaser')"
-              :url="
-                `https://example.com/post/${vuexFormGetValue(FORM_ID, 'slug')}`
-              "
-            />
-          </div>
-        </div>
+
+      <!-- PREVIEW GOOGLE -->
+      <p class="mt-16 mb-4 text-2xl font-bold">
+        {{ $t("views.postForm.advancedSettingsModal.previewGoogle") }}
+      </p>
+      <div class="p-6 bg-white shadow-around rounded-lg">
+        <PreviewGoogleResult
+          :title="vuexFormGetValue(FORM_ID, 'title')"
+          :description="vuexFormGetValue(FORM_ID, 'teaser')"
+          :url="`https://example.com/post/${vuexFormGetValue(FORM_ID, 'slug')}`"
+        />
       </div>
     </form>
-    <!-- debug form values -->
-    <pre v-if="false">{{ $store.state.forms.postForm }}</pre>
   </div>
 </template>
 
 <script>
+import AppTextarea from "@/ui-kit/AppTextarea";
 import S3ImageUpload from "./S3ImageUpload";
-import { REQUEST_STATE } from "../utils/helpers";
+import { REQUEST_STATE } from "@/utils/helpers";
 import {
   vuexFormGetValue,
   vuexFormGetError,
   vuexFormSetValue
-} from "../utils/vuexForm";
+} from "@/utils/vuexForm";
 import SlugField from "./SlugField";
 import PreviewGoogleResult from "./PreviewGoogleResult";
 
@@ -96,6 +80,7 @@ const FORM_ID = "postForm";
 
 export default {
   components: {
+    AppTextarea,
     PreviewGoogleResult,
     S3ImageUpload,
     SlugField
@@ -123,7 +108,7 @@ export default {
       vuexFormSetValue(FORM_ID, "image", fileUrl);
     },
     onTeaserInput(event) {
-      vuexFormSetValue(FORM_ID, "teaser", event.target.value);
+      vuexFormSetValue(FORM_ID, "teaser", event);
     },
     onSlugInput({ source, slug }) {
       vuexFormSetValue(FORM_ID, "slug", slug);
@@ -141,44 +126,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.label {
-  padding-bottom: 0px;
-}
-.field-help {
-  font-weight: 100;
-  font-size: 15px;
-  font-style: italic;
-}
-.actions {
-  display: flex;
-  justify-content: center;
-}
-
-.post-preview-help {
-  max-width: 500px;
-}
-.post-preview-wrapper {
-  max-width: 500px;
-}
-.post-preview {
-  margin-top: 10px;
-  margin: 20px auto;
-  border-radius: 3px;
-  border: 1px solid #dedede;
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.06);
-}
-
-.post-preview-image {
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  height: 260px;
-  overflow: hidden;
-}
-
-.post-preview-content {
-  padding: 10px;
-}
-</style>

@@ -11,7 +11,6 @@ import {
   getPlanQuery,
   getPostQuery
 } from "./queries";
-import Store from "../store";
 
 export const REQUEST_STATE = {
   NOT_STARTED: "NOT_STARTED",

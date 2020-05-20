@@ -1,22 +1,24 @@
 <template>
   <div>
-    <template v-if="initDataState === 'PENDING'">
-      Loading stats...
-    </template>
     <template v-if="initDataState === 'FINISHED_OK'">
-      <div class="data-container">
-        <div class="flex-wrapper">
-          <div class="single-chart">
+      <div class="flex items-center">
+        <div class="flex w-10 h-10 mr-5">
+          <div class="w-full">
             <svg viewBox="0 0 36 36">
               <path
-                class="circle-bg"
+                fill="none"
+                stroke="#eee"
+                stroke-width="3.8"
                 d="M18 2.0845
                   a 15.9155 15.9155 0 0 1 0 31.831
                   a 15.9155 15.9155 0 0 1 0 -31.831"
               />
               <path
                 class="circle"
-                stroke="#4CC790"
+                fill="none"
+                stroke="#4cc790"
+                stroke-linecap="round"
+                stroke-width="2.8"
                 :stroke-dasharray="countPercentage + ', 100'"
                 d="M18 2.0845
                   a 15.9155 15.9155 0 0 1 0 31.831
@@ -27,19 +29,24 @@
         </div>
         <span>{{ resourcesUse.count }}/{{ callsPerMonth }} {{ $t("views.plans.apiCalls") }}</span>
       </div>
-      <div class="data-container">
-        <div class="flex-wrapper">
-          <div class="single-chart">
+      <div class="flex items-center mt-2">
+        <div class="flex w-10 h-10 mr-5">
+          <div class="w-full">
             <svg viewBox="0 0 36 36">
               <path
-                class="circle-bg"
+                fill="none"
+                stroke="#eee"
+                stroke-width="3.8"
                 d="M18 2.0845
                   a 15.9155 15.9155 0 0 1 0 31.831
                   a 15.9155 15.9155 0 0 1 0 -31.831"
               />
               <path
                 class="circle"
-                stroke="#FF6600"
+                fill="none"
+                stroke="#ff6600"
+                stroke-linecap="round"
+                stroke-width="2.8"
                 :stroke-dasharray="sizePercentage + ', 100'"
                 d="M18 2.0845
                   a 15.9155 15.9155 0 0 1 0 31.831
@@ -59,10 +66,10 @@
 </template>
 
 <script>
-import { REQUEST_STATE } from "../utils/helpers";
-import apolloClient from "../utils/apolloClient";
-import { getBlogResourcesUseQuery } from "../utils/queries";
-import { getBlog } from "../utils/helpers";
+import { REQUEST_STATE } from "@/utils/helpers";
+import apolloClient from "@/utils/apolloClient";
+import { getBlogResourcesUseQuery } from "@/utils/queries";
+import { getBlog } from "@/utils/helpers";
 export default {
   props: {
     blogId: {
@@ -136,34 +143,8 @@ export default {
 };
 </script>
 
-<style scoped>
-.data-container {
-  display: flex;
-  align-items: center;
-}
-.data-container + .data-container {
-  margin-top: .5rem;
-}
-.flex-wrapper {
-  display: flex;
-  flex-flow: row nowrap;
-  width: 40px;
-  height: 40px;
-  margin-right: 1rem;
-}
-.single-chart {
-  width: 100%;
-  justify-content: space-around;
-}
-.circle-bg {
-  fill: none;
-  stroke: #eee;
-  stroke-width: 3.8;
-}
+<style>
 .circle {
-  fill: none;
-  stroke-width: 2.8;
-  stroke-linecap: round;
   animation: progress 1s ease-out forwards;
 }
 @keyframes progress {

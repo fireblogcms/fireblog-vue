@@ -1,60 +1,65 @@
 <template>
   <div>
-    <AppPanel
-      class="container is-small"
-      style="margin-top:40px;margin-bottom:40px;padding:40px;border: solid red 1px;background:rgba(255,0,0,0.1)"
-    >
-      <h2 class="title is-2">{{ $t("views.blogSettings.dangerZone.title") }}</h2>
-      <button
+    <AppPanel>
+      <h2 class="mb-6 text-4xl font-bold">
+        {{ $t("views.blogSettings.dangerZone.title") }}
+      </h2>
+      <AppButton
+        color="primary"
         @click="onDeleteBlogClick"
-        class="button is-danger is-large"
-      >{{ $t("views.blogSettings.dangerZone.deleteButton") }}</button>
+      >
+        {{ $t("views.blogSettings.dangerZone.deleteButton") }}
+      </AppButton>
     </AppPanel>
-    <BulmaModal class="api-modal" v-model="showDeleteBlogModal">
-      <template
-        #title
-      >{{ $t('views.blogSettings.dangerZone.deleteModal.title', {blogName: `"${blog.name}"`}) }}</template>
-      <template #body>
-        <div>
-          <div class="field">
-            <label class="label">{{ $t("views.blogSettings.dangerZone.deleteModal.content") }}</label>
-            <div class="control">
-              <input v-model="deleteBlogConfirmName" class="input is-large" type="text" />
-              <p
-                v-if="deleteBlogConfirmError"
-                class="help is-danger"
-              >{{$t("views.blogSettings.dangerZone.deleteModal.nameMismatch") }}</p>
-            </div>
-          </div>
+
+    <AppModal name="deleteBlogModal">
+      <div class="text-4xl font-bold" slot="header">
+        {{ $t('views.blogSettings.dangerZone.deleteModal.title', {blogName: `"${blog.name}"`}) }}
+      </div>
+      <div slot="body">
+        <AppFieldText
+          v-model="deleteBlogConfirmName"
+          :error="deleteBlogConfirmError"
+          :label="$t('views.blogSettings.dangerZone.deleteModal.content')"
+        />
+
+        <div class="pt-12 flex justify-center">
+          <AppButton
+            color="primary-outlined"
+            class="mx-4"
+            @click="closeDeleteBlogModal"
+          >
+            {{ $t("views.blogSettings.dangerZone.deleteModal.cancelButton").toUpperCase() }}
+          </AppButton>
+          <AppButton
+            :loading="deleteBlogState === 'PENDING'"
+            class="mx-4"
+            color="primary"
+            @click="onDeleteBlogConfirm"
+          >
+            {{ $t("global.delete").toUpperCase() }}
+          </AppButton>
         </div>
-      </template>
-      <template #footer>
-        <button
-          @click="showDeleteBlogModal = false"
-          class="button is-large"
-        >{{ $t("views.blogSettings.dangerZone.deleteModal.cancelButton") }}</button>
-        <button
-          :class="{ 'is-loading': deleteBlogState === 'PENDING' }"
-          :disabled="deleteBlogState === 'PENDING'"
-          @click="onDeleteBlogConfirm"
-          class="button is-danger is-large"
-        >{{ $t("views.blogSettings.dangerZone.deleteModal.deleteButton") }}</button>
-      </template>
-    </BulmaModal>
+      </div>
+    </AppModal>
   </div>
 </template>
 
 <script>
-import AppPanel from "../components/AppPanel";
-import BulmaModal from "../components/BulmaModal";
-import { REQUEST_STATE, toast } from "../utils/helpers";
-import apolloClient from "../utils/apolloClient";
-import { deleteBlogMutation } from "../utils/queries";
+import AppButton from "@/ui-kit/AppButton";
+import AppFieldText from "@/ui-kit/AppFieldText";
+import AppModal from "@/ui-kit/AppModal";
+import AppPanel from "@/ui-kit/AppPanel";
+import { REQUEST_STATE, toast } from "@/utils/helpers";
+import apolloClient from "@/utils/apolloClient";
+import { deleteBlogMutation } from "@/utils/queries";
 
 export default {
   components: {
-    AppPanel,
-    BulmaModal
+    AppButton,
+    AppFieldText,
+    AppModal,
+    AppPanel
   },
   props: {
     blog: {
@@ -64,23 +69,25 @@ export default {
   },
   data() {
     return {
-      showDeleteBlogModal: false,
       deleteBlogConfirmName: "",
-      deleteBlogConfirmError: false,
+      deleteBlogConfirmError: null,
       deleteBlogState: REQUEST_STATE.FINISHED_OK
     };
   },
   methods: {
+    closeDeleteBlogModal() {
+      this.$store.commit("modalShowing/close", "deleteBlogModal");
+    },
     onDeleteBlogClick() {
       this.deleteBlogConfirmName = "";
-      this.deleteBlogConfirmError = false;
-      this.showDeleteBlogModal = true;
+      this.deleteBlogConfirmError = null;
+      this.$store.commit("modalShowing/open", "deleteBlogModal");
     },
     onDeleteBlogConfirm() {
       this.deleteBlogState = REQUEST_STATE.NOT_STARTED;
       if (this.deleteBlogConfirmName.trim() === this.blog.name.trim()) {
         this.deleteBlogState = REQUEST_STATE.PENDING;
-        this.deleteBlogConfirmError = false;
+        this.deleteBlogConfirmError = null;
         apolloClient
           .mutate({
             mutation: deleteBlogMutation,
@@ -90,6 +97,7 @@ export default {
           })
           .then(async () => {
             this.deleteBlogState = REQUEST_STATE.FINISHED_OK;
+            this.closeDeleteBlogModal();
             this.$router.push({ name: "blogList" });
           })
           .catch(e => {
@@ -97,7 +105,7 @@ export default {
             throw new Error(e);
           });
       } else {
-        this.deleteBlogConfirmError = true;
+        this.deleteBlogConfirmError = this.$t("views.blogSettings.dangerZone.deleteModal.nameMismatch");
       }
     }
   }

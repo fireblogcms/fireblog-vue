@@ -1,14 +1,14 @@
 <template>
-  <DefaultLayout class="section container">
-    <AppLoader>Logging out ...</AppLoader>
+  <DefaultLayout>
+    <AppLoader />
   </DefaultLayout>
 </template>
 
 <script>
-import { auth0Client } from "../utils/auth";
-import AppLoader from "../components/AppLoader";
-import { REQUEST_STATE } from "../utils/helpers";
-import DefaultLayout from "../layouts/DefaultLayout";
+import AppLoader from "@/ui-kit/AppLoader";
+import DefaultLayout from "@/layouts/DefaultLayout";
+import { auth0Client } from "@/utils/auth";
+import { REQUEST_STATE } from "@/utils/helpers";
 
 export default {
   components: {

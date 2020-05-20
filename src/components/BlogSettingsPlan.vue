@@ -1,34 +1,31 @@
 <template>
-  <AppPanel
-    style="margin-top:40px;margin-bottom:40px;padding:40px;"
-    class="container is-small"
-  >
-    <h2 class="title is-2">
+  <AppPanel class="py-0">
+    <h2 class="text-4xl font-bold">
       {{ $t("views.blogSettings.planSettings.title") }}
     </h2>
-    <div class="plan-informations-container">
-      <PlanInformations :blog="blog"></PlanInformations>
-    </div>
-    <button
-      class="button is-outlined is-primary is-large"
+    <PlanInformations :blog="blog" class="my-10" />
+    <AppButton
+      color="primary-outlined"
       @click="onSubscribeClick(blog, $event)"
     >
-      <span v-if="!blog.subscription.trialEnd">{{
-        $t("global.changePlanButton")
-      }}</span>
-      <span v-if="blog.subscription.trialEnd">{{
-        $t("global.subscribeButton")
-      }}</span>
-    </button>
+      <span v-if="!blog.subscription.trialEnd">
+        {{ $t("global.changePlanButton") }}
+      </span>
+      <span v-if="blog.subscription.trialEnd">
+        {{ $t("global.subscribeButton") }}
+      </span>
+    </AppButton>
   </AppPanel>
 </template>
 
 <script>
-import AppPanel from "../components/AppPanel";
-import PlanInformations from "../components/PlanInformations";
+import AppButton from "@/ui-kit/AppButton";
+import AppPanel from "@/ui-kit/AppPanel";
+import PlanInformations from "@/components/PlanInformations";
 
 export default {
   components: {
+    AppButton,
     AppPanel,
     PlanInformations
   },
@@ -50,9 +47,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.plan-informations-container {
-  margin-bottom: 2rem;
-}
-</style>

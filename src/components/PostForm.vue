@@ -1,120 +1,108 @@
 <template>
   <div>
-    <AppLoader v-if="loadingAsyncData" />
-    <form class="post-form" v-if="!loadingAsyncData" @submit.prevent>
-      <div class="post-form__field-title">
-        <textarea-autosize
-          maxlength="250"
-          @keydown.enter.native.prevent="onTitleEnter"
-          autofocus
-          rows="1"
-          :placeholder="$t('views.postForm.fields.title.placeholder')"
-          type="text"
-          id="title"
-          @input="onTitleInput"
-          :value="vuexFormGetValue('postForm', 'title')"
-        />
-      </div>
-      <!--      -->
-      <ContentEditor
-        ref="contentEditor"
-        class="post-form__field-editor"
-        :value="vuexFormGetValue('postForm', 'content')"
-        @change="onContentChange"
-        @editorReady="onEditorReady"
-      />
-    </form>
-
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
-      <span class="item tag is-large">
-        <router-link class="item" :to="{ name: 'postList' }">
-          <img
-            class="is-hidden-mobile"
-            style="position:relative;height:20px !important;top:4px;"
-            src="/images/book.png"
-          />
-          <IconBack />
-          {{ $t("views.postForm.backToBlogLink") }}
-        </router-link>
-      </span>
+      <AppBreadcrumb
+        image="/images/book.png"
+        link="postList"
+        :name="$t('views.postForm.backToBlogLink')"
+      />
     </portal>
     <!-- END TOPBAR LEFT BUTTONS -->
 
     <!-- TOPBAR RIGHT BUTTONS -->
     <portal to="topbar-right" v-if="!loadingAsyncData">
       <!-- SAVE DRAFT BUTTON -->
-      <button
+      <AppButton
         v-if="getPostStatus() === 'DRAFT'"
-        class="button is-outlined item"
+        :loading="savingPost.state === 'PENDING' && savingPost.status === 'DRAFT'"
+        class="mr-4"
+        color="primary-outlined"
+        size="small"
         @click="saveAsDraft"
-        :class="{
-          'is-loading':
-            savingPost.state === 'PENDING' && savingPost.status === 'DRAFT'
-        }"
-        :disabled="savingPost.state === 'PENDING'"
       >
         {{ $t("views.postForm.saveDraft").toUpperCase() }}
-      </button>
+      </AppButton>
 
       <!-- ADVANCED OPTIONS BUTTON -->
-      <button
-        @click="showAdvancedSettings()"
+      <AppButton
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
-        class="button item is-outlined"
         :disabled="savingPost.state === 'PENDING'"
-        type="submit"
+        class="mr-4"
+        color="primary-outlined"
+        size="small"
+        @click="showAdvancedSettings"
       >
         {{ $t("views.postForm.advancedSettingsButton").toUpperCase() }}
-      </button>
+      </AppButton>
 
-      <!-- BEGIN PUBLICATION BUTTON (launch advanced settings modal)       -->
-      <button
-        @click="showAdvancedSettings()"
+      <!-- BEGIN PUBLICATION BUTTON (launch advanced settings modal) -->
+      <AppButton
         v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
-        class="button item is-primary is-light"
-        :class="{
-          'is-loading':
-            savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'
-        }"
-        :disabled="savingPost.state === 'PENDING'"
-        type="submit"
+        :loading="savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'"
+        class="mr-4"
+        color="primary"
+        size="small"
+        @click="showAdvancedSettings"
       >
         {{ $t("views.postForm.publicationButton").toUpperCase() }}
-      </button>
+      </AppButton>
 
       <!-- UNPUBLISH BUTTON  -->
-      <button
-        @click="onUnpublishClick()"
+      <AppButton
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
-        class="button item is-outlined"
-        :class="{
-          'is-loading':
-            savingPost.state === 'PENDING' && savingPost.status === 'DRAFT'
-        }"
-        :disabled="savingPost.state === 'PENDING'"
-        type="submit"
+        :loading="savingPost.state === 'PENDING' && savingPost.status === 'DRAFT'"
+        class="mr-4"
+        color="primary-outlined"
+        size="small"
+        @click="onUnpublishClick"
       >
         {{ $t("views.postForm.unpublishButton").toUpperCase() }}
-      </button>
+      </AppButton>
 
       <!-- PUBLISH CHANGES BUTTON -->
-      <button
-        @click="publish()"
+      <AppButton
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
-        class="button item is-outlined is-primary"
-        :class="{
-          'is-loading':
-            savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'
-        }"
-        :disabled="savingPost.state === 'PENDING'"
-        type="submit"
+        :loading="savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'"
+        class="mr-4"
+        color="primary"
+        size="small"
+        @click="publish"
       >
         {{ $t("views.postForm.publishChangesButton").toUpperCase() }}
-      </button>
+      </AppButton>
     </portal>
-    <footer class="post-form__document-infos">
-      <div class="container">
+
+    <AppLoader v-if="loadingAsyncData" />
+
+    <div class="container mx-auto mt-10 mb-16 flex flex-col items-center">
+      <div class="w-8/12 py-10 px-12 bg-white shadow-lg rounded-lg">
+        <form v-if="!loadingAsyncData" @submit.prevent>
+          <textarea-autosize
+            class="w-full text-6xl font-serif outline-none"
+            maxlength="250"
+            @keydown.enter.native.prevent="onTitleEnter"
+            autofocus
+            rows="1"
+            :placeholder="$t('views.postForm.fields.title.placeholder')"
+            type="text"
+            id="title"
+            @input="onTitleInput"
+            :value="vuexFormGetValue('postForm', 'title')"
+          />
+          <ContentEditor
+            ref="contentEditor"
+            class="post-form__field-editor"
+            :value="vuexFormGetValue('postForm', 'content')"
+            @change="onContentChange"
+            @editorReady="onEditorReady"
+          />
+        </form>
+      </div>
+    </div>
+
+    <footer class="flex justify-center fixed bottom-0 w-full p-1 text-sm bg-white">
+      <div class="w-7/12 flex justify-between">
         <div class="item">
           {{ $t("global." + getPostStatus().toLowerCase()) }}
           <span v-if="savingPost.state === 'PENDING'">Saving...</span>
@@ -131,140 +119,88 @@
       </div>
     </footer>
 
-    <BulmaModal v-model="modal.show">
-      <template #title>{{ modal.title }}</template>
-      <template #body>{{ modal.content }}</template>
-      <template #footer>
-        <div
-          v-if="modal.confirmText && modal.confirmCallback"
-          @click="modal.confirmCallback"
-          class="button is-danger"
-        >
-          {{ modal.confirmText }}
-        </div>
-        <div
-          v-if="modal.cancelText && modal.cancelCallback"
-          @click="modal.cancelCallback"
-          class="button is-primary"
-        >
-          {{ modal.cancelText }}
-        </div>
-      </template>
-    </BulmaModal>
-
     <!-- ADVANCED SETTINGS MODAL -->
-    <BulmaModal
+    <AppModal
       v-if="!loadingAsyncData"
-      class="publication-settings-modal animated zoomIn"
+      name="publishingOptionsModal"
       :fullscreen="true"
-      v-model="publicationSettingsModal.show"
     >
-      <template #body>
-        <div class="container">
-          <PostFormAdvancedSettings
-            :existingPost="existingPost"
-            :savingPost="savingPost"
-            @onCancelClick="onCancelPublicationModalClick"
-            @onUploadingStateChange="state => (uploadingState = state)"
-          />
-        </div>
-      </template>
-      <template #title>
-        <div>
-          <span class="title is-3">
-            {{
-            $t("views.postForm.advancedSettingsModal.title")
-          }}
-          </span>
-          <!-- PUBLISH BUTTON -->
-          <button
-            class="button is-primary is-pulled-right is-medium"
-            @click="publish"
-            :disabled="
-              savingPost.state === 'PENDING' || uploadingState === 'PENDING'
-            "
-            :class="{
-              'is-loading':
-                savingPost.state === 'PENDING' &&
-                savingPost.status === 'PUBLISHED'
-            }"
-          >
-         {{publishModalPublishButtonText}}
-          </button>
-
-          <button
-            style="margin-right:20px;"
-            @click="publicationSettingsModal.show = false"
-            class="button is-pulled-right is-medium"
+      <div class="flex items-center justify-between flex-1" slot="header">
+        <span class="text-4xl font-bold">
+          {{ $t("views.postForm.advancedSettingsModal.title") }}
+        </span>
+        <div class="flex">
+          <AppButton
+            color="primary-outlined"
+            size="small"
+            class="mr-4"
+            @click="closePublishingOptionsModal"
           >
             {{ $t("views.postForm.publicationCancel") }}
-          </button>
+          </AppButton>
+          <AppButton
+            color="primary"
+            size="small"
+            :loading="savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'"
+            @click="publish"
+          >
+            {{ publishModalPublishButtonText }}
+          </AppButton>
         </div>
-      </template>
-      <template #footer />
-    </BulmaModal>
-
-    <!-- HURRAH MODAL FOR FIRST PUBLICATION -->
-    <BulmaModal
-      class="hurrah-modal"
-      v-model="publishingHurrahModal.show"
-      :whiteFooter="true"
-    >
-      <template #title>
-        <div class="has-text-centered">
-          {{ $t("views.postForm.firstPublicationHurralModal.title") }}
-        </div>
-      </template>
+      </div>
       <template #body>
-        <div class="has-text-centered">
-          <img style="border-radius:5px" :src="getRandomHurrahGif()" />
-        </div>
+        <PostFormAdvancedSettings
+          :existingPost="existingPost"
+          :savingPost="savingPost"
+          @onCancelClick="closePublishingOptionsModal"
+          @onUploadingStateChange="state => (uploadingState = state)"
+        />
       </template>
-      <template class="has-text-centered" #footer>
-        <button
-          @click="publishingHurrahModal.show = false"
-          class="button is-primary is-large"
+    </AppModal>
+
+    <!-- SUCCESS MODAL FOR FIRST PUBLICATION -->
+    <AppModal name="publishingSuccessModal">
+      <div class="text-4xl font-bold" slot="header">
+        {{ $t("views.postForm.firstPublicationHurralModal.title") }}
+      </div>
+      <div class="flex flex-col items-center" slot="body">
+        <img class="h-64 mb-10 rounded" :src="getRandomHurrahGif()" />
+        <AppButton
+          color="primary"
+          @click="closePublishingSuccessModal"
         >
           {{ $t("global.okayButton") }}
-        </button>
-      </template>
-    </BulmaModal>
+        </AppButton>
+      </div>
+    </AppModal>
 
-    <!-- HURRAH MODAL WHEN PUBLISHING CHANGES ON ALREADY PUBLISHED POST -->
-    <BulmaModal
-      class="publishing-changes-modal"
-      v-model="publishingChangesModal.show"
-    >
-      <template #title>
-        <div class="has-text-centered">
-          {{ $t("views.postForm.publishChangesHurralModal.title") }}
-        </div>
-      </template>
-      <template #body>
-        <div class="has-text-centered">
-          <img style="border-radius:5px" :src="getRandomHurrahGif()" />
-        </div>
-      </template>
-      <template class="has-text-centered" #footer>
-        <button
-          @click="publishingChangesModal.show = false"
-          class="button is-primary is-large"
+    <!-- SUCCESS MODAL WHEN PUBLISHING CHANGES ON ALREADY PUBLISHED POST -->
+    <AppModal name="publishingChangesSuccessModal">
+      <div class="text-4xl font-bold" slot="header">
+        {{ $t("views.postForm.publishChangesHurralModal.title") }}
+      </div>
+      <div class="flex flex-col items-center" slot="body">
+        <img class="h-64 mb-10 rounded" :src="getRandomHurrahGif()" />
+        <AppButton
+          color="primary"
+          @click="closePublishingChangesSuccessModal"
         >
           {{ $t("global.okayButton") }}
-        </button>
-      </template>
-    </BulmaModal>
+        </AppButton>
+      </div>
+    </AppModal>
   </div>
 </template>
 
 <script>
+import AppBreadcrumb from "@/ui-kit/AppBreadcrumb";
+import AppButton from "@/ui-kit/AppButton";
+import AppLoader from "@/ui-kit/AppLoader";
+import AppModal from "@/ui-kit/AppModal";
 import Editor from "fireblog-ckeditor";
 import ContentEditor from "./ContentEditor";
-import { ckeditorS3UploadAdapterPlugin } from "../utils/ckeditorS3UploadAdapterPlugin";
-import AppLoader from "../components/AppLoader";
+import { ckeditorS3UploadAdapterPlugin } from "@/utils/ckeditorS3UploadAdapterPlugin";
 import hotkeys from "hotkeys-js";
-import IconBack from "./IconBack";
-
 import {
   REQUEST_STATE,
   getUser,
@@ -274,7 +210,7 @@ import {
   validateSlug,
   toast,
   formatDate
-} from "../utils/helpers";
+} from "@/utils/helpers";
 import {
   vuexFormInit,
   vuexFormSetValue,
@@ -284,13 +220,12 @@ import {
   vuexFormGetErrors,
   vuexFormGetValues,
   vuexFormGetInitialValues
-} from "../utils/vuexForm";
-import { savePostMutation } from "../utils/queries";
-import apolloClient from "../utils/apolloClient";
-import { getPostQuery } from "../utils/queries";
+} from "@/utils/vuexForm";
+import { savePostMutation } from "@/utils/queries";
+import apolloClient from "@/utils/apolloClient";
+import { getPostQuery } from "@/utils/queries";
 import PostFormAdvancedSettings from "./PostFormAdvancedSettings";
 import striptags from "striptags";
-import BulmaModal from "./BulmaModal";
 
 let initialFormValues = {
   title: "",
@@ -317,11 +252,12 @@ const saveAfterKeyStrokesNumber = 50;
 
 export default {
   components: {
-    ContentEditor,
+    AppBreadcrumb,
+    AppButton,
     AppLoader,
-    IconBack,
-    PostFormAdvancedSettings,
-    BulmaModal
+    AppModal,
+    ContentEditor,
+    PostFormAdvancedSettings
   },
   data() {
     return {
@@ -333,24 +269,6 @@ export default {
       savingPost: {
         state: REQUEST_STATE.NOT_STARTED,
         status: null
-      },
-      modal: {
-        show: false,
-        title: null,
-        content: null,
-        confirmText: null,
-        confirmCallback: () => {},
-        cancelText: null,
-        cancelCallback: () => {}
-      },
-      publicationSettingsModal: {
-        show: false
-      },
-      publishingHurrahModal: {
-        show: false
-      },
-      publishingChangesModal: {
-        show: false
       }
     };
   },
@@ -462,9 +380,14 @@ export default {
     onTitleEnter() {
       this.$refs.contentEditor.$refs.editor.focus();
     },
-    onCancelPublicationModalClick() {
-      alert("ok");
-      this.publicationSettingsModal.show = false;
+    closePublishingOptionsModal() {
+      this.$store.commit("modalShowing/close", "publishingOptionsModal");
+    },
+    closePublishingChangesSuccessModal() {
+      this.$store.commit("modalShowing/close", "publishingChangesSuccessModal");
+    },
+    closePublishingSuccessModal() {
+      this.$store.commit("modalShowing/close", "publishingSuccessModal");
     },
     postFormInit(formValues) {
       vuexFormInit(FORM_ID, {
@@ -620,13 +543,13 @@ export default {
       } else {
         // make sure there is not an autoSaveAsDraft triggere
         this.savePost("PUBLISHED").then(() => {
-          this.publicationSettingsModal.show = false;
+          this.closePublishingOptionsModal();
           // make sure user can not change slug anymore without confirmation.
           vuexFormSetValue(FORM_ID, "slugIsLocked", true);
           if (publishingChanges === true) {
-            this.publishingChangesModal.show = true;
+            this.$store.commit("modalShowing/open", "publishingChangesSuccessModal");
           } else {
-            this.publishingHurrahModal.show = true;
+            this.$store.commit("modalShowing/open", "publishingSuccessModal");
           }
         });
       }
@@ -664,7 +587,7 @@ export default {
           );
           vuexFormSetValue(FORM_ID, "teaser", teaserSuggestion);
         }
-        this.publicationSettingsModal.show = true;
+        this.$store.commit("modalShowing/open", "publishingOptionsModal");
       }
     },
     onUnpublishClick() {
@@ -717,73 +640,6 @@ export default {
 </script>
 
 <style>
-.post-form {
-  padding-top: 30px;
-  padding-bottom: 70px;
-}
-
-.post-form__field-title {
-  text-align: center;
-  position: relative;
-  background: white;
-  top: 10px;
-  padding: 30px;
-  padding-bottom: 20px;
-  max-width: 880px;
-  margin: auto;
-  box-shadow: 1px 0px 1px 0px rgba(0, 0, 0, 0.05);
-}
-.post-form__field-title textarea {
-  width: 100%;
-  font-family: Roslindale, serif;
-  text-align: left;
-  font-size: 53px;
-  border: none !important;
-  border-color: none;
-  outline: none !important;
-}
-
-.post-form__field-editor #editor {
-  color: #222;
-  font-family: Source Sans Pro, Helvetica Neue, Helvetica, Arial, sans-serif;
-  min-height: 100vh;
-  max-width: 880px;
-  padding: 32px;
-  padding-top: 0;
-  box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.05);
-  margin: auto;
-  background: white;
-  padding-bottom: 80px;
-}
-.post-form__field-editor .ck-content {
-  border: none !important;
-  border-color: none;
-  outline: none !important;
-  border-color: #a0c0e4;
-  border-radius: 2px;
-  outline: none;
-  padding: 1px;
-  margin: 0;
-  resize: none; /*remove the resize handle on the bottom right*/
-  line-height: 1.8;
-}
-
-.post-form__document-infos {
-  position: fixed;
-  width: 100%;
-  bottom: 0;
-  background-color: white;
-  text-align: right;
-  font-size: 12px;
-  padding: 5px;
-}
-
-.post-form__document-infos .container {
-  display: flex;
-  justify-content: space-between;
-  width: 800px;
-}
-
 .post-form__document-infos__word-count .ck-word-count {
   display: flex;
   justify-content: space-between;

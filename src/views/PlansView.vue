@@ -2,127 +2,143 @@
   <DefaultLayout>
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
-      <span class="item tag is-large">
-        <router-link class="item" :to="{ name: 'blogList' }">
-          <img
-            class="is-hidden-mobile"
-            style="position:relative;height:20px !important;top:4px;"
-            src="/images/books.webp"
-          />
-          <IconBack />
-          {{ $t("views.postList.backToBlogLink") }}
-        </router-link>
-      </span>
+      <AppBreadcrumb
+        image="/images/books.png"
+        link="blogList"
+        :name="$t('views.postList.backToBlogLink')"
+      />
     </portal>
     <!-- END TOPBAR LEFT BUTTONS -->
 
-    <div class="container">
-      <div class="section" v-if="freePlan">
-        <div class="columns">
-          <div class="column is-8 is-offset-2">
-            <div class="box box-trial-message">
-              <p>
-                {{ $t("views.plans.freeTrialFirst") }}
-                {{ freePlan.productName }}
-                {{ $t("views.plans.freeTrialSecond") }}
-              </p>
-            </div>
-          </div>
+    <div class="container mx-auto my-10 text-center">
+      <div class="flex justify-center mb-16" v-if="freePlan">
+        <div class="w-8/12 p-8 bg-white shadow-lg rounded-lg">
+          <p>
+            {{ $t("views.plans.freeTrialFirst") }}
+            {{ freePlan.productName }}
+            {{ $t("views.plans.freeTrialSecond") }}
+          </p>
         </div>
       </div>
-      <div class="section">
-        <h1 class="title is-1 has-text-centered is-uppercase">
-          {{ $t("views.plans.title") }}
-        </h1>
-        <div class="features has-text-centered">
-          <p class="has-text-weight-bold">
-            {{ $t("views.plans.introduction") }}
-          </p>
-          <p>✔️ {{ $t("views.plans.benefices.webhooks") }}</p>
-          <p>✔️ {{ $t("views.plans.benefices.editor") }}</p>
-          <p>✔️ <span v-html="$t('views.plans.benefices.gatsby')" /></p>
+
+      <h1 class="mb-8 text-5xl font-bold uppercase">
+        {{ $t("views.plans.title") }}
+      </h1>
+      <p class="font-bold">
+        {{ $t("views.plans.introduction") }}
+      </p>
+      <p>✔️ {{ $t("views.plans.webhooks") }}</p>
+      <p>✔️ {{ $t("views.plans.editor") }}</p>
+      <p>
+        ✔️ {{ $t("views.plans.gatsbyFirst") }}
+        <a
+          target="_blank"
+          href="https://github.com/fireblogcms/gatsby-starter-fireblog"
+          >Gatsby starter theme</a
+        >
+        {{ $t("views.plans.gatsbySecond") }}
+      </p>
+
+      <div
+        class="mt-10 flex justify-between"
+        v-if="plans.length > 0"
+      >
+        <div
+          class="w-1/4 m-4 p-6 flex flex-col items-center justify-between bg-white shadow-lg rounded-lg border-4"
+          :class="isPlanSubscribed(plan.id) ? 'border-primary' : 'border-transparent'"
+          v-for="plan in plans" :key="plan.id"
+        >
+          <div>
+            <p class="mb-4 text-2xl font-bold">{{ plan.productName }}</p>
+            <p class="mb-4 font-bold">
+              {{ $t(plan.metadata.SUBTITLE) }}
+            </p>
+            <p class="mb-4 text-xl font-bold">
+              {{ (parseInt(plan.amountTaxes) / 100).toFixed(2) }}
+              {{ $t("views.plans.eurosPerMonth") }}
+            </p>
+            <p class="font-bold">
+              {{ $t("views.plans.includes") }}
+            </p>
+            <p>
+              {{ plan.metadata.API_CALLS_MONTH }}
+              {{ $t("views.plans.apiCalls") }}
+            </p>
+            <p class="mb-8">
+              {{ plan.metadata.STORAGE_GB }} 
+              {{ $t("views.plans.storageUnitGB") }} 
+              {{ $t("views.plans.storage") }}
+            </p>
+          </div>
+          <AppButton
+            v-if="!isPlanSubscribed(plan.id)"
+            :loading="subscribeRequest.state === 'PENDING' && subscribeRequest.planId === plan.id"
+            @click="onSubscribeClick(plan)"
+            color="primary"
+            size="small"
+          >
+            {{ $t("global.subscribeButton") }}
+          </AppButton>
         </div>
-        <div class="columns has-text-centered">
-          <template v-if="plans.length > 0">
-            <div class="column" v-for="plan in plans" :key="plan.id">
-              <div
-                class="box"
-                :class="{
-                  'box-subscribed-plan': isPlanSubscribed(plan.id)
-                }"
-              >
-                <h2 class="title is-4">{{ plan.productName }}</h2>
-                <p class="title is-6 has-text-weight-bold">
-                  {{ $t(plan.metadata.SUBTITLE) }}
-                </p>
-                <p class="title is-4">
-                  {{ (parseInt(plan.amountTaxes) / 100).toFixed(2) }}
-                  {{ $t("views.plans.eurosPerMonth") }}
-                </p>
-                <div class="plan-data">
-                  <p class="has-text-weight-bold">
-                    {{ $t("views.plans.includes") }}
-                  </p>
-                  <p>
-                    {{ plan.metadata.API_CALLS_MONTH }}
-                    {{ $t("views.plans.apiCalls") }}
-                  </p>
-                  <p>
-                    {{ plan.metadata.STORAGE_GB }}
-                    {{ $t("views.plans.storageUnitGB") }}
-                    {{ $t("views.plans.storage") }}
-                  </p>
-                </div>
-                <button
-                  @click="onSubscribeClick(plan)"
-                  class="button is-primary"
-                  :disabled="
-                    subscribeRequest.state === 'PENDING' &&
-                      subscribeRequest.planId === plan.id
-                  "
-                  :class="{
-                    'is-loading':
-                      subscribeRequest.state === 'PENDING' &&
-                      subscribeRequest.planId === plan.id
-                  }"
-                  v-if="!isPlanSubscribed(plan.id)"
-                >
-                  {{ $t("global.subscribeButton") }}
-                </button>
-              </div>
-            </div>
-          </template>
-          <!-- loading placeholder -->
-          <template v-if="plans.length === 0">
-            <div class="column" v-for="(v, i) in [0, 1, 2, 3]" :key="i">
-              <div class="box">
-                <ContentLoader :height="350">
-                  <rect x="0" y="0" rx="3" ry="3" width="100%" height="60" />
-                  <rect x="0" y="80" rx="3" ry="3" width="100%" height="30" />
-                  <rect x="0" y="140" rx="3" ry="3" width="100%" height="30" />
-                </ContentLoader>
-              </div>
-            </div>
-          </template>
+      </div>
+
+      <!-- Loading placeholders -->
+      <div
+        class="mt-10 flex justify-between"
+        v-if="plans.length === 0"
+      >
+        <div
+          class="w-1/4 m-4 p-6 bg-white shadow-lg rounded-lg border-4 border-transparent" 
+          v-for="(v, i) in [0, 1, 2, 3]"
+          :key="i"
+        >
+          <ContentLoader :height="500">
+            <rect x="0" y="0" rx="3" ry="3" width="100%" height="60" />
+            <rect x="0" y="120" rx="3" ry="3" width="100%" height="20" />
+            <rect x="0" y="160" rx="3" ry="3" width="100%" height="20" />
+            <rect x="0" y="260" rx="3" ry="3" width="100%" height="40" />
+            <rect x="0" y="360" rx="3" ry="3" width="100%" height="20" />
+            <rect x="0" y="400" rx="3" ry="3" width="100%" height="20" />
+            <rect x="0" y="440" rx="3" ry="3" width="100%" height="20" />
+          </ContentLoader>
         </div>
       </div>
     </div>
 
-    <ChangePlanModal
-      :show="changePlanModal.show"
-      :plan="changePlanModal.plan"
-      @showUpdate="value => (changePlanModal.show = value)"
-      @changePlan="changePlan"
-    />
+    <!-- CHANGE PLAN MODAL -->
+    <AppModal name="changePlanModal">
+      <div class="text-4xl font-bold" slot="header">
+        {{ $t("views.plans.changePlanModal.title") }}
+      </div>
+      <div class="flex flex-col items-center" slot="body">
+        <p class="text-xl">
+          {{ $t("views.plans.changePlanModal.body", {
+            planName: changePlanModal.plan.productName,
+            planAmount: (parseInt(changePlanModal.plan.amountTaxes) / 100).toFixed(2)
+          }) }}
+        </p>
+        <AppButton
+          class="mt-10"
+          color="primary"
+          @click="changePlan(changePlanModal.plan)"
+        >
+          {{ $t("global.subscribeButton") }}
+        </AppButton>
+      </div>
+    </AppModal>
   </DefaultLayout>
 </template>
 
 <script>
-import DefaultLayout from "../layouts/DefaultLayout";
-import IconBack from "../components/IconBack";
-import ChangePlanModal from "../components/ChangePlanModal";
-import apolloClient from "../utils/apolloClient";
-import { getPlansQuery, updateBlogMutation } from "../utils/queries";
+import AppButton from "@/ui-kit/AppButton";
+import AppBreadcrumb from "@/ui-kit/AppBreadcrumb";
+import AppModal from "@/ui-kit/AppModal";
+import DefaultLayout from "@/layouts/DefaultLayout";
+import apolloClient from "@/utils/apolloClient";
+import {
+  getPlansQuery,
+  updateBlogMutation
+} from "@/utils/queries";
 import { ContentLoader } from "vue-content-loader";
 import {
   getBlog,
@@ -131,27 +147,27 @@ import {
   createStripeCheckoutSession,
   toast,
   REQUEST_STATE
-} from "../utils/helpers";
+} from "@/utils/helpers";
 
 export default {
   components: {
-    IconBack,
+    AppButton,
+    AppBreadcrumb,
+    AppModal,
     DefaultLayout,
-    ContentLoader,
-    ChangePlanModal
+    ContentLoader
   },
   data() {
     return {
+      subscribeRequest: {
+        state: REQUEST_STATE.NOT_STARTED,
+        planId: null
+      },
       blog: {},
       freePlan: null,
       plans: [],
       changePlanModal: {
-        show: false,
         plan: {}
-      },
-      subscribeRequest: {
-        state: REQUEST_STATE.NOT_STARTED,
-        planId: null
       }
     };
   },
@@ -197,9 +213,9 @@ export default {
           });
       } else {
         this.changePlanModal = {
-          show: true,
           plan
         };
+        this.$store.commit("modalShowing/open", "changePlanModal");
       }
     },
     changePlan(plan) {
@@ -218,11 +234,14 @@ export default {
           }
         })
         .then(result => {
-          this.$router.push({
-            name: "postList",
-            params: { blogId: result.data.updateBlog._id },
-            query: { status: "success" }
-          });
+          this.$router
+            .push({
+              name: "postList",
+              params: { blogId: result.data.updateBlog._id }
+            })
+            .then(() => {
+              this.$store.commit("modalShowing/open", "paymentSuccessModal");
+            });
           return result.data.updateBlog;
         })
         .catch(error => {
@@ -261,22 +280,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.features {
-  margin-bottom: 3rem;
-}
-.box {
-  height: 100%;
-  border: 5px solid transparent;
-}
-.box-trial-message {
-  text-align: center;
-}
-.box-subscribed-plan {
-  border-color: $primary;
-}
-.plan-data {
-  margin-bottom: 2rem;
-}
-</style>

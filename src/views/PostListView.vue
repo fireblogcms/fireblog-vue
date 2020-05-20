@@ -2,218 +2,197 @@
   <DefaultLayout>
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
-      <span class="item tag is-large">
-        <router-link class="item" :to="{ name: 'blogList' }">
-          <img
-            class="is-hidden-mobile"
-            style="position:relative;height:20px !important;top:4px;"
-            src="/images/books.webp"
-          />
-          <IconBack />
-          {{ $t("views.postList.backToBlogLink") }}
-        </router-link>
-      </span>
+      <AppBreadcrumb
+        image="/images/books.png"
+        link="blogList"
+        :name="$t('views.postList.backToBlogLink')"
+      />
     </portal>
     <!-- END TOPBAR LEFT BUTTONS -->
 
-    <template v-if="initDataState === 'PENDING'">
-      <AppLoader />
-    </template>
+    <AppLoader v-if="initDataState === 'PENDING'" />
+
     <template v-if="initDataState === 'FINISHED_OK'">
-      <div>
-        <header class="container" style="padding: 2rem 1rem">
-          <div class="blog-title columns">
-            <div class="column">
-              <img class="is-hidden-mobile" src="/images/book.png" />
-              <h1 class="title is-2 is-uppercase">{{ blog.name }}</h1>
-            </div>
-            <div class="column column-right">
-              <button
-                class="button is-box-shadowed is-large"
-                @click="
-                  $router.push({
-                    name: 'blogSettings',
-                    params: { blogId: $route.params.blogId }
-                  })
-                "
-              >
-                <span class="settings-icon"></span>
-                <span>{{
-                  $t("views.blogList.settingsButton").toUpperCase()
-                }}</span>
-              </button>
-              <button
-                class="button is-large is-outline is-primary"
-                v-if="!isFirstPost"
-                @click="
-                  $router.push({
-                    name: 'postCreate',
-                    params: { blogId: $route.params.blogId }
-                  })
-                "
-              >
-                {{ $t("views.postList.writeNewPostButton").toUpperCase() }}
-              </button>
-            </div>
+      <div class="container mx-auto my-10">
+        <div class="flex items-center justify-between pb-6">
+          <div class="flex items-center">
+            <img
+              class="w-16 h-16 mr-10"
+              src="/images/book.png"
+            />
+            <h1 class="text-5xl font-bold uppercase">
+              {{ blog.name }}
+            </h1>
           </div>
-        </header>
-
-        <template v-if="isFirstPost === true">
-          <div class="container">
-            <AppPanel :class="{ 'is-first': isFirstPost }">
-              <h2 style="font-weight:200" class="title has-text-centered">
-                {{ $t("views.postList.firstBlogSentence") }}
-              </h2>
-              <div class="has-text-centered">
-                <div style="margin:2rem">
-                  <button
-                    class="button is-large is-primary is-box-shadowed"
-                    @click="
-                      $router.push({
-                        name: 'postCreate',
-                        params: { blogId: $route.params.blogId }
-                      })
-                    "
-                  >
-                    {{ $t("views.postList.firstPostWriteButton") }}
-                  </button>
-                </div>
-              </div>
-            </AppPanel>
+          <div class="flex">
+            <AppButton
+              class="mr-4"
+              @click="$router.push({
+                name: 'blogSettings',
+                params: { blogId: $route.params.blogId }
+              })"
+            >
+              <img
+                class="w-8 mr-2"
+                src="/images/icon-settings.svg"
+              />
+              <span>
+                {{ $t("views.blogList.settingsButton").toUpperCase() }}
+              </span>
+            </AppButton>
+            <AppButton
+              v-if="!isFirstPost"
+              color="primary"
+              @click="$router.push({
+                name: 'postCreate',
+                params: { blogId: $route.params.blogId }
+              })"
+            >
+              {{ $t("views.postList.writeNewPostButton").toUpperCase() }}
+            </AppButton>
           </div>
-        </template>
-        <template v-if="!isFirstPost">
-          <section class="container">
-            <div class="tabs is-boxed is-medium">
-              <ul>
-                <li
-                  @click="onStatusClick('PUBLISHED')"
-                  :class="{ 'is-active': activeStatus == 'PUBLISHED' }"
-                >
-                  <a>
-                    {{ $t("views.postList.publishedTab") }}
-                    <span style="margin-left:10px" class="tag is-rounded">
-                      {{ postsPublished.totalCount }}
-                    </span>
-                  </a>
-                </li>
-                <li
-                  @click="onStatusClick('DRAFT')"
-                  :class="{ 'is-active': activeStatus == 'DRAFT' }"
-                >
-                  <a>
-                    {{ $t("views.postList.draftTab") }}
-                    <span style="margin-left:10px" class="tag is-rounded">
-                      {{ postsDraft.totalCount }}
-                    </span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <AppPanel style="border-top-left-radius:0;min-height:200px">
-              <PostListPane
-                :postsRequestState="postsPublishedRequestState"
-                @onDeleteClick="onDeleteClick"
-                @onRowClick="onRowClick"
-                v-show="activeStatus === 'PUBLISHED'"
-                :posts="postsPublished"
-              />
-              <PostListPane
-                @onDeleteClick="onDeleteClick"
-                @onRowClick="onRowClick"
-                :postsRequestState="postsDraftRequestState"
-                v-show="activeStatus === 'DRAFT'"
-                :posts="postsDraft"
-              />
-            </AppPanel>
-          </section>
-        </template>
+        </div>
       </div>
-    </template>
-    <BulmaModal v-if="deleteModal.show" v-model="deleteModal.show">
-      <template #title>{{ deleteModal.title }}</template>
-      <template #body>
-        <div class="message is-danger">
-          <div class="message-body">
-            <p>
-              {{
-                $t("views.postList.deleteModal.content", {
-                  postTitle: deleteModal.post.title
-                })
-              }}.
-            </p>
-          </div>
+
+      <AppPanel v-if="isFirstPost" class="mb-20">
+        <h2 class="text-center text-3xl font-bold">
+          {{ $t("views.postList.firstBlogSentence") }}
+        </h2>
+        <div class="mt-8 flex justify-center">
+          <AppButton
+            color="primary"
+            @click="$router.push({
+              name: 'postCreate',
+              params: { blogId: $route.params.blogId }
+            })"
+          >
+            {{ $t("views.postList.firstPostWriteButton").toUpperCase() }}
+          </AppButton>
         </div>
-      </template>
-      <template #footer>
-        <div @click="deleteModal.show = false" class="button is-primary">
-          {{ $t("views.postList.deleteModal.cancelButton") }}
-        </div>
-        <div
-          @click="onDeleteModalConfirmClick"
-          class="button is-danger"
-          :class="{ 'is-loading': deletePostRequestState === 'PENDING' }"
-          :disabled="deletePostRequestState === 'PENDING' ? true : false"
-        >
-          {{ $t("views.postList.deleteModal.confirmButton") }}
-        </div>
-      </template>
-    </BulmaModal>
-    <BulmaModal
-      v-model="paymentSuccessModal.show"
-    >
-      <template #title>
-        <div class="has-text-centered">
-          {{ $t("views.postList.paymentSuccess") }}
-        </div>
-      </template>
-      <template #body>
-        <div class="has-text-centered">
-          <img
-            style="border-radius:5px"
-            src="https://camo.githubusercontent.com/581d9802c9e5716113238cc2fcaf938bf2dad338/68747470733a2f2f6d656469612e67697068792e636f6d2f6d656469612f6248757134736355373255496f2f67697068792e676966"
+      </AppPanel>
+
+      <template v-if="!isFirstPost">
+        <ul class="container mx-auto flex">
+          <li
+            class="py-4 px-10 flex items-center rounded-t-lg cursor-pointer text-xl font-bold"
+            @click="onStatusClick('PUBLISHED')"
+            :class="{ 'bg-white': activeStatus == 'PUBLISHED' }"
+          >
+            <span>{{ $t("views.postList.publishedTab") }}</span>
+            <div class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-400 text-sm">
+              {{ postsPublished.totalCount }}
+            </div>
+          </li>
+          <li
+            class="py-4 px-10 flex items-center rounded-t-lg cursor-pointer text-xl font-bold"
+            @click="onStatusClick('DRAFT')"
+            :class="{ 'bg-white': activeStatus == 'DRAFT' }"
+          >
+            <span>{{ $t("views.postList.draftTab") }}</span>
+            <div class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-400 text-sm">
+              {{ postsDraft.totalCount }}
+            </div>
+          </li>
+        </ul>
+
+        <div class="container mx-auto mb-20 py-16 px-10 bg-white shadow-lg rounded-lg rounded-tl-none">
+          <PostList
+            :postsRequestState="postsPublishedRequestState"
+            @onDeleteClick="onDeleteClick"
+            v-show="activeStatus === 'PUBLISHED'"
+            :posts="postsPublished"
+          />
+          <PostList
+            @onDeleteClick="onDeleteClick"
+            :postsRequestState="postsDraftRequestState"
+            v-show="activeStatus === 'DRAFT'"
+            :posts="postsDraft"
           />
         </div>
       </template>
-      <template class="has-text-centered" #footer>
-        <button
-          @click="paymentSuccessModal.show = false"
-          class="button is-primary is-large"
+    </template>
+
+
+    <!-- DELETE POST MODAL -->
+    <AppModal name="deletePostModal" v-if="deleteModal.post">
+      <div class="text-4xl font-bold" slot="header">
+        {{ deleteModal.title }}
+      </div>
+      <div class="flex flex-col items-center" slot="body">
+        <p class="text-xl">
+          {{
+            $t("views.postList.deleteModal.content", {
+              postTitle: deleteModal.post.title
+            })
+          }}
+        </p>
+        <div class="flex mt-10">
+          <AppButton
+            color="primary-outlined"
+            class="mr-4"
+            @click="closeDeletePostModal"
+          >
+            {{ $t("global.cancel") }}
+          </AppButton>
+          <AppButton
+            :loading="deletePostRequestState === 'PENDING'"
+            color="primary"
+            @click="onDeleteModalConfirmClick"
+          >
+            {{ $t("views.postList.deleteModal.confirmButton") }}
+          </AppButton>
+        </div>
+      </div>
+    </AppModal>
+
+    <!-- PAYMENT SUCCESS MODAL -->
+    <AppModal name="paymentSuccessModal">
+      <div class="text-4xl font-bold" slot="header">
+        {{ $t("views.postList.paymentSuccess") }}
+      </div>
+      <div class="flex flex-col items-center" slot="body">
+        <img
+          class="h-64 mb-10 rounded"
+          src="https://camo.githubusercontent.com/581d9802c9e5716113238cc2fcaf938bf2dad338/68747470733a2f2f6d656469612e67697068792e636f6d2f6d656469612f6248757134736355373255496f2f67697068792e676966"
+        />
+        <AppButton
+          color="primary"
+          @click="closePaymentSuccessModal"
         >
           {{ $t("global.okayButton") }}
-        </button>
-      </template>
-    </BulmaModal>
+        </AppButton>
+      </div>
+    </AppModal>
   </DefaultLayout>
 </template>
 
 <script>
-import apolloClient from "../utils/apolloClient";
-import DefaultLayout from "../layouts/DefaultLayout";
-import IconBack from "../components/IconBack";
+import AppBreadcrumb from "@/ui-kit/AppBreadcrumb";
+import AppButton from "@/ui-kit/AppButton";
+import AppLoader from "@/ui-kit/AppLoader";
+import AppModal from "@/ui-kit/AppModal";
+import AppPanel from "@/ui-kit/AppPanel";
+import apolloClient from "@/utils/apolloClient";
+import DefaultLayout from "@/layouts/DefaultLayout";
 import gql from "graphql-tag";
-import AppLoader from "../components/AppLoader";
-import { REQUEST_STATE, toast } from "../utils/helpers";
+import { REQUEST_STATE, toast } from "@/utils/helpers";
 import {
   getPostsQuery,
   getBlogQuery,
   deletePostMutation
-} from "../utils/queries";
-import AppPanel from "../components/AppPanel";
+} from "@/utils/queries";
 import striptags from "striptags";
-import logger from "../utils/logger";
-import BulmaModal from "../components/BulmaModal";
-import PostListPane from "../components/PostListPane";
+import PostList from "@/components/PostList";
 
 export default {
   components: {
+    AppBreadcrumb,
+    AppButton,
     AppLoader,
+    AppModal,
     AppPanel,
-    BulmaModal,
-    IconBack,
-    PostListPane,
-    DefaultLayout
+    DefaultLayout,
+    PostList
   },
   data() {
     return {
@@ -223,13 +202,9 @@ export default {
       postsPublishedRequestState: REQUEST_STATE.NOT_STARTED,
       deletePostRequestState: REQUEST_STATE.NOT_STARTED,
       deleteModal: {
-        show: false,
         title: null,
         data: null,
         post: null
-      },
-      paymentSuccessModal: {
-        show: false
       },
       blog: null,
       posts: null,
@@ -242,9 +217,6 @@ export default {
   },
   created() {
     this.striptags = striptags;
-    if (this.$route.query.status === "success") {
-      this.paymentSuccessModal.show = true;
-    }
   },
   mounted() {
     this.initData();
@@ -289,15 +261,6 @@ export default {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           throw new Error(error);
         });
-    },
-    buildLinkToPost(item) {
-      return {
-        name: "postUpdate",
-        params: { blogId: this.$route.params.blogId, postId: item.node._id }
-      };
-    },
-    onRowClick(item) {
-      this.$router.push(this.buildLinkToPost(item));
     },
     async getAllPosts() {
       return apolloClient
@@ -374,6 +337,12 @@ export default {
           throw new Error(error);
         });
     },
+    closeDeletePostModal() {
+      this.$store.commit("modalShowing/close", "deletePostModal");
+    },
+    closePaymentSuccessModal() {
+      this.$store.commit("modalShowing/close", "paymentSuccessModal");
+    },
     deletePost(post) {
       this.deletePostRequestState = REQUEST_STATE.PENDING;
       return apolloClient
@@ -388,7 +357,7 @@ export default {
         .catch(error => {
           this.deletePostRequestState = REQUEST_STATE.FINISHED_ERROR;
           toast(this, "Sorry, an error occured while fetching posts", "error");
-          this.deleteModal.show = false;
+          this.closeDeletePostModal();
           throw new Error(error);
         });
     },
@@ -403,14 +372,14 @@ export default {
     },
     onDeleteClick(post) {
       this.deleteModal.post = post;
-      this.deleteModal.show = true;
       this.deleteModal.title = this.$t("views.postList.deleteModal.title", {
         postTitle: post.title
       });
+      this.$store.commit("modalShowing/open", "deletePostModal");
     },
     onDeleteModalConfirmClick() {
       this.deletePost(this.deleteModal.post).then(() => {
-        this.deleteModal.show = false;
+        this.closeDeletePostModal();
         if (this.deleteModal.post.status === "PUBLISHED") {
           this.getPostsPublished();
         }
@@ -422,35 +391,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.app-panel:not(.is-first) {
-  border-top: none;
-}
-.tabs {
-  margin-bottom: 0;
-}
-#app .tabs li a {
-  text-decoration: none;
-}
-.blog-title .column {
-  display: flex;
-  align-items: center;
-}
-.blog-title .column-right {
-  justify-content: flex-end;
-}
-.blog-title img {
-  height: 4rem;
-  padding-right: 1rem;
-}
-.blog-title .column-right button {
-  margin-left: 2rem;
-}
-.settings-icon {
-  margin-right: 0.7rem;
-  width: 30px;
-  height: 30px;
-  background: url("/images/icon-settings.svg") no-repeat;
-}
-</style>

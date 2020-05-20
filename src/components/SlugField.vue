@@ -1,76 +1,76 @@
 <template>
-  <div :class="{ 'is-locked': locked }">
-    <div class="field">
-      <label>
-        {{ label }}
-        <p v-if="computedHelp" class="help" v-html="computedHelp" />
-      </label>
-    </div>
+  <div>
+    <label class="font-bold">
+      {{ label }}
+    </label>
+    <p v-if="computedHelp" v-html="computedHelp" class="text-sm italic mb-2" />
 
-    <div class="field has-addons">
-      <div style="width:100%" class="control">
-        <input
-          @input="onSlugInput"
-          :value="value"
-          :disabled="locked"
-          class="input"
-          :class="computedInputClass"
-          type="text"
-          placeholder="slug"
-        />
-      </div>
-      <div v-if="showToggleLockButton" class="control">
-        <button
+    <div class="relative">
+      <AppFieldText
+        :value="value"
+        @input="onSlugInput"
+        :disabled="locked"
+        :error="error"
+        placeholder="slug"
+      />
+      <div
+        v-if="showToggleLockButton"
+        class="absolute inset-y-0 right-0 flex items-center mr-1"
+      >
+        <AppButton
+          color="primary"
+          size="small"
           @click="onButtonClick"
-          class="button is-medium is-primary is-light"
         >
           {{
             locked
-              ? $t("components.slugField.unlock") + "  🔐"
-              : $t("components.slugField.lock") + "  🔓"
+              ? $t("components.slugField.unlock") + " 🔐"
+              : $t("components.slugField.lock") + " 🔓"
           }}
-        </button>
+        </AppButton>
       </div>
-      <p class="help is-danger" v-if="error">{{ error }}</p>
+    </div>
 
-      <BulmaModal :fullscreen="false" v-model="showUnlockConfirmModal">
-        <template #title>
-          <div class="has-text-centered">
-            {{ $t("components.slugField.unlockConfirmModal.title") }}
-          </div>
-        </template>
-        <template #body>
-          <div class="has-text-centered">
-            {{ $t("components.slugField.unlockConfirmModal.content") }}
-          </div>
-        </template>
-        <template class="has-text-centered" #footer>
-          <button
-            @click="showUnlockConfirmModal = false"
-            class="button is-light is-large"
+    <AppModal name="unlockConfirmModal">
+      <div class="text-4xl font-bold" slot="header">
+        {{ $t("components.slugField.unlockConfirmModal.title") }}
+      </div>
+      <template #body>
+        <p>
+          {{ $t("components.slugField.unlockConfirmModal.content") }}
+        </p>
+        <div class="flex justify-center mt-10">
+          <AppButton
+            class="mr-4"
+            color="primary-outlined"
+            @click="closeUnlockConfirmModal"
           >
-            {{ $t("components.slugField.unlockConfirmModal.cancelButton") }}
-          </button>
-          <button
+            {{ $t("global.cancel") }}
+          </AppButton>
+          <AppButton
+            color="primary"
             @click="onConfirmUnlockClick"
-            class="button is-primary is-large is-danger"
           >
             {{ $t("components.slugField.unlockConfirmModal.confirmButton") }}
-          </button>
-        </template>
-      </BulmaModal>
-    </div>
+          </AppButton>
+        </div>
+      </template>
+    </AppModal>
   </div>
 </template>
 
 <script>
-import i18n from "../i18n";
-import { createSlug } from "../utils/helpers";
-import BulmaModal from "../components/BulmaModal";
+import AppButton from "@/ui-kit/AppButton";
+import AppFieldText from "@/ui-kit/AppFieldText";
+import AppModal from "@/ui-kit/AppModal";
+import i18n from "@/i18n";
+import { createSlug } from "@/utils/helpers";
 
 export default {
   components: {
-    BulmaModal
+    AppButton,
+    AppFieldText,
+    AppModal
   },
   props: {
     value: {
@@ -107,11 +107,13 @@ export default {
   data() {
     return {
       source: this.value,
-      slug: this.value,
-      showUnlockConfirmModal: false
+      slug: this.value
     };
   },
   methods: {
+    closeUnlockConfirmModal() {
+      this.$store.commit("modalShowing/close", "unlockConfirmModal");
+    },
     onSlugInput(event) {
       this.slug = createSlug(event.target.value);
       this.$emit("input", {
@@ -121,14 +123,14 @@ export default {
     },
     onButtonClick() {
       if (this.locked) {
-        this.showUnlockConfirmModal = true;
+        this.$store.commit("modalShowing/open", "unlockConfirmModal");
       } else {
         this.$emit("onLock");
       }
     },
     onConfirmUnlockClick() {
       this.$emit("onUnlock");
-      this.showUnlockConfirmModal = false;
+      this.closeUnlockConfirmModal();
     }
   },
   computed: {
@@ -136,19 +138,7 @@ export default {
       return this.$t("components.slugField.help", {
         exampleUrl: `https://example.com/post/<mark>${this.slug}</mark>`
       });
-    },
-    computedInputClass() {
-      return {
-        "is-danger": this.error ? true : false,
-        [this.inputClass]: true
-      };
     }
   }
 };
 </script>
-
-<style scoped>
-.slug-example {
-  color: green;
-}
-</style>

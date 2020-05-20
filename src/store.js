@@ -1,9 +1,10 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import modalShowing from "@/utils/vueXModalShowing";
 
 Vue.use(Vuex);
 
-const moduleGlobal = {
+const global = {
   state: {
     postJustPublished: null, // will be a postId
     // full post object for last edited post
@@ -22,6 +23,7 @@ const moduleGlobal = {
 
 export default new Vuex.Store({
   modules: {
-    global: moduleGlobal
+    global,
+    modalShowing
   }
 });

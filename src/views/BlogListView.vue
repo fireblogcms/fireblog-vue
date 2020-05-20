@@ -1,90 +1,46 @@
 <template>
   <DefaultLayout>
-    <AppLoader v-if="initDataState === 'PENDING'">Loading blogs</AppLoader>
+    <AppLoader v-if="initDataState === 'PENDING'" />
 
-    <!-- if this is the fiirs blog, display form to create a blog -->
+    <!-- if this is the first blog, display form to create a blog -->
     <template
       v-if="
         initDataState === 'FINISHED_OK' && blogs && blogs.edges.length === 0
       "
     >
-      <div class="container is-small">
+      <AppPanel>
         <BlogCreateForm :isMyFirstBlog="true" />
-      </div>
+      </AppPanel>
     </template>
     <!-- else, display the blog list -->
     <template
       v-if="initDataState === 'FINISHED_OK' && blogs && blogs.edges.length > 0"
     >
-      <div class="container">
-        <div>
-          <header style="padding: 0 1rem 2rem 1rem">
-            <div class="columns">
-              <div class="column">
-                <h1
-                  style="padding-bottom:2rem;"
-                  class="title is-2 is-uppercase"
-                >
-                  <img
-                    height="70"
-                    style="position:relative;top:25px;padding-right:1rem"
-                    src="/images/books-icon.png"
-                  />
-                  {{ $t("views.blogList.title") }}
-                </h1>
-              </div>
-              <div class="column">
-                <button
-                  class="button is-primary is-box-shadowed is-large main-call-to-action"
-                  @click="$router.push({ name: 'blogCreate' })"
-                >
-                  <!--<img width="40" style="margin-right:10px" src="/images/book.png" />-->
-                  {{ $t("views.blogList.createNewBlogButton").toUpperCase() }}
-                </button>
-              </div>
-            </div>
-          </header>
-          <div class="container">
-            <div class="columns">
-              <div
-                class="column is-three-fifths is-offset-one-fifth centered-column"
-              >
-                <div
-                  v-for="(edge, index) in blogs.edges"
-                  class="card"
-                  :key="edge.node._id"
-                >
-                  <div
-                    class="card-image"
-                    :style="blogCardStyles(edge, index)"
-                    @click="onRowClick(edge, $event)"
-                  >
-                    <div class="blog-infos">
-                      <h2 class="title">{{ edge.node.name }}</h2>
-                      <h3 class="subtitle" v-if="edge.node.description">
-                        {{ edge.node.description }}
-                      </h3>
-                    </div>
-                  </div>
-                  <div class="card-content">
-                    <PlanInformations :blog="edge.node"></PlanInformations>
-                    <button
-                      v-if="
-                        edge.node.subscription &&
-                          edge.node.subscription.trialEnd
-                      "
-                      class="button is-box-shadowed is-large"
-                      @click="onSubscribeClick(edge.node, $event)"
-                    >
-                      <span>
-                        {{ $t("global.subscribeButton").toUpperCase() }}
-                      </span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+      <div class="container mx-auto my-10">
+        <div class="flex items-center justify-between pb-12">
+          <div class="flex items-center">
+            <img
+              class="w-16 h-16 mr-10"
+              src="/images/books.png"
+            />
+            <h1 class="text-5xl font-bold uppercase">
+              {{ $t("views.blogList.title") }}
+            </h1>
           </div>
+          <AppButton
+            color="primary"
+            @click="$router.push({ name: 'blogCreate' })"
+          >
+            {{ $t("views.blogList.createNewBlogButton").toUpperCase() }}
+          </AppButton>
+        </div>
+        <div class="pt-10 flex flex-col items-center">
+          <BlogCard
+            v-for="edge in blogs.edges"
+            :blog="edge.node"
+            :key="edge.node._id"
+            class="w-3/5 mb-16"
+          />
         </div>
       </div>
     </template>
@@ -92,23 +48,25 @@
 </template>
 
 <script>
-import apolloClient from "../utils/apolloClient";
-import BlogCreateForm from "../components/BlogCreateForm";
-import DefaultLayout from "../layouts/DefaultLayout";
-import AppLoader from "../components/AppLoader";
+import AppButton from "@/ui-kit/AppButton";
+import AppLoader from "@/ui-kit/AppLoader";
+import AppPanel from "@/ui-kit/AppPanel";
+import BlogCard from "@/components/BlogCard";
+import apolloClient from "@/utils/apolloClient";
+import BlogCreateForm from "@/components/BlogCreateForm";
+import DefaultLayout from "@/layouts/DefaultLayout";
 import gql from "graphql-tag";
-import { REQUEST_STATE, toast } from "../utils/helpers";
-import logger from "../utils/logger";
-import gradient from "random-gradient";
-import { getMyBlogs } from "../utils/helpers";
-import PlanInformations from "../components/PlanInformations";
+import { REQUEST_STATE, toast } from "@/utils/helpers";
+import { getMyBlogs } from "@/utils/helpers";
 
 export default {
   components: {
+    AppButton,
+    AppPanel,
+    BlogCard,
     DefaultLayout,
     BlogCreateForm,
-    AppLoader,
-    PlanInformations
+    AppLoader
   },
   data() {
     return {
@@ -128,21 +86,6 @@ export default {
           throw new Error(error);
         });
     },
-    blogCardStyles(edge, index) {
-      const styles = {
-        backgroundSize: "cover",
-        backgroundPosition: "center"
-      };
-      if (edge.node.image) {
-        styles.backgroundImage = `url(${edge.node.image})`;
-      } else {
-        styles.background = gradient(edge.node._id);
-      }
-      return styles;
-    },
-    buildLinkToPostList(item) {
-      return { name: "postList", params: { blogId: item.node._id } };
-    },
     getBlogs() {
       return getMyBlogs()
         .then(blogs => {
@@ -157,17 +100,6 @@ export default {
           );
           throw new Error(error);
         });
-    },
-    onRowClick(item, event) {
-      this.$router.push(this.buildLinkToPostList(item));
-    },
-    onSubscribeClick(blog) {
-      this.$router.push({
-        name: "plans",
-        params: {
-          blogId: blog._id
-        }
-      });
     }
   },
   created() {
@@ -175,71 +107,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.main-call-to-action {
-  float: right;
-  margin-top: 30px;
-}
-
-@media screen and (max-width: 768px) {
-  .main-call-to-action {
-    float: none;
-    margin-top: 0px;
-  }
-}
-
-.centered-column {
-  padding-bottom: 5rem;
-}
-
-.card-image {
-  min-height: 20rem;
-  position: relative;
-  cursor: pointer;
-}
-
-.card-image .blog-infos {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 0.7rem;
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
-}
-
-.blog-infos .title,
-.blog-infos .subtitle {
-  color: white;
-}
-
-.blog-infos .subtitle {
-  font-style: italic;
-}
-
-.card {
-  border-radius: 5px;
-  margin-bottom: 40px;
-}
-
-.card-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-@media screen and (max-width: 768px) {
-  .card-content {
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .card-content button {
-    margin-top: 2rem;
-  }
-}
-</style>

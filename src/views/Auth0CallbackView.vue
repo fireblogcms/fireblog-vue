@@ -1,27 +1,23 @@
 <template>
-  <div class="container section">
-    <div class="has-text-centered" v-if="error">
-      <router-link :to="{ name: 'logout' }">Retry to login</router-link>
+  <div class="h-screen bg-gray-100">
+    <div class="py-10 text-center" v-if="error">
+      <router-link :to="{ name: 'logout' }">
+        {{ $t("global.retryLogin") }}
+      </router-link>
     </div>
-    <AppPanel v-if="initDataState === 'PENDING'">
-      <AppLoader>Signing in ...</AppLoader>
-    </AppPanel>
+    <AppLoader v-if="initDataState === 'PENDING'" />
   </div>
 </template>
 
 <script>
-import AppLoader from "../components/AppLoader";
-
-import { auth0Client, syncAuth0UserWithServer } from "../utils/auth";
-import { REQUEST_STATE, toast } from "../utils/helpers";
-import AppPanel from "../components/AppPanel";
-import apolloClient from "../utils/apolloClient";
-import logger from "../utils/logger";
+import AppLoader from "@/ui-kit/AppLoader";
+import { auth0Client, syncAuth0UserWithServer } from "@/utils/auth";
+import { REQUEST_STATE, toast } from "@/utils/helpers";
+import apolloClient from "@/utils/apolloClient";
 
 export default {
   components: {
-    AppLoader,
-    AppPanel
+    AppLoader
   },
   data() {
     return {
@@ -34,7 +30,6 @@ export default {
   },
   methods: {
     async initData() {
-      this.error = null;
       this.initDataState = REQUEST_STATE.PENDING;
       const auth0 = await auth0Client();
       auth0

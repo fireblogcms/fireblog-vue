@@ -1,4 +1,4 @@
-import Router from "../router";
+import Router from "@/router";
 import { REQUEST_STATE, getCloudinaryBlogFolderPath } from "./helpers";
 
 /**

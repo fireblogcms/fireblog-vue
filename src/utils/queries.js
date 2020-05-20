@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 
-import { postsPerPage } from "../config";
+import { postsPerPage } from "@/config";
 
 export const FullPostFragment = gql`
   fragment FullPostFragment on Post {

@@ -1,14 +1,15 @@
 <template>
   <div>
-    <div class="content is-medium" id="editor" ref="editor" />
+    <div id="editor" ref="editor" />
   </div>
 </template>
 
 <script>
 import Editor from "fireblog-ckeditor";
-import { ckeditorS3UploadAdapterPlugin } from "../utils/ckeditorS3UploadAdapterPlugin";
-import { REQUEST_STATE, ckeditorIframelyMediaProvider } from "../utils/helpers";
+import { ckeditorS3UploadAdapterPlugin } from "@/utils/ckeditorS3UploadAdapterPlugin";
+import { REQUEST_STATE, ckeditorIframelyMediaProvider } from "@/utils/helpers";
 // import CKEditorInspector from "@ckeditor/ckeditor5-inspector";
+
 export default {
   props: {
     value: {
@@ -133,9 +134,15 @@ export default {
 </script>
 
 <style>
-/**
- * Replace "P" paragraph icon to a "+" to add media
- */
+#editor {
+  min-height: 100vh;
+  box-shadow: none;
+  border: none !important;
+  outline: none !important;
+  padding: 0;
+  font-size: 1.25rem;
+}
+/* Replace "P" paragraph icon to a "+" to add media */
 button.ck-block-toolbar-button {
   background-image: url("/images/editor-button-plus.svg") !important;
   background-repeat: no-repeat !important;

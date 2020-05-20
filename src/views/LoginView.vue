@@ -1,13 +1,13 @@
 <template>
   <DefaultLayout>
-    <AppLoader>Logging ...</AppLoader>
+    <AppLoader />
   </DefaultLayout>
 </template>
 
 <script>
-import AppLoader from "../components/AppLoader";
-import DefaultLayout from "../layouts/DefaultLayout";
-import { auth0Client } from "../utils/auth";
+import AppLoader from "@/ui-kit/AppLoader";
+import DefaultLayout from "@/layouts/DefaultLayout";
+import { auth0Client } from "@/utils/auth";
 
 export default {
   components: {
