@@ -143,7 +143,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .circle {
   animation: progress 1s ease-out forwards;
 }

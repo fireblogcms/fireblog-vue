@@ -5,7 +5,6 @@ import store from "./store";
 import VueTextareaAutosize from "vue-textarea-autosize";
 import PortalVue from "portal-vue";
 import vClickOutside from "v-click-outside";
-import "animate.css/animate.min.css";
 import VueLazyload from "vue-lazyload";
 import i18n from "./i18n/index";
 import Toasted from "vue-toasted";
