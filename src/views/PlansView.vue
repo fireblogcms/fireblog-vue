@@ -163,6 +163,10 @@ export default {
       plans: [],
       changePlanModal: {
         plan: {}
+      },
+      subscribeRequest: {
+        state: REQUEST_STATE.NOT_STARTED,
+        planId: null
       }
     };
   },
@@ -178,6 +182,8 @@ export default {
     async onSubscribeClick(plan) {
       const user = await getUser();
       if (!this.blog.subscription.id) {
+        this.subscribeRequest.state = REQUEST_STATE.PENDING;
+        this.subscribeRequest.planId = plan.id;
         const stripe = Stripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY);
         const sessionId = await createStripeCheckoutSession({
           userEmail: user.email,
@@ -195,10 +201,12 @@ export default {
             sessionId
           })
           .then(r => {
+            this.subscribeRequest.state = REQUEST_STATE.FINISHED_OK;
             console.log(r);
           })
           .catch(error => {
             console.log(error);
+            this.subscribeRequest.state = REQUEST_STATE.FINISHED_ERROR;
             toast(this, error, "error");
             throw new Error(error);
           });

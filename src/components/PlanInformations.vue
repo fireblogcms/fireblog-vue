@@ -40,11 +40,10 @@ export default {
   },
   mounted() {
     this.fetchData();
-
     if (this.blog.subscription.trialEnd) {
       this.numberDaysLeftTrial = Math.round(
         (new Date(this.blog.subscription.trialEnd) - new Date()) /
-        (1000 * 60 * 60 * 24)
+          (1000 * 60 * 60 * 24)
       );
     }
   },
