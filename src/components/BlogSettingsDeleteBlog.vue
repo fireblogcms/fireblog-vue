@@ -97,6 +97,7 @@ export default {
           })
           .then(async () => {
             this.deleteBlogState = REQUEST_STATE.FINISHED_OK;
+            this.closeDeleteBlogModal();
             this.$router.push({ name: "blogList" });
           })
           .catch(e => {
