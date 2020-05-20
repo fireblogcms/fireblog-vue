@@ -71,11 +71,11 @@
             </p>
           </div>
           <AppButton
+            v-if="!isPlanSubscribed(plan.id)"
+            :loading="subscribeRequest.state === 'PENDING' && subscribeRequest.planId === plan.id"
             @click="onSubscribeClick(plan)"
             color="primary"
             size="small"
-            class=""
-            v-if="!isPlanSubscribed(plan.id)"
           >
             {{ $t("global.subscribeButton") }}
           </AppButton>
@@ -145,7 +145,8 @@ import {
   getUser,
   getPlan,
   createStripeCheckoutSession,
-  toast
+  toast,
+  REQUEST_STATE
 } from "@/utils/helpers";
 
 export default {
@@ -158,15 +159,15 @@ export default {
   },
   data() {
     return {
+      subscribeRequest: {
+        state: REQUEST_STATE.NOT_STARTED,
+        planId: null
+      },
       blog: {},
       freePlan: null,
       plans: [],
       changePlanModal: {
         plan: {}
-      },
-      subscribeRequest: {
-        state: REQUEST_STATE.NOT_STARTED,
-        planId: null
       }
     };
   },
