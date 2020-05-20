@@ -7,8 +7,8 @@
           src="/images/logo-solo.png"
           @click="onLogoClick"
         />
-        <div class="text-xs bg-secondary rounded-sm px-2 py-1 ml-2 mb-6 mr-6">
-          Bêta version
+        <div class="text-xs bg-secondary rounded-md px-2 py-1 mb-6 mr-6">
+          Bêta
         </div>
 
         <portal-target name="topbar-left">

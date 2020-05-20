@@ -1,26 +1,10 @@
 body {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: Arial, sans-serif;
+  color: #3D4852;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  height: 100vh;
+  min-height: 100vh;
+  height: 100%;
   padding: 0;
   margin: 0;
-}
-
-#app {
-  height: 100%;
-}
-
-img,
-embed,
-iframe,
-object,
-video {
-  height: none;
-  max-width: 100%;
-}
-
-@font-face {
-  font-family: Roslindale;
-  src: url("/fonts/RoslindaleDisplayCondensed-Bold-Testing.eot");
 }
