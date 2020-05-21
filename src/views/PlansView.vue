@@ -32,11 +32,11 @@
       <p>✔️ <span v-html="$t('views.plans.benefices.gatsby')" /></p>
 
       <div
-        class="mt-10 flex justify-between"
+        class="mt-10 flex flex-col md:flex-row justify-between"
         v-if="plans.length > 0"
       >
         <div
-          class="w-1/4 m-4 p-6 flex flex-col items-center justify-between bg-white shadow-lg rounded-lg border-4"
+          class="w-full md:w-1/4 my-4 md:mx-4 p-6 flex flex-col items-center justify-between bg-white shadow-lg rounded-lg border-4"
           :class="isPlanSubscribed(plan.id) ? 'border-primary' : 'border-transparent'"
           v-for="plan in plans" :key="plan.id"
         >
@@ -76,11 +76,11 @@
 
       <!-- Loading placeholders -->
       <div
-        class="mt-10 flex justify-between"
+        class="mt-10 flex flex-col md:flex-row justify-between"
         v-if="plans.length === 0"
       >
         <div
-          class="w-1/4 m-4 p-6 bg-white shadow-lg rounded-lg border-4 border-transparent" 
+          class="w-full md:w-1/4 my-4 md:mx-4 p-6 bg-white shadow-lg rounded-lg border-4 border-transparent" 
           v-for="(v, i) in [0, 1, 2, 3]"
           :key="i"
         >
