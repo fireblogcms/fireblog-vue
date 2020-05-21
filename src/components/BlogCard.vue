@@ -12,8 +12,8 @@
         </p>
       </div>
     </div>
-    <div class="flex items-center justify-between" slot="content">
-      <PlanInformations :blog="blog" />
+    <div class="flex flex-col md:flex-row items-center justify-between" slot="content">
+      <PlanInformations :blog="blog" class="mb-8 md:mb-0" />
       <AppButton
         color="primary-outlined"
         v-if="blog.subscription.trialEnd"

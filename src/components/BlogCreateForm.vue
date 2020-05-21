@@ -26,11 +26,11 @@
       />
     </div>
 
-    <div class="flex justify-center">
+    <div class="flex flex-col md:flex-row items-center justify-center">
       <AppButton
         v-if="!isMyFirstBlog"
         color="primary-outlined"
-        class="mx-4"
+        class="mb-4 md:mb-0 mx-4"
         @click="$router.push('/')"
       >
         {{ $t("views.blogCreate.cancelButton").toUpperCase() }}

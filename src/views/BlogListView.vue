@@ -17,13 +17,13 @@
       v-if="initDataState === 'FINISHED_OK' && blogs && blogs.edges.length > 0"
     >
       <div class="container mx-auto my-10">
-        <div class="flex items-center justify-between pb-12">
-          <div class="flex items-center">
+        <div class="flex flex-col md:flex-row items-center justify-between pb-12">
+          <div class="flex items-center mb-8 md:mb-0">
             <img
               class="w-16 h-16 mr-10"
               src="/images/books.png"
             />
-            <h1 class="text-5xl font-bold uppercase">
+            <h1 class="text-3xl md:text-5xl font-bold uppercase">
               {{ $t("views.blogList.title") }}
             </h1>
           </div>
@@ -39,7 +39,7 @@
             v-for="edge in blogs.edges"
             :blog="edge.node"
             :key="edge.node._id"
-            class="w-3/5 mb-16"
+            class="w-10/12 md:w-3/5 mb-16"
           />
         </div>
       </div>

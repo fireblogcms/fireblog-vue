@@ -4,7 +4,10 @@ module.exports = {
     require("@fullhuman/postcss-purgecss")({
       content: ["./public/**/*.html", "./src/**/*.vue"],
       defaultExtractor: content => {
-        return content.match(/[A-Za-z0-9-_/:]*[A-Za-z0-9-_/]+/g) || [];
+        const broadMatches = content.match(/[^<>"'`\s]*[^<>"'`\s:]/g) || [];
+        const innerMatches =
+          content.match(/[^<>"'`\s.()]*[^<>"'`\s.():]/g) || [];
+        return broadMatches.concat(innerMatches);
       },
       whitelist: [],
       whitelistPatterns: [
