@@ -17,7 +17,6 @@
         v-if="getPostStatus() === 'DRAFT'"
         :loading="savingPost.state === 'PENDING' && savingPost.status === 'DRAFT'"
         class="mr-4"
-        color="primary-outlined"
         size="small"
         @click="saveAsDraft"
       >
@@ -29,7 +28,6 @@
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
         :disabled="savingPost.state === 'PENDING'"
         class="mr-4"
-        color="primary-outlined"
         size="small"
         @click="showAdvancedSettings"
       >
@@ -53,7 +51,6 @@
         v-if="existingPost && existingPost.status === 'PUBLISHED'"
         :loading="savingPost.state === 'PENDING' && savingPost.status === 'DRAFT'"
         class="mr-4"
-        color="primary-outlined"
         size="small"
         @click="onUnpublishClick"
       >
