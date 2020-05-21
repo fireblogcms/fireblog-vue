@@ -12,62 +12,83 @@
 
     <!-- TOPBAR RIGHT BUTTONS -->
     <portal to="topbar-right" v-if="!loadingAsyncData">
-      <!-- SAVE DRAFT BUTTON -->
-      <AppButton
-        v-if="getPostStatus() === 'DRAFT'"
-        :loading="savingPost.state === 'PENDING' && savingPost.status === 'DRAFT'"
-        class="mr-4"
-        size="small"
-        @click="saveAsDraft"
-      >
-        {{ $t("views.postForm.saveDraft").toUpperCase() }}
-      </AppButton>
+      <div class="relative">
+        <AppButton
+          class="lg:hidden mx-1"
+          color="primary-outlined"
+          size="small"
+          @click="isActionsVisibleOnMobile = !isActionsVisibleOnMobile"
+        >
+          <img
+            class="w-6"
+            src="/images/pencil.svg"
+          />
+        </AppButton>
+        <div
+          v-click-outside="() => isActionsVisibleOnMobile = false"
+          :class="{
+            'hidden': !isActionsVisibleOnMobile
+          }"
+          class="absolute lg:relative lg:inline-block top-0 mt-16 lg:mt-0 -ml-20 p-6 lg:p-0 flex flex-col lg:flex-row items-center justify-center bg-white rounded-md shadow-around lg:shadow-none"
+        >
+          <!-- SAVE DRAFT BUTTON -->
+          <AppButton
+            v-if="getPostStatus() === 'DRAFT'"
+            :loading="savingPost.state === 'PENDING' && savingPost.status === 'DRAFT'"
+            class="mb-4 lg:mb-0 lg:mr-4"
+            size="small"
+            @click="saveAsDraft"
+          >
+            {{ $t("views.postForm.saveDraft").toUpperCase() }}
+          </AppButton>
 
-      <!-- ADVANCED OPTIONS BUTTON -->
-      <AppButton
-        v-if="existingPost && existingPost.status === 'PUBLISHED'"
-        :disabled="savingPost.state === 'PENDING'"
-        class="mr-4"
-        size="small"
-        @click="showAdvancedSettings"
-      >
-        {{ $t("views.postForm.advancedSettingsButton").toUpperCase() }}
-      </AppButton>
+          <!-- ADVANCED OPTIONS BUTTON -->
+          <AppButton
+            v-if="existingPost && existingPost.status === 'PUBLISHED'"
+            :disabled="savingPost.state === 'PENDING'"
+            class="mb-4 lg:mb-0 lg:mr-4"
+            size="small"
+            @click="showAdvancedSettings"
+          >
+            {{ $t("views.postForm.advancedSettingsButton").toUpperCase() }}
+          </AppButton>
 
-      <!-- BEGIN PUBLICATION BUTTON (launch advanced settings modal) -->
-      <AppButton
-        v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
-        :loading="savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'"
-        class="mr-4"
-        color="primary"
-        size="small"
-        @click="showAdvancedSettings"
-      >
-        {{ $t("views.postForm.publicationButton").toUpperCase() }}
-      </AppButton>
+          <!-- BEGIN PUBLICATION BUTTON (launch advanced settings modal) -->
+          <AppButton
+            v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
+            :loading="savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'"
+            class="lg:mr-4"
+            color="primary"
+            size="small"
+            @click="showAdvancedSettings"
+          >
+            {{ $t("views.postForm.publicationButton").toUpperCase() }}
+          </AppButton>
 
-      <!-- UNPUBLISH BUTTON  -->
-      <AppButton
-        v-if="existingPost && existingPost.status === 'PUBLISHED'"
-        :loading="savingPost.state === 'PENDING' && savingPost.status === 'DRAFT'"
-        class="mr-4"
-        size="small"
-        @click="onUnpublishClick"
-      >
-        {{ $t("views.postForm.unpublishButton").toUpperCase() }}
-      </AppButton>
+          <!-- UNPUBLISH BUTTON  -->
+          <AppButton
+            v-if="existingPost && existingPost.status === 'PUBLISHED'"
+            :loading="savingPost.state === 'PENDING' && savingPost.status === 'DRAFT'"
+            class="mb-4 lg:mb-0 lg:mr-4"
+            size="small"
+            @click="onUnpublishClick"
+          >
+            {{ $t("views.postForm.unpublishButton").toUpperCase() }}
+          </AppButton>
 
-      <!-- PUBLISH CHANGES BUTTON -->
-      <AppButton
-        v-if="existingPost && existingPost.status === 'PUBLISHED'"
-        :loading="savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'"
-        class="mr-4"
-        color="primary"
-        size="small"
-        @click="publish"
-      >
-        {{ $t("views.postForm.publishChangesButton").toUpperCase() }}
-      </AppButton>
+          <!-- PUBLISH CHANGES BUTTON -->
+          <AppButton
+            v-if="existingPost && existingPost.status === 'PUBLISHED'"
+            :loading="savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'"
+            class="lg:mr-4"
+            color="primary"
+            size="small"
+            @click="publish"
+          >
+            {{ $t("views.postForm.publishChangesButton").toUpperCase() }}
+          </AppButton>
+        </div>
+      </div>
     </portal>
 
     <AppLoader v-if="loadingAsyncData" />
@@ -266,7 +287,8 @@ export default {
       savingPost: {
         state: REQUEST_STATE.NOT_STARTED,
         status: null
-      }
+      },
+      isActionsVisibleOnMobile: false
     };
   },
   created() {

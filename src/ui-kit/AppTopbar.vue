@@ -1,9 +1,9 @@
 <template>
   <div class="relative z-20 bg-white shadow-bottom" :class="`route-${$route.name}`">
-    <div class="flex justify-between px-4 md:px-10 py-4">
+    <div class="flex justify-between px-2 md:px-10 py-4">
       <div class="flex items-center">
         <img
-          class="w-16 rounded-full cursor-pointer mr-2 md:mr-0"
+          class="w-16 rounded-full cursor-pointer"
           src="/images/logo-solo.png"
           @click="onLogoClick"
         />
@@ -38,7 +38,7 @@
           <span class="hidden md:inline">API</span>
         </AppButton>
 
-        <div v-if="me" class="relative cursor-pointer ml-6">
+        <div v-if="me" class="relative cursor-pointer ml-4 md:ml-6">
           <div @click="dropdownMenuActive = !dropdownMenuActive" >
             <img
               v-if="me.picture"
