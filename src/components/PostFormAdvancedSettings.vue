@@ -1,8 +1,8 @@
 <template>
   <div>
     <form @submit.prevent>
-      <div class="flex">
-        <div class="w-1/2 mr-3">
+      <div class="flex flex-col md:flex-row">
+        <div class="w-full md:w-1/2 md:mr-3">
           <!-- IMAGE UPLOAD FIELD -->
           <label class="font-bold">
             {{ $t("views.postForm.fields.featuredImage.label") }}
@@ -17,7 +17,7 @@
             @onUploaded="onUploaded"
           />
         </div>
-        <div class="w-1/2 ml-3">
+        <div class="w-full md:w-1/2 md:ml-3 mt-4 md:mt-0">
           <!-- TEASER FIELD -->
           <label class="font-bold">
             {{ $t("views.postForm.fields.teaser.label") }}

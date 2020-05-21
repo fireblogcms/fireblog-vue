@@ -73,7 +73,7 @@
     <AppLoader v-if="loadingAsyncData" />
 
     <div class="container mx-auto mt-10 mb-16 flex flex-col items-center">
-      <div class="w-8/12 py-10 px-12 bg-white shadow-lg rounded-lg">
+      <div class="w-full md:w-8/12 py-10 px-12 bg-white shadow-lg rounded-lg">
         <form v-if="!loadingAsyncData" @submit.prevent>
           <textarea-autosize
             class="w-full text-6xl font-serif outline-none"
@@ -99,7 +99,7 @@
     </div>
 
     <footer class="flex justify-center fixed bottom-0 w-full p-1 text-sm bg-white">
-      <div class="w-7/12 flex justify-between">
+      <div class="w-full md:w-7/12 flex justify-between">
         <div class="item">
           {{ $t("global." + getPostStatus().toLowerCase()) }}
           <span v-if="savingPost.state === 'PENDING'">Saving...</span>
@@ -122,11 +122,11 @@
       name="publishingOptionsModal"
       :fullscreen="true"
     >
-      <div class="flex items-center justify-between flex-1" slot="header">
+      <div class="flex flex-col md:flex-row items-center justify-between flex-1" slot="header">
         <span class="text-4xl font-bold">
           {{ $t("views.postForm.advancedSettingsModal.title") }}
         </span>
-        <div class="flex">
+        <div class="flex mt-8 md:mt-0">
           <AppButton
             color="primary-outlined"
             size="small"
