@@ -23,7 +23,7 @@
           :label="$t('views.blogSettings.dangerZone.deleteModal.content')"
         />
 
-        <div class="pt-12 flex justify-center">
+        <div class="pt-12 flex flex-col md:flex-row items-center justify-center">
           <AppButton
             color="primary-outlined"
             class="mx-4"
@@ -33,7 +33,7 @@
           </AppButton>
           <AppButton
             :loading="deleteBlogState === 'PENDING'"
-            class="mx-4"
+            class="mt-4 md:mt-0 mx-4"
             color="primary"
             @click="onDeleteBlogConfirm"
           >

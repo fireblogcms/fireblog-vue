@@ -39,15 +39,16 @@
         <p>
           {{ $t("components.slugField.unlockConfirmModal.content") }}
         </p>
-        <div class="flex justify-center mt-10">
+        <div class="flex flex-col md:flex-row items-center justify-center mt-10">
           <AppButton
-            class="mr-4"
+            class="mx-4"
             color="primary-outlined"
             @click="closeUnlockConfirmModal"
           >
             {{ $t("global.cancel") }}
           </AppButton>
           <AppButton
+            class="mt-4 md:mt-0 mx-4"
             color="primary"
             @click="onConfirmUnlockClick"
           >

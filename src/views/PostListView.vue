@@ -126,16 +126,17 @@
             })
           }}
         </p>
-        <div class="flex mt-10">
+        <div class="flex flex-col md:flex-row items-center justify-center mt-10">
           <AppButton
+            class="mx-4"
             color="primary-outlined"
-            class="mr-4"
             @click="closeDeletePostModal"
           >
             {{ $t("global.cancel") }}
           </AppButton>
           <AppButton
             :loading="deletePostRequestState === 'PENDING'"
+            class="mt-4 md:mt-0 mx-4"
             color="primary"
             @click="onDeleteModalConfirmClick"
           >
