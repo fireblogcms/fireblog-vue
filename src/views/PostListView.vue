@@ -14,19 +14,19 @@
 
     <template v-if="initDataState === 'FINISHED_OK'">
       <div class="container mx-auto my-10">
-        <div class="flex items-center justify-between pb-6">
-          <div class="flex items-center">
+        <div class="flex flex-col md:flex-row items-center justify-between pb-6">
+          <div class="flex items-center mb-8 md:mb-0">
             <img
               class="w-16 h-16 mr-10"
               src="/images/book.png"
             />
-            <h1 class="text-5xl font-bold uppercase">
+            <h1 class="text-3xl md:text-5xl font-bold uppercase">
               {{ blog.name }}
             </h1>
           </div>
-          <div class="flex">
+          <div class="flex flex-col md:flex-row items-center">
             <AppButton
-              class="mr-4"
+              class="mb-4 md:mb-0 md:mr-4"
               @click="$router.push({
                 name: 'blogSettings',
                 params: { blogId: $route.params.blogId }
@@ -74,7 +74,7 @@
       <template v-if="!isFirstPost">
         <ul class="container mx-auto flex">
           <li
-            class="py-4 px-10 flex items-center rounded-t-lg cursor-pointer text-xl font-bold"
+            class="py-4 px-4 md:px-10 flex items-center rounded-t-lg cursor-pointer text-xl font-bold"
             @click="onStatusClick('PUBLISHED')"
             :class="{ 'bg-white': activeStatus == 'PUBLISHED' }"
           >
@@ -84,7 +84,7 @@
             </div>
           </li>
           <li
-            class="py-4 px-10 flex items-center rounded-t-lg cursor-pointer text-xl font-bold"
+            class="py-4 px-4 md:px-10 flex items-center rounded-t-lg cursor-pointer text-xl font-bold"
             @click="onStatusClick('DRAFT')"
             :class="{ 'bg-white': activeStatus == 'DRAFT' }"
           >
@@ -95,7 +95,7 @@
           </li>
         </ul>
 
-        <div class="container mx-auto mb-20 py-16 px-10 bg-white shadow-lg rounded-lg rounded-tl-none">
+        <div class="container mx-auto mb-20 py-6 md:py-16 px-4 md:px-10 bg-white shadow-lg rounded-lg rounded-tl-none">
           <PostList
             :postsRequestState="postsPublishedRequestState"
             @onDeleteClick="onDeleteClick"

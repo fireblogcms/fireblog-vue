@@ -39,7 +39,7 @@
             v-for="edge in blogs.edges"
             :blog="edge.node"
             :key="edge.node._id"
-            class="w-10/12 md:w-3/5 mb-16"
+            class="w-full md:w-3/5 mb-16"
           />
         </div>
       </div>

@@ -1,9 +1,9 @@
 <template>
   <router-link :to="{ name: link }" class="hover:text-current">
     <AppButton size="small">
-      <img class="w-6 h-6" :src="image" />
-      <img class="w-4 h-4 mx-2" src="/images/left-arrow.svg" />
-      <span>{{ name }}</span>
+      <img class="hidden md:inline-block w-6 h-6" :src="image" />
+      <img class="w-4 h-4 md:mx-2" src="/images/left-arrow.svg" />
+      <span class="hidden md:inline">{{ name }}</span>
     </AppButton>
   </router-link>
 </template>

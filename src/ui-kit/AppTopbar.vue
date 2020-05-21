@@ -3,11 +3,11 @@
     <div class="flex justify-between px-4 md:px-10 py-4">
       <div class="flex items-center">
         <img
-          class="w-16 rounded-full cursor-pointer"
+          class="w-16 rounded-full cursor-pointer mr-2 md:mr-0"
           src="/images/logo-solo.png"
           @click="onLogoClick"
         />
-        <div class="text-xs bg-secondary rounded-md px-2 py-1 mb-6 mr-6">
+        <div class="hidden md:inline text-xs bg-secondary rounded-md px-2 py-1 mb-6 mr-6">
           Bêta
         </div>
 
@@ -32,10 +32,10 @@
           @click="onApiClick"
         >
           <img
-            class="w-6 mr-2"
+            class="w-6 md:mr-2"
             src="/images/graphql.svg"
           />
-          <span>API</span>
+          <span class="hidden md:inline">API</span>
         </AppButton>
 
         <div v-if="me" class="relative cursor-pointer ml-6">
