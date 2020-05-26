@@ -39,7 +39,6 @@ export default {
   "topbar.accountMenu.logout": "Se déconnecter",
   "views.blogCreate.cancelButton": "Annuler",
   "views.blogCreate.createButton": "Créer mon blog",
-  "views.blogCreate.createFirstBlog": "Créez votre premier blog",
   "views.blogCreate.fields.description.help": "Cette description apparaîtra dans les résultats des moteurs de recherche ou lors du partage du lien de votre blog sur les réseaux sociaux.",
   "views.blogCreate.fields.description.label": "De quoi parle votre blog ?",
   "views.blogCreate.fields.title.label": "Quel est le nom de votre blog ?",

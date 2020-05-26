@@ -20,6 +20,9 @@ module.exports = {
         around: "0px 2px 16px 0 rgba(0, 0, 0, 0.2)",
         bottom: "0 6px 4px -4px rgba(0, 0, 0, .08)"
       },
+      minHeight: {
+        "10": "10rem"
+      },
       minWidth: {
         "15": "15rem"
       },

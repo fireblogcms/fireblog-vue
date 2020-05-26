@@ -1,10 +1,9 @@
 <template>
   <div class="text-center">
     <!-- special text if this is the very first blog :) -->
-    <div v-if="isMyFirstBlog && user" class="mb-12">
-      <p class="text-3xl font-bold">{{ $t("views.blogCreate.gladToSeeYouHere") }}, {{ user.name }} 🤗</p>
-      <p class="text-2xl">{{ $t("views.blogCreate.createFirstBlog") }}</p>
-    </div>
+    <p v-if="isMyFirstBlog && user" class="mb-12 text-3xl font-bold">
+      {{ $t("views.blogCreate.gladToSeeYouHere") }}, {{ user.name }} 🤗
+    </p>
 
     <div>
       <label class="text-2xl font-bold">{{ $t("views.blogCreate.fields.title.label") }}</label>

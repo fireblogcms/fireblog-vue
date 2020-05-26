@@ -4,7 +4,7 @@
       {{ label }}
     </label>
     <input
-      class="shadow-sm appearance-none border rounded w-full p-3 text-current focus:outline-none focus:shadow-outline"
+      class="p-4 text-xl shadow-sm appearance-none border rounded w-full text-current focus:outline-none focus:shadow-outline"
       type="text"
       :value="value"
       @input="$emit('input', $event.target.value)"
