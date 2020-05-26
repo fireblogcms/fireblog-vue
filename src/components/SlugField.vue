@@ -15,7 +15,7 @@
       />
       <div
         v-if="showToggleLockButton"
-        class="absolute inset-y-0 right-0 flex items-center mr-1"
+        class="absolute inset-y-0 right-0 flex items-center mr-2"
       >
         <AppButton
           color="primary"

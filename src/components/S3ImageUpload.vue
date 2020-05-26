@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center">
-    <img v-if="uploadedImage" class="w-64" :src="uploadedImage" />
-    <img v-if="!uploadedImage" class="w-64" :src="initialImage" />
+    <img v-if="uploadedImage" :src="uploadedImage" />
+    <img v-if="!uploadedImage" :src="initialImage" />
 
     <progress
       v-show="uploadingState === 'PENDING'"
