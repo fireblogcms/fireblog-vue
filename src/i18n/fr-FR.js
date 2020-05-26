@@ -120,7 +120,7 @@ export default {
   "views.postList.paymentSuccess": "Félicitations, vous êtes désormais abonné à Fireblog!",
   "views.plans.title": "Plans",
   "views.plans.freeTrialFirst": "Votre plan actuel est",
-  "views.plans.freeTrialSecond": "(21 jours d'essai gratuit). N'hésitez pas à souscrire à l'une de nos offres !",
+  "views.plans.freeTrialSecond": "({daysFreeTrial} jours d'essai gratuit). N'hésitez pas à souscrire à l'une de nos offres !",
   "views.plans.introduction": "Tous nos plans comprennent les fonctionnalités suivantes :",
   "views.plans.benefices.webhooks": "Webhooks : reconstruisez automatiquement votre blog JAMstack sans aucune limites",
   "views.plans.benefices.editor": "Un éditeur de texte riche minimaliste mais puissant dédié aux longues sessions d'écriture",

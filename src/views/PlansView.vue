@@ -16,7 +16,7 @@
           <p>
             {{ $t("views.plans.freeTrialFirst") }}
             {{ freePlan.productName }}
-            {{ $t("views.plans.freeTrialSecond") }}
+            {{ $t("views.plans.freeTrialSecond", { daysFreeTrial }) }}
           </p>
         </div>
       </div>
@@ -155,6 +155,7 @@ export default {
         state: REQUEST_STATE.NOT_STARTED,
         planId: null
       },
+      daysFreeTrial: process.env.VUE_APP_DAYS_FREE_TRIAL,
       blog: {},
       freePlan: null,
       plans: [],
