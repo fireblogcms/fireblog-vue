@@ -72,3 +72,11 @@ function checkEnvVars(exampleEnvFile) {
 }
 
 checkEnvVars(".env.example");
+
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
+module.exports = {
+  configureWebpack: {
+    plugins: [new BundleAnalyzerPlugin()]
+  }
+};
