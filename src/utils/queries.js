@@ -188,15 +188,6 @@ export const createPostMutation = gql`
   }
 `;
 
-export const updatePostMutation = gql`
-  ${FullPostFragment}
-  mutation updatePostMutation($post: UpdatePostInput!) {
-    updatePost(post: $post) {
-      ...FullPostFragment
-    }
-  }
-`;
-
 export const updateBlogMutation = gql`
   ${FullBlogFragment}
   mutation updateBlog($blog: UpdateBlogInput!) {
