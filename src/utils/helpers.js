@@ -203,50 +203,6 @@ export const parseHeaders = rawHeaders => {
   return headers;
 };
 
-export const uploadFetch = (url, options) =>
-  new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.onload = () => {
-      const opts = {
-        status: xhr.status,
-        statusText: xhr.statusText,
-        headers: parseHeaders(xhr.getAllResponseHeaders() || "")
-      };
-      opts.url =
-        "responseURL" in xhr
-          ? xhr.responseURL
-          : opts.headers.get("X-Request-URL");
-      const body = "response" in xhr ? xhr.response : xhr.responseText;
-      resolve(new Response(body, opts));
-    };
-    xhr.onerror = () => {
-      reject(new TypeError("Network request failed"));
-    };
-    xhr.ontimeout = () => {
-      reject(new TypeError("Network request failed"));
-    };
-    xhr.open(options.method, url, true);
-
-    Object.keys(options.headers).forEach(key => {
-      xhr.setRequestHeader(key, options.headers[key]);
-    });
-
-    if (xhr.upload) {
-      xhr.upload.onprogress = progress => {
-        console.log("progression", progress);
-      };
-      //xhr.upload.onprogress = options.onProgress;
-    }
-
-    if (options.onAbortPossible) {
-      options.onAbortPossible(() => {
-        xhr.abort();
-      });
-    }
-
-    xhr.send(options.body);
-  });
-
 export function ckeditorIframelyMediaProvider() {
   return {
     // hint: this is just for previews. Get actual HTML codes by making API calls from your CMS

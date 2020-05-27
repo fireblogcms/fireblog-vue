@@ -2,26 +2,15 @@
 // @see https://www.apollographql.com/docs/react/api/apollo-client.html
 import { ApolloClient } from "apollo-client";
 import { ApolloLink } from "apollo-link";
-import { InMemoryCache } from "apollo-cache-inmemory";
+import { createHttpLink } from "apollo-link-http";
 import { setContext } from "apollo-link-context";
-import { createUploadLink } from "apollo-upload-client";
 import { onError } from "apollo-link-error";
+import { InMemoryCache } from "apollo-cache-inmemory";
 import { auth0Client } from "./auth";
-import { uploadFetch } from "./helpers";
-
-// Custom fetch to track upload progress from uploads mutation.
-// @see https://github.com/jaydenseric/apollo-upload-client/issues/88#issuecomment-468318261
-const customFetch = (uri, options) => {
-  if (options.useUpload) {
-    return uploadFetch(uri, options);
-  }
-  return fetch(uri, options);
-};
 
 // An httpLink than support uploading files.
-const uploadLink = createUploadLink({
-  uri: process.env.VUE_APP_GRAPHQL_URL,
-  fetch: customFetch
+const httpLink = createHttpLink({
+  uri: process.env.VUE_APP_GRAPHQL_URL
 });
 
 const authLink = setContext(async (_, { headers }) => {
@@ -49,12 +38,10 @@ const authLink = setContext(async (_, { headers }) => {
  * - networkError (object)
  * - operation (object) - infos about GraphqlQuery
  */
-const onErrorLink = onError(infos => {});
-
-const link = ApolloLink.from([authLink, onErrorLink, uploadLink]);
+const errorLink = onError(infos => {});
 
 const client = new ApolloClient({
-  link,
+  link: ApolloLink.from([authLink, errorLink, httpLink]),
   fetchOptions: {
     mode: "no-cors"
   },
