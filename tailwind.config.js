@@ -28,6 +28,9 @@ module.exports = {
       },
       maxHeight: {
         "9/10": "90vh"
+      },
+      opacity: {
+        "90": ".9"
       }
     }
   },

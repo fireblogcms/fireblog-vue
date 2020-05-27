@@ -7,7 +7,7 @@
           src="/images/logo-solo.png"
           @click="onLogoClick"
         />
-        <div class="hidden md:inline text-xs bg-secondary rounded-md px-2 py-1 mb-6 mr-6">
+        <div class="hidden md:inline text-xs bg-secondary rounded-md px-2 py-1 mr-6">
           Bêta
         </div>
 

@@ -5,30 +5,25 @@
     </label>
     <p v-if="computedHelp" v-html="computedHelp" class="text-sm italic mb-2" />
 
-    <div class="relative">
+    <div class="flex">
       <AppFieldText
+        class="flex-1"
         :value="value"
         @input="onSlugInput"
         :disabled="locked"
         :error="error"
         placeholder="slug"
       />
-      <div
-        v-if="showToggleLockButton"
-        class="absolute inset-y-0 right-0 flex items-center mr-2"
+      <AppButton
+        color="primary"
+        @click="onButtonClick"
       >
-        <AppButton
-          color="primary"
-          size="small"
-          @click="onButtonClick"
-        >
-          {{
-            locked
-              ? $t("components.slugField.unlock") + " 🔐"
-              : $t("components.slugField.lock") + " 🔓"
-          }}
-        </AppButton>
-      </div>
+        {{
+          locked
+            ? $t("components.slugField.unlock") + " 🔐"
+            : $t("components.slugField.lock") + " 🔓"
+        }}
+      </AppButton>
     </div>
 
     <AppModal name="unlockConfirmModal">

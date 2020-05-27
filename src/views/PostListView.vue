@@ -14,17 +14,17 @@
 
     <template v-if="initDataState === 'FINISHED_OK'">
       <div class="container mx-auto my-10">
-        <div class="flex flex-col md:flex-row items-center justify-between pb-6">
-          <div class="flex items-center mb-8 md:mb-0">
-            <img
-              class="w-16 h-16 mr-10"
-              src="/images/book.png"
-            />
+        <div class="flex flex-col md:flex-row justify-between pb-6">
+          <div class="flex-1 flex items-center mb-8 md:mb-0">
             <h1 class="text-3xl md:text-5xl font-bold uppercase">
+              <img
+                class="w-16 h-16 mr-4 inline"
+                src="/images/book.png"
+              />
               {{ blog.name }}
             </h1>
           </div>
-          <div class="flex flex-col md:flex-row items-center">
+          <div class="flex flex-col md:flex-row">
             <AppButton
               class="mb-4 md:mb-0 md:mr-4"
               @click="$router.push({

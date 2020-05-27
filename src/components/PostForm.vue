@@ -58,7 +58,7 @@
             v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
             :loading="savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'"
             class="lg:mr-4"
-            color="primary"
+            color="primary-outlined"
             size="small"
             @click="showAdvancedSettings"
           >
@@ -81,7 +81,7 @@
             v-if="existingPost && existingPost.status === 'PUBLISHED'"
             :loading="savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'"
             class="lg:mr-4"
-            color="primary"
+            color="primary-outlined"
             size="small"
             @click="publish"
           >
@@ -93,37 +93,36 @@
 
     <AppLoader v-if="loadingAsyncData" />
 
-    <div
-      v-if="!loadingAsyncData"
-      class="container mx-auto mt-10 mb-16 flex flex-col items-center"
-    >
-      <div class="w-full md:w-8/12 py-10 px-12 bg-white shadow-lg rounded-lg">
-        <form @submit.prevent>
-          <textarea-autosize
-            class="w-full text-5xl font-serif outline-none"
-            maxlength="250"
-            @keydown.enter.native.prevent="onTitleEnter"
-            autofocus
-            rows="1"
-            :placeholder="$t('views.postForm.fields.title.placeholder')"
-            type="text"
-            id="title"
-            @input="onTitleInput"
-            :value="vuexFormGetValue('postForm', 'title')"
-          />
-          <ContentEditor
-            ref="contentEditor"
-            class="post-form__field-editor"
-            :value="vuexFormGetValue('postForm', 'content')"
-            @change="onContentChange"
-            @editorReady="onEditorReady"
-          />
-        </form>
+    <div v-if="!loadingAsyncData" class="bg-white">
+      <div class="container mx-auto pt-10 pb-16 flex flex-col items-center">
+        <div class="w-full md:w-10/12 py-10 px-12 bg-white border border-gray-200 rounded-lg">
+          <form @submit.prevent>
+            <textarea-autosize
+              class="w-full text-5xl font-serif outline-none"
+              maxlength="250"
+              @keydown.enter.native.prevent="onTitleEnter"
+              autofocus
+              rows="1"
+              :placeholder="$t('views.postForm.fields.title.placeholder')"
+              type="text"
+              id="title"
+              @input="onTitleInput"
+              :value="vuexFormGetValue('postForm', 'title')"
+            />
+            <ContentEditor
+              ref="contentEditor"
+              class="post-form__field-editor"
+              :value="vuexFormGetValue('postForm', 'content')"
+              @change="onContentChange"
+              @editorReady="onEditorReady"
+            />
+          </form>
+        </div>
       </div>
     </div>
 
     <footer class="flex justify-center fixed bottom-0 w-full p-1 text-sm bg-white">
-      <div class="w-full md:w-7/12 flex justify-between">
+      <div class="w-full md:w-9/12 flex justify-between">
         <div class="item">
           {{ $t("global." + getPostStatus().toLowerCase()) }}
           <span v-if="savingPost.state === 'PENDING'">Saving...</span>

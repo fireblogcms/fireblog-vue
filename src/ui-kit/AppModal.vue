@@ -1,6 +1,6 @@
 <template>
   <div v-show="showing">
-    <div class="z-30 fixed inset-0 w-full h-screen bg-white opacity-50"></div>
+    <div class="z-30 fixed inset-0 w-full h-screen bg-white opacity-90"></div>
     <div
       class="z-30 fixed inset-0 w-full h-screen flex items-center justify-center"
       @click.self="close"

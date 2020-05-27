@@ -116,7 +116,7 @@ export default {
   "views.postList.noPublishedPostFound": "No published post found",
   "views.postList.noDraftPostFound": "No draft post found.",
   "views.postList.updatedOn": "updated on {date}",
-  "views.postList.writeNewPostButton": "Write a new post",
+  "views.postList.writeNewPostButton": "New post",
   "views.postList.paymentSuccess": "Congratulations, you successfully subscribed to Fireblog!",
   "views.plans.title": "Plans",
   "views.plans.freeTrialFirst": "Your current plan is",
