@@ -1,19 +1,32 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Store from "./store";
 import { auth0Client } from "./utils/auth";
-const PostFormView = () => import("./views/PostFormView");
-const ProfileView = () => import("./views/ProfileView");
-const BlogCreateView = () => import("./views/BlogCreateView");
-const BlogListView = () => import("./views/BlogListView");
-const BlogSettingsView = () => import("./views/BlogSettingsView");
-const PostListView = () => import("./views/PostListView");
-const NotFoundView = () => import("./views/NotFoundView");
-const Auth0CallbackView = () => import("./views/Auth0CallbackView.vue");
-const LogoutView = () => import("./views/LogoutView");
-const LoginView = () => import("./views/LoginView");
-const TestView = () => import("./views/TestView");
-const PlansView = () => import("./views/PlansView");
+const PostFormView = () =>
+  import(/* webpackChunkName: "PostFormView" */ "./views/PostFormView");
+const ProfileView = () =>
+  import(/* webpackChunkName: "ProfileView" */ "./views/ProfileView");
+const BlogCreateView = () =>
+  import(/* webpackChunkName: "BlogCreateView" */ "./views/BlogCreateView");
+const BlogListView = () =>
+  import(/* webpackChunkName: "BlogListView" */ "./views/BlogListView");
+const BlogSettingsView = () =>
+  import(/* webpackChunkName: "BlogSettingsView" */ "./views/BlogSettingsView");
+const PostListView = () =>
+  import(/* webpackChunkName: "PostListView" */ "./views/PostListView");
+const NotFoundView = () =>
+  import(/* webpackChunkName: "NotFoundView" */ "./views/NotFoundView");
+const Auth0CallbackView = () =>
+  import(
+    /* webpackChunkName: "Auth0CallbackView" */ "./views/Auth0CallbackView.vue"
+  );
+const LogoutView = () =>
+  import(/* webpackChunkName: "LogoutView" */ "./views/LogoutView");
+const LoginView = () =>
+  import(/* webpackChunkName: "LoginView" */ "./views/LoginView");
+const TestView = () =>
+  import(/* webpackChunkName: "TestView" */ "./views/TestView");
+const PlansView = () =>
+  import(/* webpackChunkName: "PlansView" */ "./views/PlansView");
 
 Vue.use(Router);
 
