@@ -2,7 +2,7 @@
   <div>
     <p
       v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length === 0"
-      class="text-center text-xl"
+      class="text-center text-xl my-10"
     >
       {{ $t("views.postList.noPostFound") }}
     </p>
@@ -11,7 +11,7 @@
       v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length > 0"
     >
       <div
-        class="p-4 md:p-10 flex flex-col md:flex-row cursor-pointer border-b border-gray-300 last:border-b-0"
+        class="px-8 py-4 md:py-6 flex flex-col md:flex-row cursor-pointer border-b border-gray-300 last:border-b-0"
         v-for="post in posts.edges"
         :key="post.node._id"
         @click="$router.push({

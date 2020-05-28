@@ -14,7 +14,7 @@
 
     <template v-if="initDataState === 'FINISHED_OK'">
       <div class="container mx-auto my-10">
-        <div class="flex flex-col md:flex-row justify-between pb-6">
+        <div class="flex flex-col md:flex-row justify-between">
           <div class="flex-1 flex items-center mb-8 md:mb-0">
             <h1 class="text-3xl md:text-5xl font-bold uppercase">
               <img
@@ -24,7 +24,7 @@
               {{ blog.name }}
             </h1>
           </div>
-          <div class="flex flex-col md:flex-row">
+          <div class="flex flex-col md:flex-row items-center">
             <AppButton
               class="mb-4 md:mb-0 md:mr-4"
               @click="$router.push({
@@ -95,7 +95,7 @@
           </li>
         </ul>
 
-        <div class="container mx-auto mb-20 py-6 md:py-16 px-4 md:px-10 bg-white shadow-lg rounded-lg rounded-tl-none">
+        <div class="container mx-auto mb-20 py-6 px-4 md:px-10 bg-white shadow-md rounded-lg rounded-tl-none">
           <PostList
             :postsRequestState="postsPublishedRequestState"
             @onDeleteClick="onDeleteClick"

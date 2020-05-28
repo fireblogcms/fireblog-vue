@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+  <div class="bg-white shadow-md rounded-lg overflow-hidden">
     <div
       class="h-64 bg-cover bg-center"
       :style="background"

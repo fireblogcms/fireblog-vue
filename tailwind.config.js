@@ -3,11 +3,9 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          light: "#ff5fa7",
-          lighter: "#e6468e",
-          default: "#cc2c74",
-          darker: "#b3135b",
-          dark: "#990041"
+          default: "#735cd9",
+          darker: "#6a52d7",
+          dark: "#6147d4"
         },
         secondary: {
           default: "#ffdd57"
@@ -17,8 +15,7 @@ module.exports = {
         }
       },
       boxShadow: {
-        around: "0px 2px 16px 0 rgba(0, 0, 0, 0.2)",
-        bottom: "0 6px 4px -4px rgba(0, 0, 0, .08)"
+        around: "0px 2px 16px 0 rgba(0, 0, 0, 0.2)"
       },
       minHeight: {
         "10": "10rem"

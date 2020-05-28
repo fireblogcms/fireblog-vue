@@ -5,7 +5,7 @@
       class="flex items-center border-2 rounded-md whitespace-no-wrap focus:outline-none focus:shadow-outline"
       :class="{
         'py-3 px-6 text-2xl': size === '',
-        'py-1 px-4 text-xl': size === 'small',
+        'py-2 px-4 text-lg': size === 'small',
         'bg-white border-gray-200': color === '',
         'bg-primary border-primary text-white active:bg-primary-dark active:border-primary-dark': color === 'primary',
         'bg-white border-primary text-primary active:border-primary-dark active:text-primary-dark': color === 'primary-outlined',

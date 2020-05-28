@@ -1,5 +1,5 @@
 <template>
-  <div class="relative z-20 bg-white shadow-bottom" :class="`route-${$route.name}`">
+  <div class="relative z-20 bg-white" :class="`route-${$route.name}`">
     <div class="flex justify-between px-2 md:px-10 py-4">
       <div class="flex items-center">
         <img
@@ -90,7 +90,7 @@
 
     <!-- GRAPHQL API DOCUMENTATION -->
     <AppModal name="graphQLApiModal">
-      <div class="flex items-center justify-between flex-1" slot="header">
+      <div class="flex flex-col md:flex-row items-center justify-between flex-1" slot="header">
         <span class="text-4xl font-bold">API</span>
         <a
           :href="blogApiUrl" 
@@ -121,7 +121,11 @@
               </AppButton>
             </a>
           </div>
-          <pre class="locale-graphql"><code>{{example.snippet}}</code></pre>
+          <div class="px-6 bg-gray-100 rounded-md text-sm">
+            <pre>
+              <code>{{ example.snippet }}</code>
+            </pre>
+          </div>
         </div>
       </div>
     </AppModal>

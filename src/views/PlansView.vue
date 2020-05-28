@@ -12,7 +12,7 @@
 
     <div class="container mx-auto my-10 text-center">
       <div class="flex justify-center mb-16" v-if="freePlan">
-        <div class="w-8/12 p-8 bg-white shadow-lg rounded-lg">
+        <div class="w-8/12 p-8 bg-white shadow-md rounded-lg">
           <p>
             {{ $t("views.plans.freeTrialFirst") }}
             {{ freePlan.productName }}
@@ -36,7 +36,7 @@
         v-if="plans.length > 0"
       >
         <div
-          class="w-full md:w-1/4 my-4 md:mx-4 p-6 flex flex-col items-center justify-between bg-white shadow-lg rounded-lg border-4"
+          class="w-full md:w-1/4 my-4 md:mx-4 p-6 flex flex-col items-center justify-between bg-white shadow-md rounded-lg border-4"
           :class="isPlanSubscribed(plan.id) ? 'border-primary' : 'border-transparent'"
           v-for="plan in plans" :key="plan.id"
         >
@@ -80,7 +80,7 @@
         v-if="plans.length === 0"
       >
         <div
-          class="w-full md:w-1/4 my-4 md:mx-4 p-6 bg-white shadow-lg rounded-lg border-4 border-transparent" 
+          class="w-full md:w-1/4 my-4 md:mx-4 p-6 bg-white shadow-md rounded-lg border-4 border-transparent" 
           v-for="(v, i) in [0, 1, 2, 3]"
           :key="i"
         >
