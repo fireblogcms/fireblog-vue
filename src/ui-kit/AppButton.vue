@@ -2,10 +2,10 @@
   <span class="relative inline-block">
     <!-- Click stop is important for the post list for example so the parent's click is not triggered -->
     <button
-      class="flex items-center border-2 rounded-md whitespace-no-wrap focus:outline-none focus:shadow-outline"
+      class="flex items-center border-2 rounded whitespace-no-wrap focus:outline-none focus:shadow-outline"
       :class="{
         'py-3 px-6 text-2xl': size === '',
-        'py-2 px-4 text-lg': size === 'small',
+        'py-2 px-4 text-md': size === 'small',
         'bg-white border-gray-200': color === '',
         'bg-primary border-primary text-white active:bg-primary-dark active:border-primary-dark': color === 'primary',
         'bg-white border-primary text-primary active:border-primary-dark active:text-primary-dark': color === 'primary-outlined',
@@ -19,8 +19,9 @@
       <slot></slot>
     </button>
     <div
-      class="absolute inset-0 flex items-center justify-center border-2 rounded-md"
+      class="absolute inset-0 flex items-center justify-center border-2 rounded"
       :class="{
+        'bg-white border-gray-200': color === '',
         'bg-primary border-primary': color === 'primary',
         'bg-white border-primary': color === 'primary-outlined'
       }"
@@ -49,8 +50,13 @@ export default {
   },
   computed: {
     loader() {
-      return this.color === "primary" ?
-        "loader" : "loader-primary";
+      let loaderImage = "loader";
+      if (this.color === "primary") {
+        loaderImage = "loader-primary";
+      } else if (this.color === "primary-outlined") {
+        loaderImage = "loader-primary-outlined";
+      }
+      return loaderImage;
     }
   },
   methods: {

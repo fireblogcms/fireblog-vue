@@ -35,6 +35,7 @@
           <AppButton
             v-if="getPostStatus() === 'DRAFT'"
             :loading="savingPost.state === 'PENDING' && savingPost.status === 'DRAFT'"
+            :disabled="savingPost.state === 'PENDING'"
             class="mb-4 lg:mb-0 lg:mr-4"
             size="small"
             @click="saveAsDraft"
@@ -57,6 +58,7 @@
           <AppButton
             v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
             :loading="savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'"
+            :disabled="savingPost.state === 'PENDING'"
             class="lg:mr-4"
             color="primary-outlined"
             size="small"
@@ -69,6 +71,7 @@
           <AppButton
             v-if="existingPost && existingPost.status === 'PUBLISHED'"
             :loading="savingPost.state === 'PENDING' && savingPost.status === 'DRAFT'"
+            :disabled="savingPost.state === 'PENDING'"
             class="mb-4 lg:mb-0 lg:mr-4"
             size="small"
             @click="onUnpublishClick"
@@ -80,6 +83,7 @@
           <AppButton
             v-if="existingPost && existingPost.status === 'PUBLISHED'"
             :loading="savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'"
+            :disabled="savingPost.state === 'PENDING'"
             class="lg:mr-4"
             color="primary-outlined"
             size="small"
