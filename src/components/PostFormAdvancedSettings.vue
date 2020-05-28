@@ -110,8 +110,8 @@ export default {
     onTeaserInput(event) {
       vuexFormSetValue(FORM_ID, "teaser", event);
     },
-    onSlugInput({ source, slug }) {
-      vuexFormSetValue(FORM_ID, "slug", slug);
+    onSlugInput(event) {
+      vuexFormSetValue(FORM_ID, "slug", event);
     },
     onSlugUnlock() {
       vuexFormSetValue(FORM_ID, "slugIsLocked", false);

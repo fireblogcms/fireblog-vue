@@ -1,11 +1,13 @@
 <template>
-  <div>
-    <p
-      v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length === 0"
-      class="text-center text-xl my-10"
-    >
-      {{ $t("views.postList.noPostFound") }}
-    </p>
+  <div class="min-h-10 flex flex-col">
+    <div class="flex-1 flex items-center justify-center">
+      <p
+        v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length === 0"
+        class="text-center text-xl"
+      >
+        {{ $t("views.postList.noPostFound") }}
+      </p>
+    </div>
 
     <template
       v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length > 0"

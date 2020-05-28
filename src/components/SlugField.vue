@@ -14,10 +14,7 @@
         :error="error"
         placeholder="slug"
       />
-      <AppButton
-        color="primary"
-        @click="onButtonClick"
-      >
+      <AppButton @click="onButtonClick">
         {{
           locked
             ? $t("components.slugField.unlock") + " 🔐"
@@ -102,20 +99,21 @@ export default {
   },
   data() {
     return {
-      source: this.value,
       slug: this.value
     };
+  },
+  beforeUpdate() {
+    if (this.slug === "") {
+      this.onSlugInput(this.value);
+    }
   },
   methods: {
     closeUnlockConfirmModal() {
       this.$store.commit("modalShowing/close", "unlockConfirmModal");
     },
     onSlugInput(event) {
-      this.slug = createSlug(event.target.value);
-      this.$emit("input", {
-        source: event.target.value,
-        slug: this.slug
-      });
+      this.slug = createSlug(event);
+      this.$emit("input", this.slug);
     },
     onButtonClick() {
       if (this.locked) {
@@ -132,7 +130,7 @@ export default {
   computed: {
     computedHelp() {
       return this.$t("components.slugField.help", {
-        exampleUrl: `https://example.com/post/<mark>${this.slug}</mark>`
+        exampleUrl: `https://example.com/post/<mark class="font-bold bg-primary-light text-current">${this.slug}</mark>`
       });
     }
   }

@@ -4,6 +4,8 @@ module.exports = {
       colors: {
         primary: {
           default: "#735cd9",
+          light: "#a68fff",
+          lighter: "#8d76f3",
           darker: "#6a52d7",
           dark: "#6147d4"
         },
@@ -25,6 +27,9 @@ module.exports = {
       },
       maxHeight: {
         "9/10": "90vh"
+      },
+      maxWidth: {
+        "830": "830px"
       },
       opacity: {
         "90": ".9"

@@ -121,7 +121,7 @@
               </AppButton>
             </a>
           </div>
-          <div class="px-6 bg-gray-100 rounded-md text-sm">
+          <div class="px-6 bg-gray-100 rounded-md text-xs">
             <pre>
               <code>{{ example.snippet }}</code>
             </pre>

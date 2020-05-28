@@ -99,7 +99,7 @@
 
     <div v-if="!loadingAsyncData" class="bg-white">
       <div class="container mx-auto pt-10 pb-16 flex flex-col items-center">
-        <div class="w-full md:w-9/12 py-10 px-12 bg-white border border-gray-200 rounded-lg">
+        <div class="w-full max-w-830 p-10 bg-white border border-gray-200 rounded-lg">
           <form @submit.prevent>
             <textarea-autosize
               class="w-full text-5xl font-serif outline-none"
@@ -126,7 +126,7 @@
     </div>
 
     <footer class="flex justify-center fixed bottom-0 w-full p-1 text-sm bg-white">
-      <div class="w-full md:w-8/12 flex justify-between">
+      <div class="w-full md:w-7/12 flex justify-between">
         <div class="item">
           {{ $t("global." + getPostStatus().toLowerCase()) }}
           <span v-if="savingPost.state === 'PENDING'">Saving...</span>
