@@ -73,10 +73,14 @@ function checkEnvVars(exampleEnvFile) {
 
 checkEnvVars(".env.example");
 
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
-  .BundleAnalyzerPlugin;
+const plugins = [];
+if (process.env.NODE_ENV !== "production") {
+  const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+  plugins.push(new BundleAnalyzerPlugin());
+}
+
 module.exports = {
   configureWebpack: {
-    plugins: [new BundleAnalyzerPlugin()]
+    plugins
   }
 };

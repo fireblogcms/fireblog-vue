@@ -22,6 +22,12 @@ yarn dev
 yarn build
 ```
 
+### build report from webpack analyser. This will create a dist/report.html file.
+
+```
+yarn build-report
+```
+
 ### Run your tests
 
 ```
