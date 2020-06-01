@@ -32,10 +32,23 @@ export const PrimaryOutlined = () => ({
   methods: { action: action("clicked") }
 });
 
+export const DefaultLoading = () => ({
+  components: { AppButton },
+  template: '<AppButton :loading="true" @click="action">Default</AppButton>',
+  methods: { action: action("clicked") }
+});
+
+export const DefaultSmallLoading = () => ({
+  components: { AppButton },
+  template:
+    '<AppButton size="small" :loading="true" @click="action">Default small</AppButton>',
+  methods: { action: action("clicked") }
+});
+
 export const PrimaryLoading = () => ({
   components: { AppButton },
   template:
-    '<AppButton color="primary" :loading="true" @click="action">Primary outlined</AppButton>',
+    '<AppButton color="primary" :loading="true" @click="action">Primary</AppButton>',
   methods: { action: action("clicked") }
 });
 
