@@ -142,6 +142,32 @@ export default {
   padding: 0;
   font-size: 1.25rem;
 }
+#editor h1, h2, h3, h4 {
+  font-weight: bold;
+}
+#editor h2 {
+  font-size: 2.25rem;
+}
+#editor h3 {
+  font-size: 1.875rem;
+}
+#editor h4 {
+  font-size: 1.5rem;
+}
+#editor h1, h2, h3, h4, p, pre {
+  margin: 1rem 0;
+}
+#editor ul {
+  list-style: disc outside;
+  margin: 1rem 0 1rem 2.5rem;
+}
+#editor ul ul {
+  list-style-type: circle;
+  margin: 1rem 0 0 2.5rem;
+}
+#editor ul ul ul {
+  list-style-type: square;
+}
 /* Replace "P" paragraph icon to a "+" to add media */
 button.ck-block-toolbar-button {
   background-image: url("/images/editor-button-plus.svg") !important;
