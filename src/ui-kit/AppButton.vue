@@ -10,9 +10,11 @@
         'bg-primary border-primary text-white active:bg-primary-dark active:border-primary-dark': color === 'primary',
         'bg-white border-primary text-primary active:border-primary-dark active:text-primary-dark': color === 'primary-outlined',
         'bg-secondary border-secondary text-primary-dark active:bg-secondary-dark active:border-secondary-dark': color === 'secondary',
+        'bg-danger border-danger text-white active:bg-danger-dark active:border-danger-dark': color === 'danger',
         'hover:bg-primary-darker hover:border-primary-darker': color === 'primary' && !$attrs.disabled,
         'hover:border-primary-darker hover:text-primary-darker': color === 'primary-outlined' && !$attrs.disabled,
         'hover:bg-secondary-darker hover:border-secondary-darker': color === 'secondary' && !$attrs.disabled,
+        'hover:bg-danger-darker hover:border-danger-darker': color === 'danger' && !$attrs.disabled,
         'cursor-default opacity-50': $attrs.disabled
       }"
       v-bind="$attrs"

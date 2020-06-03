@@ -129,7 +129,6 @@
         <div class="flex flex-col md:flex-row items-center justify-center mt-10">
           <AppButton
             class="mx-4"
-            color="primary-outlined"
             @click="closeDeletePostModal"
           >
             {{ $t("global.cancel") }}
@@ -137,7 +136,7 @@
           <AppButton
             :loading="deletePostRequestState === 'PENDING'"
             class="mt-4 md:mt-0 mx-4"
-            color="primary"
+            color="danger"
             @click="onDeleteModalConfirmClick"
           >
             {{ $t("views.postList.deleteModal.confirmButton") }}

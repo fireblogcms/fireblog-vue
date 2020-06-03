@@ -1,11 +1,11 @@
 <template>
   <div>
-    <AppPanel>
+    <AppPanel type="danger">
       <h2 class="mb-6 text-4xl font-bold">
         {{ $t("views.blogSettings.dangerZone.title") }}
       </h2>
       <AppButton
-        color="primary"
+        color="danger"
         @click="onDeleteBlogClick"
       >
         {{ $t("views.blogSettings.dangerZone.deleteButton") }}
@@ -25,19 +25,18 @@
 
         <div class="pt-12 flex flex-col md:flex-row items-center justify-center">
           <AppButton
-            color="primary-outlined"
             class="mx-4"
             @click="closeDeleteBlogModal"
           >
-            {{ $t("views.blogSettings.dangerZone.deleteModal.cancelButton").toUpperCase() }}
+            {{ $t("views.blogSettings.dangerZone.deleteModal.cancelButton") }}
           </AppButton>
           <AppButton
             :loading="deleteBlogState === 'PENDING'"
             class="mt-4 md:mt-0 mx-4"
-            color="primary"
+            color="danger"
             @click="onDeleteBlogConfirm"
           >
-            {{ $t("global.delete").toUpperCase() }}
+            {{ $t("global.delete") }}
           </AppButton>
         </div>
       </div>

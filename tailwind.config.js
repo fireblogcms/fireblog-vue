@@ -15,8 +15,11 @@ module.exports = {
         label: {
           default: "#ffdd57"
         },
-        error: {
-          default: "#f44336"
+        danger: {
+          light: "#fddfdd",
+          default: "#f44336",
+          darker: "#db2a1d",
+          dark: "#c11003"
         },
         blackOpacity50: {
           default: "rgba(0, 0, 0, .5)"
@@ -35,7 +38,7 @@ module.exports = {
         "9/10": "90vh"
       },
       maxWidth: {
-        "830": "830px"
+        "850": "850px"
       },
       opacity: {
         "90": ".9"

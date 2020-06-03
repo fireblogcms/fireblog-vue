@@ -99,7 +99,7 @@
 
     <div v-if="!loadingAsyncData" class="bg-white">
       <div class="container mx-auto pt-10 pb-16 flex flex-col items-center">
-        <div class="w-full max-w-830 p-10 bg-white border border-gray-200 rounded-lg">
+        <div class="w-full max-w-850 p-12 bg-white border border-gray-200 rounded-lg">
           <form @submit.prevent>
             <textarea-autosize
               class="w-full text-5xl font-serif outline-none"
