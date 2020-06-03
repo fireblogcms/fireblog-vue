@@ -34,7 +34,6 @@ export default {
 
 <style>
 input[type="text"]:disabled {
-  @apply bg-gray-200;
-  cursor: not-allowed;
+  @apply bg-gray-200 cursor-not-allowed;
 }
 </style>

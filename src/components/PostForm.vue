@@ -156,7 +156,6 @@
         <div class="flex mt-8 md:mt-0">
           <AppButton
             color="primary-outlined"
-            size="small"
             class="mr-4"
             @click="closePublishingOptionsModal"
           >
@@ -164,7 +163,6 @@
           </AppButton>
           <AppButton
             color="primary"
-            size="small"
             :loading="savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'"
             @click="publish"
           >

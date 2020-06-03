@@ -45,7 +45,7 @@ export default {
   "views.blogCreate.fields.description.label": "What is your blog about?",
   "views.blogCreate.fields.description.help": "This description will appear in search engine results or when sharing blog's link on social networks.",
   "views.blogCreate.gladToSeeYouHere": "Glad to see you here",
-  "views.blogList.createNewBlogButton": "Create a new blog",
+  "views.blogList.createNewBlogButton": "New blog",
   "views.blogList.title": "My blogs",
   "views.blogList.settingsButton": "Settings",
   "views.blogSettings.dangerZone.title": "Danger zone",

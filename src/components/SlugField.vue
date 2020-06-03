@@ -7,14 +7,14 @@
 
     <div class="flex">
       <AppFieldText
-        class="flex-1"
+        class="flex-1 mr-1"
         :value="value"
         @input="onSlugInput"
         :disabled="locked"
         :error="error"
         placeholder="slug"
       />
-      <AppButton @click="onButtonClick">
+      <AppButton color="secondary" @click="onButtonClick">
         {{
           locked
             ? $t("components.slugField.unlock") + " 🔐"
@@ -130,7 +130,7 @@ export default {
   computed: {
     computedHelp() {
       return this.$t("components.slugField.help", {
-        exampleUrl: `https://example.com/post/<mark class="font-bold bg-primary-light text-current">${this.slug}</mark>`
+        exampleUrl: `https://example.com/post/<mark class="font-bold bg-secondary text-current">${this.slug}</mark>`
       });
     }
   }

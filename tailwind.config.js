@@ -4,13 +4,19 @@ module.exports = {
       colors: {
         primary: {
           default: "#735cd9",
-          light: "#a68fff",
-          lighter: "#8d76f3",
           darker: "#6a52d7",
           dark: "#6147d4"
         },
         secondary: {
+          default: "#d9c2ff",
+          darker: "#c0a9ff",
+          dark: "#a68fff"
+        },
+        label: {
           default: "#ffdd57"
+        },
+        error: {
+          default: "#f44336"
         },
         blackOpacity50: {
           default: "rgba(0, 0, 0, .5)"
