@@ -1,5 +1,25 @@
 <template>
   <div class="min-h-10 flex flex-col">
+    <div v-if="postsRequestState === 'PENDING'">
+      <div
+        class="px-8 py-4 md:py-6 border-b border-gray-300 last:border-b-0" 
+        v-for="(v, i) in [0, 1]"
+        :key="i"
+      >
+        <ContentLoader class="md:hidden" :height="200">
+          <rect x="0" y="0" rx="3" ry="3" width="25%" height="55%" />
+          <rect x="32%" y="10" rx="3" ry="3" width="45%" height="40" />
+          <rect x="32%" y="70" rx="3" ry="3" width="65%" height="15" />
+          <rect x="35%" y="75%" rx="3" ry="3" width="30%" height="40" />
+        </ContentLoader>
+        <ContentLoader class="hidden md:block" :height="25">
+          <rect x="0" y="0" rx="3" ry="3" width="15%" height="100%" />
+          <rect x="70" y="2" rx="3" ry="3" width="20%" height="10" />
+          <rect x="70" y="15" rx="3" ry="3" width="35%" height="5" />
+          <rect x="90%" y="5" rx="3" ry="3" width="10%" height="14" />
+        </ContentLoader>
+      </div>
+    </div>
     <div class="flex-1 flex items-center justify-center">
       <p
         v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length === 0"
@@ -69,12 +89,14 @@
 
 <script>
 import AppButton from "@/ui-kit/AppButton";
+import { ContentLoader } from "vue-content-loader";
 import striptags from "striptags";
 import { formatDate } from "@/utils/helpers";
 
 export default {
   components: {
-    AppButton
+    AppButton,
+    ContentLoader
   },
   props: {
     posts: {
