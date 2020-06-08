@@ -8,7 +8,7 @@
       <div
         class="flex flex-col bg-white"
         :class="{
-          'w-11/12 md:w-1/2 max-h-9/10 shadow-lg rounded-lg': !fullscreen,
+          'w-11/12 md:w-1/2 max-h-9/10 shadow-around rounded-lg': !fullscreen,
           'w-full h-screen': fullscreen
         }"
       >
