@@ -174,6 +174,12 @@ export default {
 #editor ul ul ul {
   list-style-type: square;
 }
+#editor figure {
+  max-width: 99%;
+}
+#editor .ck-progress-bar {
+  height: 4px !important;
+}
 /* Replace "P" paragraph icon to a "+" to add media */
 button.ck-block-toolbar-button {
   background-image: url("/images/editor-button-plus.svg") !important;
