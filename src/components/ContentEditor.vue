@@ -87,6 +87,13 @@ export default {
         providers: [ckeditorIframelyMediaProvider()]
       }
     }).then(editor => {
+      // when we cant reach link for a preview
+      iframely.on("cancel", function(url, parentNode) {
+        parentNode.innerHTML = `
+        <div class="broken-link bg-gray-200 p-8">
+        <a href=${url}/>${url}</a>
+        </div>`;
+      });
       // CKEditorInspector.attach(editor);
       const element = document.querySelector(
         ".ck-block-toolbar-button .ck-tooltip__text"
@@ -139,6 +146,10 @@ export default {
   outline: none !important;
   padding: 0;
   font-size: 1.25rem;
+}
+#editor a {
+  @apply text-blue-600;
+  @apply underline;
 }
 #editor h1,
 #editor h2,
@@ -194,5 +205,22 @@ button.ck-block-toolbar-button:hover {
 }
 .ck-block-toolbar-button .ck.ck-icon {
   font-size: 2em !important;
+}
+
+.iframely-responsive {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  position: relative;
+  padding-bottom: 56.25%;
+}
+.iframely-responsive > * {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  border: 0;
 }
 </style>
