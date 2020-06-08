@@ -45,6 +45,9 @@ export default {
         (new Date(this.blog.subscription.trialEnd) - new Date()) /
           (1000 * 60 * 60 * 24)
       );
+      if (this.numberDaysLeftTrial < 0) {
+        this.numberDaysLeftTrial = 0;
+      }
     }
   },
   methods: {

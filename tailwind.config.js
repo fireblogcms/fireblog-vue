@@ -28,6 +28,9 @@ module.exports = {
       boxShadow: {
         around: "0px 2px 16px 0 rgba(0, 0, 0, 0.2)"
       },
+      height: {
+        "320": "320px"
+      },
       minHeight: {
         "10": "10rem"
       },

@@ -1,7 +1,7 @@
 <template>
   <div class="bg-white shadow-md rounded-lg overflow-hidden">
     <div
-      class="h-64 bg-cover bg-center"
+      class="h-320 bg-cover bg-center"
       :style="background"
       v-if="image"
     >

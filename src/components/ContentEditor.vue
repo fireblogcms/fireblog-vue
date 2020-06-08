@@ -140,7 +140,10 @@ export default {
   padding: 0;
   font-size: 1.25rem;
 }
-#editor h1, h2, h3, h4 {
+#editor h1,
+#editor h2,
+#editor h3,
+#editor h4 {
   font-weight: bold;
 }
 #editor h2 {
@@ -152,7 +155,12 @@ export default {
 #editor h4 {
   font-size: 1.5rem;
 }
-#editor h1, h2, h3, h4, p, pre {
+#editor h1,
+#editor h2,
+#editor h3,
+#editor h4,
+#editor p,
+#editor pre {
   margin: 1rem 0;
 }
 #editor ul {
