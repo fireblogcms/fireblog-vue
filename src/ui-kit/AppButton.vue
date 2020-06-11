@@ -31,7 +31,7 @@
       <slot></slot>
     </button>
     <div
-      class="absolute inset-0 flex items-center justify-center border-2 rounded"
+      class="absolute inset-0 flex items-center justify-center border rounded"
       :class="{
         'bg-white border-gray-200': color === '',
         'bg-primary border-primary': color === 'primary',
