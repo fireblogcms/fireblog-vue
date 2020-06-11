@@ -14,7 +14,7 @@
         :error="error"
         placeholder="slug"
       />
-      <AppButton color="secondary" @click="onButtonClick">
+      <AppButton v-show="showToggleLockButton" @click="onButtonClick">
         {{
           locked
             ? $t("components.slugField.unlock") + " 🔐"
@@ -31,7 +31,9 @@
         <p>
           {{ $t("components.slugField.unlockConfirmModal.content") }}
         </p>
-        <div class="flex flex-col md:flex-row items-center justify-center mt-10">
+        <div
+          class="flex flex-col md:flex-row items-center justify-center mt-10"
+        >
           <AppButton
             class="mx-4"
             color="primary-outlined"

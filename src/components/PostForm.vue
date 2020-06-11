@@ -617,8 +617,10 @@ export default {
         // if post is published or has been published once, we lock slug field by default.
         // if "publishedAt" is not null, we know the post has been published or is published.
         if (this.existingPost && this.existingPost.publishedAt) {
-          //vuexFormSetValue(FORM_ID, "slugShowToggleLockButton", true);
+          vuexFormSetValue(FORM_ID, "slugShowToggleLockButton", true);
           vuexFormSetValue(FORM_ID, "slugIsLocked", true);
+        } else {
+          vuexFormSetValue(FORM_ID, "slugShowToggleLockButton", false);
         }
 
         // pre-fill teaser fied with the first sentence of the text.
