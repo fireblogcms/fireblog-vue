@@ -12,14 +12,14 @@ export default {
   props: {
     value: {
       type: String,
-      default: ""
+      default: "",
     },
     autosave: {
       type: Function,
-      default: data => {
+      default: (data) => {
         return Promise.resolve(data);
-      }
-    }
+      },
+    },
   },
   mounted() {
     Editor.create(this.$refs.editor, {
@@ -37,56 +37,56 @@ export default {
           { language: "cpp", label: "C++" },
           { language: "css", label: "CSS" },
           { language: "xml", label: "HTML/XML" },
-          { language: "java", label: "Java" }
-        ]
+          { language: "java", label: "Java" },
+        ],
       },
       image: {
         // You need to configure the image toolbar, too, so it uses the new style buttons.
-        toolbar: ["imageTextAlternative"]
+        toolbar: ["imageTextAlternative"],
       },
       heading: {
         options: [
           {
             model: "paragraph",
             title: "Paragraph",
-            class: "ck-heading_paragraph"
+            class: "ck-heading_paragraph",
           },
           {
             model: "heading1",
             view: "h2",
             title: "Heading 2",
-            class: "ck-heading_heading2"
+            class: "ck-heading_heading2",
           },
           {
             model: "heading3",
             view: "h3",
             title: "Heading 3",
-            class: "ck-heading_heading3"
+            class: "ck-heading_heading3",
           },
           {
             model: "heading4",
             view: "h4",
             title: "Heading 4",
-            class: "ck-heading_heading4"
-          }
-        ]
+            class: "ck-heading_heading4",
+          },
+        ],
       },
       extraPlugins: [
         ckeditorS3UploadAdapterPlugin({
           blogId: this.$route.params.blogId,
-          onRequestStateChange: ({ state, file }) => {}
-        })
+          onRequestStateChange: ({ state, file }) => {},
+        }),
       ],
       autosave: {
-        save: editor => {
+        save: (editor) => {
           return this.autosave(editor.getData());
-        }
+        },
       },
       mediaEmbed: {
         previewsInData: false,
-        providers: [ckeditorIframelyMediaProvider()]
-      }
-    }).then(editor => {
+        providers: [ckeditorIframelyMediaProvider()],
+      },
+    }).then((editor) => {
       // when we cant reach link for a preview
       iframely.on("cancel", function(url, parentNode) {
         parentNode.innerHTML = `
@@ -109,13 +109,13 @@ export default {
         this.$emit("change", editor.getData());
       });
 
-      editor.model.document.registerPostFixer(writer => {
+      editor.model.document.registerPostFixer((writer) => {
         // Insert automatically a paragraph after an image or a block,
         // Otherwise redactors are stuck at the bottom of the page and
         // can't add a new line.
         // @see https://github.com/ckeditor/ckeditor5/issues/407#issuecomment-602111695
         const changes = editor.model.document.differ.getChanges();
-        editor.model.change(writer => {
+        editor.model.change((writer) => {
           for (const entry of changes) {
             // if an image, table, blockQuote or media is inserted.
             if (
@@ -134,7 +134,7 @@ export default {
         });
       });
     });
-  }
+  },
 };
 </script>
 
@@ -186,12 +186,18 @@ export default {
   list-style-type: square;
 }
 #editor figure {
-  max-width: 100%;
-  margin: 4px; /* make sur we see borders when figure is select */
+  margin: 4px auto; /* make sur we see borders when figure is select */
+  max-width: 99%; /* make sur we see borders when figure is select */
 }
+
 #editor .ck-progress-bar {
   height: 4px !important;
 }
+
+#editor figure:not(:last-child) {
+  margin-bottom: 2em;
+}
+
 /* Replace "P" paragraph icon to a "+" to add media */
 button.ck-block-toolbar-button {
   background-image: url("/images/editor-button-plus.svg") !important;
