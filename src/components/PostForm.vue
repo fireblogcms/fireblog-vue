@@ -19,22 +19,21 @@
           size="small"
           @click="isActionsVisibleOnMobile = !isActionsVisibleOnMobile"
         >
-          <img
-            class="w-6"
-            src="/images/pencil.svg"
-          />
+          <img class="w-6" src="/images/pencil.svg" />
         </AppButton>
         <div
-          v-click-outside="() => isActionsVisibleOnMobile = false"
+          v-click-outside="() => (isActionsVisibleOnMobile = false)"
           :class="{
-            'hidden': !isActionsVisibleOnMobile
+            hidden: !isActionsVisibleOnMobile
           }"
           class="absolute lg:relative lg:inline-block top-0 mt-16 lg:mt-0 -ml-20 p-6 lg:p-0 flex flex-col lg:flex-row items-center justify-center bg-white rounded-md shadow-around lg:shadow-none"
         >
           <!-- SAVE DRAFT BUTTON -->
           <AppButton
             v-if="getPostStatus() === 'DRAFT'"
-            :loading="savingPost.state === 'PENDING' && savingPost.status === 'DRAFT'"
+            :loading="
+              savingPost.state === 'PENDING' && savingPost.status === 'DRAFT'
+            "
             :disabled="savingPost.state === 'PENDING'"
             class="mb-4 lg:mb-0 lg:mr-4"
             size="small"
@@ -57,7 +56,10 @@
           <!-- BEGIN PUBLICATION BUTTON (launch advanced settings modal) -->
           <AppButton
             v-if="!existingPost || existingPost.status.includes('DRAFT', 'BIN')"
-            :loading="savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'"
+            :loading="
+              savingPost.state === 'PENDING' &&
+                savingPost.status === 'PUBLISHED'
+            "
             :disabled="savingPost.state === 'PENDING'"
             class="lg:mr-4"
             color="primary-outlined"
@@ -70,7 +72,9 @@
           <!-- UNPUBLISH BUTTON  -->
           <AppButton
             v-if="existingPost && existingPost.status === 'PUBLISHED'"
-            :loading="savingPost.state === 'PENDING' && savingPost.status === 'DRAFT'"
+            :loading="
+              savingPost.state === 'PENDING' && savingPost.status === 'DRAFT'
+            "
             :disabled="savingPost.state === 'PENDING'"
             class="mb-4 lg:mb-0 lg:mr-4"
             size="small"
@@ -82,7 +86,10 @@
           <!-- PUBLISH CHANGES BUTTON -->
           <AppButton
             v-if="existingPost && existingPost.status === 'PUBLISHED'"
-            :loading="savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'"
+            :loading="
+              savingPost.state === 'PENDING' &&
+                savingPost.status === 'PUBLISHED'
+            "
             :disabled="savingPost.state === 'PENDING'"
             class="lg:mr-4"
             color="primary-outlined"
@@ -97,10 +104,12 @@
 
     <AppLoader v-if="loadingAsyncData" />
 
-    <div v-if="!loadingAsyncData" class="bg-white">
+    <div v-if="!loadingAsyncData">
       <div class="container mx-auto pt-10 pb-16 flex flex-col items-center">
-        <div class="w-full max-w-850 p-12 bg-white border border-gray-200 rounded-lg">
-          <form @submit.prevent>
+        <div
+          class="w-full max-w-850 p-12 border border-gray-200 rounded bg-white"
+        >
+          <form @submit.prevent class="bg-white">
             <textarea-autosize
               class="w-full text-5xl font-serif outline-none"
               maxlength="250"
@@ -125,7 +134,9 @@
       </div>
     </div>
 
-    <footer class="flex justify-center fixed bottom-0 w-full p-1 text-sm bg-white">
+    <footer
+      class="flex justify-center fixed bottom-0 w-full p-1 text-sm bg-white"
+    >
       <div class="w-full md:w-7/12 flex justify-between">
         <div class="item">
           {{ $t("global." + getPostStatus().toLowerCase()) }}
@@ -149,21 +160,23 @@
       name="publishingOptionsModal"
       :fullscreen="true"
     >
-      <div class="flex flex-col md:flex-row items-center justify-between flex-1" slot="header">
+      <div
+        class="flex flex-col md:flex-row items-center justify-between flex-1"
+        slot="header"
+      >
         <span class="text-4xl font-bold">
           {{ $t("views.postForm.advancedSettingsModal.title") }}
         </span>
         <div class="flex mt-8 md:mt-0">
-          <AppButton
-            color="primary-outlined"
-            class="mr-4"
-            @click="closePublishingOptionsModal"
-          >
+          <AppButton class="mr-4" @click="closePublishingOptionsModal">
             {{ $t("views.postForm.publicationCancel") }}
           </AppButton>
           <AppButton
             color="primary"
-            :loading="savingPost.state === 'PENDING' && savingPost.status === 'PUBLISHED'"
+            :loading="
+              savingPost.state === 'PENDING' &&
+                savingPost.status === 'PUBLISHED'
+            "
             @click="publish"
           >
             {{ publishModalPublishButtonText }}
@@ -187,10 +200,7 @@
       </div>
       <div class="flex flex-col items-center" slot="body">
         <img class="h-64 mb-10 rounded" :src="getRandomHurrahGif()" />
-        <AppButton
-          color="primary"
-          @click="closePublishingSuccessModal"
-        >
+        <AppButton color="primary" @click="closePublishingSuccessModal">
           {{ $t("global.okayButton") }}
         </AppButton>
       </div>
@@ -203,10 +213,7 @@
       </div>
       <div class="flex flex-col items-center" slot="body">
         <img class="h-64 mb-10 rounded" :src="getRandomHurrahGif()" />
-        <AppButton
-          color="primary"
-          @click="closePublishingChangesSuccessModal"
-        >
+        <AppButton color="primary" @click="closePublishingChangesSuccessModal">
           {{ $t("global.okayButton") }}
         </AppButton>
       </div>
@@ -303,8 +310,8 @@ export default {
     this.init();
   },
   mounted() {
-   // Listen event before unload and call method confirmLeave
-    window.onbeforeunload= this.confirmLeave;
+    // Listen event before unload and call method confirmLeave
+    window.onbeforeunload = this.confirmLeave;
     // allow ctrl+s to be detected on inputs and textareas
     hotkeys.filter = () => true;
     // save shortcuts
@@ -337,11 +344,11 @@ export default {
   },
   methods: {
     confirmLeave(event) {
-        // Method of confirming that we are willing to leave the page.
-        event.preventDefault();
-        var confirmationMessage = "The changes you have made may not be saved.";
-        event.returnValue = confirmationMessage;
-        return confirmationMessage;
+      // Method of confirming that we are willing to leave the page.
+      event.preventDefault();
+      var confirmationMessage = "The changes you have made may not be saved.";
+      event.returnValue = confirmationMessage;
+      return confirmationMessage;
     },
     onEditorReady(editor) {
       const wordCountPlugin = editor.plugins.get("WordCount");
@@ -459,7 +466,11 @@ export default {
         return;
       }
       if (!vuexFormGetValue(FORM_ID, "title").trim()) {
-        toast(this, this.$t("views.postForm.fields.title.errors.required"), "error");
+        toast(
+          this,
+          this.$t("views.postForm.fields.title.errors.required"),
+          "error"
+        );
         return;
       }
       const savingPendingAction = pendingActions.add("Saving post");
@@ -570,7 +581,10 @@ export default {
           // make sure user can not change slug anymore without confirmation.
           vuexFormSetValue(FORM_ID, "slugIsLocked", true);
           if (publishingChanges === true) {
-            this.$store.commit("modalShowing/open", "publishingChangesSuccessModal");
+            this.$store.commit(
+              "modalShowing/open",
+              "publishingChangesSuccessModal"
+            );
           } else {
             this.$store.commit("modalShowing/open", "publishingSuccessModal");
           }
@@ -583,7 +597,11 @@ export default {
     showAdvancedSettings() {
       // we need at least the title to autocomplete the slug field
       if (!vuexFormGetValue(FORM_ID, "title").trim()) {
-        toast(this, this.$t("views.postForm.fields.title.errors.required"), "error");
+        toast(
+          this,
+          this.$t("views.postForm.fields.title.errors.required"),
+          "error"
+        );
         return;
       }
       if (this.mediaLoadingCounter > 0) {

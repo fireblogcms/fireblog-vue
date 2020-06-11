@@ -23,6 +23,9 @@ module.exports = {
         },
         blackOpacity50: {
           default: "rgba(0, 0, 0, .5)"
+        },
+        alabaster: {
+          default: "rgba(250, 250, 250, 0.8)"
         }
       },
       boxShadow: {

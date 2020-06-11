@@ -6,7 +6,9 @@
     </p>
 
     <div>
-      <label class="text-2xl font-bold">{{ $t("views.blogCreate.fields.title.label") }}</label>
+      <label class="text-2xl font-bold">{{
+        $t("views.blogCreate.fields.title.label")
+      }}</label>
       <p class="mb-4 text-sm">{{ $t("views.blogCreate.fields.title.help") }}</p>
       <AppFieldText
         v-model="inputs.name"
@@ -17,18 +19,18 @@
     </div>
 
     <div class="mt-10 mb-16">
-      <label class="text-2xl font-bold">{{ $t("views.blogCreate.fields.description.label") }}</label>
-      <p class="mb-4 text-sm">{{ $t("views.blogCreate.fields.description.help") }}</p>
-      <AppTextarea
-        v-model="inputs.description"
-        maxlength="250"
-      />
+      <label class="text-2xl font-bold">{{
+        $t("views.blogCreate.fields.description.label")
+      }}</label>
+      <p class="mb-4 text-sm">
+        {{ $t("views.blogCreate.fields.description.help") }}
+      </p>
+      <AppTextarea v-model="inputs.description" maxlength="250" />
     </div>
 
     <div class="flex flex-col md:flex-row items-center justify-center">
       <AppButton
         v-if="!isMyFirstBlog"
-        color="primary-outlined"
         class="mb-4 md:mb-0 mx-4"
         @click="$router.push('/')"
       >
@@ -91,7 +93,7 @@ export default {
   methods: {
     async initData() {
       getUser()
-        .then(user => this.user = user)
+        .then(user => (this.user = user))
         .catch(error => {
           throw new Error(error);
         });
@@ -125,7 +127,7 @@ export default {
               name: "postList",
               params: { blogId: result.data.createBlog._id }
             })
-            .then(() => this.savingBlogState = REQUEST_STATE.FINISHED_OK);
+            .then(() => (this.savingBlogState = REQUEST_STATE.FINISHED_OK));
         })
         .catch(error => {
           this.savingBlogState = REQUEST_STATE.FINISHED_ERROR;
