@@ -33,7 +33,7 @@
       v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length > 0"
     >
       <div
-        class="px-8 py-4 md:py-6 flex flex-col md:flex-row cursor-pointer border-b border-gray-300 last:border-b-0"
+        class="py-4 md:py-6 flex flex-col md:flex-row cursor-pointer border-b border-gray-300 last:border-b-0"
         v-for="post in posts.edges"
         :key="post.node._id"
         @click="
@@ -41,12 +41,12 @@
             name: 'postUpdate',
             params: {
               blogId: $route.params.blogId,
-              postId: post.node._id
-            }
+              postId: post.node._id,
+            },
           })
         "
       >
-        <div class="flex flex-1">
+        <div class="flex flex-1 mr-2">
           <div
             v-show="post.node.image"
             v-lazy:background-image="post.node.image"
@@ -59,14 +59,14 @@
             <p class="text-sm italic" v-if="post.node.status === 'PUBLISHED'">
               {{
                 $t("views.postList.publishedOn", {
-                  date: publishedOnDate(post)
+                  date: publishedOnDate(post),
                 })
               }}
             </p>
             <p class="text-sm italic" v-if="post.node.status === 'DRAFT'">
               {{
                 $t("views.postList.updatedOn", {
-                  date: updatedOnDate(post)
+                  date: updatedOnDate(post),
                 })
               }}
             </p>
@@ -96,17 +96,17 @@ import { formatDate } from "@/utils/helpers";
 export default {
   components: {
     AppButton,
-    ContentLoader
+    ContentLoader,
   },
   props: {
     posts: {
       type: Object,
-      required: true
+      required: true,
     },
     postsRequestState: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   created() {
     this.striptags = striptags;
@@ -120,7 +120,7 @@ export default {
     },
     onDeleteClick(post) {
       this.$emit("onDeleteClick", post);
-    }
-  }
+    },
+  },
 };
 </script>

@@ -17,25 +17,21 @@
         <div class="flex flex-col md:flex-row justify-between">
           <div class="flex-1 flex items-center mb-8 md:mb-0">
             <h1 class="text-3xl md:text-5xl font-bold uppercase">
-              <img
-                class="w-16 h-16 mr-4 inline"
-                src="/images/book.png"
-              />
+              <img class="w-16 h-16 mr-4 inline" src="/images/book.png" />
               {{ blog.name }}
             </h1>
           </div>
           <div class="flex flex-col md:flex-row items-center">
             <AppButton
               class="mb-4 md:mb-0 md:mr-4"
-              @click="$router.push({
-                name: 'blogSettings',
-                params: { blogId: $route.params.blogId }
-              })"
+              @click="
+                $router.push({
+                  name: 'blogSettings',
+                  params: { blogId: $route.params.blogId },
+                })
+              "
             >
-              <img
-                class="w-8 mr-2"
-                src="/images/icon-settings.svg"
-              />
+              <img class="w-8 mr-2" src="/images/icon-settings.svg" />
               <span>
                 {{ $t("views.blogList.settingsButton").toUpperCase() }}
               </span>
@@ -43,10 +39,12 @@
             <AppButton
               v-if="!isFirstPost"
               color="primary"
-              @click="$router.push({
-                name: 'postCreate',
-                params: { blogId: $route.params.blogId }
-              })"
+              @click="
+                $router.push({
+                  name: 'postCreate',
+                  params: { blogId: $route.params.blogId },
+                })
+              "
             >
               {{ $t("views.postList.writeNewPostButton").toUpperCase() }}
             </AppButton>
@@ -61,10 +59,12 @@
         <div class="mt-8 flex justify-center">
           <AppButton
             color="primary"
-            @click="$router.push({
-              name: 'postCreate',
-              params: { blogId: $route.params.blogId }
-            })"
+            @click="
+              $router.push({
+                name: 'postCreate',
+                params: { blogId: $route.params.blogId },
+              })
+            "
           >
             {{ $t("views.postList.firstPostWriteButton").toUpperCase() }}
           </AppButton>
@@ -79,7 +79,9 @@
             :class="{ 'bg-white': activeStatus == 'PUBLISHED' }"
           >
             <span>{{ $t("views.postList.publishedTab") }}</span>
-            <div class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-400 text-sm">
+            <div
+              class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-100 text-sm"
+            >
               {{ postsPublished.totalCount }}
             </div>
           </li>
@@ -89,13 +91,17 @@
             :class="{ 'bg-white': activeStatus == 'DRAFT' }"
           >
             <span>{{ $t("views.postList.draftTab") }}</span>
-            <div class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-400 text-sm">
+            <div
+              class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-100 text-sm"
+            >
               {{ postsDraft.totalCount }}
             </div>
           </li>
         </ul>
 
-        <div class="container mx-auto mb-20 py-6 px-4 md:px-10 bg-white shadow-md rounded-lg rounded-tl-none">
+        <div
+          class="container mx-auto mb-20 py-6 px-4 md:px-10 bg-white shadow-md rounded-lg rounded-tl-none"
+        >
           <PostList
             :postsRequestState="postsPublishedRequestState"
             @onDeleteClick="onDeleteClick"
@@ -112,7 +118,6 @@
       </template>
     </template>
 
-
     <!-- DELETE POST MODAL -->
     <AppModal name="deletePostModal" v-if="deleteModal.post">
       <div class="text-4xl font-bold" slot="header">
@@ -122,15 +127,14 @@
         <p class="text-xl">
           {{
             $t("views.postList.deleteModal.content", {
-              postTitle: deleteModal.post.title
+              postTitle: deleteModal.post.title,
             })
           }}
         </p>
-        <div class="flex flex-col md:flex-row items-center justify-center mt-10">
-          <AppButton
-            class="mx-4"
-            @click="closeDeletePostModal"
-          >
+        <div
+          class="flex flex-col md:flex-row items-center justify-center mt-10"
+        >
+          <AppButton class="mx-4" @click="closeDeletePostModal">
             {{ $t("global.cancel") }}
           </AppButton>
           <AppButton
@@ -155,10 +159,7 @@
           class="h-64 mb-10 rounded"
           src="https://camo.githubusercontent.com/581d9802c9e5716113238cc2fcaf938bf2dad338/68747470733a2f2f6d656469612e67697068792e636f6d2f6d656469612f6248757134736355373255496f2f67697068792e676966"
         />
-        <AppButton
-          color="primary"
-          @click="closePaymentSuccessModal"
-        >
+        <AppButton color="primary" @click="closePaymentSuccessModal">
           {{ $t("global.okayButton") }}
         </AppButton>
       </div>
@@ -179,7 +180,7 @@ import { REQUEST_STATE, toast } from "@/utils/helpers";
 import {
   getPostsQuery,
   getBlogQuery,
-  deletePostMutation
+  deletePostMutation,
 } from "@/utils/queries";
 import striptags from "striptags";
 import PostList from "@/components/PostList";
@@ -192,7 +193,7 @@ export default {
     AppModal,
     AppPanel,
     DefaultLayout,
-    PostList
+    PostList,
   },
   data() {
     return {
@@ -204,7 +205,7 @@ export default {
       deleteModal: {
         title: null,
         data: null,
-        post: null
+        post: null,
       },
       blog: null,
       posts: null,
@@ -212,7 +213,7 @@ export default {
       postsDraft: null,
       activeStatus: "PUBLISHED",
       // will be true or false, once we have counted all existing posts
-      isFirstPost: null
+      isFirstPost: null,
     };
   },
   created() {
@@ -224,11 +225,11 @@ export default {
   watch: {
     $route: function(value) {
       this.initData();
-    }
+    },
   },
   beforeRouteEnter(to, from, next) {
     // if use is coming from a draft post, set "DRAFT" tab by default.
-    next(vm => {
+    next((vm) => {
       if (from.name === "postUpdate" || from.name === "postCreate") {
         if (
           vm.$store.state.global.lastVisitedPost &&
@@ -252,12 +253,12 @@ export default {
         this.getBlog(),
         this.getAllPosts(),
         this.getPostsPublished(),
-        this.getPostsDraft()
+        this.getPostsDraft(),
       ])
         .then(() => {
           this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
-        .catch(error => {
+        .catch((error) => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           throw new Error(error);
         });
@@ -269,15 +270,15 @@ export default {
           variables: {
             blog: this.$route.params.blogId,
             last: 1,
-            status: ["PUBLISHED", "DRAFT"]
-          }
+            status: ["PUBLISHED", "DRAFT"],
+          },
         })
-        .then(result => {
+        .then((result) => {
           this.isFirstPost =
             result.data.posts.edges.length === 0 ? true : false;
           return result;
         })
-        .catch(error => {
+        .catch((error) => {
           toast(this, "Sorry, an error occured while fetching posts", "error");
           throw new Error(error);
         });
@@ -287,10 +288,10 @@ export default {
         .query({
           query: getBlogQuery,
           variables: {
-            _id: this.$route.params.blogId
-          }
+            _id: this.$route.params.blogId,
+          },
         })
-        .then(result => {
+        .then((result) => {
           this.blog = result.data.blog;
           return result;
         });
@@ -302,15 +303,15 @@ export default {
           query: getPostsQuery,
           variables: {
             blog: this.$route.params.blogId,
-            status: ["PUBLISHED"]
-          }
+            status: ["PUBLISHED"],
+          },
         })
-        .then(result => {
+        .then((result) => {
           this.postsPublishedRequestState = REQUEST_STATE.FINISHED_OK;
           this.postsPublished = result.data.posts;
           return result;
         })
-        .catch(error => {
+        .catch((error) => {
           this.postsPublishedRequestState = REQUEST_STATE.FINISHED_ERROR;
           toast(this, "Sorry, an error occured while fetching posts", "error");
           throw new Error(error);
@@ -323,15 +324,15 @@ export default {
           query: getPostsQuery,
           variables: {
             blog: this.$route.params.blogId,
-            status: ["DRAFT"]
-          }
+            status: ["DRAFT"],
+          },
         })
-        .then(result => {
+        .then((result) => {
           this.postsDraftRequestState = REQUEST_STATE.FINISHED_OK;
           this.postsDraft = result.data.posts;
           return result;
         })
-        .catch(error => {
+        .catch((error) => {
           this.postsDraftRequestState = REQUEST_STATE.FINISHED_ERROR;
           toast(this, "Sorry, an error occured while fetching posts", "error");
           throw new Error(error);
@@ -348,13 +349,13 @@ export default {
       return apolloClient
         .mutate({
           mutation: deletePostMutation,
-          variables: { id: post._id }
+          variables: { id: post._id },
         })
-        .then(async result => {
+        .then(async (result) => {
           this.deletePostRequestState = REQUEST_STATE.FINISHED_OK;
           const post = result.data.deletePost;
         })
-        .catch(error => {
+        .catch((error) => {
           this.deletePostRequestState = REQUEST_STATE.FINISHED_ERROR;
           toast(this, "Sorry, an error occured while fetching posts", "error");
           this.closeDeletePostModal();
@@ -373,7 +374,7 @@ export default {
     onDeleteClick(post) {
       this.deleteModal.post = post;
       this.deleteModal.title = this.$t("views.postList.deleteModal.title", {
-        postTitle: post.title
+        postTitle: post.title,
       });
       this.$store.commit("modalShowing/open", "deletePostModal");
     },
@@ -387,7 +388,7 @@ export default {
           this.getPostsDraft();
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
