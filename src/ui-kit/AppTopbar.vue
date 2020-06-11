@@ -7,9 +7,11 @@
           src="/images/logo-solo.png"
           @click="onLogoClick"
         />
+        <!--
         <div class="hidden md:inline text-xs bg-label rounded-md px-2 py-1 mr-6">
           Bêta
         </div>
+        -->
 
         <portal-target name="topbar-left">
           <!--
@@ -26,20 +28,13 @@
           -->
         </portal-target>
 
-        <AppButton
-          size="small"
-          v-if="isApiHelpVisible()"
-          @click="onApiClick"
-        >
-          <img
-            class="w-6 md:mr-2"
-            src="/images/graphql.svg"
-          />
+        <AppButton size="small" v-if="isApiHelpVisible()" @click="onApiClick">
+          <img class="w-6 md:mr-2" src="/images/graphql.svg" />
           <span class="hidden md:inline">API</span>
         </AppButton>
 
         <div v-if="me" class="relative cursor-pointer ml-4 md:ml-6">
-          <div @click="dropdownMenuActive = !dropdownMenuActive" >
+          <div @click="dropdownMenuActive = !dropdownMenuActive">
             <img
               v-if="me.picture"
               :src="me.picture"
@@ -49,7 +44,7 @@
           </div>
           <div
             v-if="dropdownMenuActive"
-            v-click-outside="() => dropdownMenuActive = false"
+            v-click-outside="() => (dropdownMenuActive = false)"
             class="absolute right-0 min-w-15 mt-2 py-3 flex flex-col bg-white rounded-md shadow-around"
             role="menu"
           >
@@ -64,7 +59,7 @@
               :key="edge.node._id"
               :to="{
                 name: 'postList',
-                params: { blogId: edge.node._id }
+                params: { blogId: edge.node._id },
               }"
               class="px-4 py-2 hover:bg-gray-100"
             >
@@ -90,13 +85,12 @@
 
     <!-- GRAPHQL API DOCUMENTATION -->
     <AppModal name="graphQLApiModal">
-      <div class="flex flex-col md:flex-row items-center justify-between flex-1" slot="header">
+      <div
+        class="flex flex-col md:flex-row items-center justify-between flex-1"
+        slot="header"
+      >
         <span class="text-4xl font-bold">API</span>
-        <a
-          :href="blogApiUrl" 
-          target="_blank"
-          class="hover:text-current"
-        >
+        <a :href="blogApiUrl" target="_blank" class="hover:text-current">
           <AppButton color="primary" size="small">
             {{ $t("apiModal.openGraphQLExplorer") }}
           </AppButton>
@@ -136,33 +130,26 @@
 import AppButton from "@/ui-kit/AppButton";
 import AppFieldText from "@/ui-kit/AppFieldText";
 import AppModal from "@/ui-kit/AppModal";
-import {
-  getBlog,
-  getPost,
-  getUser,
-  toast
-} from "@/utils/helpers";
+import { getBlog, getPost, getUser, toast } from "@/utils/helpers";
 import apiExamples from "@/apiExamples";
 
 export default {
   components: {
     AppButton,
     AppFieldText,
-    AppModal
+    AppModal,
   },
   data() {
     return {
       apiModalExampleList: [],
       dropdownMenuActive: false,
-      me: null
-    }
+      me: null,
+    };
   },
   computed: {
     blogApiUrl() {
-      return `${process.env.VUE_APP_GRAPHQL_POD_BASE_URL}/${
-        this.$route.params.blogId
-      }`;
-    }
+      return `${process.env.VUE_APP_GRAPHQL_POD_BASE_URL}/${this.$route.params.blogId}`;
+    },
   },
   mounted() {
     this.initData();
@@ -170,15 +157,15 @@ export default {
   watch: {
     $route: function() {
       this.dropdownMenuActive = false;
-    }
+    },
   },
   methods: {
     async initData() {
       getUser()
-        .then(user => {
+        .then((user) => {
           this.me = user;
         })
-        .catch(error => {
+        .catch((error) => {
           toast(this, error, "error");
           throw new Error(error);
         });
@@ -196,7 +183,7 @@ export default {
     async onApiClick() {
       const context = {
         slug: "{{POST_SLUG}}",
-        locale: navigator.language || navigator.userLanguage
+        locale: navigator.language || navigator.userLanguage,
       };
       if (this.$route.name === "postList") {
         const blog = await getBlog(this.$route.params.blogId);
@@ -205,14 +192,14 @@ export default {
       if (this.$route.name === "postUpdate") {
         const [blog, post] = await Promise.all([
           getBlog(this.$route.params.blogId),
-          getPost(this.$route.params.postId)
+          getPost(this.$route.params.postId),
         ]);
         context.locale = blog.contentDefaultLocale;
         context.slug = post.slug;
       }
       this.apiModalExampleList = apiExamples(context);
       this.$store.commit("modalShowing/open", "graphQLApiModal");
-    }
-  }
-}
+    },
+  },
+};
 </script>
