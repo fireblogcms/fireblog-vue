@@ -160,14 +160,16 @@ export default {
 }
 #editor h2 {
   font-size: 2.25rem;
-  margin-top: 3rem;
+  margin-top: 2.25rem;
   margin-bottom: 2rem;
 }
 #editor h3 {
   font-size: 1.875rem;
+  margin-top: 2rem;
 }
 #editor h4 {
   font-size: 1.5rem;
+  margin-top: 2rem;
 }
 
 #editor p,
