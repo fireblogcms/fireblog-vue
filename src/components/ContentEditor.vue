@@ -186,7 +186,8 @@ export default {
   list-style-type: square;
 }
 #editor figure {
-  max-width: 99%;
+  max-width: 100%;
+  margin: 4px; /* make sur we see borders when figure is select */
 }
 #editor .ck-progress-bar {
   height: 4px !important;
