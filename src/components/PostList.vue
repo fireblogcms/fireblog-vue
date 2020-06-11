@@ -2,7 +2,7 @@
   <div class="min-h-10 flex flex-col">
     <div v-if="postsRequestState === 'PENDING'">
       <div
-        class="px-8 py-4 md:py-6 border-b border-gray-300 last:border-b-0" 
+        class="px-8 py-4 md:py-6 border-b border-gray-300 last:border-b-0"
         v-for="(v, i) in [0, 1]"
         :key="i"
       >
@@ -50,7 +50,7 @@
           <div
             v-show="post.node.image"
             v-lazy:background-image="post.node.image"
-            class="w-64 mr-10 rounded-md bg-center bg-no-repeat bg-contain"
+            class="w-40 mr-10 rounded bg-center bg-no-repeat bg-cover"
           ></div>
           <div>
             <p class="text-3xl font-bold">
