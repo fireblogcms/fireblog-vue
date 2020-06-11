@@ -146,6 +146,7 @@ export default {
   outline: none !important;
   padding: 0;
   font-size: 1.25rem;
+  line-height: 36px;
 }
 #editor a {
   @apply text-blue-600;
@@ -159,6 +160,8 @@ export default {
 }
 #editor h2 {
   font-size: 2.25rem;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
 }
 #editor h3 {
   font-size: 1.875rem;
@@ -166,10 +169,7 @@ export default {
 #editor h4 {
   font-size: 1.5rem;
 }
-#editor h1,
-#editor h2,
-#editor h3,
-#editor h4,
+
 #editor p,
 #editor pre {
   margin: 1rem 0;
@@ -186,7 +186,7 @@ export default {
   list-style-type: square;
 }
 #editor figure {
-  margin: 4px auto; /* make sur we see borders when figure is select */
+  margin: 2rem auto;
   max-width: 99%; /* make sur we see borders when figure is select */
 }
 
