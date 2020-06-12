@@ -74,33 +74,41 @@
       <template v-if="!isFirstPost">
         <ul class="container mx-auto flex">
           <li
-            class="py-4 px-4 md:px-10 flex items-center rounded-t-lg cursor-pointer text-xl font-bold"
+            class="rounded-t-lg cursor-pointer relative"
             @click="onStatusClick('PUBLISHED')"
-            :class="{ 'bg-white': activeStatus == 'PUBLISHED' }"
+            :class="{
+              'bg-white shadow-md': activeStatus == 'PUBLISHED',
+            }"
           >
-            <span>{{ $t("views.postList.publishedTab") }}</span>
-            <div
-              class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-100 text-sm"
-            >
-              {{ postsPublished.totalCount }}
+            <div class="flex items-center py-4 px-4 md:px-10 text-xl font-bold">
+              <span>{{ $t("views.postList.publishedTab") }}</span>
+              <div
+                class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-100 text-sm"
+              >
+                {{ postsPublished.totalCount }}
+              </div>
             </div>
+            <div class="shadow-mask" v-show="activeStatus == 'PUBLISHED'" />
           </li>
           <li
-            class="py-4 px-4 md:px-10 flex items-center rounded-t-lg cursor-pointer text-xl font-bold"
+            class="rounded-t-lg cursor-pointer relative"
             @click="onStatusClick('DRAFT')"
-            :class="{ 'bg-white': activeStatus == 'DRAFT' }"
+            :class="{ 'bg-white shadow-md': activeStatus == 'DRAFT' }"
           >
-            <span>{{ $t("views.postList.draftTab") }}</span>
-            <div
-              class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-100 text-sm"
-            >
-              {{ postsDraft.totalCount }}
+            <div class="flex items-center py-4 px-4 md:px-10 text-xl font-bold">
+              <span>{{ $t("views.postList.draftTab") }}</span>
+              <div
+                class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-100 text-sm"
+              >
+                {{ postsDraft.totalCount }}
+              </div>
             </div>
+            <div class="shadow-mask" v-show="activeStatus == 'DRAFT'" />
           </li>
         </ul>
 
         <div
-          class="container mx-auto mb-20 py-6 px-4 md:px-10 bg-white shadow-md rounded-lg rounded-tl-none"
+          class="container mx-auto mb-20 py-6 px-4 md:px-10 bg-white shadow-md rounded-lg"
         >
           <PostList
             :postsRequestState="postsPublishedRequestState"
@@ -392,3 +400,14 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.shadow-mask {
+  width: 100%;
+  position: absolute;
+  bottom: -10px;
+  height: 10px;
+  display: block;
+  background-color: white;
+}
+</style>
