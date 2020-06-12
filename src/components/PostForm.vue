@@ -24,7 +24,7 @@
         <div
           v-click-outside="() => (isActionsVisibleOnMobile = false)"
           :class="{
-            hidden: !isActionsVisibleOnMobile
+            hidden: !isActionsVisibleOnMobile,
           }"
           class="absolute lg:relative lg:inline-block top-0 mt-16 lg:mt-0 -ml-20 p-6 lg:p-0 flex flex-col lg:flex-row items-center justify-center bg-white rounded-md shadow-around lg:shadow-none"
         >
@@ -145,7 +145,7 @@
             -
             {{
               $t("views.postForm.savedAt {time}", {
-                time: formatDate(new Date(existingPost.updatedAt), "long")
+                time: formatDate(new Date(existingPost.updatedAt), "long"),
               })
             }}
           </span>
@@ -188,7 +188,7 @@
           :existingPost="existingPost"
           :savingPost="savingPost"
           @onCancelClick="closePublishingOptionsModal"
-          @onUploadingStateChange="state => (uploadingState = state)"
+          @onUploadingStateChange="(state) => (uploadingState = state)"
         />
       </template>
     </AppModal>
@@ -238,7 +238,7 @@ import {
   ckeditorIframelyMediaProvider,
   validateSlug,
   toast,
-  formatDate
+  formatDate,
 } from "@/utils/helpers";
 import {
   vuexFormInit,
@@ -248,7 +248,7 @@ import {
   vuexFormGetValue,
   vuexFormGetErrors,
   vuexFormGetValues,
-  vuexFormGetInitialValues
+  vuexFormGetInitialValues,
 } from "@/utils/vuexForm";
 import { savePostMutation } from "@/utils/queries";
 import apolloClient from "@/utils/apolloClient";
@@ -263,14 +263,14 @@ let initialFormValues = {
   teaser: "",
   image: "",
   slugIsLocked: false,
-  slugShowToggleLockButton: true
+  slugShowToggleLockButton: true,
 };
 
 const randomHurraGifs = [
   "https://media.giphy.com/media/7IW6Jnw29TYmgkuu3M/giphy.gif",
   "https://media.giphy.com/media/Wq2xnn2ZnwiTtoD6Qk/giphy.gif",
   "http://giphygifs.s3.amazonaws.com/media/7vfhdCIn13zm8/giphy.gif",
-  "https://66.media.tumblr.com/b53447fe9897178a2b4957a1ab32f6be/tumblr_n19pczDWI21ss6wowo9_250.gifv"
+  "https://66.media.tumblr.com/b53447fe9897178a2b4957a1ab32f6be/tumblr_n19pczDWI21ss6wowo9_250.gifv",
 ];
 
 const FORM_ID = "postForm";
@@ -286,7 +286,7 @@ export default {
     AppLoader,
     AppModal,
     ContentEditor,
-    PostFormAdvancedSettings
+    PostFormAdvancedSettings,
   },
   data() {
     return {
@@ -297,9 +297,9 @@ export default {
       uploadingState: REQUEST_STATE.NOT_STARTED,
       savingPost: {
         state: REQUEST_STATE.NOT_STARTED,
-        status: null
+        status: null,
       },
-      isActionsVisibleOnMobile: false
+      isActionsVisibleOnMobile: false,
     };
   },
   created() {
@@ -321,7 +321,7 @@ export default {
       if (this.existingPost && this.existingPost.status === "PUBLISHED") {
         this.publish();
       } else {
-        this.saveAsDraft().catch(e => {
+        this.saveAsDraft().catch((e) => {
           console.log("Cannot be saved: form validation failed: " + e);
         });
       }
@@ -340,7 +340,7 @@ export default {
         text = this.$t("views.postForm.publishChangesButton");
       }
       return text;
-    }
+    },
   },
   methods: {
     confirmLeave(event) {
@@ -355,10 +355,10 @@ export default {
       const wordCountWrapper = this.$refs.wordcount;
       wordCountWrapper.appendChild(wordCountPlugin.wordCountContainer);
       pendingActions = editor.plugins.get("PendingActions");
-      editor.plugins.get("PendingActions").on("change:hasAny", actions => {});
+      editor.plugins.get("PendingActions").on("change:hasAny", (actions) => {});
       // If the user tries to leave the page before the data is saved, ask
       // them whether they are sure they want to proceed.
-      window.onbeforeunload = evt => {
+      window.onbeforeunload = (evt) => {
         evt.preventDefault();
         /*
         if (pendingActions.hasAny) {
@@ -422,7 +422,7 @@ export default {
     postFormInit(formValues) {
       vuexFormInit(FORM_ID, {
         initialValues: { ...formValues },
-        onFormValueChange: ({ name, value }) => {}
+        onFormValueChange: ({ name, value }) => {},
       });
     },
     // fill form fields from a post object
@@ -435,7 +435,7 @@ export default {
         slug: post.slug ? post.slug : "",
         title: post.title ? post.title : "",
         teaser: post.teaser ? post.teaser : "",
-        image: post.image ? post.image : ""
+        image: post.image ? post.image : "",
       };
       return values;
     },
@@ -446,7 +446,7 @@ export default {
         content: vuexFormGetValue(FORM_ID, "content"),
         slug: vuexFormGetValue(FORM_ID, "slug"),
         teaser: vuexFormGetValue(FORM_ID, "teaser"),
-        image: vuexFormGetValue(FORM_ID, "image")
+        image: vuexFormGetValue(FORM_ID, "image"),
       };
       // API will know that this is an UPDATE and not a CREATE
       // if we add _id key to our post.
@@ -458,7 +458,7 @@ export default {
     savePost(
       status,
       options = {
-        saveType: "manual"
+        saveType: "manual",
       }
     ) {
       if (this.savingPost.state === REQUEST_STATE.PENDING) {
@@ -476,28 +476,28 @@ export default {
       const savingPendingAction = pendingActions.add("Saving post");
       this.savingPost = {
         state: REQUEST_STATE.PENDING,
-        status
+        status,
       };
       const post = {
         ...this.preparePostFromCurrentFormValues(),
-        status
+        status,
       };
       return apolloClient
         .mutate({
           mutation: savePostMutation,
           variables: {
             post,
-            blog: this.$route.params.blogId
-          }
+            blog: this.$route.params.blogId,
+          },
         })
-        .then(async result => {
+        .then(async (result) => {
           pendingActions.remove(savingPendingAction);
           const post = result.data.savePost;
           this.existingPost = post;
           this.$store.commit("lastVisitedPost", post);
           this.savingPost = {
             state: REQUEST_STATE.FINISHED_OK,
-            status
+            status,
           };
           if (status === "DRAFT" && options.saveType === "manual") {
             toast(this, this.$t("views.postForm.draftSaved"), "success");
@@ -509,17 +509,17 @@ export default {
               name: "postUpdate",
               params: {
                 blogId: this.$route.params.blogId,
-                postId: post._id
-              }
+                postId: post._id,
+              },
             });
           }
           return post;
         })
-        .catch(error => {
+        .catch((error) => {
           pendingActions.remove(savingPendingAction);
           this.savingPost = {
             state: REQUEST_STATE.FINISHED_ERROR,
-            status
+            status,
           };
           toast(this, error, "error");
           throw new Error(error);
@@ -529,13 +529,13 @@ export default {
       return apolloClient
         .query({
           query: getPostQuery,
-          variables: { _id: id }
+          variables: { _id: id },
         })
-        .then(result => {
+        .then((result) => {
           this.existingPost = result.data.post;
           return result.data.post;
         })
-        .catch(error => {
+        .catch((error) => {
           toast(this, "getExistingPost(): " + error, "error");
         });
     },
@@ -558,7 +558,7 @@ export default {
     },
     onBackToPostClick() {
       this.$router.push({
-        name: "postList"
+        name: "postList",
       });
     },
     publish() {
@@ -677,8 +677,8 @@ export default {
       }
       const errors = vuexFormGetErrors(FORM_ID);
       return errors;
-    }
-  }
+    },
+  },
 };
 </script>
 

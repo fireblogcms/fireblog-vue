@@ -90,8 +90,9 @@ export default {
       // when we cant reach link for a preview
       iframely.on("cancel", function(url, parentNode) {
         parentNode.innerHTML = `
-        <div class="broken-link bg-gray-200 p-8">
-        <a href=${url}/>${url}</a>
+        <div class="broken-link bg-gray-100 p-8">
+        🤷🏻‍♂️ Fireblog can't create automatically a rich preview for this link: ${url}. 
+        Create manually a link instead.
         </div>`;
       });
       // CKEditorInspector.attach(editor);
