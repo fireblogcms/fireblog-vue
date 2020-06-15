@@ -299,7 +299,7 @@ export default {
         state: REQUEST_STATE.NOT_STARTED,
         status: null,
       },
-      isActionsVisibleOnMobile: false,
+      isActionsVisibleOnMobile: false
     };
   },
   created() {
@@ -309,9 +309,10 @@ export default {
     this.formatDate = formatDate;
     this.init();
   },
+  beforeMount() {
+    window.addEventListener("beforeunload", this.preventClosing);
+  },
   mounted() {
-    // Listen event before unload and call method confirmLeave
-    window.onbeforeunload = this.confirmLeave;
     // allow ctrl+s to be detected on inputs and textareas
     hotkeys.filter = () => true;
     // save shortcuts
@@ -329,7 +330,7 @@ export default {
     });
   },
   beforeDestroy() {
-    window.onbeforeunload = null;
+    window.removeEventListener("beforeunload", this.preventClosing);
     hotkeys.unbind("ctrl+s");
     hotkeys.unbind("command+s");
   },
@@ -343,12 +344,9 @@ export default {
     },
   },
   methods: {
-    confirmLeave(event) {
-      // Method of confirming that we are willing to leave the page.
+    preventClosing(event) {
       event.preventDefault();
-      var confirmationMessage = "The changes you have made may not be saved.";
-      event.returnValue = confirmationMessage;
-      return confirmationMessage;
+      event.returnValue = "";
     },
     onEditorReady(editor) {
       const wordCountPlugin = editor.plugins.get("WordCount");
@@ -356,16 +354,6 @@ export default {
       wordCountWrapper.appendChild(wordCountPlugin.wordCountContainer);
       pendingActions = editor.plugins.get("PendingActions");
       editor.plugins.get("PendingActions").on("change:hasAny", (actions) => {});
-      // If the user tries to leave the page before the data is saved, ask
-      // them whether they are sure they want to proceed.
-      window.onbeforeunload = (evt) => {
-        evt.preventDefault();
-        /*
-        if (pendingActions.hasAny) {
-          evt.preventDefault();
-        }
-        */
-      };
     },
     async init() {
       // no existing post, we are in CREATE MODE
