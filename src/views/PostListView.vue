@@ -16,8 +16,8 @@
       <div class="container mx-auto my-10">
         <div class="flex flex-col md:flex-row justify-between">
           <div class="flex-1 flex items-center mb-8 md:mb-0">
-            <h1 class="text-3xl md:text-5xl font-bold uppercase">
-              <img class="w-16 h-16 mr-4 inline" src="/images/book.png" />
+            <h1 class="text-2xl md:text-4xl font-bold uppercase">
+              <img class="w-10 h-10 mr-4 inline" src="/images/book.png" />
               {{ blog.name }}
             </h1>
           </div>
@@ -80,7 +80,7 @@
               'bg-white shadow-md': activeStatus == 'PUBLISHED',
             }"
           >
-            <div class="flex items-center py-4 px-4 md:px-10 text-xl font-bold">
+            <div class="flex items-center py-4 px-4 md:px-10 text-xl">
               <span>{{ $t("views.postList.publishedTab") }}</span>
               <div
                 class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-100 text-sm"
@@ -95,7 +95,7 @@
             @click="onStatusClick('DRAFT')"
             :class="{ 'bg-white shadow-md': activeStatus == 'DRAFT' }"
           >
-            <div class="flex items-center py-4 px-4 md:px-10 text-xl font-bold">
+            <div class="flex items-center py-4 px-4 md:px-10 text-xl">
               <span>{{ $t("views.postList.draftTab") }}</span>
               <div
                 class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-100 text-sm"

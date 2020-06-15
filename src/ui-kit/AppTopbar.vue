@@ -3,15 +3,10 @@
     <div class="h-full flex justify-between px-2 md:px-10 py-4">
       <div class="flex items-center">
         <img
-          class="w-16 rounded-full cursor-pointer"
+          class="w-16 rounded-full cursor-pointer mr-4"
           src="/images/logo-solo.png"
           @click="onLogoClick"
         />
-        <!--
-        <div class="hidden md:inline text-xs bg-label rounded-md px-2 py-1 mr-6">
-          Bêta
-        </div>
-        -->
 
         <portal-target name="topbar-left">
           <!--

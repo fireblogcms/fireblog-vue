@@ -12,9 +12,6 @@ module.exports = {
           darker: "#c0a9ff",
           dark: "#a68fff"
         },
-        label: {
-          default: "#ffdd57"
-        },
         danger: {
           light: "#fddfdd",
           default: "#f44336",

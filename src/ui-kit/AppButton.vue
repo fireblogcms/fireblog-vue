@@ -9,15 +9,17 @@
         'bg-white border-gray-200': color === '',
         'bg-primary border-primary text-white active:bg-primary-dark active:border-primary-dark':
           color === 'primary',
-        'bg-white border-primary text-primary active:border-primary-dark active:text-primary-dark':
+        'bg-white border-primary text-primary active:bg-primary-darker active:border-primary-darker active:text-white':
           color === 'primary-outlined',
         'bg-secondary border-secondary text-primary-dark active:bg-secondary-dark active:border-secondary-dark':
           color === 'secondary',
         'bg-danger border-danger text-white active:bg-danger-dark active:border-danger-dark':
           color === 'danger',
+        'hover:border-gray-500':
+          color === '' && !$attrs.disabled,
         'hover:bg-primary-darker hover:border-primary-darker':
           color === 'primary' && !$attrs.disabled,
-        'hover:border-primary-darker hover:text-primary-darker':
+        'hover:text-white hover:bg-primary hover:border-primary':
           color === 'primary-outlined' && !$attrs.disabled,
         'hover:bg-secondary-darker hover:border-secondary-darker':
           color === 'secondary' && !$attrs.disabled,
@@ -34,8 +36,7 @@
       class="absolute inset-0 flex items-center justify-center border rounded"
       :class="{
         'bg-white border-gray-200': color === '',
-        'bg-primary border-primary': color === 'primary',
-        'bg-white border-primary': color === 'primary-outlined'
+        'bg-primary border-primary': color === 'primary' || color === 'primary-outlined'
       }"
       v-if="loading"
     >
@@ -63,10 +64,8 @@ export default {
   computed: {
     loader() {
       let loaderImage = "loader";
-      if (this.color === "primary") {
+      if (this.color === "primary" || this.color === "primary-outlined") {
         loaderImage = "loader-primary";
-      } else if (this.color === "primary-outlined") {
-        loaderImage = "loader-primary-outlined";
       }
       return loaderImage;
     }

@@ -56,14 +56,14 @@
             <p class="text-3xl font-bold">
               {{ post.node.title }}
             </p>
-            <p class="text-sm italic" v-if="post.node.status === 'PUBLISHED'">
+            <p class="text-sm italic text-gray-600" v-if="post.node.status === 'PUBLISHED'">
               {{
                 $t("views.postList.publishedOn", {
                   date: publishedOnDate(post),
                 })
               }}
             </p>
-            <p class="text-sm italic" v-if="post.node.status === 'DRAFT'">
+            <p class="text-sm italic text-gray-600" v-if="post.node.status === 'DRAFT'">
               {{
                 $t("views.postList.updatedOn", {
                   date: updatedOnDate(post),
