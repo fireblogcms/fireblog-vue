@@ -71,6 +71,7 @@ export default {
   "views.blogSettings.technicalSettingsForm.saveButton": "Save",
   "views.blogSettings.technicalSettingsForm.title": "Technical settings",
   "views.blogSettings.planSettings.title": "Plan settings",
+  "views.postForm.alertLeavePage": "Leave site? Changes you made may not be saved.",
   "views.postForm.backToBlogLink": "My posts",
   "views.postForm.advancedSettingsButton": "Options",
   "views.postForm.advancedSettingsModal.title": "Publication settings",

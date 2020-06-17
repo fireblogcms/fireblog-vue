@@ -276,7 +276,7 @@ const randomHurraGifs = [
 const FORM_ID = "postForm";
 let pendingActions = null;
 
-let stokeCountIndex = 0;
+let strokesCountIndex = 0;
 const saveAfterKeyStrokesNumber = 50;
 
 export default {
@@ -299,7 +299,8 @@ export default {
         state: REQUEST_STATE.NOT_STARTED,
         status: null,
       },
-      isActionsVisibleOnMobile: false
+      isActionsVisibleOnMobile: false,
+      isEditing: false
     };
   },
   created() {
@@ -345,6 +346,7 @@ export default {
   },
   methods: {
     preventClosing(event) {
+      if (!this.isEditing) return;
       event.preventDefault();
       event.returnValue = "";
     },
@@ -377,6 +379,8 @@ export default {
       vuexFormSetValue(FORM_ID, "title", value);
     },
     onContentChange(value) {
+      this.isEditing = true;
+      this.$emit("onEdit", this.isEditing);
       // Update form value on each key stroke !
       // Because if we are waiting on a debouced event like "autoSave",
       // user can save BEFORE data is registered to form, so data is lost -_-
@@ -387,10 +391,10 @@ export default {
       if (this.getPostStatus() !== "DRAFT") {
         return;
       }
-      stokeCountIndex++;
-      if (stokeCountIndex === saveAfterKeyStrokesNumber) {
+      strokesCountIndex++;
+      if (strokesCountIndex === saveAfterKeyStrokesNumber) {
         this.savePost("DRAFT", { saveType: "auto" });
-        stokeCountIndex = 0;
+        strokesCountIndex = 0;
       }
     },
     // when user click "enter" in the title input,
