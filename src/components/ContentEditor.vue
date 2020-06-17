@@ -118,6 +118,18 @@ export default {
         const changes = editor.model.document.differ.getChanges();
         editor.model.change((writer) => {
           for (const entry of changes) {
+            // Save post when the image is uploaded
+            if (
+              entry.type === "attribute" && 
+              entry.attributeKey === "uploadStatus" && 
+              entry.attributeOldValue === "complete"
+            ) {
+              this.$emit("save");
+            }
+            // Save post after 2 seconds (arbitrary) because elements become embed "shortly" after insert
+            if (["table", "blockQuote", "media"].includes(entry.name)) {
+              setTimeout(() => this.$emit("save"), 2000);
+            }
             // if an image, table, blockQuote or media is inserted.
             if (
               entry.type === "insert" &&

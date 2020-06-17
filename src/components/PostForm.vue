@@ -127,6 +127,7 @@
               class="post-form__field-editor"
               :value="vuexFormGetValue('postForm', 'content')"
               @change="onContentChange"
+              @save="saveDraft"
               @editorReady="onEditorReady"
             />
           </form>
@@ -397,6 +398,11 @@ export default {
         strokesCountIndex = 0;
       }
     },
+    saveDraft() {
+      if (this.getPostStatus() === "DRAFT") {
+        this.savePost("DRAFT", { saveType: "auto" });
+      }
+    },
     // when user click "enter" in the title input,
     // automically move cursor to the textarea
     onTitleEnter() {
@@ -483,6 +489,8 @@ export default {
           },
         })
         .then(async (result) => {
+          this.isEditing = false;
+          this.$emit("onEdit", this.isEditing);
           pendingActions.remove(savingPendingAction);
           const post = result.data.savePost;
           this.existingPost = post;
