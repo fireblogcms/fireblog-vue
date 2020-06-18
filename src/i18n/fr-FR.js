@@ -71,7 +71,7 @@ export default {
   "views.blogSettings.technicalSettingsForm.saveButton": "Enregistrer",
   "views.blogSettings.technicalSettingsForm.title": "Réglages techniques",
   "views.blogSettings.planSettings.title": "Réglages du plan",
-  "views.postForm.alertLeavePage": "Quitter le site web ? Les modifications que vous avez apportées ne seront peut-être pas enregistrées.",
+  "views.postForm.alertLeavePage": "Quitter l'éditeur ? Les modifications que vous avez apportées ne seront peut-être pas enregistrées.",
   "views.postForm.backToBlogLink": "Mes posts",
   "views.postForm.advancedSettingsButton": "Options",
   "views.postForm.advancedSettingsModal.title": "Options de publication",
