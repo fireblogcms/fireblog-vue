@@ -110,6 +110,23 @@ export default {
         this.$emit("change", editor.getData());
       });
 
+      // Save post when image inserted and uploaded
+      editor.editing.downcastDispatcher.on('attribute:uploadStatus:image', (event, data) => {
+        if (data.attributeOldValue === "complete") {
+          this.$emit("save");
+        }
+      });
+
+      // Save post when table inserted
+      editor.commands.get('insertTable').on('execute', () => {
+        this.$emit("save");
+      });
+
+      // Save post when media inserted and embedded
+      editor.commands.get('mediaEmbed').on('execute', () => {
+        this.$emit("save");
+      });
+
       editor.model.document.registerPostFixer((writer) => {
         // Insert automatically a paragraph after an image or a block,
         // Otherwise redactors are stuck at the bottom of the page and
@@ -118,18 +135,6 @@ export default {
         const changes = editor.model.document.differ.getChanges();
         editor.model.change((writer) => {
           for (const entry of changes) {
-            // Save post when the image is uploaded
-            if (
-              entry.type === "attribute" && 
-              entry.attributeKey === "uploadStatus" && 
-              entry.attributeOldValue === "complete"
-            ) {
-              this.$emit("save");
-            }
-            // Save post after 2 seconds (arbitrary) because elements become embed "shortly" after insert
-            if (["table", "blockQuote", "media"].includes(entry.name)) {
-              setTimeout(() => this.$emit("save"), 2000);
-            }
             // if an image, table, blockQuote or media is inserted.
             if (
               entry.type === "insert" &&
