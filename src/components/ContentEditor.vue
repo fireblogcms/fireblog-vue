@@ -20,6 +20,11 @@ export default {
         return Promise.resolve(data);
       },
     },
+    // Possible values: create or update
+    operation: {
+      type: String,
+      required: true
+    }
   },
   mounted() {
     Editor.create(this.$refs.editor, {
@@ -79,7 +84,10 @@ export default {
       ],
       autosave: {
         save: (editor) => {
-          return this.autosave(editor.getData());
+          if (this.operation === "create" && editor.getData().length === 0) {
+            return;
+          }
+          return this.autosave();
         },
       },
       mediaEmbed: {
@@ -108,23 +116,6 @@ export default {
 
       editor.model.document.on("change:data", (eventInfo, data) => {
         this.$emit("change", editor.getData());
-      });
-
-      // Save post when image inserted and uploaded
-      editor.editing.downcastDispatcher.on('attribute:uploadStatus:image', (event, data) => {
-        if (data.attributeOldValue === "complete") {
-          this.$emit("save");
-        }
-      });
-
-      // Save post when table inserted
-      editor.commands.get('insertTable').on('execute', () => {
-        this.$emit("save");
-      });
-
-      // Save post when media inserted and embedded
-      editor.commands.get('mediaEmbed').on('execute', () => {
-        this.$emit("save");
       });
 
       editor.model.document.registerPostFixer((writer) => {
