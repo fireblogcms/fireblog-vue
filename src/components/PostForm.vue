@@ -126,7 +126,7 @@
               ref="contentEditor"
               class="post-form__field-editor"
               :value="vuexFormGetValue('postForm', 'content')"
-              :autosave="autoSaveAsDraft"
+              :autosave="saveIfDraft"
               :operation="existingPost ? 'update' : 'create'"
               @change="onContentChange"
               @editorReady="onEditorReady"
@@ -299,9 +299,9 @@ export default {
       uploadingState: REQUEST_STATE.NOT_STARTED,
       savingPost: {
         state: REQUEST_STATE.NOT_STARTED,
-        status: null
+        status: null,
       },
-      isActionsVisibleOnMobile: false
+      isActionsVisibleOnMobile: false,
     };
   },
   created() {
@@ -523,7 +523,11 @@ export default {
           this.$route.params.postId
       );
     },
-    autoSaveAsDraft() {
+    /**
+     * We have no way to save changes of a published content as "Draft" for now,
+     * so autosave is only used if post is DRAFT.
+     */
+    saveIfDraft() {
       if (this.getPostStatus() === "DRAFT") {
         this.savePost("DRAFT", { saveType: "auto" });
       }
