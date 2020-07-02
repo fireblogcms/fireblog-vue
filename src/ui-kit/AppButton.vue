@@ -36,7 +36,8 @@
       class="absolute inset-0 flex items-center justify-center border rounded"
       :class="{
         'bg-white border-gray-200': color === '',
-        'bg-primary border-primary': color === 'primary' || color === 'primary-outlined'
+        'bg-primary border-primary': color === 'primary' || color === 'primary-outlined',
+        'bg-danger border-danger': color === 'danger'
       }"
       v-if="loading"
     >
@@ -64,7 +65,11 @@ export default {
   computed: {
     loader() {
       let loaderImage = "loader";
-      if (this.color === "primary" || this.color === "primary-outlined") {
+      if (
+        this.color === "primary" || 
+        this.color === "primary-outlined" || 
+        this.color === "danger"
+      ) {
         loaderImage = "loader-primary";
       }
       return loaderImage;

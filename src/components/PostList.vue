@@ -20,11 +20,11 @@
         </ContentLoader>
       </div>
     </div>
-    <div class="flex-1 flex items-center justify-center">
-      <p
-        v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length === 0"
-        class="text-center text-xl"
-      >
+    <div
+      v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length === 0"
+      class="flex-1 flex items-center justify-center"
+    >
+      <p class="text-center text-xl">
         {{ $t("views.postList.noPostFound") }}
       </p>
     </div>

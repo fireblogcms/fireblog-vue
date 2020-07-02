@@ -8,7 +8,16 @@ import vClickOutside from "v-click-outside";
 import VueLazyload from "vue-lazyload";
 import i18n from "./i18n/index";
 import Toasted from "vue-toasted";
+import * as Sentry from "@sentry/browser";
+import { Vue as VueIntegration } from "@sentry/integrations";
 import "./scss/main.scss";
+
+if (process.env.VUE_APP_SENTRY_URL) {
+  Sentry.init({
+    dsn: process.env.VUE_APP_SENTRY_URL,
+    integrations: [new VueIntegration({ Vue, attachProps: true })]
+  });
+}
 
 Vue.use(VueLazyload);
 Vue.use(vClickOutside);

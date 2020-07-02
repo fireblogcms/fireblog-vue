@@ -20,6 +20,11 @@ export default {
         return Promise.resolve(data);
       },
     },
+    // Possible values: create or update
+    operation: {
+      type: String,
+      required: true
+    }
   },
   mounted() {
     Editor.create(this.$refs.editor, {
@@ -79,7 +84,10 @@ export default {
       ],
       autosave: {
         save: (editor) => {
-          return this.autosave(editor.getData());
+          if (this.operation === "create" && editor.getData().length === 0) {
+            return;
+          }
+          return this.autosave();
         },
       },
       mediaEmbed: {

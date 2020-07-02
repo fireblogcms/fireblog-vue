@@ -126,6 +126,8 @@
               ref="contentEditor"
               class="post-form__field-editor"
               :value="vuexFormGetValue('postForm', 'content')"
+              :autosave="autoSaveAsDraft"
+              :operation="existingPost ? 'update' : 'create'"
               @change="onContentChange"
               @editorReady="onEditorReady"
             />
@@ -276,7 +278,7 @@ const randomHurraGifs = [
 const FORM_ID = "postForm";
 let pendingActions = null;
 
-let stokeCountIndex = 0;
+let strokesCountIndex = 0;
 const saveAfterKeyStrokesNumber = 50;
 
 export default {
@@ -297,7 +299,7 @@ export default {
       uploadingState: REQUEST_STATE.NOT_STARTED,
       savingPost: {
         state: REQUEST_STATE.NOT_STARTED,
-        status: null,
+        status: null
       },
       isActionsVisibleOnMobile: false
     };
@@ -308,9 +310,6 @@ export default {
     this.vuexFormGetValues = vuexFormGetValues;
     this.formatDate = formatDate;
     this.init();
-  },
-  beforeMount() {
-    window.addEventListener("beforeunload", this.preventClosing);
   },
   mounted() {
     // allow ctrl+s to be detected on inputs and textareas
@@ -330,7 +329,6 @@ export default {
     });
   },
   beforeDestroy() {
-    window.removeEventListener("beforeunload", this.preventClosing);
     hotkeys.unbind("ctrl+s");
     hotkeys.unbind("command+s");
   },
@@ -344,10 +342,6 @@ export default {
     },
   },
   methods: {
-    preventClosing(event) {
-      event.preventDefault();
-      event.returnValue = "";
-    },
     onEditorReady(editor) {
       const wordCountPlugin = editor.plugins.get("WordCount");
       const wordCountWrapper = this.$refs.wordcount;
@@ -377,21 +371,8 @@ export default {
       vuexFormSetValue(FORM_ID, "title", value);
     },
     onContentChange(value) {
-      // Update form value on each key stroke !
-      // Because if we are waiting on a debouced event like "autoSave",
-      // user can save BEFORE data is registered to form, so data is lost -_-
+      this.$emit("onEdit", true);
       vuexFormSetValue(FORM_ID, "content", value);
-      this.autoSave();
-    },
-    autoSave() {
-      if (this.getPostStatus() !== "DRAFT") {
-        return;
-      }
-      stokeCountIndex++;
-      if (stokeCountIndex === saveAfterKeyStrokesNumber) {
-        this.savePost("DRAFT", { saveType: "auto" });
-        stokeCountIndex = 0;
-      }
     },
     // when user click "enter" in the title input,
     // automically move cursor to the textarea
@@ -479,6 +460,7 @@ export default {
           },
         })
         .then(async (result) => {
+          this.$emit("onEdit", false);
           pendingActions.remove(savingPendingAction);
           const post = result.data.savePost;
           this.existingPost = post;
@@ -541,6 +523,11 @@ export default {
           this.$route.params.postId
       );
     },
+    autoSaveAsDraft() {
+      if (this.getPostStatus() === "DRAFT") {
+        this.savePost("DRAFT", { saveType: "auto" });
+      }
+    },
     saveAsDraft() {
       return this.savePost("DRAFT");
     },
@@ -563,7 +550,7 @@ export default {
       if (Object.keys(errors).length > 0) {
         return false;
       } else {
-        // make sure there is not an autoSaveAsDraft triggere
+        // make sure there is not an autoSaveAsDraft triggered
         this.savePost("PUBLISHED").then(() => {
           this.closePublishingOptionsModal();
           // make sure user can not change slug anymore without confirmation.

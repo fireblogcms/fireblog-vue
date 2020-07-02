@@ -1,6 +1,6 @@
 <template>
   <DefaultLayout>
-    <PostForm />
+    <PostForm @onEdit="postFormIsEdited = $event" />
   </DefaultLayout>
 </template>
 
@@ -12,6 +12,18 @@ export default {
   components: {
     PostForm,
     DefaultLayout
-  }
+  },
+  data() {
+    return {
+      postFormIsEdited: false
+    };
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.postFormIsEdited && !window.confirm(this.$t("views.postForm.alertLeavePage"))) {
+      next(false);
+    } else {
+      next();
+    }
+  },
 };
 </script>

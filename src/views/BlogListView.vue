@@ -17,12 +17,11 @@
       v-if="initDataState === 'FINISHED_OK' && blogs && blogs.edges.length > 0"
     >
       <div class="container mx-auto my-10">
-        <div class="flex flex-col md:flex-row items-center justify-between pb-12">
+        <div
+          class="flex flex-col md:flex-row items-center justify-between pb-12"
+        >
           <div class="flex items-center mb-8 md:mb-0">
-            <img
-              class="w-16 h-16 mr-10"
-              src="/images/books.png"
-            />
+            <img class="w-16 h-16 mr-10" src="/images/books.png" />
             <h1 class="text-3xl md:text-5xl font-bold uppercase">
               {{ $t("views.blogList.title") }}
             </h1>
@@ -66,12 +65,12 @@ export default {
     BlogCard,
     DefaultLayout,
     BlogCreateForm,
-    AppLoader
+    AppLoader,
   },
   data() {
     return {
       blogs: null,
-      initDataState: REQUEST_STATE.NOT_STARTED
+      initDataState: REQUEST_STATE.NOT_STARTED,
     };
   },
   methods: {
@@ -81,18 +80,18 @@ export default {
         .then(() => {
           this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
-        .catch(error => {
+        .catch((error) => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           throw new Error(error);
         });
     },
     getBlogs() {
       return getMyBlogs()
-        .then(blogs => {
+        .then((blogs) => {
           this.blogs = blogs;
           return blogs;
         })
-        .catch(error => {
+        .catch((error) => {
           toast(
             this,
             "Sorry, an error occured while fetching blog:" + error,
@@ -100,10 +99,10 @@ export default {
           );
           throw new Error(error);
         });
-    }
+    },
   },
   created() {
     this.initData();
-  }
+  },
 };
 </script>
