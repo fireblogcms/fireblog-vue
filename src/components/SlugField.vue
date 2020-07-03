@@ -65,43 +65,43 @@ export default {
   components: {
     AppButton,
     AppFieldText,
-    AppModal
+    AppModal,
   },
   props: {
     value: {
       type: String,
-      required: true
+      required: true,
     },
     placeholder: {
       type: String,
-      default: ""
+      default: "",
     },
     label: {
       type: String,
-      default: i18n.t("components.slugField.label")
+      default: i18n.t("components.slugField.label"),
     },
     help: {
-      type: String
+      type: String,
     },
     error: {
-      type: String
+      type: String,
     },
     inputClass: {
       type: String,
-      default: "is-medium"
+      default: "is-medium",
     },
     locked: {
       type: Boolean,
-      default: true
+      default: true,
     },
     showToggleLockButton: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   data() {
     return {
-      slug: this.value
+      slug: this.value,
     };
   },
   beforeUpdate() {
@@ -127,14 +127,14 @@ export default {
     onConfirmUnlockClick() {
       this.$emit("onUnlock");
       this.closeUnlockConfirmModal();
-    }
+    },
   },
   computed: {
     computedHelp() {
       return this.$t("components.slugField.help", {
-        exampleUrl: `https://example.com/post/<mark class="font-bold bg-secondary text-current">${this.slug}</mark>`
+        exampleUrl: `https://example.com/post/<mark class="font-bold bg-secondary text-current">${this.slug}</mark>`,
       });
-    }
-  }
+    },
+  },
 };
 </script>

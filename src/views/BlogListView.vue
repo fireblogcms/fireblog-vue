@@ -80,18 +80,18 @@ export default {
         .then(() => {
           this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
-        .catch((error) => {
+        .catch(error => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           throw new Error(error);
         });
     },
     getBlogs() {
       return getMyBlogs()
-        .then((blogs) => {
+        .then(blogs => {
           this.blogs = blogs;
           return blogs;
         })
-        .catch((error) => {
+        .catch(error => {
           toast(
             this,
             "Sorry, an error occured while fetching blog:" + error,

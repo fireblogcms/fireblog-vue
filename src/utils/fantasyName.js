@@ -68,7 +68,7 @@ const nouns = [
   "write",
   "yang",
   "yin",
-  "wu wei"
+  "wu wei",
 ];
 
 const adjectives = [
@@ -153,7 +153,7 @@ const adjectives = [
   "white",
   "wonderful",
   "yellow",
-  "zealous"
+  "zealous",
 ];
 
 /* ================= */
@@ -253,5 +253,5 @@ const otherAdjectives = [
   "voluble",
   "voracious",
   "wheedling",
-  "withering"
+  "withering",
 ];

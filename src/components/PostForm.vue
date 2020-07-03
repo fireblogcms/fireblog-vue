@@ -190,7 +190,7 @@
           :existingPost="existingPost"
           :savingPost="savingPost"
           @onCancelClick="closePublishingOptionsModal"
-          @onUploadingStateChange="(state) => (uploadingState = state)"
+          @onUploadingStateChange="state => (uploadingState = state)"
         />
       </template>
     </AppModal>
@@ -321,7 +321,7 @@ export default {
       if (this.existingPost && this.existingPost.status === "PUBLISHED") {
         this.publish();
       } else {
-        this.saveAsDraft().catch((e) => {
+        this.saveAsDraft().catch(e => {
           console.log("Cannot be saved: form validation failed: " + e);
         });
       }
@@ -347,7 +347,7 @@ export default {
       const wordCountWrapper = this.$refs.wordcount;
       wordCountWrapper.appendChild(wordCountPlugin.wordCountContainer);
       pendingActions = editor.plugins.get("PendingActions");
-      editor.plugins.get("PendingActions").on("change:hasAny", (actions) => {});
+      editor.plugins.get("PendingActions").on("change:hasAny", actions => {});
     },
     async init() {
       // no existing post, we are in CREATE MODE
@@ -459,7 +459,7 @@ export default {
             blog: this.$route.params.blogId,
           },
         })
-        .then(async (result) => {
+        .then(async result => {
           this.$emit("onEdit", false);
           pendingActions.remove(savingPendingAction);
           const post = result.data.savePost;
@@ -485,7 +485,7 @@ export default {
           }
           return post;
         })
-        .catch((error) => {
+        .catch(error => {
           pendingActions.remove(savingPendingAction);
           this.savingPost = {
             state: REQUEST_STATE.FINISHED_ERROR,
@@ -501,11 +501,11 @@ export default {
           query: getPostQuery,
           variables: { _id: id },
         })
-        .then((result) => {
+        .then(result => {
           this.existingPost = result.data.post;
           return result.data.post;
         })
-        .catch((error) => {
+        .catch(error => {
           toast(this, "getExistingPost(): " + error, "error");
         });
     },

@@ -42,7 +42,7 @@ const router = new Router({
     {
       path: "/",
       name: "blogList",
-      component: BlogListView
+      component: BlogListView,
     },
     // used for e2e:test
     {
@@ -50,70 +50,70 @@ const router = new Router({
       name: "test",
       component: TestView,
       meta: {
-        public: true
-      }
+        public: true,
+      },
     },
     {
       path: "/login",
       name: "login",
       component: LoginView,
       meta: {
-        public: true
-      }
+        public: true,
+      },
     },
     {
       path: "/auth0-callback",
       name: "auth0Callback",
       component: Auth0CallbackView,
       meta: {
-        public: true
-      }
+        public: true,
+      },
     },
     {
       path: "/blog/create",
       name: "blogCreate",
-      component: BlogCreateView
+      component: BlogCreateView,
     },
     {
       path: "/blog/:blogId",
       name: "postList",
-      component: PostListView
+      component: PostListView,
     },
     {
       path: "/blog/:blogId/settings",
       name: "blogSettings",
-      component: BlogSettingsView
+      component: BlogSettingsView,
     },
     {
       path: "/blog/:blogId/post/create",
       name: "postCreate",
-      component: PostFormView
+      component: PostFormView,
     },
     {
       path: "/blog/:blogId/post/:postId",
       name: "postUpdate",
-      component: PostFormView
+      component: PostFormView,
     },
     {
       path: "/blog/:blogId/plans",
       name: "plans",
-      component: PlansView
+      component: PlansView,
     },
     {
       path: "/profile",
       name: "profile",
-      component: ProfileView
+      component: ProfileView,
     },
     {
       path: "/logout",
       name: "logout",
-      component: LogoutView
+      component: LogoutView,
     },
     {
       path: "*",
-      component: NotFoundView
-    }
-  ]
+      component: NotFoundView,
+    },
+  ],
 });
 
 router.beforeEach(async (to, from, next) => {
@@ -135,7 +135,7 @@ router.beforeEach(async (to, from, next) => {
     next(false);
     //  orce authentication.
     await auth0.loginWithRedirect({
-      redirect_uri: `${process.env.VUE_APP_BASE_URL}/auth0-callback`
+      redirect_uri: `${process.env.VUE_APP_BASE_URL}/auth0-callback`,
     });
   }
 });

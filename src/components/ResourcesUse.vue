@@ -27,7 +27,10 @@
             </svg>
           </div>
         </div>
-        <span>{{ resourcesUse.count }}/{{ callsPerMonth }} {{ $t("views.plans.apiCalls") }}</span>
+        <span
+          >{{ resourcesUse.count }}/{{ callsPerMonth }}
+          {{ $t("views.plans.apiCalls") }}</span
+        >
       </div>
       <div class="flex items-center mt-2">
         <div class="flex w-10 h-10 mr-5">
@@ -56,8 +59,8 @@
           </div>
         </div>
         <span>
-          {{ formatBytes(resourcesUse.size) }}/{{ sizePerMonth }} 
-          {{ $t("views.plans.storageUnitGB") }} 
+          {{ formatBytes(resourcesUse.size) }}/{{ sizePerMonth }}
+          {{ $t("views.plans.storageUnitGB") }}
           {{ $t("views.plans.storage") }}
         </span>
       </div>
@@ -74,16 +77,16 @@ export default {
   props: {
     blogId: {
       type: String,
-      required: true
+      required: true,
     },
     callsPerMonth: {
       type: String,
-      required: true
+      required: true,
     },
     sizePerMonth: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
@@ -91,7 +94,7 @@ export default {
       initDataState: REQUEST_STATE.NOT_STARTED,
       blog: null,
       countPercentage: 0,
-      sizePercentage: 0
+      sizePercentage: 0,
     };
   },
   async created() {
@@ -111,14 +114,16 @@ export default {
           variables: {
             blog: this.blogId,
             from,
-            to
-          }
+            to,
+          },
         })
         .then(results => {
           this.initDataState = REQUEST_STATE.FINISHED_OK;
           this.resourcesUse = results.data.resourcesUse;
-          this.countPercentage = this.resourcesUse.count / this.callsPerMonth * 100;
-          this.sizePercentage = this.resourcesUse.size / (1073741824 * this.sizePerMonth) * 100;
+          this.countPercentage =
+            (this.resourcesUse.count / this.callsPerMonth) * 100;
+          this.sizePercentage =
+            (this.resourcesUse.size / (1073741824 * this.sizePerMonth)) * 100;
         })
         .catch(e => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
@@ -131,15 +136,17 @@ export default {
       } else {
         let i = Math.floor(Math.log(bytes) / Math.log(1024));
         let sizes = [
-          'views.plans.storageUnitB',
-          'views.plans.storageUnitKB',
-          'views.plans.storageUnitMB',
-          ''
+          "views.plans.storageUnitB",
+          "views.plans.storageUnitKB",
+          "views.plans.storageUnitMB",
+          "",
         ];
-        return `${ (bytes / Math.pow(1024, i)).toFixed(2) * 1 } ${ this.$t(sizes[i]) }`;
+        return `${(bytes / Math.pow(1024, i)).toFixed(2) * 1} ${this.$t(
+          sizes[i]
+        )}`;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

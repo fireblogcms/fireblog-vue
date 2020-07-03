@@ -15,7 +15,7 @@ export default ({ slug, locale }) => [
         }
       }
     }
-  `
+  `,
   },
   {
     id: "getAllPublishedPosts",
@@ -46,7 +46,7 @@ export default ({ slug, locale }) => [
     }
   }
 }
-`
+`,
   },
   {
     id: "getSinglePostBySlug",
@@ -69,6 +69,6 @@ export default ({ slug, locale }) => [
     }
   }
 }
-    `
-  }
+    `,
+  },
 ];

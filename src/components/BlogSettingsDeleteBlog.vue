@@ -4,17 +4,18 @@
       <h2 class="mb-6 text-4xl font-bold">
         {{ $t("views.blogSettings.dangerZone.title") }}
       </h2>
-      <AppButton
-        color="danger"
-        @click="onDeleteBlogClick"
-      >
+      <AppButton color="danger" @click="onDeleteBlogClick">
         {{ $t("views.blogSettings.dangerZone.deleteButton") }}
       </AppButton>
     </AppPanel>
 
     <AppModal name="deleteBlogModal">
       <div class="text-4xl font-bold" slot="header">
-        {{ $t('views.blogSettings.dangerZone.deleteModal.title', {blogName: `"${blog.name}"`}) }}
+        {{
+          $t("views.blogSettings.dangerZone.deleteModal.title", {
+            blogName: `"${blog.name}"`,
+          })
+        }}
       </div>
       <div slot="body">
         <AppFieldText
@@ -23,11 +24,10 @@
           :label="$t('views.blogSettings.dangerZone.deleteModal.content')"
         />
 
-        <div class="pt-12 flex flex-col md:flex-row items-center justify-center">
-          <AppButton
-            class="mx-4"
-            @click="closeDeleteBlogModal"
-          >
+        <div
+          class="pt-12 flex flex-col md:flex-row items-center justify-center"
+        >
+          <AppButton class="mx-4" @click="closeDeleteBlogModal">
             {{ $t("views.blogSettings.dangerZone.deleteModal.cancelButton") }}
           </AppButton>
           <AppButton
@@ -58,19 +58,19 @@ export default {
     AppButton,
     AppFieldText,
     AppModal,
-    AppPanel
+    AppPanel,
   },
   props: {
     blog: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       deleteBlogConfirmName: "",
       deleteBlogConfirmError: null,
-      deleteBlogState: REQUEST_STATE.FINISHED_OK
+      deleteBlogState: REQUEST_STATE.FINISHED_OK,
     };
   },
   methods: {
@@ -91,8 +91,8 @@ export default {
           .mutate({
             mutation: deleteBlogMutation,
             variables: {
-              _id: this.$route.params.blogId
-            }
+              _id: this.$route.params.blogId,
+            },
           })
           .then(async () => {
             this.deleteBlogState = REQUEST_STATE.FINISHED_OK;
@@ -104,9 +104,11 @@ export default {
             throw new Error(e);
           });
       } else {
-        this.deleteBlogConfirmError = this.$t("views.blogSettings.dangerZone.deleteModal.nameMismatch");
+        this.deleteBlogConfirmError = this.$t(
+          "views.blogSettings.dangerZone.deleteModal.nameMismatch"
+        );
       }
-    }
-  }
+    },
+  },
 };
 </script>

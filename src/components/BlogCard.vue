@@ -12,7 +12,10 @@
         </p>
       </div>
     </div>
-    <div class="flex flex-col md:flex-row items-center justify-between" slot="content">
+    <div
+      class="flex flex-col md:flex-row items-center justify-between"
+      slot="content"
+    >
       <PlanInformations :blog="blog" class="mb-8 md:mb-0" />
       <AppButton
         color="primary-outlined"
@@ -37,13 +40,13 @@ export default {
   components: {
     AppButton,
     AppCard,
-    PlanInformations
+    PlanInformations,
   },
   props: {
     blog: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
     cardBackground(blog) {
@@ -53,18 +56,18 @@ export default {
       this.$router.push({
         name: "postList",
         params: {
-          blogId: blog._id
-        }
+          blogId: blog._id,
+        },
       });
     },
     onSubscribeClick(blog) {
       this.$router.push({
         name: "plans",
         params: {
-          blogId: blog._id
-        }
+          blogId: blog._id,
+        },
       });
-    }
-  }
+    },
+  },
 };
 </script>

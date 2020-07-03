@@ -10,7 +10,7 @@ import { auth0Client } from "./auth";
 
 // An httpLink than support uploading files.
 const httpLink = createHttpLink({
-  uri: process.env.VUE_APP_GRAPHQL_URL
+  uri: process.env.VUE_APP_GRAPHQL_URL,
 });
 
 const authLink = setContext(async (_, { headers }) => {
@@ -27,8 +27,8 @@ const authLink = setContext(async (_, { headers }) => {
   return {
     headers: {
       ...headers,
-      ...additionnalHeaders
-    }
+      ...additionnalHeaders,
+    },
   };
 });
 
@@ -43,7 +43,7 @@ const errorLink = onError(infos => {});
 const client = new ApolloClient({
   link: ApolloLink.from([authLink, errorLink, httpLink]),
   fetchOptions: {
-    mode: "no-cors"
+    mode: "no-cors",
   },
   cache: new InMemoryCache(),
   connectToDevTools: process.env.NODE_ENV === "development" ? true : false,
@@ -51,19 +51,19 @@ const client = new ApolloClient({
     watchQuery: {
       fetchPolicy: "no-cache",
       // Any GraphQL Errors are treated the same as network errors and any data is ignored from the response.
-      errorPolicy: "none"
+      errorPolicy: "none",
     },
     query: {
       fetchPolicy: "no-cache",
       // Any GraphQL Errors are treated the same as network errors and any data is ignored from the response.
-      errorPolicy: "none"
+      errorPolicy: "none",
     },
     mutate: {
       fetchPolicy: "no-cache",
       // Any GraphQL Errors are treated the same as network errors and any data is ignored from the response.
-      errorPolicy: "none"
-    }
-  }
+      errorPolicy: "none",
+    },
+  },
 });
 
 export default client;

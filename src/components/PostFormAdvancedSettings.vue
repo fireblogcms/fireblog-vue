@@ -71,7 +71,7 @@ import { REQUEST_STATE } from "@/utils/helpers";
 import {
   vuexFormGetValue,
   vuexFormGetError,
-  vuexFormSetValue
+  vuexFormSetValue,
 } from "@/utils/vuexForm";
 import SlugField from "./SlugField";
 import PreviewGoogleResult from "./PreviewGoogleResult";
@@ -83,18 +83,18 @@ export default {
     AppTextarea,
     PreviewGoogleResult,
     S3ImageUpload,
-    SlugField
+    SlugField,
   },
   props: {
     existingPost: {
       type: [Object, null],
-      default: () => null
-    }
+      default: () => null,
+    },
   },
   data() {
     const data = {
       uploadingState: null,
-      file: null
+      file: null,
     };
     return data;
   },
@@ -122,7 +122,7 @@ export default {
     onUploadingStateChange(state) {
       this.uploadingState = state;
       this.$emit("onUploadingStateChange", state);
-    }
-  }
+    },
+  },
 };
 </script>

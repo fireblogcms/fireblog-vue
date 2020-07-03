@@ -9,7 +9,9 @@
           :src="me.picture"
           alt="User's profile picture"
         />
-        <p class="text-3xl font-bold mb-2">{{ $t("global.label.name") }} {{ me.name }}</p>
+        <p class="text-3xl font-bold mb-2">
+          {{ $t("global.label.name") }} {{ me.name }}
+        </p>
         <p class="text-2xl">{{ $t("global.label.email") }} {{ me.email }}</p>
       </div>
     </AppPanel>
@@ -20,11 +22,7 @@
 import AppLoader from "@/ui-kit/AppLoader";
 import AppPanel from "@/ui-kit/AppPanel";
 import apolloClient from "@/utils/apolloClient";
-import {
-  REQUEST_STATE,
-  getUser,
-  toast
-} from "@/utils/helpers";
+import { REQUEST_STATE, getUser, toast } from "@/utils/helpers";
 import gql from "graphql-tag";
 import DefaultLayout from "@/layouts/DefaultLayout";
 
@@ -32,12 +30,12 @@ export default {
   components: {
     AppLoader,
     AppPanel,
-    DefaultLayout
+    DefaultLayout,
   },
   data() {
     return {
       initDataState: REQUEST_STATE.NOT_STARTED,
-      me: null
+      me: null,
     };
   },
   methods: {
@@ -54,10 +52,10 @@ export default {
           toast(this, "Sorry, an error occured while loading page.", "error");
           throw new Error(error);
         });
-    }
+    },
   },
   created() {
     this.initData();
-  }
+  },
 };
 </script>

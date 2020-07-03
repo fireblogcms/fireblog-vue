@@ -23,7 +23,7 @@ export default {
   components: {
     AppBreadcrumb,
     BlogSettings,
-    DefaultLayout
-  }
+    DefaultLayout,
+  },
 };
 </script>

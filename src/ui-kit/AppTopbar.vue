@@ -157,10 +157,10 @@ export default {
   methods: {
     async initData() {
       getUser()
-        .then((user) => {
+        .then(user => {
           this.me = user;
         })
-        .catch((error) => {
+        .catch(error => {
           toast(this, error, "error");
           throw new Error(error);
         });

@@ -24,18 +24,18 @@ import { getPlan } from "@/utils/helpers";
 
 export default {
   components: {
-    ResourcesUse
+    ResourcesUse,
   },
   props: {
     blog: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       plan: null,
-      numberDaysLeftTrial: null
+      numberDaysLeftTrial: null,
     };
   },
   mounted() {
@@ -53,7 +53,7 @@ export default {
   methods: {
     async fetchData() {
       this.plan = await getPlan(this.blog.subscription.planId);
-    }
-  }
+    },
+  },
 };
 </script>

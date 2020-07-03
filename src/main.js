@@ -15,7 +15,7 @@ import "./scss/main.scss";
 if (process.env.VUE_APP_SENTRY_URL) {
   Sentry.init({
     dsn: process.env.VUE_APP_SENTRY_URL,
-    integrations: [new VueIntegration({ Vue, attachProps: true })]
+    integrations: [new VueIntegration({ Vue, attachProps: true })],
   });
 }
 
@@ -31,5 +31,5 @@ new Vue({
   router,
   store,
   i18n,
-  render: h => h(App)
+  render: h => h(App),
 }).$mount("#app");

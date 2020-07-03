@@ -237,7 +237,7 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     // if use is coming from a draft post, set "DRAFT" tab by default.
-    next((vm) => {
+    next(vm => {
       if (from.name === "postUpdate" || from.name === "postCreate") {
         if (
           vm.$store.state.global.lastVisitedPost &&
@@ -266,7 +266,7 @@ export default {
         .then(() => {
           this.initDataState = REQUEST_STATE.FINISHED_OK;
         })
-        .catch((error) => {
+        .catch(error => {
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
           throw new Error(error);
         });
@@ -281,12 +281,12 @@ export default {
             status: ["PUBLISHED", "DRAFT"],
           },
         })
-        .then((result) => {
+        .then(result => {
           this.isFirstPost =
             result.data.posts.edges.length === 0 ? true : false;
           return result;
         })
-        .catch((error) => {
+        .catch(error => {
           toast(this, "Sorry, an error occured while fetching posts", "error");
           throw new Error(error);
         });
@@ -299,7 +299,7 @@ export default {
             _id: this.$route.params.blogId,
           },
         })
-        .then((result) => {
+        .then(result => {
           this.blog = result.data.blog;
           return result;
         });
@@ -314,12 +314,12 @@ export default {
             status: ["PUBLISHED"],
           },
         })
-        .then((result) => {
+        .then(result => {
           this.postsPublishedRequestState = REQUEST_STATE.FINISHED_OK;
           this.postsPublished = result.data.posts;
           return result;
         })
-        .catch((error) => {
+        .catch(error => {
           this.postsPublishedRequestState = REQUEST_STATE.FINISHED_ERROR;
           toast(this, "Sorry, an error occured while fetching posts", "error");
           throw new Error(error);
@@ -335,12 +335,12 @@ export default {
             status: ["DRAFT"],
           },
         })
-        .then((result) => {
+        .then(result => {
           this.postsDraftRequestState = REQUEST_STATE.FINISHED_OK;
           this.postsDraft = result.data.posts;
           return result;
         })
-        .catch((error) => {
+        .catch(error => {
           this.postsDraftRequestState = REQUEST_STATE.FINISHED_ERROR;
           toast(this, "Sorry, an error occured while fetching posts", "error");
           throw new Error(error);
@@ -359,11 +359,11 @@ export default {
           mutation: deletePostMutation,
           variables: { id: post._id },
         })
-        .then(async (result) => {
+        .then(async result => {
           this.deletePostRequestState = REQUEST_STATE.FINISHED_OK;
           const post = result.data.deletePost;
         })
-        .catch((error) => {
+        .catch(error => {
           this.deletePostRequestState = REQUEST_STATE.FINISHED_ERROR;
           toast(this, "Sorry, an error occured while fetching posts", "error");
           this.closeDeletePostModal();

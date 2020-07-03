@@ -20,11 +20,10 @@
         @change="processImage($event)"
         name="file"
       />
-      <div class="flex items-center border-2 rounded-md bg-white border-gray-200 py-3 px-6 text-2xl">
-        <img
-          class="w-6 mr-4"
-          src="/images/icon-upload.svg"
-        />
+      <div
+        class="flex items-center border-2 rounded-md bg-white border-gray-200 py-3 px-6 text-2xl"
+      >
+        <img class="w-6 mr-4" src="/images/icon-upload.svg" />
         <span>
           {{ $t("global.chooseFile") }}
         </span>
@@ -85,7 +84,7 @@ export default {
           this.uploadedImage = fileUrl;
           this.$emit("onUploaded", fileUrl);
         })
-        .catch((error) => {
+        .catch(error => {
           this.uploadingState = REQUEST_STATE.FINISHED_ERROR;
           appNotifcation("error", error);
           this.$emit("onUploadingStateChange", this.uploadingState);

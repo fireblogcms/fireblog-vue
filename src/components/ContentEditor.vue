@@ -16,15 +16,15 @@ export default {
     },
     autosave: {
       type: Function,
-      default: (data) => {
+      default: data => {
         return Promise.resolve(data);
       },
     },
     // Possible values: create or update
     operation: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   mounted() {
     Editor.create(this.$refs.editor, {
@@ -83,7 +83,7 @@ export default {
         }),
       ],
       autosave: {
-        save: (editor) => {
+        save: editor => {
           if (this.operation === "create" && editor.getData().length === 0) {
             return;
           }
@@ -94,7 +94,7 @@ export default {
         previewsInData: false,
         providers: [ckeditorIframelyMediaProvider()],
       },
-    }).then((editor) => {
+    }).then(editor => {
       // when we cant reach link for a preview
       iframely.on("cancel", function(url, parentNode) {
         parentNode.innerHTML = `
@@ -118,13 +118,13 @@ export default {
         this.$emit("change", editor.getData());
       });
 
-      editor.model.document.registerPostFixer((writer) => {
+      editor.model.document.registerPostFixer(writer => {
         // Insert automatically a paragraph after an image or a block,
         // Otherwise redactors are stuck at the bottom of the page and
         // can't add a new line.
         // @see https://github.com/ckeditor/ckeditor5/issues/407#issuecomment-602111695
         const changes = editor.model.document.differ.getChanges();
-        editor.model.change((writer) => {
+        editor.model.change(writer => {
           for (const entry of changes) {
             // if an image, table, blockQuote or media is inserted.
             if (

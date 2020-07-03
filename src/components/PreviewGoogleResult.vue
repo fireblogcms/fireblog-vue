@@ -17,16 +17,16 @@ export default {
   props: {
     title: {
       type: String,
-      required: true
+      required: true,
     },
     url: {
       type: String,
-      required: true
+      required: true,
     },
     description: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     computedUrl() {
@@ -54,7 +54,7 @@ export default {
         titleShortened += "...";
       }
       return titleShortened;
-    }
-  }
+    },
+  },
 };
 </script>

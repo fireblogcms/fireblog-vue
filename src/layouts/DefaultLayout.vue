@@ -12,13 +12,13 @@ import AppTopbar from "@/ui-kit/AppTopbar";
 
 export default {
   components: {
-    AppTopbar
+    AppTopbar,
   },
   methods: {
     isTopbarVisible() {
       const hideForRoutes = ["auth0Callback"];
       return !hideForRoutes.includes(this.$route.name);
-    }
-  }
+    },
+  },
 };
 </script>

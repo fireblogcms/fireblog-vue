@@ -48,20 +48,20 @@ class ckeditorGraphQLUploadAdapter {
               onProgress: progressEvent => {
                 this.loader.uploadTotal = progressEvent.total;
                 this.loader.uploaded = progressEvent.loaded;
-              }
-            }
+              },
+            },
           },
           // put file in a folder named after the blog Id.
           variables: {
             file,
-            blogId: Router.currentRoute.params.blogId
-          }
+            blogId: Router.currentRoute.params.blogId,
+          },
         })
         .then(async result => {
           // is the default url to use to display our uploaded image.
           // Here it is possible to return different srcset if needed.
           return {
-            default: result.data.upload.url
+            default: result.data.upload.url,
           };
         });
     });

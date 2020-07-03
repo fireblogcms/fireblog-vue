@@ -37,8 +37,11 @@
       >
         <div
           class="w-full md:w-1/4 my-4 md:mx-4 p-6 flex flex-col items-center justify-between bg-white shadow-md rounded-lg border-4"
-          :class="isPlanSubscribed(plan.id) ? 'border-primary' : 'border-transparent'"
-          v-for="plan in plans" :key="plan.id"
+          :class="
+            isPlanSubscribed(plan.id) ? 'border-primary' : 'border-transparent'
+          "
+          v-for="plan in plans"
+          :key="plan.id"
         >
           <div>
             <p class="mb-4 text-2xl font-bold">{{ plan.productName }}</p>
@@ -57,14 +60,17 @@
               {{ $t("views.plans.apiCalls") }}
             </p>
             <p class="mb-8">
-              {{ plan.metadata.STORAGE_GB }} 
-              {{ $t("views.plans.storageUnitGB") }} 
+              {{ plan.metadata.STORAGE_GB }}
+              {{ $t("views.plans.storageUnitGB") }}
               {{ $t("views.plans.storage") }}
             </p>
           </div>
           <AppButton
             v-if="!isPlanSubscribed(plan.id)"
-            :loading="subscribeRequest.state === 'PENDING' && subscribeRequest.planId === plan.id"
+            :loading="
+              subscribeRequest.state === 'PENDING' &&
+                subscribeRequest.planId === plan.id
+            "
             @click="onSubscribeClick(plan)"
             color="primary"
             size="small"
@@ -80,7 +86,7 @@
         v-if="plans.length === 0"
       >
         <div
-          class="w-full md:w-1/4 my-4 md:mx-4 p-6 bg-white shadow-md rounded-lg border-4 border-transparent" 
+          class="w-full md:w-1/4 my-4 md:mx-4 p-6 bg-white shadow-md rounded-lg border-4 border-transparent"
           v-for="(v, i) in [0, 1, 2, 3]"
           :key="i"
         >
@@ -104,10 +110,14 @@
       </div>
       <div class="flex flex-col items-center" slot="body">
         <p class="text-xl">
-          {{ $t("views.plans.changePlanModal.body", {
-            planName: changePlanModal.plan.productName,
-            planAmount: (parseInt(changePlanModal.plan.amountTaxes) / 100).toFixed(2)
-          }) }}
+          {{
+            $t("views.plans.changePlanModal.body", {
+              planName: changePlanModal.plan.productName,
+              planAmount: (
+                parseInt(changePlanModal.plan.amountTaxes) / 100
+              ).toFixed(2),
+            })
+          }}
         </p>
         <AppButton
           class="mt-10"
@@ -127,10 +137,7 @@ import AppBreadcrumb from "@/ui-kit/AppBreadcrumb";
 import AppModal from "@/ui-kit/AppModal";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import apolloClient from "@/utils/apolloClient";
-import {
-  getPlansQuery,
-  updateBlogMutation
-} from "@/utils/queries";
+import { getPlansQuery, updateBlogMutation } from "@/utils/queries";
 import { ContentLoader } from "vue-content-loader";
 import {
   getBlog,
@@ -138,7 +145,7 @@ import {
   getPlan,
   createStripeCheckoutSession,
   toast,
-  REQUEST_STATE
+  REQUEST_STATE,
 } from "@/utils/helpers";
 
 export default {
@@ -147,21 +154,21 @@ export default {
     AppBreadcrumb,
     AppModal,
     DefaultLayout,
-    ContentLoader
+    ContentLoader,
   },
   data() {
     return {
       subscribeRequest: {
         state: REQUEST_STATE.NOT_STARTED,
-        planId: null
+        planId: null,
       },
       daysFreeTrial: process.env.VUE_APP_DAYS_FREE_TRIAL,
       blog: {},
       freePlan: null,
       plans: [],
       changePlanModal: {
-        plan: {}
-      }
+        plan: {},
+      },
     };
   },
   created() {
@@ -183,16 +190,16 @@ export default {
           userEmail: user.email,
           userId: user._id,
           ...(user.customerId && {
-            customerId: user.customerId
+            customerId: user.customerId,
           }),
           blogId: this.$route.params.blogId,
           planId: plan.id,
           successUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}`,
-          cancelUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}/plans`
+          cancelUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}/plans`,
         });
         stripe
           .redirectToCheckout({
-            sessionId
+            sessionId,
           })
           .then(r => {
             this.subscribeRequest.state = REQUEST_STATE.FINISHED_OK;
@@ -206,7 +213,7 @@ export default {
           });
       } else {
         this.changePlanModal = {
-          plan
+          plan,
         };
         this.$store.commit("modalShowing/open", "changePlanModal");
       }
@@ -214,7 +221,7 @@ export default {
     changePlan(plan) {
       const subscription = {
         id: this.blog.subscription.id,
-        planId: plan.id
+        planId: plan.id,
       };
       return apolloClient
         .mutate({
@@ -222,15 +229,15 @@ export default {
           variables: {
             blog: {
               _id: this.$route.params.blogId,
-              subscription
-            }
-          }
+              subscription,
+            },
+          },
         })
         .then(result => {
           this.$router
             .push({
               name: "postList",
-              params: { blogId: result.data.updateBlog._id }
+              params: { blogId: result.data.updateBlog._id },
             })
             .then(() => {
               this.$store.commit("modalShowing/open", "paymentSuccessModal");
@@ -249,7 +256,7 @@ export default {
       }
       return apolloClient
         .query({
-          query: getPlansQuery
+          query: getPlansQuery,
         })
         .then(result => {
           this.plans = result.data.plans;
@@ -269,7 +276,7 @@ export default {
         !this.blog.subscription.trialEnd &&
         this.blog.subscription.planId === planId
       );
-    }
-  }
+    },
+  },
 };
 </script>

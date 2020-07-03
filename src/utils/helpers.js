@@ -1,7 +1,7 @@
 import apolloClient from "./apolloClient";
 import {
   createUploadPolicyMutation,
-  createStripeCheckoutSessionMutation
+  createStripeCheckoutSessionMutation,
 } from "./queries";
 import slug from "slug";
 import {
@@ -9,7 +9,7 @@ import {
   getBlogQuery,
   getMyBlogsQuery,
   getPlanQuery,
-  getPostQuery
+  getPostQuery,
 } from "./queries";
 
 export const REQUEST_STATE = {
@@ -17,7 +17,7 @@ export const REQUEST_STATE = {
   PENDING: "PENDING",
   FINISHED_OK: "FINISHED_OK",
   FINISHED_ERROR: "FINISHED_ERROR",
-  ABORTED: "ABORTED"
+  ABORTED: "ABORTED",
 };
 
 export function getCloudinaryBlogFolderPath(blogId) {
@@ -41,7 +41,7 @@ export function cloudinaryUploadImage({ file, folder, options = {} }) {
     options.onRequestStateChange({
       state: REQUEST_STATE.NOT_STARTED,
       xhr,
-      file: null
+      file: null,
     });
   }
   return new Promise((resolve, reject) => {
@@ -54,7 +54,7 @@ export function cloudinaryUploadImage({ file, folder, options = {} }) {
         options.onProgress({
           total: event.total,
           loaded: event.loaded,
-          percentage: (event.loaded * 100) / event.total
+          percentage: (event.loaded * 100) / event.total,
         });
     });
 
@@ -64,13 +64,13 @@ export function cloudinaryUploadImage({ file, folder, options = {} }) {
         // Successful upload, resolve the promise with the new image
         var response = JSON.parse(xhr.responseText);
         const images = {
-          default: response.secure_url
+          default: response.secure_url,
         };
         if (options.onRequestStateChange) {
           options.onRequestStateChange({
             state: REQUEST_STATE.FINISHED_OK,
             file,
-            xhr
+            xhr,
           });
         }
         resolve(images);
@@ -79,7 +79,7 @@ export function cloudinaryUploadImage({ file, folder, options = {} }) {
           options.onRequestStateChange({
             state: REQUEST_STATE.FINISHED_ERROR,
             file,
-            xhr
+            xhr,
           });
         }
         // Unsuccessful request, reject the promise
@@ -102,7 +102,7 @@ export function createSlug(value, options = {}) {
   return slug(value, {
     replacement: "-",
     lower: true,
-    ...options
+    ...options,
   });
 }
 
@@ -113,7 +113,7 @@ export function createSlug(value, options = {}) {
 export function getUser() {
   return apolloClient
     .query({
-      query: getUserQuery
+      query: getUserQuery,
     })
     .then(result => {
       if (result.data.me === null) {
@@ -141,7 +141,7 @@ export function graphQLErrorsContainsCode(graphQLErrors, errorCode) {
 export function getMyBlogs() {
   return apolloClient
     .query({
-      query: getMyBlogsQuery
+      query: getMyBlogsQuery,
     })
     .then(r => {
       return r.data.me.blogs;
@@ -153,8 +153,8 @@ export function getBlog(id) {
     .query({
       query: getBlogQuery,
       variables: {
-        _id: id
-      }
+        _id: id,
+      },
     })
     .then(r => {
       return r.data.blog;
@@ -166,8 +166,8 @@ export function getPlan(planId) {
     .query({
       query: getPlanQuery,
       variables: {
-        planId: planId
-      }
+        planId: planId,
+      },
     })
     .then(r => {
       return r.data.plan;
@@ -179,8 +179,8 @@ export function getPost(id) {
     .query({
       query: getPostQuery,
       variables: {
-        _id: id
-      }
+        _id: id,
+      },
     })
     .then(r => {
       return r.data.post;
@@ -226,7 +226,7 @@ export function ckeditorIframelyMediaProvider() {
         "</div>" +
         "</div>"
       );
-    }
+    },
   };
 }
 
@@ -248,9 +248,9 @@ export function S3GenerateUploadPolicy(file, blogId) {
         file: {
           name: file.name,
           size: file.size,
-          type: file.type
-        }
-      }
+          type: file.type,
+        },
+      },
     })
     .then(result => {
       const policy = result.data.createUploadPolicy;
@@ -263,7 +263,7 @@ export function S3Upload({
   file,
   blogId,
   onProgress = () => {},
-  onUploadStart = () => {}
+  onUploadStart = () => {},
 }) {
   return S3GenerateUploadPolicy(file, blogId)
     .then(uploadPolicy => {
@@ -307,7 +307,7 @@ export function toast(component, message, type, options = {}) {
     position: "bottom-center",
     className: `app-toast-${type}`,
     type,
-    ...options
+    ...options,
   });
 }
 
@@ -327,7 +327,7 @@ export function formatDate(date, type) {
       month: "long",
       year: "numeric",
       hour: "2-digit",
-      minute: "2-digit"
+      minute: "2-digit",
     });
   }
 }
@@ -339,7 +339,7 @@ export function createStripeCheckoutSession({
   blogId,
   planId,
   successUrl,
-  cancelUrl
+  cancelUrl,
 }) {
   return apolloClient
     .mutate({
@@ -351,8 +351,8 @@ export function createStripeCheckoutSession({
         blogId,
         planId,
         successUrl,
-        cancelUrl
-      }
+        cancelUrl,
+      },
     })
     .then(result => {
       const sessionId = result.data.createStripeCheckoutSession.id;

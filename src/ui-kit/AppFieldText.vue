@@ -20,16 +20,16 @@
 export default {
   props: {
     error: {
-      type: String
+      type: String,
     },
     label: {
-      type: String
+      type: String,
     },
     value: {
-      type: String
-    }
-  }
-}
+      type: String,
+    },
+  },
+};
 </script>
 
 <style>

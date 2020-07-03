@@ -15,7 +15,7 @@ import DefaultLayout from "@/layouts/DefaultLayout";
 export default {
   components: {
     AppPanel,
-    DefaultLayout
-  }
+    DefaultLayout,
+  },
 };
 </script>

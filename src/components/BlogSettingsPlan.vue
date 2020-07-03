@@ -4,10 +4,7 @@
       {{ $t("views.blogSettings.planSettings.title") }}
     </h2>
     <PlanInformations :blog="blog" class="my-10" />
-    <AppButton
-      color="primary-outlined"
-      @click="onSubscribeClick(blog, $event)"
-    >
+    <AppButton color="primary-outlined" @click="onSubscribeClick(blog, $event)">
       <span v-if="!blog.subscription.trialEnd">
         {{ $t("global.changePlanButton") }}
       </span>
@@ -27,23 +24,23 @@ export default {
   components: {
     AppButton,
     AppPanel,
-    PlanInformations
+    PlanInformations,
   },
   props: {
     blog: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
     onSubscribeClick(blog) {
       this.$router.push({
         name: "plans",
         params: {
-          blogId: blog._id
-        }
+          blogId: blog._id,
+        },
       });
-    }
-  }
+    },
+  },
 };
 </script>

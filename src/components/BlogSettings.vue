@@ -13,11 +13,7 @@
 
 <script>
 import AppLoader from "@/ui-kit/AppLoader";
-import {
-  getBlog,
-  REQUEST_STATE,
-  toast
-} from "@/utils/helpers";
+import { getBlog, REQUEST_STATE, toast } from "@/utils/helpers";
 import { vuexFormInitData } from "@/utils/vuexForm";
 import apolloClient from "@/utils/apolloClient";
 import BlogSettingsGeneral from "@/components/BlogSettingsGeneral";
@@ -29,7 +25,7 @@ import {
   deleteBlogMutation,
   getMyBlogsQuery,
   getUserQuery,
-  updateBlogMutation
+  updateBlogMutation,
 } from "@/utils/queries";
 
 export default {
@@ -38,12 +34,12 @@ export default {
     BlogSettingsGeneral,
     BlogSettingsTechnical,
     BlogSettingsPlan,
-    BlogSettingsDeleteBlog
+    BlogSettingsDeleteBlog,
   },
   data() {
     return {
       blog: null,
-      initDataState: REQUEST_STATE.NOT_STARTED
+      initDataState: REQUEST_STATE.NOT_STARTED,
     };
   },
   mounted() {
@@ -61,7 +57,7 @@ export default {
           toast(this, error, "error");
           this.initDataState = REQUEST_STATE.FINISHED_ERROR;
         });
-    }
-  }
+    },
+  },
 };
 </script>

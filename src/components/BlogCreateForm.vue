@@ -59,19 +59,19 @@ import gql from "graphql-tag";
 import {
   getMyBlogsQuery,
   getUserQuery,
-  createBlogMutation
+  createBlogMutation,
 } from "@/utils/queries";
 
 export default {
   components: {
     AppButton,
     AppFieldText,
-    AppTextarea
+    AppTextarea,
   },
   props: {
     isMyFirstBlog: {
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   data() {
     return {
@@ -82,8 +82,8 @@ export default {
       languageList: null,
       inputs: {
         name: "",
-        blogContentDefaultLocale: null
-      }
+        blogContentDefaultLocale: null,
+      },
     };
   },
   created() {
@@ -117,15 +117,15 @@ export default {
           variables: {
             blog: {
               name: this.inputs.name,
-              description: this.inputs.description
-            }
-          }
+              description: this.inputs.description,
+            },
+          },
         })
         .then(async result => {
           this.$router
             .push({
               name: "postList",
-              params: { blogId: result.data.createBlog._id }
+              params: { blogId: result.data.createBlog._id },
             })
             .then(() => (this.savingBlogState = REQUEST_STATE.FINISHED_OK));
         })
@@ -136,7 +136,7 @@ export default {
           );
           throw new Error(error);
         });
-    }
-  }
+    },
+  },
 };
 </script>

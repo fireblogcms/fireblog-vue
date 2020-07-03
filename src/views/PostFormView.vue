@@ -11,15 +11,18 @@ import DefaultLayout from "@/layouts/DefaultLayout";
 export default {
   components: {
     PostForm,
-    DefaultLayout
+    DefaultLayout,
   },
   data() {
     return {
-      postFormIsEdited: false
+      postFormIsEdited: false,
     };
   },
   beforeRouteLeave(to, from, next) {
-    if (this.postFormIsEdited && !window.confirm(this.$t("views.postForm.alertLeavePage"))) {
+    if (
+      this.postFormIsEdited &&
+      !window.confirm(this.$t("views.postForm.alertLeavePage"))
+    ) {
       next(false);
     } else {
       next();

@@ -24,7 +24,7 @@ export async function auth0Client() {
       //    API must check the access token is valid.
       //responseType: "id_token token",
       // request all openid fields (sub, ssi, etc) + email + full profile data
-      scope: "openid email profile"
+      scope: "openid email profile",
     });
     return auth0;
   } else {
@@ -44,6 +44,6 @@ export function syncAuth0UserWithServer() {
           auth0Id
         }
       }
-    `
+    `,
   });
 }

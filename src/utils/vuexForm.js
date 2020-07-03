@@ -31,9 +31,9 @@ export const moduleForm = {
     },
     vuexFormSetErrors(state, { formId, errors }) {
       Vue.set(state[formId], "errors", errors);
-    }
+    },
   },
-  actions: {}
+  actions: {},
 };
 
 /**
@@ -58,12 +58,12 @@ export function vuexFormInit(
     form: {
       errors: {},
       values: {
-        ...initialValues
+        ...initialValues,
       },
       initialValues,
       // this callback is called every time a form value has changed.
-      onFormValueChange
-    }
+      onFormValueChange,
+    },
   });
 }
 

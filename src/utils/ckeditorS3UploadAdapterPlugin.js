@@ -19,7 +19,7 @@ class ckeditorS3UploadAdapter {
       options.onRequestStateChange({
         state: REQUEST_STATE.NOT_STARTED,
         xhr: this.xhr,
-        file: null
+        file: null,
       });
     }
   }
@@ -45,16 +45,16 @@ class ckeditorS3UploadAdapter {
             this.loader.uploadTotal = event.total;
             this.loader.uploaded = event.loaded;
           });
-        }
+        },
       })
         .then(({ fileUrl }) => {
           this.options.onRequestStateChange({
             state: REQUEST_STATE.FINISHED_OK,
             xhr: this.xhr,
-            file: null
+            file: null,
           });
           const images = {
-            default: fileUrl
+            default: fileUrl,
           };
           return images;
         })
@@ -63,7 +63,7 @@ class ckeditorS3UploadAdapter {
             state: REQUEST_STATE.FINISHED_ERROR,
             xhr: this.xhr,
             file: null,
-            error
+            error,
           });
         });
     });
@@ -75,7 +75,7 @@ class ckeditorS3UploadAdapter {
     this.options.onRequestStateChange({
       state: REQUEST_STATE.ABORTED,
       xhr: this.xhr,
-      file: null
+      file: null,
     });
   }
 }

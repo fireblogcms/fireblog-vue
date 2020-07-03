@@ -20,10 +20,16 @@
 
       <div class="mb-6">
         <label class="text-md font-bold">
-          {{ $t("views.blogSettings.generalSettingsForm.fields.description.label") }}
+          {{
+            $t(
+              "views.blogSettings.generalSettingsForm.fields.description.label"
+            )
+          }}
         </label>
         <p class="mb-4 text-sm">
-          {{ $t("views.blogSettings.generalSettingsForm.fields.description.help") }}
+          {{
+            $t("views.blogSettings.generalSettingsForm.fields.description.help")
+          }}
         </p>
         <AppTextarea
           :value="vuexFormGetValue(formId, 'description')"
@@ -64,11 +70,7 @@ import AppButton from "@/ui-kit/AppButton";
 import AppFieldText from "@/ui-kit/AppFieldText";
 import AppPanel from "@/ui-kit/AppPanel";
 import AppTextarea from "@/ui-kit/AppTextarea";
-import {
-  getBlog,
-  REQUEST_STATE,
-  toast
-} from "@/utils/helpers";
+import { getBlog, REQUEST_STATE, toast } from "@/utils/helpers";
 import {
   vuexFormInit,
   vuexFormSetValue,
@@ -76,7 +78,7 @@ import {
   vuexFormGetValue,
   vuexFormGetError,
   vuexFormGetErrors,
-  vuexFormResetErrors
+  vuexFormResetErrors,
 } from "@/utils/vuexForm";
 import apolloClient from "@/utils/apolloClient";
 import gql from "graphql-tag";
@@ -87,7 +89,7 @@ const formId = "blogSettingsGeneral";
 const initialFormValues = {
   name: "",
   description: "",
-  image: null
+  image: null,
 };
 
 export default {
@@ -96,18 +98,18 @@ export default {
     AppFieldText,
     AppPanel,
     AppTextarea,
-    S3ImageUpload
+    S3ImageUpload,
   },
   props: {
     blog: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       savingState: REQUEST_STATE.NOT_STARTED,
-      uploadBlogImageState: REQUEST_STATE.NOT_STARTED
+      uploadBlogImageState: REQUEST_STATE.NOT_STARTED,
     };
   },
   created() {
@@ -119,8 +121,8 @@ export default {
       initialValues: {
         name: this.blog.name ? this.blog.name : "",
         description: this.blog.description ? this.blog.description : "",
-        image: this.blog.image ? this.blog.image : null
-      }
+        image: this.blog.image ? this.blog.image : null,
+      },
     });
   },
   methods: {
@@ -144,8 +146,8 @@ export default {
         .mutate({
           mutation: updateBlogMutation,
           variables: {
-            blog
-          }
+            blog,
+          },
         })
         .then(async result => {
           return result.data.updateBlog;
@@ -172,17 +174,23 @@ export default {
         _id: this.$route.params.blogId,
         name: vuexFormGetValue(formId, "name"),
         description: vuexFormGetValue(formId, "description"),
-        image: vuexFormGetValue(formId, "image")
+        image: vuexFormGetValue(formId, "image"),
       };
       this.updateBlog(blog)
         .then(updatedBlog => {
           this.savingState = REQUEST_STATE.FINISHED_OK;
-          toast(this, this.$t("views.blogSettings.generalSettingsForm.notifications.saved"), "success");
+          toast(
+            this,
+            this.$t(
+              "views.blogSettings.generalSettingsForm.notifications.saved"
+            ),
+            "success"
+          );
         })
         .catch(e => {
           this.savingState = REQUEST_STATE.FINISHED_ERROR;
         });
-    }
-  }
+    },
+  },
 };
 </script>

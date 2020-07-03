@@ -1,10 +1,6 @@
 <template>
   <div class="bg-white shadow-md rounded-lg overflow-hidden">
-    <div
-      class="h-320 bg-cover bg-center"
-      :style="background"
-      v-if="image"
-    >
+    <div class="h-320 bg-cover bg-center" :style="background" v-if="image">
       <slot name="header" />
     </div>
     <slot />
@@ -18,15 +14,15 @@
 export default {
   props: {
     image: {
-      type: String
-    }
+      type: String,
+    },
   },
   computed: {
     background() {
-      return this.image.includes("gradient") ?
-        { background: this.image } :
-        { backgroundImage: `url(${this.image})` };
-    }
-  }
+      return this.image.includes("gradient")
+        ? { background: this.image }
+        : { backgroundImage: `url(${this.image})` };
+    },
+  },
 };
 </script>

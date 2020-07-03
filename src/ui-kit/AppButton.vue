@@ -15,8 +15,7 @@
           color === 'secondary',
         'bg-danger border-danger text-white active:bg-danger-dark active:border-danger-dark':
           color === 'danger',
-        'hover:border-gray-500':
-          color === '' && !$attrs.disabled,
+        'hover:border-gray-500': color === '' && !$attrs.disabled,
         'hover:bg-primary-darker hover:border-primary-darker':
           color === 'primary' && !$attrs.disabled,
         'hover:text-white hover:bg-primary hover:border-primary':
@@ -25,7 +24,7 @@
           color === 'secondary' && !$attrs.disabled,
         'hover:bg-danger-darker hover:border-danger-darker':
           color === 'danger' && !$attrs.disabled,
-        'cursor-default opacity-50': $attrs.disabled
+        'cursor-default opacity-50': $attrs.disabled,
       }"
       v-bind="$attrs"
       @click.stop="onClick"
@@ -36,8 +35,9 @@
       class="absolute inset-0 flex items-center justify-center border rounded"
       :class="{
         'bg-white border-gray-200': color === '',
-        'bg-primary border-primary': color === 'primary' || color === 'primary-outlined',
-        'bg-danger border-danger': color === 'danger'
+        'bg-primary border-primary':
+          color === 'primary' || color === 'primary-outlined',
+        'bg-danger border-danger': color === 'danger',
       }"
       v-if="loading"
     >
@@ -51,34 +51,34 @@ export default {
   props: {
     color: {
       type: String,
-      default: ""
+      default: "",
     },
     loading: {
       type: Boolean,
-      default: false
+      default: false,
     },
     size: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
   },
   computed: {
     loader() {
       let loaderImage = "loader";
       if (
-        this.color === "primary" || 
-        this.color === "primary-outlined" || 
+        this.color === "primary" ||
+        this.color === "primary-outlined" ||
         this.color === "danger"
       ) {
         loaderImage = "loader-primary";
       }
       return loaderImage;
-    }
+    },
   },
   methods: {
     onClick() {
       this.$emit("click");
-    }
-  }
+    },
+  },
 };
 </script>

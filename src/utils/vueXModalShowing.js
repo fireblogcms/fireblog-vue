@@ -1,20 +1,20 @@
 export default {
   namespaced: true,
   state: {
-    modals: {}
+    modals: {},
   },
   mutations: {
     open(state, name) {
       state.modals = {
         ...state.modals,
-        [name]: true
+        [name]: true,
       };
     },
     close(state, name) {
       state.modals = {
         ...state.modals,
-        [name]: false
+        [name]: false,
       };
-    }
-  }
+    },
+  },
 };

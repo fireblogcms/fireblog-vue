@@ -6,10 +6,14 @@
     <form @submit.prevent="onFormSubmit">
       <div class="mt-6 mb-10">
         <label class="text-md font-bold">
-          {{ $t("views.blogSettings.technicalSettingsForm.fields.webhooks.label") }}
+          {{
+            $t("views.blogSettings.technicalSettingsForm.fields.webhooks.label")
+          }}
         </label>
         <p class="mb-4 text-sm">
-          {{ $t("views.blogSettings.technicalSettingsForm.fields.webhooks.help") }}
+          {{
+            $t("views.blogSettings.technicalSettingsForm.fields.webhooks.help")
+          }}
         </p>
         <AppTextarea
           :value="vuexFormGetValue(formId, 'staticBuildWebhooks')"
@@ -40,7 +44,7 @@ import {
   vuexFormGetValue,
   vuexFormGetError,
   vuexFormGetErrors,
-  vuexFormResetErrors
+  vuexFormResetErrors,
 } from "@/utils/vuexForm";
 import { REQUEST_STATE, toast } from "@/utils/helpers";
 import apolloClient from "@/utils/apolloClient";
@@ -49,24 +53,24 @@ import { updateBlogMutation } from "@/utils/queries";
 const formId = "technicalSettingsForm";
 const initialFormValues = {
   staticBuildWebhooks: [],
-  url: ""
+  url: "",
 };
 
 export default {
   components: {
     AppButton,
     AppPanel,
-    AppTextarea
+    AppTextarea,
   },
   props: {
     blog: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
-      savingState: REQUEST_STATE.NOT_STARTED
+      savingState: REQUEST_STATE.NOT_STARTED,
     };
   },
   created() {
@@ -80,8 +84,8 @@ export default {
         url: this.blog.url ? this.blog.url : initialFormValues.url,
         staticBuildWebhooks: this.blog.webhooks
           ? this.blog.webhooks.map(v => v.url).join(",")
-          : initialFormValues.webhooks
-      }
+          : initialFormValues.webhooks,
+      },
     });
   },
   methods: {
@@ -90,13 +94,19 @@ export default {
       const update = {
         _id: this.$route.params.blogId,
         webhooks,
-        url: vuexFormGetValue(formId, "url")
+        url: vuexFormGetValue(formId, "url"),
       };
       this.savingState = REQUEST_STATE.PENDING;
       this.updateBlog(update)
         .then(updatedBlog => {
           this.savingState = REQUEST_STATE.FINISHED_OK;
-          toast(this, this.$t("views.blogSettings.technicalSettingsForm.notifications.saved"), "success");
+          toast(
+            this,
+            this.$t(
+              "views.blogSettings.technicalSettingsForm.notifications.saved"
+            ),
+            "success"
+          );
         })
         .catch(e => {
           toast(this, e, "error");
@@ -119,7 +129,7 @@ export default {
           webhooks.push({
             name: webhook,
             url: webhook,
-            onEvents: ["global:staticBuildNeeded"]
+            onEvents: ["global:staticBuildNeeded"],
           });
         });
       }
@@ -130,8 +140,8 @@ export default {
         .mutate({
           mutation: updateBlogMutation,
           variables: {
-            blog
-          }
+            blog,
+          },
         })
         .then(async result => {
           return result.data.updateBlog;
@@ -140,7 +150,7 @@ export default {
           toast(this, error, "error");
           throw new Error(error);
         });
-    }
-  }
+    },
+  },
 };
 </script>

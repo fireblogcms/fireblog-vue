@@ -22,7 +22,7 @@ class ckeditorCloudinaryDirectUploadAdapter {
       options.onRequestStateChange({
         state: REQUEST_STATE.NOT_STARTED,
         xhr: this.xhr,
-        file: null
+        file: null,
       });
     }
   }
@@ -46,7 +46,7 @@ class ckeditorCloudinaryDirectUploadAdapter {
           this.options.onRequestStateChange({
             state: REQUEST_STATE.PENDING,
             xhr: this.xhr,
-            file
+            file,
           });
         }
       }
@@ -66,13 +66,13 @@ class ckeditorCloudinaryDirectUploadAdapter {
             // Successful upload, resolve the promise with the new image
             var response = JSON.parse(this.xhr.responseText);
             const images = {
-              default: response.secure_url
+              default: response.secure_url,
             };
             if (this.options.onRequestStateChange) {
               this.options.onRequestStateChange({
                 state: REQUEST_STATE.FINISHED_OK,
                 file: file,
-                xhr: this.xhr
+                xhr: this.xhr,
               });
             }
             resolve(images);
@@ -80,7 +80,7 @@ class ckeditorCloudinaryDirectUploadAdapter {
             this.options.onRequestStateChange({
               state: REQUEST_STATE.FINISHED_ERROR,
               file: file,
-              xhr: this.xhr
+              xhr: this.xhr,
             });
             // Unsuccessful request, reject the promise
             reject("Upload failed");
@@ -103,7 +103,7 @@ class ckeditorCloudinaryDirectUploadAdapter {
     this.options.onRequestStateChange({
       state: REQUEST_STATE.ABORTED,
       xhr: this.xhr,
-      file: null
+      file: null,
     });
   }
 }

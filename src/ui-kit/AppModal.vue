@@ -9,7 +9,7 @@
         class="flex flex-col bg-white"
         :class="{
           'w-11/12 md:w-1/2 max-h-9/10 shadow-around rounded-lg': !fullscreen,
-          'w-full h-screen': fullscreen
+          'w-full h-screen': fullscreen,
         }"
       >
         <div class="p-6 flex items-center justify-between">
@@ -37,27 +37,27 @@ import AppButton from "@/ui-kit/AppButton";
 
 export default {
   components: {
-    AppButton
+    AppButton,
   },
   props: {
     fullscreen: {
       type: Boolean,
-      default: false
+      default: false,
     },
     name: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     showing() {
       return this.$store.state.modalShowing.modals[this.name];
-    }
+    },
   },
   methods: {
     close() {
       this.$store.commit("modalShowing/close", this.name);
-    }
-  }
+    },
+  },
 };
 </script>

@@ -17,12 +17,12 @@ import apolloClient from "@/utils/apolloClient";
 
 export default {
   components: {
-    AppLoader
+    AppLoader,
   },
   data() {
     return {
       error: null,
-      initDataState: REQUEST_STATE.NOT_STARTED
+      initDataState: REQUEST_STATE.NOT_STARTED,
     };
   },
   async created() {
@@ -51,7 +51,7 @@ export default {
           toast(this, this.error, "error");
           throw new Error(error);
         });
-    }
-  }
+    },
+  },
 };
 </script>

@@ -15,7 +15,7 @@ export default {
   components: {
     AppPanel,
     BlogCreateForm,
-    DefaultLayout
-  }
+    DefaultLayout,
+  },
 };
 </script>

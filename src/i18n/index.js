@@ -7,12 +7,12 @@ Vue.use(VueI18n);
 
 const messages = {
   "en-US": enUS,
-  "fr-FR": frFR
+  "fr-FR": frFR,
 };
 
 // Create VueI18n instance with options
 export default new VueI18n({
   locale: navigator.language || navigator.userLanguage,
   fallbackLocale: "en-US",
-  messages // set locale messages
+  messages, // set locale messages
 });
