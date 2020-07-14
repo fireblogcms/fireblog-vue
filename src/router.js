@@ -7,6 +7,8 @@ const ProfileView = () =>
   import(/* webpackChunkName: "ProfileView" */ "./views/ProfileView");
 const BlogCreateView = () =>
   import(/* webpackChunkName: "BlogCreateView" */ "./views/BlogCreateView");
+const BlogListView = () =>
+  import(/* webpackChunkName: "BlogListView" */ "./views/BlogListView");
 const BlogSetListView = () =>
   import(/* webpackChunkName: "BlogSetListView" */ "./views/BlogSetListView");
 const BlogSettingsView = () =>
@@ -41,6 +43,11 @@ const router = new Router({
   routes: [
     {
       path: "/",
+      name: "blogList",
+      component: BlogListView,
+    },
+    {
+      path: "/blogset",
       name: "blogSetList",
       component: BlogSetListView,
     },
@@ -70,7 +77,7 @@ const router = new Router({
       },
     },
     {
-      path: "/blog/create",
+      path: "/blogset/:blogSetId/blog/create",
       name: "blogCreate",
       component: BlogCreateView,
     },

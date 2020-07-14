@@ -7,9 +7,30 @@
           :key="blogSet._id"
           class="flex flex-col items-center"
         >
-          <h2 class="text-4xl font-bold mt-5 mb-6">
-            {{ blogSet.name }}'s blogs
-          </h2>
+          <div
+            class="flex flex-col md:flex-row items-center justify-between pb-12"
+          >
+            <div class="flex items-center mb-8 md:mb-0">
+              <img class="w-16 h-16 mr-10" src="/images/books.png" />
+              <h1 class="text-3xl md:text-5xl font-bold uppercase">
+                <h2 class="text-4xl font-bold mt-5 mb-6">
+                  {{ blogSet.name }}'s blogs
+                </h2>
+              </h1>
+            </div>
+            <AppButton
+              color="primary"
+              @click="
+                $router.push({
+                  name: 'blogCreate',
+                  params: { blogSetId: blogSet._id },
+                })
+              "
+            >
+              {{ $t("views.blogList.createNewBlogButton").toUpperCase() }}
+            </AppButton>
+          </div>
+
           <BlogCard
             v-for="blog in blogSet.blogs"
             :blog="blog"
@@ -19,8 +40,8 @@
         </div>
       </template>
       <template v-if="!viewData">
-        <ContentLoader height="300" class="md:w-3/5 mx-auto">
-          <rect x="0" y="0" rx="3" ry="3" height="55%" />
+        <ContentLoader height="200" class="md:w-3/5 mx-auto">
+          <rect x="0" y="0" rx="3" ry="3" height="100%" />
         </ContentLoader>
       </template>
     </div>
@@ -44,6 +65,7 @@ export default {
     DefaultLayout,
     BlogCard,
     ContentLoader,
+    AppButton,
   },
   data() {
     return {
@@ -62,6 +84,7 @@ function viewData() {
     query: gql`
       query myBlogSetsQuery {
         blogSets {
+          _id
           name
           blogs {
             name
