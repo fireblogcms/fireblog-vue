@@ -45,10 +45,6 @@ export default {
           { language: "java", label: "Java" },
         ],
       },
-      image: {
-        // You need to configure the image toolbar, too, so it uses the new style buttons.
-        toolbar: ["imageTextAlternative"],
-      },
       heading: {
         options: [
           {
