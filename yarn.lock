@@ -6779,9 +6779,9 @@ find-up@^4.0.0, find-up@^4.1.0:
     locate-path "^5.0.0"
     path-exists "^4.0.0"
 
-"fireblog-ckeditor@git+https://24877e8303ab244d4b2317f0644b6ade652e2a4e:x-oauth-basic@github.com/fireblogcms/fireblog-ckeditor#20.0.3":
+"fireblog-ckeditor@git+https://24877e8303ab244d4b2317f0644b6ade652e2a4e:x-oauth-basic@github.com/fireblogcms/fireblog-ckeditor#20.0.4":
   version "20.0.2"
-  resolved "git+https://24877e8303ab244d4b2317f0644b6ade652e2a4e:x-oauth-basic@github.com/fireblogcms/fireblog-ckeditor#f144baf663e54a85e9214f65c1f33d291194e936"
+  resolved "git+https://24877e8303ab244d4b2317f0644b6ade652e2a4e:x-oauth-basic@github.com/fireblogcms/fireblog-ckeditor#1e78e48d13f7ab985816492bb698c4706c4df0ba"
   dependencies:
     "@ckeditor/ckeditor5-alignment" "^20.0.0"
 
