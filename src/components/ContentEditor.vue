@@ -26,6 +26,11 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      changed: false
+    }
+  },
   mounted() {
     Editor.create(this.$refs.editor, {
       codeBlock: {
@@ -83,7 +88,9 @@ export default {
           if (this.operation === "create" && editor.getData().length === 0) {
             return;
           }
-          return this.autosave();
+          if (this.changed) {
+            return this.autosave();
+          }
         },
       },
       mediaEmbed: {
@@ -111,6 +118,7 @@ export default {
       this.$emit("editorReady", editor);
 
       editor.model.document.on("change:data", (eventInfo, data) => {
+        this.changed = true;
         this.$emit("change", editor.getData());
       });
 
