@@ -44,7 +44,7 @@
             role="menu"
           >
             <router-link
-              :to="{ name: 'blogList' }"
+              :to="{ name: 'blogSetList' }"
               class="px-4 py-2 font-bold hover:bg-gray-100"
             >
               {{ $t("topbar.accountMenu.myBlogs") }}

@@ -42,12 +42,12 @@ const router = new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: "/",
+      path: "/legacy/blogs",
       name: "blogList",
       component: BlogListView,
     },
     {
-      path: "/blogset",
+      path: "/",
       name: "blogSetList",
       component: BlogSetListView,
     },
