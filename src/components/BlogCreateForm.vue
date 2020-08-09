@@ -54,7 +54,7 @@ import AppFieldText from "@/ui-kit/AppFieldText";
 import AppTextarea from "@/ui-kit/AppTextarea";
 import { generate } from "@/utils/fantasyName.js";
 import apolloClient from "@/utils/apolloClient";
-import { getUser, REQUEST_STATE } from "@/utils/helpers";
+import { getUser, REQUEST_STATE, toast } from "@/utils/helpers";
 import gql from "graphql-tag";
 import {
   getMyBlogsQuery,
@@ -118,6 +118,7 @@ export default {
             blog: {
               name: this.inputs.name,
               description: this.inputs.description,
+              blogSet: this.$route.params.blogSetId,
             },
           },
         })
@@ -131,9 +132,7 @@ export default {
         })
         .catch(error => {
           this.savingBlogState = REQUEST_STATE.FINISHED_ERROR;
-          this.errors.push(
-            "Blog created failed with following message: " + error
-          );
+          toast(this, error, "error");
           throw new Error(error);
         });
     },

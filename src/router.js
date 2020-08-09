@@ -9,6 +9,8 @@ const BlogCreateView = () =>
   import(/* webpackChunkName: "BlogCreateView" */ "./views/BlogCreateView");
 const BlogListView = () =>
   import(/* webpackChunkName: "BlogListView" */ "./views/BlogListView");
+const BlogSetListView = () =>
+  import(/* webpackChunkName: "BlogSetListView" */ "./views/BlogSetListView");
 const BlogSettingsView = () =>
   import(/* webpackChunkName: "BlogSettingsView" */ "./views/BlogSettingsView");
 const PostListView = () =>
@@ -40,9 +42,14 @@ const router = new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: "/",
+      path: "/legacy/blogs",
       name: "blogList",
       component: BlogListView,
+    },
+    {
+      path: "/",
+      name: "blogSetList",
+      component: BlogSetListView,
     },
     // used for e2e:test
     {
@@ -70,7 +77,7 @@ const router = new Router({
       },
     },
     {
-      path: "/blog/create",
+      path: "/blogset/:blogSetId/blog/create",
       name: "blogCreate",
       component: BlogCreateView,
     },

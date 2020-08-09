@@ -9,7 +9,7 @@
       <AppFieldText
         class="flex-1 mr-1"
         :value="value"
-        @input="onSlugInput"
+        @debounce="onSlugChange"
         :disabled="locked"
         :error="error"
         placeholder="slug"
@@ -59,7 +59,6 @@ import AppButton from "@/ui-kit/AppButton";
 import AppFieldText from "@/ui-kit/AppFieldText";
 import AppModal from "@/ui-kit/AppModal";
 import i18n from "@/i18n";
-import { createSlug } from "@/utils/helpers";
 
 export default {
   components: {
@@ -72,6 +71,10 @@ export default {
       type: String,
       required: true,
     },
+    error: {
+      type: String,
+      default: null,
+    },
     placeholder: {
       type: String,
       default: "",
@@ -81,9 +84,6 @@ export default {
       default: i18n.t("components.slugField.label"),
     },
     help: {
-      type: String,
-    },
-    error: {
       type: String,
     },
     inputClass: {
@@ -113,8 +113,11 @@ export default {
     closeUnlockConfirmModal() {
       this.$store.commit("modalShowing/close", "unlockConfirmModal");
     },
+    onSlugChange(value) {
+      this.$emit("onSlugChange", value);
+    },
     onSlugInput(event) {
-      this.slug = createSlug(event);
+      //this.slug = createSlug(event);
       this.$emit("input", this.slug);
     },
     onButtonClick() {

@@ -1,9 +1,9 @@
 import apolloClient from "./apolloClient";
+import gql from "graphql-tag";
 import {
   createUploadPolicyMutation,
   createStripeCheckoutSessionMutation,
 } from "./queries";
-import slug from "slug";
 import {
   getUserQuery,
   getBlogQuery,
@@ -104,6 +104,33 @@ export function createSlug(value, options = {}) {
     lower: true,
     ...options,
   });
+}
+
+export function generateSlugFromServer({ blogId, source }) {
+  return apolloClient
+    .mutate({
+      variables: {
+        blogId,
+        source,
+      },
+      mutation: gql`
+        mutation generateBlogPostSlug($source: String!, $blogId: ID!) {
+          generateBlogPostSlug(blogId: $blogId, source: $source) {
+            source
+            slug
+            alreadyExists
+            usedByPost {
+              _id
+              slug
+              title
+            }
+          }
+        }
+      `,
+    })
+    .then(response => {
+      return response.data.generateBlogPostSlug;
+    });
 }
 
 /**
