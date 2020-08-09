@@ -42,7 +42,7 @@
               vuexFormGetValue(FORM_ID, 'slugShowToggleLockButton')
             "
             :locked="vuexFormGetValue(FORM_ID, 'slugIsLocked')"
-            @input="onSlugInput"
+            @onSlugChange="onSlugChange"
             @onUnlock="onSlugUnlock"
             @onLock="onSlugLock"
           />
@@ -75,8 +75,34 @@ import {
 } from "@/utils/vuexForm";
 import SlugField from "./SlugField";
 import PreviewGoogleResult from "./PreviewGoogleResult";
+import apolloClient from "@/utils/apolloClient";
+import gql from "graphql-tag";
 
 const FORM_ID = "postForm";
+
+function createSlugFromServer(blogId, source) {
+  return apolloClient.mutate({
+    variables: {
+      blogId,
+      source,
+    },
+    mutation: gql`
+      mutation createBlogPostSlug($source: String!, $blogId: ID!) {
+        createBlogPostSlug(blogId: $blogId, source: $source) {
+          source
+          slug
+          alreadyExists {
+            status
+            post {
+              slug
+              title
+            }
+          }
+        }
+      }
+    `,
+  });
+}
 
 export default {
   components: {
@@ -109,6 +135,17 @@ export default {
     },
     onTeaserInput(event) {
       vuexFormSetValue(FORM_ID, "teaser", event);
+    },
+    onSlugChange(value) {
+      alert(value);
+      createSlugFromServer(this.$route.params.blogId, value).then(r => {
+        const slugFromServer = r.data.createBlogPostSlug;
+        const slug = slugFromServer.slug;
+        vuexFormSetValue(FORM_ID, "slug", slug);
+        if (slugFromServer.alreadyExists.status === true) {
+          this.error = `This slug is already used by this post: ${slugFromServer.alreadyExists.post.title}`;
+        }
+      });
     },
     onSlugInput(event) {
       vuexFormSetValue(FORM_ID, "slug", event);

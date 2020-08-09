@@ -9,7 +9,7 @@
       <AppFieldText
         class="flex-1 mr-1"
         :value="value"
-        @input="onSlugInput"
+        @debounce="onSlugChange"
         :disabled="locked"
         :error="error"
         placeholder="slug"
@@ -83,9 +83,6 @@ export default {
     help: {
       type: String,
     },
-    error: {
-      type: String,
-    },
     inputClass: {
       type: String,
       default: "is-medium",
@@ -102,6 +99,7 @@ export default {
   data() {
     return {
       slug: this.value,
+      error: null,
     };
   },
   beforeUpdate() {
@@ -113,8 +111,11 @@ export default {
     closeUnlockConfirmModal() {
       this.$store.commit("modalShowing/close", "unlockConfirmModal");
     },
+    onSlugChange(value) {
+      this.$emit("onSlugChange", value);
+    },
     onSlugInput(event) {
-      this.slug = createSlug(event);
+      //this.slug = createSlug(event);
       this.$emit("input", this.slug);
     },
     onButtonClick() {
