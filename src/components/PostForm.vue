@@ -240,7 +240,7 @@ import {
   validateSlug,
   toast,
   formatDate,
-  createSlugFromServer,
+  generateSlugFromServer,
 } from "@/utils/helpers";
 import {
   vuexFormInit,
@@ -587,10 +587,10 @@ export default {
         this.showMediaCurrentlyLoadingModal();
       } else {
         if (vuexFormGetValue(FORM_ID, "slug").trim().length === 0) {
-          createSlugFromServer(
-            this.$route.params.blogId,
-            vuexFormGetValue(FORM_ID, "title").trim()
-          ).then(response => {
+          generateSlugFromServer({
+            blogId: this.$route.params.blogId,
+            source: vuexFormGetValue(FORM_ID, "title").trim(),
+          }).then(response => {
             vuexFormSetValue(FORM_ID, "slug", response.slug);
           });
         }

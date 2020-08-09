@@ -67,7 +67,7 @@
 <script>
 import AppTextarea from "@/ui-kit/AppTextarea";
 import S3ImageUpload from "./S3ImageUpload";
-import { REQUEST_STATE, createSlugFromServer } from "@/utils/helpers";
+import { REQUEST_STATE, generateSlugFromServer } from "@/utils/helpers";
 import {
   vuexFormGetValue,
   vuexFormGetError,
@@ -113,11 +113,20 @@ export default {
       vuexFormSetValue(FORM_ID, "teaser", event);
     },
     onSlugChange(value) {
-      createSlugFromServer(this.$route.params.blogId, value).then(response => {
+      if (value.length === 0) {
+        return;
+      }
+      generateSlugFromServer({
+        blogId: this.$route.params.blogId,
+        source: value,
+      }).then(response => {
         const slug = response.slug;
         vuexFormSetValue(FORM_ID, "slug", slug);
-        if (response.alreadyExists.status === true) {
-          const slugError = `This slug is already used by this post: ${response.alreadyExists.post.title}`;
+        if (
+          response.alreadyExists === true &&
+          response.usedByPost._id !== this.$route.params.postId
+        ) {
+          const slugError = `This slug is already used by this post: ${response.usedByPost.title}`;
           vuexFormSetError(FORM_ID, "slug", slugError);
         } else {
           vuexFormSetError(FORM_ID, "slug", null);

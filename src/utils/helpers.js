@@ -106,7 +106,7 @@ export function createSlug(value, options = {}) {
   });
 }
 
-export function createSlugFromServer(blogId, source) {
+export function generateSlugFromServer({ blogId, source }) {
   return apolloClient
     .mutate({
       variables: {
@@ -114,23 +114,22 @@ export function createSlugFromServer(blogId, source) {
         source,
       },
       mutation: gql`
-        mutation createBlogPostSlug($source: String!, $blogId: ID!) {
-          createBlogPostSlug(blogId: $blogId, source: $source) {
+        mutation generateBlogPostSlug($source: String!, $blogId: ID!) {
+          generateBlogPostSlug(blogId: $blogId, source: $source) {
             source
             slug
-            alreadyExists {
-              status
-              post {
-                slug
-                title
-              }
+            alreadyExists
+            usedByPost {
+              _id
+              slug
+              title
             }
           }
         }
       `,
     })
     .then(response => {
-      return response.data.createBlogPostSlug;
+      return response.data.generateBlogPostSlug;
     });
 }
 
