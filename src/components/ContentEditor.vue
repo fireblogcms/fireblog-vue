@@ -26,6 +26,11 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      changed: false
+    }
+  },
   mounted() {
     Editor.create(this.$refs.editor, {
       codeBlock: {
@@ -44,10 +49,6 @@ export default {
           { language: "xml", label: "HTML/XML" },
           { language: "java", label: "Java" },
         ],
-      },
-      image: {
-        // You need to configure the image toolbar, too, so it uses the new style buttons.
-        toolbar: ["imageTextAlternative"],
       },
       heading: {
         options: [
@@ -87,7 +88,9 @@ export default {
           if (this.operation === "create" && editor.getData().length === 0) {
             return;
           }
-          return this.autosave();
+          if (this.changed) {
+            return this.autosave();
+          }
         },
       },
       mediaEmbed: {
@@ -115,6 +118,7 @@ export default {
       this.$emit("editorReady", editor);
 
       editor.model.document.on("change:data", (eventInfo, data) => {
+        this.changed = true;
         this.$emit("change", editor.getData());
       });
 
