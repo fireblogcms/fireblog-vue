@@ -236,11 +236,11 @@ import {
   REQUEST_STATE,
   getUser,
   getBlog,
-  createSlug,
   ckeditorIframelyMediaProvider,
   validateSlug,
   toast,
   formatDate,
+  createSlugFromServer,
 } from "@/utils/helpers";
 import {
   vuexFormInit,
@@ -587,11 +587,12 @@ export default {
         this.showMediaCurrentlyLoadingModal();
       } else {
         if (vuexFormGetValue(FORM_ID, "slug").trim().length === 0) {
-          vuexFormSetValue(
-            FORM_ID,
-            "slug",
-            createSlug(vuexFormGetValue(FORM_ID, "title"))
-          );
+          createSlugFromServer(
+            this.$route.params.blogId,
+            vuexFormGetValue(FORM_ID, "title").trim()
+          ).then(response => {
+            vuexFormSetValue(FORM_ID, "slug", response.slug);
+          });
         }
         // if post is published or has been published once, we lock slug field by default.
         // if "publishedAt" is not null, we know the post has been published or is published.

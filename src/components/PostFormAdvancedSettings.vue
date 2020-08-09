@@ -67,42 +67,18 @@
 <script>
 import AppTextarea from "@/ui-kit/AppTextarea";
 import S3ImageUpload from "./S3ImageUpload";
-import { REQUEST_STATE } from "@/utils/helpers";
+import { REQUEST_STATE, createSlugFromServer } from "@/utils/helpers";
 import {
   vuexFormGetValue,
   vuexFormGetError,
   vuexFormSetValue,
+  vuexFormSetError,
 } from "@/utils/vuexForm";
 import SlugField from "./SlugField";
 import PreviewGoogleResult from "./PreviewGoogleResult";
 import apolloClient from "@/utils/apolloClient";
-import gql from "graphql-tag";
 
 const FORM_ID = "postForm";
-
-function createSlugFromServer(blogId, source) {
-  return apolloClient.mutate({
-    variables: {
-      blogId,
-      source,
-    },
-    mutation: gql`
-      mutation createBlogPostSlug($source: String!, $blogId: ID!) {
-        createBlogPostSlug(blogId: $blogId, source: $source) {
-          source
-          slug
-          alreadyExists {
-            status
-            post {
-              slug
-              title
-            }
-          }
-        }
-      }
-    `,
-  });
-}
 
 export default {
   components: {
@@ -137,13 +113,14 @@ export default {
       vuexFormSetValue(FORM_ID, "teaser", event);
     },
     onSlugChange(value) {
-      alert(value);
-      createSlugFromServer(this.$route.params.blogId, value).then(r => {
-        const slugFromServer = r.data.createBlogPostSlug;
-        const slug = slugFromServer.slug;
+      createSlugFromServer(this.$route.params.blogId, value).then(response => {
+        const slug = response.slug;
         vuexFormSetValue(FORM_ID, "slug", slug);
-        if (slugFromServer.alreadyExists.status === true) {
-          this.error = `This slug is already used by this post: ${slugFromServer.alreadyExists.post.title}`;
+        if (response.alreadyExists.status === true) {
+          const slugError = `This slug is already used by this post: ${response.alreadyExists.post.title}`;
+          vuexFormSetError(FORM_ID, "slug", slugError);
+        } else {
+          vuexFormSetError(FORM_ID, "slug", null);
         }
       });
     },

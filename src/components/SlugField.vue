@@ -59,7 +59,6 @@ import AppButton from "@/ui-kit/AppButton";
 import AppFieldText from "@/ui-kit/AppFieldText";
 import AppModal from "@/ui-kit/AppModal";
 import i18n from "@/i18n";
-import { createSlug } from "@/utils/helpers";
 
 export default {
   components: {
@@ -71,6 +70,10 @@ export default {
     value: {
       type: String,
       required: true,
+    },
+    error: {
+      type: String,
+      default: null,
     },
     placeholder: {
       type: String,
@@ -99,7 +102,6 @@ export default {
   data() {
     return {
       slug: this.value,
-      error: null,
     };
   },
   beforeUpdate() {
