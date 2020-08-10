@@ -12,7 +12,7 @@
 
     <AppLoader v-if="viewDataLoading" />
 
-    <template v-if="!viewDataLoading">
+    <template v-if="viewData">
       <div class="container mx-auto my-10">
         <div class="flex flex-col md:flex-row justify-between">
           <div class="flex-1 flex items-center mb-8 md:mb-0">
@@ -250,7 +250,7 @@ export default {
   methods: {
     fetchData() {
       this.viewDataLoading = true;
-      viewDataQuery()
+      viewDataQuery({ blogId: this.$route.params.blogId })
         .then(r => {
           this.viewData = r.data;
           this.isFirstPost =
@@ -311,19 +311,19 @@ export default {
   },
 };
 
-function viewDataQuery() {
+function viewDataQuery({ blogId }) {
   return apolloClient.query({
+    variables: {
+      blogId,
+    },
     query: gql`
-      query postListViewQuery {
-        blog(_id: "5f31564e013eec1186a1fe50") {
+      query postListViewQuery($blogId: ID!) {
+        blog(_id: $blogId) {
           _id
           name
           deletedAt
         }
-        allPosts: posts(
-          blog: "5f31564e013eec1186a1fe50"
-          filter: { status: [PUBLISHED, DRAFT] }
-        ) {
+        allPosts: posts(blog: $blogId, filter: { status: [PUBLISHED, DRAFT] }) {
           totalCount
           edges {
             node {
@@ -334,10 +334,7 @@ function viewDataQuery() {
             }
           }
         }
-        postsPublished: posts(
-          blog: "5f31564e013eec1186a1fe50"
-          filter: { status: PUBLISHED }
-        ) {
+        postsPublished: posts(blog: $blogId, filter: { status: PUBLISHED }) {
           totalCount
           edges {
             node {
@@ -348,10 +345,7 @@ function viewDataQuery() {
             }
           }
         }
-        postsDraft: posts(
-          blog: "5f31564e013eec1186a1fe50"
-          filter: { status: DRAFT }
-        ) {
+        postsDraft: posts(blog: $blogId, filter: { status: DRAFT }) {
           totalCount
           edges {
             node {
