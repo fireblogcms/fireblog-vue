@@ -1,5 +1,6 @@
 <template>
   <div class="min-h-10 flex flex-col">
+    <!--
     <div v-if="postsRequestState === 'PENDING'">
       <div
         class="px-8 py-4 md:py-6 border-b border-gray-300 last:border-b-0"
@@ -20,8 +21,9 @@
         </ContentLoader>
       </div>
     </div>
+    -->
     <div
-      v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length === 0"
+      v-if="posts.edges.length === 0"
       class="flex-1 flex items-center justify-center"
     >
       <p class="text-center text-xl">
@@ -29,9 +31,7 @@
       </p>
     </div>
 
-    <template
-      v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length > 0"
-    >
+    <template v-if="posts.edges.length > 0">
       <div
         class="py-4 md:py-6 flex flex-col md:flex-row cursor-pointer border-b border-gray-300 last:border-b-0"
         v-for="post in posts.edges"
@@ -108,10 +108,6 @@ export default {
   props: {
     posts: {
       type: Object,
-      required: true,
-    },
-    postsRequestState: {
-      type: String,
       required: true,
     },
   },
