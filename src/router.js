@@ -42,16 +42,11 @@ const router = new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: "/legacy/blogs",
-      name: "blogList",
-      component: BlogListView,
-    },
-    {
       path: "/",
       name: "blogSetList",
       component: BlogSetListView,
     },
-    // used for e2e:test
+    // DOT NOT REMOVE: used for e2e:test
     {
       path: "/test",
       name: "test",
@@ -82,7 +77,7 @@ const router = new Router({
       component: BlogCreateView,
     },
     {
-      path: "/blog/:blogId",
+      path: "/blogset/:blogSetId/blog/:blogId",
       name: "postList",
       component: PostListView,
     },
@@ -92,12 +87,12 @@ const router = new Router({
       component: BlogSettingsView,
     },
     {
-      path: "/blog/:blogId/post/create",
+      path: "/blogset/:blogSetId/blog/:blogId/post/create",
       name: "postCreate",
       component: PostFormView,
     },
     {
-      path: "/blog/:blogId/post/:postId",
+      path: "/blogset/:blogSetId/blog/:blogId/post/:postId",
       name: "postUpdate",
       component: PostFormView,
     },

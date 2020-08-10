@@ -4,7 +4,7 @@
     <portal to="topbar-left">
       <AppBreadcrumb
         image="/images/books.png"
-        link="blogSetList"
+        :routerOptions="{ name: 'blogSetList' }"
         :name="$t('views.postList.backToBlogLink')"
       />
     </portal>
@@ -42,7 +42,10 @@
               @click="
                 $router.push({
                   name: 'postCreate',
-                  params: { blogId: $route.params.blogId },
+                  params: {
+                    blogId: $route.params.blogId,
+                    blogSetId: $route.params.blogSetId,
+                  },
                 })
               "
             >

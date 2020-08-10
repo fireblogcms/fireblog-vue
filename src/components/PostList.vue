@@ -40,6 +40,7 @@
           $router.push({
             name: 'postUpdate',
             params: {
+              blogSetId: $route.params.blogSetId,
               blogId: $route.params.blogId,
               postId: post.node._id,
             },

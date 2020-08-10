@@ -43,6 +43,10 @@ export default {
     PlanInformations,
   },
   props: {
+    blogSet: {
+      type: Object,
+      required: true,
+    },
     blog: {
       type: Object,
       required: true,
@@ -56,6 +60,7 @@ export default {
       this.$router.push({
         name: "postList",
         params: {
+          blogSetId: this.blogSet._id,
           blogId: blog._id,
         },
       });

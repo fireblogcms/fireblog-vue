@@ -4,7 +4,7 @@
     <portal to="topbar-left">
       <AppBreadcrumb
         image="/images/books.png"
-        link="blogSetList"
+        :routerOptions="{ name: 'blogSetList' }"
         :name="$t('views.postList.backToBlogLink')"
       />
     </portal>

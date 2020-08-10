@@ -48,6 +48,7 @@
 
             <BlogCard
               v-for="blog in blogSet.blogs"
+              :blogSet="blogSet"
               :blog="blog"
               :key="blog._id"
               class="w-full md:w-3/5 mb-16"
