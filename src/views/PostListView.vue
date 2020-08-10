@@ -27,7 +27,10 @@
               @click="
                 $router.push({
                   name: 'blogSettings',
-                  params: { blogId: $route.params.blogId },
+                  params: {
+                    blogSetId: $route.params.blogSetId,
+                    blogId: $route.params.blogId,
+                  },
                 })
               "
             >

@@ -82,7 +82,7 @@ const router = new Router({
       component: PostListView,
     },
     {
-      path: "/blog/:blogId/settings",
+      path: "/blogset/:blogSetId/blog/:blogId/settings",
       name: "blogSettings",
       component: BlogSettingsView,
     },
