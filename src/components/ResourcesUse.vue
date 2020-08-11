@@ -72,10 +72,10 @@
 import { REQUEST_STATE } from "@/utils/helpers";
 import apolloClient from "@/utils/apolloClient";
 import { getBlogResourcesUseQuery } from "@/utils/queries";
-import { getBlog } from "@/utils/helpers";
+
 export default {
   props: {
-    blogId: {
+    blogSetId: {
       type: String,
       required: true,
     },
@@ -92,7 +92,6 @@ export default {
     return {
       error: null,
       initDataState: REQUEST_STATE.NOT_STARTED,
-      blog: null,
       countPercentage: 0,
       sizePercentage: 0,
     };
@@ -103,7 +102,6 @@ export default {
   methods: {
     async initData() {
       this.initDataState = REQUEST_STATE.PENDING;
-      this.blog = await getBlog(this.blogId);
       // get stats for current month
       var date = new Date();
       var from = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -112,7 +110,7 @@ export default {
         .query({
           query: getBlogResourcesUseQuery,
           variables: {
-            blog: this.blogId,
+            blogSet: this.blogSetId,
             from,
             to,
           },

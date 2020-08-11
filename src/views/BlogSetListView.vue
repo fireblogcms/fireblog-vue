@@ -2,10 +2,7 @@
   <DefaultLayout>
     <div class="container mx-auto my-10">
       <template v-if="viewData">
-        <div
-          v-for="blogSet in viewData.blogSets"
-          :key="blogSet._id"
-        >
+        <div v-for="blogSet in viewData.blogSets" :key="blogSet._id">
           <div class="flex flex-col md:flex-row justify-between mb-20">
             <div class="flex mb-8 md:mb-0">
               <img class="w-16 h-16 mr-10" src="/images/books.png" />
@@ -13,7 +10,10 @@
                 <h1 class="text-3xl md:text-4xl font-bold uppercase mb-2">
                   {{ $t("views.blogSetList.title", { user: blogSet.name }) }}
                 </h1>
-                <PlanInformations :blog="blogSet.blogs[0]" class="mb-8 md:mb-0" />
+                <PlanInformations
+                  :blog="blogSet.blogs[0]"
+                  class="mb-8 md:mb-0"
+                />
               </div>
             </div>
             <AppButton
@@ -22,7 +22,7 @@
               @click="
                 $router.push({
                   name: 'blogCreate',
-                  params: { blogSetId: blogSet._id }
+                  params: { blogSetId: blogSet._id },
                 })
               "
             >
@@ -71,7 +71,7 @@ export default {
     BlogCard,
     ContentLoader,
     AppButton,
-    PlanInformations
+    PlanInformations,
   },
   data() {
     return {
@@ -93,9 +93,10 @@ function viewData() {
           _id
           name
           blogs {
+            _id
+            blogSet
             name
             status
-            _id
             image
             description
             name

@@ -12,16 +12,18 @@
       </span>
     </div>
     <ResourcesUse
-      :blogId="blog._id"
+      :blogSetId="blog.blogSet"
       :callsPerMonth="plan.metadata.API_CALLS_MONTH"
       :sizePerMonth="plan.metadata.STORAGE_GB"
     />
     <span
       class="ml-6 text-primary font-bold cursor-pointer"
-      @click="$router.push({
-        name: 'plans',
-        params: { blogId: blog._id }
-      })"
+      @click="
+        $router.push({
+          name: 'plans',
+          params: { blogId: blog._id },
+        })
+      "
     >
       <template v-if="!blog.subscription.trialEnd">
         {{ $t("global.changePlanButton") }}

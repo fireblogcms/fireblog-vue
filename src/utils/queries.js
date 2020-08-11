@@ -46,6 +46,7 @@ export const PostListFragment = gql`
 export const FullBlogFragment = gql`
   fragment FullBlogFragment on Blog {
     _id
+    blogSet
     image
     contentDefaultLocale
     description
@@ -220,8 +221,12 @@ export const deleteBlogMutation = gql`
  * We need to know if this is the first post for this blog.
  */
 export const getBlogResourcesUseQuery = gql`
-  query getBlogResourcesUseQuery($blog: ID!, $from: DateTime!, $to: DateTime!) {
-    resourcesUse(blog: $blog, from: $from, to: $to) {
+  query getBlogResourcesUseQuery(
+    $blogSet: ID!
+    $from: DateTime!
+    $to: DateTime!
+  ) {
+    resourcesUse(blogSet: $blogSet, from: $from, to: $to) {
       count
       size
     }
