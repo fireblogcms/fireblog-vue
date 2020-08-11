@@ -1,22 +1,35 @@
 <template>
-  <div>
-    <div class="mb-2 text-center font-bold">
-      <p v-if="plan">
+  <div class="flex flex-col md:flex-row items-center" v-if="plan">
+    <div class="text-center font-bold">
+      <span>
         {{ $t("components.planInformations.name") }}
         {{ plan.productName }}
-      </p>
-      <p v-if="blog.subscription.trialEnd">
+      </span>
+      <span v-if="blog.subscription.trialEnd">
         ({{ $t("components.planInformations.freeTrial") }}
         {{ numberDaysLeftTrial }}
         {{ $t("components.planInformations.daysLeftTrial") }})
-      </p>
+      </span>
     </div>
     <ResourcesUse
-      v-if="plan"
       :blogId="blog._id"
       :callsPerMonth="plan.metadata.API_CALLS_MONTH"
       :sizePerMonth="plan.metadata.STORAGE_GB"
     />
+    <span
+      class="ml-6 text-primary font-bold cursor-pointer"
+      @click="$router.push({
+        name: 'plans',
+        params: { blogId: blog._id }
+      })"
+    >
+      <template v-if="!blog.subscription.trialEnd">
+        {{ $t("global.changePlanButton") }}
+      </template>
+      <template v-if="blog.subscription.trialEnd">
+        {{ $t("global.subscribeButton") }}
+      </template>
+    </span>
   </div>
 </template>
 

@@ -6,39 +6,28 @@
           v-for="blogSet in viewData.blogSets"
           :key="blogSet._id"
         >
-          <div class="flex flex-col md:flex-row items-center justify-between mb-16">
-            <div class="flex items-center mb-8 md:mb-0">
+          <div class="flex flex-col md:flex-row justify-between mb-20">
+            <div class="flex mb-8 md:mb-0">
               <img class="w-16 h-16 mr-10" src="/images/books.png" />
-              <h1 class="text-3xl md:text-5xl font-bold uppercase">
-                <h2 class="text-4xl font-bold mt-5 mb-6 mr-5">
+              <div>
+                <h1 class="text-3xl md:text-4xl font-bold uppercase mb-2">
                   {{ $t("views.blogSetList.title", { user: blogSet.name }) }}
-                </h2>
-              </h1>
+                </h1>
+                <PlanInformations :blog="blogSet.blogs[0]" class="mb-8 md:mb-0" />
+              </div>
             </div>
-            <PlanInformations :blog="blogSet.blogs[0]" class="mb-8 md:mb-0" />
-            <div class="flex flex-col items-center">
-              <AppButton
-                color="primary"
-                class="mb-2"
-                @click="
-                  $router.push({
-                    name: 'blogCreate',
-                    params: { blogSetId: blogSet._id }
-                  })
-                "
-              >
-                {{ $t("views.blogList.createNewBlogButton").toUpperCase() }}
-              </AppButton>
-              <AppButton
-                color="primary-outlined"
-                @click="$router.push({
-                  name: 'plans',
-                  params: { blogId: blogSet.blogs[0]._id }
-                })"
-              >
-                {{ $t("global.subscribeButton").toUpperCase() }}
-              </AppButton>
-            </div>
+            <AppButton
+              color="primary"
+              class="mb-2"
+              @click="
+                $router.push({
+                  name: 'blogCreate',
+                  params: { blogSetId: blogSet._id }
+                })
+              "
+            >
+              {{ $t("views.blogList.createNewBlogButton").toUpperCase() }}
+            </AppButton>
           </div>
           <div
             v-if="blogSet.blogs.length > 0"

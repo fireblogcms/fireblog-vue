@@ -1,8 +1,8 @@
 <template>
   <div>
-    <template v-if="initDataState === 'FINISHED_OK'">
+    <div class="flex" v-if="initDataState === 'FINISHED_OK'">
       <div class="flex items-center">
-        <div class="flex w-8 h-8 mr-3">
+        <div class="flex w-8 h-8 ml-5 mr-3">
           <div class="w-full">
             <svg viewBox="0 0 36 36">
               <path
@@ -32,8 +32,8 @@
           {{ $t("views.plans.apiCalls") }}</span
         >
       </div>
-      <div class="flex items-center mt-2">
-        <div class="flex w-8 h-8 mr-3">
+      <div class="flex items-center">
+        <div class="flex w-8 h-8 ml-5 mr-3">
           <div class="w-full">
             <svg viewBox="0 0 36 36">
               <path
@@ -64,7 +64,7 @@
           {{ $t("views.plans.storage") }}
         </span>
       </div>
-    </template>
+    </div>
   </div>
 </template>
 
