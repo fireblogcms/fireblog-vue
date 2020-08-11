@@ -45,6 +45,7 @@ export default {
   "views.blogCreate.fields.title.help": "Ce nom apparaîtra dans les résultats des moteurs de recherche ou lors du partage du lien de votre blog sur les réseaux sociaux.",
   "views.blogCreate.fields.title.required": "Le nom est requis",
   "views.blogCreate.gladToSeeYouHere": "Ravi de vous voir ici",
+  "views.blogSetList.title": "Blogs de {user}",
   "views.blogList.createNewBlogButton": "Nouveau blog",
   "views.blogList.title": "Mes blogs",
   "views.blogList.settingsButton": "Réglages",

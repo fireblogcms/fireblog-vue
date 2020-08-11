@@ -1,11 +1,7 @@
 <template>
   <div class="bg-white shadow-md rounded-lg overflow-hidden">
     <div class="h-320 bg-cover bg-center" :style="background" v-if="image">
-      <slot name="header" />
-    </div>
-    <slot />
-    <div class="p-6">
-      <slot name="content" />
+      <slot />
     </div>
   </div>
 </template>

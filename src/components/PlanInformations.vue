@@ -1,14 +1,16 @@
 <template>
   <div>
-    <p class="mb-4 font-bold" v-if="plan">
-      {{ $t("components.planInformations.name") }}
-      {{ plan.productName }}
-      <template v-if="blog.subscription.trialEnd">
+    <div class="mb-2 text-center font-bold">
+      <p v-if="plan">
+        {{ $t("components.planInformations.name") }}
+        {{ plan.productName }}
+      </p>
+      <p v-if="blog.subscription.trialEnd">
         ({{ $t("components.planInformations.freeTrial") }}
         {{ numberDaysLeftTrial }}
         {{ $t("components.planInformations.daysLeftTrial") }})
-      </template>
-    </p>
+      </p>
+    </div>
     <ResourcesUse
       v-if="plan"
       :blogId="blog._id"

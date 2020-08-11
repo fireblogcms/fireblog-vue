@@ -2,7 +2,7 @@
   <div>
     <template v-if="initDataState === 'FINISHED_OK'">
       <div class="flex items-center">
-        <div class="flex w-10 h-10 mr-5">
+        <div class="flex w-8 h-8 mr-3">
           <div class="w-full">
             <svg viewBox="0 0 36 36">
               <path
@@ -33,7 +33,7 @@
         >
       </div>
       <div class="flex items-center mt-2">
-        <div class="flex w-10 h-10 mr-5">
+        <div class="flex w-8 h-8 mr-3">
           <div class="w-full">
             <svg viewBox="0 0 36 36">
               <path

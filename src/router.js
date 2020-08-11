@@ -1,12 +1,14 @@
 import Vue from "vue";
 import Router from "vue-router";
 import { auth0Client } from "./utils/auth";
+
 const PostFormView = () =>
   import(/* webpackChunkName: "PostFormView" */ "./views/PostFormView");
 const ProfileView = () =>
   import(/* webpackChunkName: "ProfileView" */ "./views/ProfileView");
 const BlogCreateView = () =>
   import(/* webpackChunkName: "BlogCreateView" */ "./views/BlogCreateView");
+// BlogListView not used anymore because only one blogset possible for now.
 const BlogListView = () =>
   import(/* webpackChunkName: "BlogListView" */ "./views/BlogListView");
 const BlogSetListView = () =>
