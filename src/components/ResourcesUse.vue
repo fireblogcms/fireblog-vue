@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="flex" v-if="initDataState === 'FINISHED_OK'">
-      <div class="flex items-center">
-        <div class="flex w-8 h-8 ml-5 mr-3">
+    <div class="flex flex-col md:flex-row" v-if="initDataState === 'FINISHED_OK'">
+      <div class="flex items-center mt-2 md:mt-0">
+        <div class="flex w-8 h-8 md:ml-5 mr-3">
           <div class="w-full">
             <svg viewBox="0 0 36 36">
               <path
@@ -32,8 +32,8 @@
           {{ $t("views.plans.apiCalls") }}</span
         >
       </div>
-      <div class="flex items-center">
-        <div class="flex w-8 h-8 ml-5 mr-3">
+      <div class="flex items-center my-2 md:my-0">
+        <div class="flex w-8 h-8 md:ml-5 mr-3">
           <div class="w-full">
             <svg viewBox="0 0 36 36">
               <path

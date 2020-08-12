@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-col md:flex-row items-center" v-if="plan">
-    <div class="text-center font-bold">
+  <div class="flex flex-col md:flex-row md:items-center" v-if="plan">
+    <div class="font-bold">
       <span>
         {{ $t("components.planInformations.name") }}
         {{ plan.productName }}
@@ -17,7 +17,7 @@
       :sizePerMonth="plan.metadata.STORAGE_GB"
     />
     <span
-      class="ml-6 text-primary font-bold cursor-pointer"
+      class="md:ml-6 text-primary font-bold cursor-pointer"
       @click="
         $router.push({
           name: 'plans',
