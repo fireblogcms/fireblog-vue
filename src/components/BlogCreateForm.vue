@@ -1,7 +1,7 @@
 <template>
   <div class="text-center">
     <!-- special text if this is the very first blog :) -->
-    <p v-if="isMyFirstBlog && user" class="mb-12 text-3xl font-bold">
+    <p v-if="isFirstBlog && user" class="mb-12 text-3xl font-bold">
       {{ $t("views.blogCreate.gladToSeeYouHere") }}, {{ user.name }} 🤗
     </p>
 
@@ -30,7 +30,7 @@
 
     <div class="flex flex-col md:flex-row items-center justify-center">
       <AppButton
-        v-if="!isMyFirstBlog"
+        v-if="!isFirstBlog"
         class="mb-4 md:mb-0 mx-4"
         @click="$router.push('/')"
       >
@@ -69,7 +69,7 @@ export default {
     AppTextarea,
   },
   props: {
-    isMyFirstBlog: {
+    isFirstBlog: {
       type: Boolean,
     },
   },

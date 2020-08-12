@@ -96,14 +96,12 @@
 
 <script>
 import AppButton from "@/ui-kit/AppButton";
-// import { ContentLoader } from "vue-content-loader";
 import striptags from "striptags";
 import { formatDate } from "@/utils/helpers";
 
 export default {
   components: {
     AppButton,
-    // ContentLoader,
   },
   props: {
     posts: {

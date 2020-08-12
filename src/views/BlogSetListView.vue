@@ -1,7 +1,10 @@
 <template>
   <DefaultLayout>
-    <div class="container mx-auto my-10">
-      <template v-if="viewData">
+    <template v-if="viewData">
+      <AppPanel v-if="viewData.blogSets[0].blogs.length === 0">
+        <BlogCreateForm :isFirstBlog="true" />
+      </AppPanel>
+      <div class="container mx-auto my-10" v-if="viewData.blogSets[0].blogs.length > 0">
         <div v-for="blogSet in viewData.blogSets" :key="blogSet._id">
           <div class="flex flex-col md:flex-row justify-between items-center md:items-start mb-20">
             <div class="flex mb-8 md:mb-0">
@@ -42,12 +45,15 @@
             />
           </div>
         </div>
-      </template>
-      <template v-if="!viewData">
-        <ContentLoader height="200" class="md:w-3/5 mx-auto">
-          <rect x="0" y="0" rx="3" ry="3" height="100%" />
-        </ContentLoader>
-      </template>
+      </div>
+    </template>
+    <div class="container mx-auto my-10" v-if="!viewData">
+      <ContentLoader height="160" class="md:w-3/5 mx-auto mb-16">
+        <rect x="0" y="0" rx="3" ry="3" height="100%" />
+      </ContentLoader>
+      <ContentLoader height="160" class="md:w-3/5 mx-auto mb-16">
+        <rect x="0" y="0" rx="3" ry="3" height="100%" />
+      </ContentLoader>
     </div>
   </DefaultLayout>
 </template>
@@ -67,6 +73,8 @@ import { getMyBlogs } from "@/utils/helpers";
 
 export default {
   components: {
+    AppPanel,
+    BlogCreateForm,
     DefaultLayout,
     BlogCard,
     ContentLoader,
@@ -79,10 +87,10 @@ export default {
     };
   },
   created() {
-    viewData().then(r => {
-      this.viewData = r.data;
+    viewData().then(response => {
+      this.viewData = response.data;
     });
-  },
+  }
 };
 
 function viewData() {

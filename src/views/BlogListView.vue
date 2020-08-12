@@ -9,7 +9,7 @@
       "
     >
       <AppPanel>
-        <BlogCreateForm :isMyFirstBlog="true" />
+        <BlogCreateForm :isFirstBlog="true" />
       </AppPanel>
     </template>
     <!-- else, display the blog list -->
