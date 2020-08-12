@@ -99,7 +99,7 @@ const router = new Router({
       component: PostFormView,
     },
     {
-      path: "/blog/:blogId/plans",
+      path: "/blogset/:blogSetId/plans",
       name: "plans",
       component: PlansView,
     },

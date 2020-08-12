@@ -238,7 +238,7 @@ export const createStripeCheckoutSessionMutation = gql`
     $userEmail: String!
     $userId: ID
     $customerId: ID
-    $blogId: ID!
+    $blogSetId: ID!
     $planId: ID!
     $successUrl: String!
     $cancelUrl: String!
@@ -247,7 +247,7 @@ export const createStripeCheckoutSessionMutation = gql`
       userEmail: $userEmail
       userId: $userId
       customerId: $customerId
-      blogId: $blogId
+      blogSetId: $blogSetId
       planId: $planId
       successUrl: $successUrl
       cancelUrl: $cancelUrl

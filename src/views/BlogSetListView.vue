@@ -13,10 +13,23 @@
                 <h1 class="text-xl md:text-4xl font-bold uppercase mb-2">
                   {{ $t("views.blogSetList.title", { user: blogSet.name }) }}
                 </h1>
-                <PlanInformations
-                  :blog="blogSet.blogs[0]"
-                  class="mb-8 md:mb-0"
-                />
+                <div class="flex flex-col md:flex-row md:items-center mb-8 md:mb-0">
+                  <PlanInformations :blog="blogSet.blogs[0]" />
+                  <router-link
+                    class="md:ml-6 text-primary font-bold"
+                    :to="{
+                      name: 'plans',
+                      params: { blogSetId: blogSet._id },
+                    }"
+                  >
+                    <template v-if="!blogSet.blogs[0].subscription.trialEnd">
+                      {{ $t("global.changePlanButton") }}
+                    </template>
+                    <template v-if="blogSet.blogs[0].subscription.trialEnd">
+                      {{ $t("global.subscribeButton") }}
+                    </template>
+                  </router-link>
+                </div>
               </div>
             </div>
             <AppButton

@@ -192,10 +192,10 @@ export default {
           ...(user.customerId && {
             customerId: user.customerId,
           }),
-          blogId: this.$route.params.blogId,
+          blogSetId: this.$route.params.blogSetId,
           planId: plan.id,
-          successUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}`,
-          cancelUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}/plans`,
+          successUrl: `${process.env.VUE_APP_BASE_URL}`,
+          cancelUrl: `${process.env.VUE_APP_BASE_URL}/blogset/${this.$route.params.blogSetId}/plans`,
         });
         stripe
           .redirectToCheckout({
