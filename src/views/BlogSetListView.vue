@@ -7,29 +7,13 @@
       <div class="container mx-auto my-10" v-if="viewData.blogSets[0].blogs.length > 0">
         <div v-for="blogSet in viewData.blogSets" :key="blogSet._id">
           <div class="flex flex-col md:flex-row justify-between items-center md:items-start mb-20">
-            <div class="flex mb-8 md:mb-0">
+            <div class="flex mb-12 md:mb-0">
               <img class="w-8 h-8 mr-4 md:w-16 md:h-16 md:mr-10" src="/images/books.png" />
               <div>
                 <h1 class="text-xl md:text-4xl font-bold uppercase mb-2">
                   {{ $t("views.blogSetList.title", { user: blogSet.name }) }}
                 </h1>
-                <div class="flex flex-col md:flex-row md:items-center mb-8 md:mb-0">
-                  <PlanInformations :blog="blogSet.blogs[0]" />
-                  <router-link
-                    class="md:ml-6 text-primary font-bold"
-                    :to="{
-                      name: 'plans',
-                      params: { blogSetId: blogSet._id },
-                    }"
-                  >
-                    <template v-if="!blogSet.blogs[0].subscription.trialEnd">
-                      {{ $t("global.changePlanButton") }}
-                    </template>
-                    <template v-if="blogSet.blogs[0].subscription.trialEnd">
-                      {{ $t("global.subscribeButton") }}
-                    </template>
-                  </router-link>
-                </div>
+                <PlanInformations :blog="blogSet.blogs[0]" />
               </div>
             </div>
             <AppButton

@@ -1,21 +1,37 @@
 <template>
   <div class="flex flex-col md:flex-row md:items-center" v-if="plan">
-    <div class="font-bold">
-      <span>
-        {{ $t("components.planInformations.name") }}
-        {{ plan.productName }}
-      </span>
-      <span v-if="blog.subscription.trialEnd">
-        ({{ $t("components.planInformations.freeTrial") }}
-        {{ numberDaysLeftTrial }}
-        {{ $t("components.planInformations.daysLeftTrial") }})
-      </span>
-    </div>
     <ResourcesUse
       :blogSetId="blog.blogSet"
       :callsPerMonth="plan.metadata.API_CALLS_MONTH"
       :sizePerMonth="plan.metadata.STORAGE_GB"
     />
+    <div class="flex flex-col mt-2 md:mt-0 md:ml-10">
+      <div class="font-bold mb-1 md:mb-3">
+        <span>
+          {{ $t("components.planInformations.name") }}
+          {{ plan.productName }}
+        </span>
+        <span v-if="blog.subscription.trialEnd">
+          ({{ $t("components.planInformations.freeTrial") }}
+          {{ numberDaysLeftTrial }}
+          {{ $t("components.planInformations.daysLeftTrial") }})
+        </span>
+      </div>
+      <router-link
+        class="text-primary font-bold"
+        :to="{
+          name: 'plans',
+          params: { blogSetId: blog.blogSet },
+        }"
+      >
+        <template v-if="!blog.subscription.trialEnd">
+          {{ $t("global.changePlanButton") }}
+        </template>
+        <template v-if="blog.subscription.trialEnd">
+          {{ $t("global.subscribeButton") }}
+        </template>
+      </router-link>
+    </div>
   </div>
 </template>
 
@@ -41,6 +57,7 @@ export default {
   },
   mounted() {
     this.fetchData();
+    console.log(this.blog.subscription);
     if (this.blog.subscription.trialEnd) {
       this.numberDaysLeftTrial = Math.round(
         (new Date(this.blog.subscription.trialEnd) - new Date()) /

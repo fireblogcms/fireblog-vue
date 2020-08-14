@@ -257,18 +257,6 @@ export const createStripeCheckoutSessionMutation = gql`
   }
 `;
 
-export const getPlansQuery = gql`
-  query getPlansQuery {
-    plans {
-      id
-      amount
-      amountTaxes
-      metadata
-      productName
-    }
-  }
-`;
-
 export const getPlanQuery = gql`
   query getPlanQuery($planId: String) {
     plan(planId: $planId) {
