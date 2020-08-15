@@ -20,7 +20,7 @@ import gradient from "random-gradient";
 
 export default {
   components: {
-    AppCard
+    AppCard,
   },
   props: {
     blogSet: {
@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     cardBackground(blog) {
-      return blog.image || gradient(blog._id);
+      return blog.image.url || gradient(blog._id);
     },
     onCardImageClick(blog) {
       this.$router.push({
@@ -44,7 +44,7 @@ export default {
           blogId: blog._id,
         },
       });
-    }
+    },
   },
 };
 </script>

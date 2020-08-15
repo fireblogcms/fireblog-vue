@@ -4,11 +4,19 @@
       <AppPanel v-if="viewData.blogSets[0].blogs.length === 0">
         <BlogCreateForm :isFirstBlog="true" />
       </AppPanel>
-      <div class="container mx-auto my-10" v-if="viewData.blogSets[0].blogs.length > 0">
+      <div
+        class="container mx-auto my-10"
+        v-if="viewData.blogSets[0].blogs.length > 0"
+      >
         <div v-for="blogSet in viewData.blogSets" :key="blogSet._id">
-          <div class="flex flex-col md:flex-row justify-between items-center md:items-start mb-20">
+          <div
+            class="flex flex-col md:flex-row justify-between items-center md:items-start mb-20"
+          >
             <div class="flex mb-12 md:mb-0">
-              <img class="w-8 h-8 mr-4 md:w-16 md:h-16 md:mr-10" src="/images/books.png" />
+              <img
+                class="w-8 h-8 mr-4 md:w-16 md:h-16 md:mr-10"
+                src="/images/books.png"
+              />
               <div>
                 <h1 class="text-xl md:text-4xl font-bold uppercase mb-2">
                   {{ $t("views.blogSetList.title", { user: blogSet.name }) }}
@@ -87,7 +95,7 @@ export default {
     viewData().then(response => {
       this.viewData = response.data;
     });
-  }
+  },
 };
 
 function viewData() {
@@ -102,7 +110,10 @@ function viewData() {
             blogSet
             name
             status
-            image
+            image {
+              url
+              alt
+            }
             description
             name
             subscription {

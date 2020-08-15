@@ -47,7 +47,10 @@ export const FullBlogFragment = gql`
   fragment FullBlogFragment on Blog {
     _id
     blogSet
-    image
+    image {
+      url
+      alt
+    }
     contentDefaultLocale
     description
     name
@@ -58,7 +61,6 @@ export const FullBlogFragment = gql`
       planId
       trialEnd
     }
-    url
     webhooks {
       name
       onEvents
