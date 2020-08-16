@@ -81,7 +81,6 @@ export default {
 
     vuexFormInit(formId, {
       initialValues: {
-        url: this.blog.url ? this.blog.url : initialFormValues.url,
         staticBuildWebhooks: this.blog.webhooks
           ? this.blog.webhooks.map(v => v.url).join(",")
           : initialFormValues.webhooks,
