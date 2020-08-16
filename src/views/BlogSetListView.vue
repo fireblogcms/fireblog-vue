@@ -1,13 +1,12 @@
 <template>
   <DefaultLayout>
     <template v-if="viewData">
+      <!--
       <AppPanel v-if="viewData.blogSets[0].blogs.length === 0">
         <BlogCreateForm :isFirstBlog="true" />
       </AppPanel>
-      <div
-        class="container mx-auto my-10"
-        v-if="viewData.blogSets[0].blogs.length > 0"
-      >
+      -->
+      <div class="container mx-auto my-10">
         <div v-for="blogSet in viewData.blogSets" :key="blogSet._id">
           <div
             class="flex flex-col md:flex-row justify-between items-center md:items-start mb-20"
@@ -78,8 +77,6 @@ import { getMyBlogs } from "@/utils/helpers";
 
 export default {
   components: {
-    AppPanel,
-    BlogCreateForm,
     DefaultLayout,
     BlogCard,
     ContentLoader,
@@ -93,7 +90,15 @@ export default {
   },
   created() {
     viewData().then(response => {
-      this.viewData = response.data;
+      if (response.data.blogSets[0].blogs.length === 0) {
+        this.$router.replace({
+          name: "blogCreate",
+          params: { blogSetId: response.data.blogSets[0]._id },
+          query: { first: 1 },
+        });
+      } else {
+        this.viewData = response.data;
+      }
     });
   },
 };

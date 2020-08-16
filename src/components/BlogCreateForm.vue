@@ -68,13 +68,9 @@ export default {
     AppFieldText,
     AppTextarea,
   },
-  props: {
-    isFirstBlog: {
-      type: Boolean,
-    },
-  },
   data() {
     return {
+      isFirstBlog: false,
       errors: [],
       formErrors: {},
       savingBlogState: REQUEST_STATE.NOT_STARTED,
@@ -88,6 +84,8 @@ export default {
   },
   created() {
     this.initData();
+    console.log(" this.$route.query.first", this.$route.query.first);
+    this.isFirstBlog = this.$route.query.first === "1";
     this.generate = generate;
   },
   methods: {

@@ -257,7 +257,7 @@ export default {
             this.viewData.allPosts.totalCount === 0 ? true : false;
           this.viewDataLoading = false;
         })
-        .catch(e => {
+        .catch(error => {
           this.viewDataLoading = false;
           throw new Error(error);
         });
