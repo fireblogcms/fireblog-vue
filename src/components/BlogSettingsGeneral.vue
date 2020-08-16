@@ -48,7 +48,7 @@
         <S3ImageUpload
           :blogId="$route.params.blogId"
           @onUploadingStateChange="onUploadingStateChange"
-          :initialImage="vuexFormGetValue(formId, 'image')"
+          :initialImage="vuexFormGetValue(formId, 'image').url"
           @onUploaded="onUploaded"
         />
       </div>
