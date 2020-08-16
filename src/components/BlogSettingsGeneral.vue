@@ -48,7 +48,7 @@
         <S3ImageUpload
           :blogId="$route.params.blogId"
           @onUploadingStateChange="onUploadingStateChange"
-          :initialImage="vuexFormGetValue(formId, 'image').url"
+          :initialImage="vuexFormGetValue(formId, 'image')"
           @onUploaded="onUploaded"
         />
       </div>
@@ -86,11 +86,16 @@ import S3ImageUpload from "./S3ImageUpload";
 import { updateBlogMutation } from "@/utils/queries";
 
 const formId = "blogSettingsGeneral";
-const initialFormValues = {
-  name: "",
-  description: "",
-  image: null,
-};
+
+function initialFormValues(blog) {
+  const values = {
+    name: blog.name ? blog.name : "",
+    description: blog.description ? blog.description : "",
+    image: blog.image ? blog.image.url : null,
+  };
+  console.log("values", values);
+  return values;
+}
 
 export default {
   components: {
@@ -118,11 +123,7 @@ export default {
     this.vuexFormGetValue = vuexFormGetValue;
     this.vuexFormGetError = vuexFormGetError;
     vuexFormInit(formId, {
-      initialValues: {
-        name: this.blog.name ? this.blog.name : "",
-        description: this.blog.description ? this.blog.description : "",
-        image: this.blog.image ? this.blog.image : null,
-      },
+      initialValues: initialFormValues(this.blog),
     });
   },
   methods: {
@@ -130,6 +131,7 @@ export default {
       this.uploadBlogImageState = state;
     },
     onUploaded(fileUrl) {
+      console.log("fileUrl", fileUrl);
       vuexFormSetValue(formId, "image", fileUrl);
     },
     validateForm() {
