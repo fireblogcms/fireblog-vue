@@ -20,7 +20,7 @@
                 <h1 class="text-xl md:text-4xl font-bold uppercase mb-2">
                   {{ $t("views.blogSetList.title", { user: blogSet.name }) }}
                 </h1>
-                <PlanInformations :blog="blogSet.blogs[0]" />
+                <PlanInformations :blogSet="blogSet" />
               </div>
             </div>
             <AppButton
@@ -145,11 +145,11 @@ function viewData() {
             }
             description
             name
-            subscription {
-              id
-              planId
-              trialEnd
-            }
+          }
+          subscription {
+            id
+            planId
+            trialEnd
           }
         }
       }

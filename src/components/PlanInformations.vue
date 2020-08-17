@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col md:flex-row md:items-center" v-if="plan">
     <ResourcesUse
-      :blogSetId="blog.blogSet"
+      :blogSetId="blogSet._id"
       :callsPerMonth="plan.metadata.API_CALLS_MONTH"
       :sizePerMonth="plan.metadata.STORAGE_GB"
     />
@@ -11,7 +11,7 @@
           {{ $t("components.planInformations.name") }}
           {{ plan.productName }}
         </span>
-        <span v-if="blog.subscription.trialEnd">
+        <span v-if="blogSet.subscription.trialEnd">
           ({{ $t("components.planInformations.freeTrial") }}
           {{ numberDaysLeftTrial }}
           {{ $t("components.planInformations.daysLeftTrial") }})
@@ -21,13 +21,13 @@
         class="text-primary font-bold"
         :to="{
           name: 'plans',
-          params: { blogSetId: blog.blogSet },
+          params: { blogSetId: blogSet._id },
         }"
       >
-        <template v-if="!blog.subscription.trialEnd">
+        <template v-if="!blogSet.subscription.trialEnd">
           {{ $t("global.changePlanButton") }}
         </template>
-        <template v-if="blog.subscription.trialEnd">
+        <template v-if="blogSet.subscription.trialEnd">
           {{ $t("global.subscribeButton") }}
         </template>
       </router-link>
@@ -44,7 +44,7 @@ export default {
     ResourcesUse,
   },
   props: {
-    blog: {
+    blogSet: {
       type: Object,
       required: true,
     },
@@ -57,9 +57,9 @@ export default {
   },
   mounted() {
     this.fetchData();
-    if (this.blog.subscription.trialEnd) {
+    if (this.blogSet.subscription.trialEnd) {
       this.numberDaysLeftTrial = Math.round(
-        (new Date(this.blog.subscription.trialEnd) - new Date()) /
+        (new Date(this.blogSet.subscription.trialEnd) - new Date()) /
           (1000 * 60 * 60 * 24)
       );
       if (this.numberDaysLeftTrial < 0) {
@@ -69,7 +69,7 @@ export default {
   },
   methods: {
     async fetchData() {
-      this.plan = await getPlan(this.blog.subscription.planId);
+      this.plan = await getPlan(this.blogSet.subscription.planId);
     },
   },
 };
