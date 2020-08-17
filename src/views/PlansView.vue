@@ -234,7 +234,10 @@ export default {
           mutation: gql`
             mutation($blogSet: UpdateBlogSetInput!) {
               updateBlogSet(blogSet: $blogSet) {
-                subscription
+                subscription {
+                  id
+                  planId
+                }
               }
             }
           `
@@ -280,6 +283,7 @@ export default {
       .then(result => {
         this.blogSet = result.data.blogSet;
       });
+
       apolloClient
         .query({
           query: gql`
