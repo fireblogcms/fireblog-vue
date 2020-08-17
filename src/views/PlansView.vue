@@ -182,7 +182,6 @@ export default {
   },
   methods: {
     async onSubscribeClick(plan) {
-      console.log(plan);
       const user = await getUser();
       if (!this.blogSet.subscription.id) {
         this.subscribeRequest.state = REQUEST_STATE.PENDING;
@@ -243,6 +242,7 @@ export default {
           `
         })
         .then(() => {
+          this.$store.commit("modalShowing/close", "changePlanModal");
           this.$router
             .push({
               name: "blogSetList"

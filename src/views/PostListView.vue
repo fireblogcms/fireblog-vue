@@ -160,22 +160,6 @@
         </div>
       </div>
     </AppModal>
-
-    <!-- PAYMENT SUCCESS MODAL -->
-    <AppModal name="paymentSuccessModal">
-      <div class="text-4xl font-bold" slot="header">
-        {{ $t("views.postList.paymentSuccess") }}
-      </div>
-      <div class="flex flex-col items-center" slot="body">
-        <img
-          class="h-64 mb-10 rounded"
-          src="https://camo.githubusercontent.com/581d9802c9e5716113238cc2fcaf938bf2dad338/68747470733a2f2f6d656469612e67697068792e636f6d2f6d656469612f6248757134736355373255496f2f67697068792e676966"
-        />
-        <AppButton color="primary" @click="closePaymentSuccessModal">
-          {{ $t("global.okayButton") }}
-        </AppButton>
-      </div>
-    </AppModal>
   </DefaultLayout>
 </template>
 
@@ -270,9 +254,6 @@ export default {
      */
     closeDeletePostModal() {
       this.$store.commit("modalShowing/close", "deletePostModal");
-    },
-    closePaymentSuccessModal() {
-      this.$store.commit("modalShowing/close", "paymentSuccessModal");
     },
     deletePost(post) {
       this.deletePostRequestState = REQUEST_STATE.PENDING;

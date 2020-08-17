@@ -59,6 +59,25 @@
         <rect x="0" y="0" rx="3" ry="3" height="100%" />
       </ContentLoader>
     </div>
+
+    <!-- PAYMENT SUCCESS MODAL -->
+    <AppModal name="paymentSuccessModal">
+      <div class="text-4xl font-bold" slot="header">
+        {{ $t("views.blogSetList.paymentSuccess") }}
+      </div>
+      <div class="flex flex-col items-center" slot="body">
+        <img
+          class="h-64 mb-10 rounded"
+          src="https://camo.githubusercontent.com/581d9802c9e5716113238cc2fcaf938bf2dad338/68747470733a2f2f6d656469612e67697068792e636f6d2f6d656469612f6248757134736355373255496f2f67697068792e676966"
+        />
+        <AppButton
+          color="primary"
+          @click="$store.commit('modalShowing/close', 'paymentSuccessModal')"
+        >
+          {{ $t("global.okayButton") }}
+        </AppButton>
+      </div>
+    </AppModal>
   </DefaultLayout>
 </template>
 
@@ -66,6 +85,7 @@
 import AppButton from "@/ui-kit/AppButton";
 import { ContentLoader } from "vue-content-loader";
 import AppPanel from "@/ui-kit/AppPanel";
+import AppModal from "@/ui-kit/AppModal";
 import BlogCard from "@/components/BlogCard";
 import PlanInformations from "@/components/PlanInformations";
 import apolloClient from "@/utils/apolloClient";
@@ -82,13 +102,17 @@ export default {
     ContentLoader,
     AppButton,
     PlanInformations,
+    AppModal
   },
   data() {
     return {
       viewData: null,
     };
   },
-  created() {
+  mounted() {
+    if (this.$route.query.status === "success") {
+      this.$store.commit("modalShowing/open", "paymentSuccessModal");
+    }
     viewData().then(response => {
       if (response.data.blogSets[0].blogs.length === 0) {
         this.$router.replace({
