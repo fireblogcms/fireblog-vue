@@ -57,7 +57,6 @@ export default {
   },
   mounted() {
     this.fetchData();
-    console.log(this.blog.subscription);
     if (this.blog.subscription.trialEnd) {
       this.numberDaysLeftTrial = Math.round(
         (new Date(this.blog.subscription.trialEnd) - new Date()) /

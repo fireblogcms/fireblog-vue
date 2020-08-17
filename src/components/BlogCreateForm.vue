@@ -84,7 +84,6 @@ export default {
   },
   created() {
     this.initData();
-    console.log(" this.$route.query.first", this.$route.query.first);
     this.isFirstBlog = this.$route.query.first === "1";
     this.generate = generate;
   },

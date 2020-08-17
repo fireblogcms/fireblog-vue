@@ -11,7 +11,10 @@
     <!-- END TOPBAR LEFT BUTTONS -->
 
     <div class="container mx-auto my-10 text-center">
-      <div class="flex justify-center mb-16" v-if="freePlan">
+      <div
+        class="flex justify-center mb-16"
+        v-if="blogSet && !!blogSet.subscription.trialEnd"
+      >
         <div class="w-8/12 p-8 bg-white shadow-md rounded-lg">
           <p>
             {{ $t("views.plans.freeTrialFirst") }}
@@ -163,7 +166,6 @@ export default {
       daysFreeTrial: process.env.VUE_APP_DAYS_FREE_TRIAL,
       blog: {},
       blogSet: {},
-      freePlan: false,
       plans: [],
       changePlanModal: {
         plan: {},
@@ -180,6 +182,7 @@ export default {
   },
   methods: {
     async onSubscribeClick(plan) {
+      console.log(plan);
       const user = await getUser();
       if (!this.blogSet.subscription.id) {
         this.subscribeRequest.state = REQUEST_STATE.PENDING;
@@ -276,7 +279,6 @@ export default {
       })
       .then(result => {
         this.blogSet = result.data.blogSet;
-        this.freePlan = !!this.blogSet.subscription.trialEnd;
       });
       apolloClient
         .query({
@@ -294,7 +296,6 @@ export default {
         })
         .then(result => {
           this.plans = result.data.plans;
-          return result;
         });
     },
     isPlanSubscribed(planId) {
