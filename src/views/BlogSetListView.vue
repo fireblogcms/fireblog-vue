@@ -1,11 +1,6 @@
 <template>
   <DefaultLayout>
     <template v-if="viewData">
-      <!--
-      <AppPanel v-if="viewData.blogSets[0].blogs.length === 0">
-        <BlogCreateForm :isFirstBlog="true" />
-      </AppPanel>
-      -->
       <div class="container mx-auto my-10">
         <div v-for="blogSet in viewData.blogSets" :key="blogSet._id">
           <div

@@ -13,7 +13,7 @@ import { Vue as VueIntegration } from "@sentry/integrations";
 import vueDebounce from "vue-debounce";
 import "./scss/main.scss";
 
-if (process.env.VUE_APP_SENTRY_URL) {
+if (process.env.VUE_APP_SENTRY_URL && process.env.NODE_ENV !== "development") {
   Sentry.init({
     dsn: process.env.VUE_APP_SENTRY_URL,
     integrations: [new VueIntegration({ Vue, attachProps: true })],
