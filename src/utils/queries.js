@@ -56,11 +56,6 @@ export const FullBlogFragment = gql`
     name
     updatedAt
     createdAt
-    subscription {
-      id
-      planId
-      trialEnd
-    }
     webhooks {
       name
       onEvents

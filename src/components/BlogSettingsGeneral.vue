@@ -93,7 +93,6 @@ function initialFormValues(blog) {
     description: blog.description ? blog.description : "",
     image: blog.image ? blog.image.url : null,
   };
-  console.log("values", values);
   return values;
 }
 
