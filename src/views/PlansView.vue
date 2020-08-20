@@ -69,6 +69,14 @@
             </p>
           </div>
           <AppButton
+            v-if="isPlanSubscribed(plan.id) && !blogSet.subscription.cancelled"
+            @click="$store.commit('modalShowing/open', 'unsubscribeModal')"
+            color="primary"
+            size="small"
+          >
+            {{ $t("global.unsubscribeButton") }}
+          </AppButton>
+          <AppButton
             v-if="!isPlanSubscribed(plan.id)"
             :loading="
               subscribeRequest.state === 'PENDING' &&
@@ -131,6 +139,27 @@
         </AppButton>
       </div>
     </AppModal>
+
+    <!-- UNSUBSCRIBE MODAL -->
+    <AppModal name="unsubscribeModal">
+      <div class="text-4xl font-bold" slot="header">
+        {{ $t("views.plans.unsubscribeModal.title") }}
+      </div>
+      <div class="flex flex-col items-center" slot="body">
+        <p class="text-xl">
+          {{ $t("views.plans.unsubscribeModal.body", {
+            endDate: blogSet.subscription && blogSet.subscription.endDate
+          }) }}
+        </p>
+        <AppButton
+          class="mt-10"
+          color="primary"
+          @click="onUnsubscribeClick"
+        >
+          {{ $t("global.unsubscribeButton") }}
+        </AppButton>
+      </div>
+    </AppModal>
   </DefaultLayout>
 </template>
 
@@ -183,7 +212,7 @@ export default {
   methods: {
     async onSubscribeClick(plan) {
       const user = await getUser();
-      if (!this.blogSet.subscription.id) {
+      if (!this.blogSet.subscription.id || this.blogSet.subscription.cancelled) {
         this.subscribeRequest.state = REQUEST_STATE.PENDING;
         this.subscribeRequest.planId = plan.id;
         const stripe = Stripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY);
@@ -242,18 +271,51 @@ export default {
           `
         })
         .then(() => {
-          this.$store.commit("modalShowing/close", "changePlanModal");
           this.$router
             .push({
               name: "blogSetList"
             })
             .then(() => {
+              this.$store.commit("modalShowing/close", "changePlanModal");
               this.$store.commit("modalShowing/open", "paymentSuccessModal");
             });
+        });
+    },
+    onUnsubscribeClick() {
+      const subscription = {
+        id: this.blogSet.subscription.id,
+        planId: this.blogSet.subscription.planId,
+        endDate: this.blogSet.subscription.endDate
+      };
+      return apolloClient
+        .mutate({
+          variables: {
+            blogSet: {
+              _id: this.$route.params.blogSetId,
+              subscription
+            },
+          },
+          mutation: gql`
+            mutation($blogSet: UpdateBlogSetInput!) {
+              updateBlogSet(blogSet: $blogSet) {
+                subscription {
+                  id
+                  planId
+                  endDate
+                }
+              }
+            }
+          `
         })
-        .catch(error => {
-          toast(this, error, "error");
-          throw new Error(error);
+        .then(() => {
+          this.$router
+            .push({
+              name: "blogSetList"
+            })
+            .then(() => {
+              this.$store.commit("modalShowing/close", "unsubscribeModal");
+              this.$store.commit("modalShowing/open", "unsubscribeSuccessModal");
+            });
         });
     },
     async fetchData() {
@@ -270,6 +332,8 @@ export default {
                 id
                 planId
                 trialEnd
+                endDate
+                cancelled
                 plan {
                   id
                   amount
@@ -282,6 +346,10 @@ export default {
       })
       .then(result => {
         this.blogSet = result.data.blogSet;
+        const endDate = new Date(this.blogSet.subscription.endDate);
+        const endDateDay = endDate.getDate() <= 9 ? `0${endDate.getDate()}` : endDate.getDate();
+        const endDateMonth = endDate.getMonth() <= 9 ? `0${endDate.getMonth()+1}` : endDate.getMonth()+1;
+        this.blogSet.subscription.endDate = `${endDateDay}/${endDateMonth}/${endDate.getFullYear()}`;
       });
 
       apolloClient

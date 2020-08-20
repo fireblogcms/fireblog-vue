@@ -73,6 +73,25 @@
         </AppButton>
       </div>
     </AppModal>
+
+    <!-- UNSUBSCRIBE SUCCESS MODAL -->
+    <AppModal name="unsubscribeSuccessModal">
+      <div class="text-4xl font-bold" slot="header">
+        {{ $t("views.blogSetList.unsubscribeSuccess") }}
+      </div>
+      <div class="flex flex-col items-center" slot="body">
+        <img
+          class="h-64 mb-10 rounded"
+          src="https://media.giphy.com/media/nwCXwQPoVfJHa/giphy.gif"
+        />
+        <AppButton
+          color="primary"
+          @click="$store.commit('modalShowing/close', 'unsubscribeSuccessModal')"
+        >
+          {{ $t("global.okayButton") }}
+        </AppButton>
+      </div>
+    </AppModal>
   </DefaultLayout>
 </template>
 

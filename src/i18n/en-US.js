@@ -27,6 +27,7 @@ export default {
   "global.published": "Published",
   "global.okayButton": "Okay!",
   "global.subscribeButton": "Subscribe",
+  "global.unsubscribeButton": "Unsubscribe",
   "global.changePlanButton": "Change plan",
   "global.contactUsButton": "Contact us",
   "global.label.name": "Name:",
@@ -47,6 +48,7 @@ export default {
   "views.blogCreate.gladToSeeYouHere": "Glad to see you here",
   "views.blogSetList.title": "{user}'s blogs",
   "views.blogSetList.paymentSuccess": "Congratulations, you successfully subscribed to Fireblog!",
+  "views.blogSetList.unsubscribeSuccess": "You successfully unsubscribed from Fireblog...",
   "views.blogList.createNewBlogButton": "New blog",
   "views.blogList.title": "My blogs",
   "views.blogList.settingsButton": "Settings",
@@ -141,4 +143,6 @@ export default {
   "views.plans.storage": "storage",
   "views.plans.changePlanModal.title": "Subscribe to another plan",
   "views.plans.changePlanModal.body": "You are about to change your current plan for {planName} for an amount of {planAmount} € per month. If you proceed, you will receive an email with the new invoice.",
+  "views.plans.unsubscribeModal.title": "Unsubscribe from Fireblog",
+  "views.plans.unsubscribeModal.body": "You are about to cancel your subscription. You will be able to use Fireblog until {endDate}.",
 };
