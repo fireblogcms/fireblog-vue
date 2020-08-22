@@ -68,6 +68,8 @@ export default {
   "views.blogSettings.generalSettingsForm.fields.name.label": "Nom",
   "views.blogSettings.generalSettingsForm.notifications.saved": "Les modifications des réglages généraux ont été enregistrées.",
   "views.blogSettings.generalSettingsForm.saveButton": "Enregistrer",
+  "views.blogSettings.teamSettingsForm.invite": "Inviter",
+  "views.blogSettings.teamSettingsForm.title": "Équipe",
   "views.blogSettings.technicalSettingsForm.fields.webhooks.help": "Ces webhooks seront appelés à chaque fois que le contenu de votre site change. Vous pouvez spécifier plusieurs urls en les séparant par des virgules",
   "views.blogSettings.technicalSettingsForm.fields.webhooks.label": "Webhooks à appeler quand le contenu du site change",
   "views.blogSettings.technicalSettingsForm.fields.url.label": "Url absolue de votre blog",
