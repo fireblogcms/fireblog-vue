@@ -13,9 +13,9 @@
             </label>
           </div>
           <AppFieldText
-            :value="vuexFormGetValue(formId, 'teamEmailInvitation')"
-            @input="vuexFormSetValue(formId, 'teamEmailInvitation')"
-            :error="vuexFormGetError(formId, 'teamEmailInvitation')"
+            :value="vuexFormGetValue(formId, 'mail')"
+            @input="vuexFormSetValue(formId, 'mail', $event)"
+            :error="vuexFormGetError(formId, 'mail')"
             maxlength="250"
           />
         </div>
@@ -67,13 +67,11 @@ import gql from "graphql-tag";
 import S3ImageUpload from "./S3ImageUpload";
 import { updateBlogMutation } from "@/utils/queries";
 
-const formId = "blogSettingsGeneral";
+const formId = "blogSettingsTeam";
 
 function initialFormValues(blog) {
   const values = {
-    name: blog.name ? blog.name : "",
-    description: blog.description ? blog.description : "",
-    image: blog.image ? blog.image.url : null,
+    mail: "",
   };
   return values;
 }
@@ -108,28 +106,36 @@ export default {
     });
   },
   methods: {
-    validateForm() {
-      vuexFormResetErrors(formId);
-      if (!vuexFormGetValue(formId, "name").trim()) {
-        let message = this.$t(
-          "views.blogSettings.generalSettingsForm.fields.name.errors.required"
-        );
-        vuexFormSetError(formId, "name", message);
-      }
-    },
+    validateForm() {},
     onInviteButtonClick() {
-      alert("ok");
-      this.validateForm();
+      // First we want to search user identifies for this mail.
+      // we MAY HAVE SEVERAL identifies for a single mail:
+      //
+      // For example a user might have registered with github AND google,
+      // and have used the same mail for both. But we consider for now
+      // those are two distinct identities.
 
-      // display form errors if any
-      const formErrors = vuexFormGetErrors(formId);
-      if (Object.keys(formErrors).length > 0) {
-        const message = Object.keys(formErrors)
-          .map(key => formErrors[key])
-          .join(". ");
-        toast(this, message, "error");
-        return;
-      }
+      apolloClient
+        .query({
+          variables: {
+            blogId: this.$route.params.blogId,
+            mail: vuexFormGetValue(formId, "mail"),
+          },
+          query: gql`
+            query blogTeamSearchUserByMail($blogId: ID!, $mail: String!) {
+              blogTeamSearchUserByMail(blogId: $blogId, mail: $mail) {
+                name
+                provider
+              }
+            }
+          `,
+        })
+        .then(r => {
+          console.log("r", r);
+        })
+        .catch(error => {
+          toast(this, error, "error");
+        });
     },
   },
 };
