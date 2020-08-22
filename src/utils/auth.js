@@ -1,6 +1,4 @@
 import createAuth0Client from "@auth0/auth0-spa-js";
-import apolloClient from "./apolloClient";
-import gql from "graphql-tag";
 
 export let auth0 = null;
 
@@ -32,25 +30,24 @@ export async function auth0Client() {
   }
 }
 
+export async function getAccessToken() {
+  const auth0 = await auth0Client();
+  const token = await auth0.getTokenSilently();
+  return token;
+}
+
 /**
  * Copy current auth0 user to our own database
  *
  * We do *NOT* need to send user informations:
  * Server will be able to get them from auth0 server thanks to the accessToken
- * sent with every GraphQL Request !
+ * sent in the headers
  */
-export function syncAuth0UserWithServer() {
-  return apolloClient.mutate({
-    mutation: gql`
-      mutation syncAuth0UserWithServer {
-        syncAuth0User {
-          _id
-          email
-          name
-          picture
-          auth0Id
-        }
-      }
-    `,
-  });
+export async function syncAuth0UserWithServer() {
+  const token = await getAccessToken();
+  return fetch(`${process.env.VUE_APP_API_BASE_URL}/sync-auth0-user`, {
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+  }).then(r => r.json());
 }

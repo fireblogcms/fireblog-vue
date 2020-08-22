@@ -6,7 +6,7 @@ import { createHttpLink } from "apollo-link-http";
 import { setContext } from "apollo-link-context";
 import { onError } from "apollo-link-error";
 import { InMemoryCache } from "apollo-cache-inmemory";
-import { auth0Client } from "./auth";
+import { auth0Client, getAccessToken } from "./auth";
 
 // An httpLink than support uploading files.
 const httpLink = createHttpLink({
@@ -18,7 +18,7 @@ const authLink = setContext(async (_, { headers }) => {
   let additionnalHeaders = {};
   let token = null;
   const auth0 = await auth0Client();
-  token = await auth0.getTokenSilently();
+  token = await getAccessToken();
 
   if (token) {
     additionnalHeaders.authorization = `Bearer ${token}`;

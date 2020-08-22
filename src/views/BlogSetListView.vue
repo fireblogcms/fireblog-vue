@@ -86,7 +86,9 @@
         />
         <AppButton
           color="primary"
-          @click="$store.commit('modalShowing/close', 'unsubscribeSuccessModal')"
+          @click="
+            $store.commit('modalShowing/close', 'unsubscribeSuccessModal')
+          "
         >
           {{ $t("global.okayButton") }}
         </AppButton>
@@ -116,7 +118,7 @@ export default {
     ContentLoader,
     AppButton,
     PlanInformations,
-    AppModal
+    AppModal,
   },
   data() {
     return {
