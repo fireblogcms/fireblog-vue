@@ -32,6 +32,13 @@ export async function auth0Client() {
   }
 }
 
+/**
+ * Copy current auth0 user to our own database
+ *
+ * We do *NOT* need to send user informations:
+ * Server will be able to get them from auth0 server thanks to the accessToken
+ * sent with every GraphQL Request !
+ */
 export function syncAuth0UserWithServer() {
   return apolloClient.mutate({
     mutation: gql`
