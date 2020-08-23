@@ -76,6 +76,7 @@ export default {
   "views.blogSettings.technicalSettingsForm.title": "Technical settings",
   "views.blogSettings.teamSettingsForm.invite": "Invite",
   "views.blogSettings.teamSettingsForm.title": "Team",
+  "views.blogSettings.teamSettingsForm.search": "Search",
   "views.blogSettings.planSettings.title": "Plan settings",
   "views.postForm.alertLeavePage": "Leave editor? Changes you made may not be saved.",
   "views.postForm.backToBlogLink": "My posts",
