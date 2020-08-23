@@ -74,12 +74,10 @@ export const getUserQuery = gql`
       createdAt
       updatedAt
       picture
-      blogsMemberships {
+      memberships {
+        scopeId
+        resourceId
         roles
-        blog {
-          _id
-          name
-        }
       }
       blogs(last: ${postsPerPage}) {
         edges {
