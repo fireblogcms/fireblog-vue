@@ -13,7 +13,7 @@
     <div class="container mx-auto my-10 text-center">
       <div
         class="flex justify-center mb-16"
-        v-if="blogSet.subscription && !!blogSet.subscription.trialEnd"
+        v-if="blogSet.subscription && blogSet.subscription.trialEnd && !blogSet.subscription.hasToSubscribe"
       >
         <div class="w-8/12 p-8 bg-white shadow-md rounded-lg">
           <p>
