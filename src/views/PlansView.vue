@@ -69,9 +69,9 @@
             </p>
           </div>
           <AppButton
-            v-if="isPlanSubscribed(plan.id) && !blogSet.subscription.cancelled"
+            v-if="isPlanSubscribed(plan.id)"
             @click="$store.commit('modalShowing/open', 'unsubscribeModal')"
-            color="primary"
+            color="primary-outlined"
             size="small"
           >
             {{ $t("global.unsubscribeButton") }}
@@ -212,7 +212,7 @@ export default {
   methods: {
     async onSubscribeClick(plan) {
       const user = await getUser();
-      if (!this.blogSet.subscription.id || this.blogSet.subscription.cancelled) {
+      if (!this.blogSet.subscription.id) {
         this.subscribeRequest.state = REQUEST_STATE.PENDING;
         this.subscribeRequest.planId = plan.id;
         const stripe = Stripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY);
@@ -333,7 +333,7 @@ export default {
                 planId
                 trialEnd
                 endDate
-                cancelled
+                hasToSubscribe
                 plan {
                   id
                   amount
