@@ -144,5 +144,5 @@ export default {
   "views.plans.changePlanModal.title": "S'abonner à un autre plan",
   "views.plans.changePlanModal.body": "Vous êtes sur le point de changer votre plan actuel pour {planName} pour un montant de {planAmount} € par mois. Si vous procédez, vous recevrez un e-mail avec la nouvelle facture.",
   "views.plans.unsubscribeModal.title": "Se désabonner de Fireblog",
-  "views.plans.unsubscribeModal.body": "Vous êtes sur le point d'annuler votre abonnement. Vous pourrez continuer à utiliser Fireblog jusqu'au {endDate}.",
+  "views.plans.unsubscribeModal.body": "Vous êtes sur le point d'annuler votre abonnement. Si vous procédez, ce dernier prendra fin immédiatement et vous recevrez un e-mail avec la nouvelle facture indiquant le temps non consommé sur la période en cours.",
 };

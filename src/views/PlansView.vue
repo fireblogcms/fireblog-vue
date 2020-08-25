@@ -147,9 +147,7 @@
       </div>
       <div class="flex flex-col items-center" slot="body">
         <p class="text-xl">
-          {{ $t("views.plans.unsubscribeModal.body", {
-            endDate: blogSet.subscription && blogSet.subscription.endDate
-          }) }}
+          {{ $t("views.plans.unsubscribeModal.body") }}
         </p>
         <AppButton
           class="mt-10"
@@ -285,7 +283,7 @@ export default {
       const subscription = {
         id: this.blogSet.subscription.id,
         planId: this.blogSet.subscription.planId,
-        endDate: this.blogSet.subscription.endDate
+        hasToSubscribe: true
       };
       return apolloClient
         .mutate({
@@ -301,7 +299,7 @@ export default {
                 subscription {
                   id
                   planId
-                  endDate
+                  hasToSubscribe
                 }
               }
             }
@@ -332,7 +330,6 @@ export default {
                 id
                 planId
                 trialEnd
-                endDate
                 hasToSubscribe
                 plan {
                   id
@@ -346,10 +343,6 @@ export default {
       })
       .then(result => {
         this.blogSet = result.data.blogSet;
-        const endDate = new Date(this.blogSet.subscription.endDate);
-        const endDateDay = endDate.getDate() <= 9 ? `0${endDate.getDate()}` : endDate.getDate();
-        const endDateMonth = endDate.getMonth() <= 9 ? `0${endDate.getMonth()+1}` : endDate.getMonth()+1;
-        this.blogSet.subscription.endDate = `${endDateDay}/${endDateMonth}/${endDate.getFullYear()}`;
       });
 
       apolloClient
