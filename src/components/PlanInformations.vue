@@ -55,7 +55,7 @@
           <template v-if="!blogSet.subscription.trialEnd">
             {{ $t("global.changePlanButton") }}
           </template>
-          <template v-if="blogSet.subscription.trialEnd">
+          <template v-if="blogSet.subscription.trialEnd || blogSet.subscription.hasToSubscribe">
             {{ $t("global.subscribeButton") }}
           </template>
         </router-link>
