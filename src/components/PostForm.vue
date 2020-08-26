@@ -324,9 +324,7 @@ export default {
       if (this.existingPost && this.existingPost.status === "PUBLISHED") {
         this.publish();
       } else {
-        this.saveAsDraft().catch(e => {
-          console.log("Cannot be saved: form validation failed: " + e);
-        });
+        this.saveAsDraft();
       }
       return false;
     });
@@ -434,8 +432,7 @@ export default {
       }
     ) {
       if (this.savingPost.state === REQUEST_STATE.PENDING) {
-        console.log("abort saving, this post is currently saving.");
-        return;
+        return Promise.reject("Abort saving, this post is currently saving.");
       }
       if (!vuexFormGetValue(FORM_ID, "title").trim()) {
         toast(
@@ -443,7 +440,7 @@ export default {
           this.$t("views.postForm.fields.title.errors.required"),
           "error"
         );
-        return;
+        return Promise.reject(this.$t("views.postForm.fields.title.errors.required"));
       }
       const savingPendingAction = pendingActions.add("Saving post");
       this.savingPost = {
