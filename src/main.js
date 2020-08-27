@@ -10,9 +10,10 @@ import i18n from "./i18n/index";
 import Toasted from "vue-toasted";
 import * as Sentry from "@sentry/browser";
 import { Vue as VueIntegration } from "@sentry/integrations";
+import vueDebounce from "vue-debounce";
 import "./scss/main.scss";
 
-if (process.env.VUE_APP_SENTRY_URL) {
+if (process.env.VUE_APP_SENTRY_URL && process.env.NODE_ENV !== "development") {
   Sentry.init({
     dsn: process.env.VUE_APP_SENTRY_URL,
     integrations: [new VueIntegration({ Vue, attachProps: true })],
@@ -24,6 +25,7 @@ Vue.use(vClickOutside);
 Vue.use(PortalVue);
 Vue.use(VueTextareaAutosize);
 Vue.use(Toasted);
+Vue.use(vueDebounce);
 
 Vue.config.productionTip = false;
 

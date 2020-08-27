@@ -46,18 +46,16 @@ export const PostListFragment = gql`
 export const FullBlogFragment = gql`
   fragment FullBlogFragment on Blog {
     _id
-    image
+    blogSet
+    image {
+      url
+      alt
+    }
     contentDefaultLocale
     description
     name
     updatedAt
     createdAt
-    subscription {
-      id
-      planId
-      trialEnd
-    }
-    url
     webhooks {
       name
       onEvents
@@ -76,12 +74,10 @@ export const getUserQuery = gql`
       createdAt
       updatedAt
       picture
-      blogsMemberships {
+      memberships {
+        scopeId
+        resourceId
         roles
-        blog {
-          _id
-          name
-        }
       }
       blogs(last: ${postsPerPage}) {
         edges {
@@ -220,8 +216,12 @@ export const deleteBlogMutation = gql`
  * We need to know if this is the first post for this blog.
  */
 export const getBlogResourcesUseQuery = gql`
-  query getBlogResourcesUseQuery($blog: ID!, $from: DateTime!, $to: DateTime!) {
-    resourcesUse(blog: $blog, from: $from, to: $to) {
+  query getBlogResourcesUseQuery(
+    $blogSet: ID!
+    $from: DateTime!
+    $to: DateTime!
+  ) {
+    resourcesUse(blogSet: $blogSet, from: $from, to: $to) {
       count
       size
     }
@@ -233,7 +233,7 @@ export const createStripeCheckoutSessionMutation = gql`
     $userEmail: String!
     $userId: ID
     $customerId: ID
-    $blogId: ID!
+    $blogSetId: ID!
     $planId: ID!
     $successUrl: String!
     $cancelUrl: String!
@@ -242,24 +242,12 @@ export const createStripeCheckoutSessionMutation = gql`
       userEmail: $userEmail
       userId: $userId
       customerId: $customerId
-      blogId: $blogId
+      blogSetId: $blogSetId
       planId: $planId
       successUrl: $successUrl
       cancelUrl: $cancelUrl
     ) {
       id
-    }
-  }
-`;
-
-export const getPlansQuery = gql`
-  query getPlansQuery {
-    plans {
-      id
-      amount
-      amountTaxes
-      metadata
-      productName
     }
   }
 `;

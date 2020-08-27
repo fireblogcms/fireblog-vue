@@ -37,8 +37,11 @@ export default {
         .then(async r => {
           return auth0.getUser();
         })
-        .then(user => {
-          // copy auth0 user to our database
+        .then(() => {
+          // Copy auth0 user to our own database
+          // We do *NOT* need to send user informations:
+          // Server will be able to get them from auth0 thanks to the accessToken
+          // sent with every GraphQL Request
           return syncAuth0UserWithServer();
         })
         .then(() => {

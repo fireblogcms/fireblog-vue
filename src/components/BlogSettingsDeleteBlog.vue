@@ -30,6 +30,7 @@
           <AppButton class="mx-4" @click="closeDeleteBlogModal">
             {{ $t("views.blogSettings.dangerZone.deleteModal.cancelButton") }}
           </AppButton>
+
           <AppButton
             :loading="deleteBlogState === 'PENDING'"
             class="mt-4 md:mt-0 mx-4"
@@ -94,10 +95,10 @@ export default {
               _id: this.$route.params.blogId,
             },
           })
-          .then(async () => {
+          .then(() => {
             this.deleteBlogState = REQUEST_STATE.FINISHED_OK;
             this.closeDeleteBlogModal();
-            this.$router.push({ name: "blogList" });
+            this.$router.push({ name: "blogSetList" });
           })
           .catch(e => {
             toast(this, e, "error");

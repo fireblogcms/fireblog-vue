@@ -42,7 +42,7 @@
               vuexFormGetValue(FORM_ID, 'slugShowToggleLockButton')
             "
             :locked="vuexFormGetValue(FORM_ID, 'slugIsLocked')"
-            @input="onSlugInput"
+            @onSlugChange="onSlugChange"
             @onUnlock="onSlugUnlock"
             @onLock="onSlugLock"
           />
@@ -67,14 +67,16 @@
 <script>
 import AppTextarea from "@/ui-kit/AppTextarea";
 import S3ImageUpload from "./S3ImageUpload";
-import { REQUEST_STATE } from "@/utils/helpers";
+import { REQUEST_STATE, generateSlugFromServer } from "@/utils/helpers";
 import {
   vuexFormGetValue,
   vuexFormGetError,
   vuexFormSetValue,
+  vuexFormSetError,
 } from "@/utils/vuexForm";
 import SlugField from "./SlugField";
 import PreviewGoogleResult from "./PreviewGoogleResult";
+import apolloClient from "@/utils/apolloClient";
 
 const FORM_ID = "postForm";
 
@@ -109,6 +111,27 @@ export default {
     },
     onTeaserInput(event) {
       vuexFormSetValue(FORM_ID, "teaser", event);
+    },
+    onSlugChange(value) {
+      if (value.length === 0) {
+        return;
+      }
+      generateSlugFromServer({
+        blogId: this.$route.params.blogId,
+        source: value,
+      }).then(response => {
+        const slug = response.slug;
+        vuexFormSetValue(FORM_ID, "slug", slug);
+        if (
+          response.alreadyExists === true &&
+          response.usedByPost._id !== this.$route.params.postId
+        ) {
+          const slugError = `This slug is already used by this post: ${response.usedByPost.title}`;
+          vuexFormSetError(FORM_ID, "slug", slugError);
+        } else {
+          vuexFormSetError(FORM_ID, "slug", null);
+        }
+      });
     },
     onSlugInput(event) {
       vuexFormSetValue(FORM_ID, "slug", event);
