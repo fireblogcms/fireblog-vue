@@ -1,20 +1,19 @@
 import i18n from "./i18n/index";
 
-export default ({ slug, locale }) => [
+export default ({ blogId, slug, locale }) => [
   {
     id: "getBlogIinformations",
     label: i18n.t("apiModal.getBlogInformations"),
     snippet: `
-    {
-      blog {
-        name
-        description
-        image {
-          url
-          alt
-        }
-      }
+{
+  blog(_id:"${blogId}") {
+    name
+    description
+    image {
+      url
     }
+  }
+}
   `,
   },
   {
@@ -22,7 +21,7 @@ export default ({ slug, locale }) => [
     label: i18n.t("apiModal.getAllPublishedPosts"),
     snippet: `
 {
-  posts(last:50) {
+  posts(last:50, blogId: "${blogId}") {
     totalCount
     edges {
       cursor
@@ -35,12 +34,6 @@ export default ({ slug, locale }) => [
         publishedAt
         image {
           url
-          alt
-        }
-        author {
-          name
-          email
-          picture
         }
       }
     }
@@ -53,7 +46,7 @@ export default ({ slug, locale }) => [
     label: i18n.t("apiModal.getASinglePostBySlug"),
     snippet: `
 {
-  post(slug: "${slug}") {
+  post(slug: "${slug}", blogId: "${blogId}") {
     slug
     title
     content
@@ -70,5 +63,24 @@ export default ({ slug, locale }) => [
   }
 }
     `,
+  },
+  {
+    id: "getAllBlogsIinformations",
+    label: i18n.t("apiModal.getAllBlogsInformations"),
+    snippet: `
+{
+  blogs(first:20) {
+    edges {
+      node {
+        name
+        description
+        image {
+          url
+        }
+      }
+    }
+  }
+}
+  `,
   },
 ];

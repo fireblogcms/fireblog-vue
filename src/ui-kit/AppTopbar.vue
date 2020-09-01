@@ -93,7 +93,7 @@
       </div>
       <div slot="body">
         <p class="text-2xl font-bold mb-4">GraphQL endpoint</p>
-        <AppFieldText readonly="true" :value="blogSetApiUrl" />
+        <AppFieldText disabled readonly="true" :value="blogSetApiUrl" />
         <div
           :id="`example-${example.id}`"
           v-for="example in apiModalExampleList"
@@ -110,10 +110,8 @@
               </AppButton>
             </a>
           </div>
-          <div class="px-6 bg-gray-100 rounded-md text-xs">
-            <pre>
-              <code>{{ example.snippet }}</code>
-            </pre>
+          <div class="bg-gray-100 rounded-md text-sm">
+            <prism language="javascript" :code="example.snippet"></prism>
           </div>
         </div>
       </div>
@@ -127,12 +125,15 @@ import AppFieldText from "@/ui-kit/AppFieldText";
 import AppModal from "@/ui-kit/AppModal";
 import { getBlog, getPost, getUser, toast } from "@/utils/helpers";
 import apiExamples from "@/apiExamples";
+import Prism from "vue-prismjs";
+import "prismjs/themes/prism.css";
 
 export default {
   components: {
     AppButton,
     AppFieldText,
     AppModal,
+    Prism,
   },
   data() {
     return {
@@ -178,6 +179,9 @@ export default {
     async onApiClick() {
       const context = {
         slug: "{{POST_SLUG}}",
+        blogId: this.$route.params.blogId
+          ? this.$route.params.blogId
+          : "{{BLOG_ID}}",
         locale: navigator.language || navigator.userLanguage,
       };
       if (this.$route.name === "postList") {
@@ -198,3 +202,10 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+code[class*="language-"],
+pre[class*="language-"] {
+  background: inherit;
+}
+</style>

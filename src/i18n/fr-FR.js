@@ -3,6 +3,7 @@ export default {
   "apiModal.getAllPublishedPosts": "Obtenir la liste des posts publiés",
   "apiModal.getASinglePostBySlug": "Obtenir un post par son slug",
   "apiModal.getBlogInformations": "Obtenir les informations du blog",
+  "apiModal.getAllBlogsInformations": "Obtenir la liste des blogs",
   "apiModal.openGraphQLExplorer": "Ouvrir l'explorateur GraphQL",
   "apiModal.title": "API GraphQL",
   "apiModal.tryItButton": "Essayer",
