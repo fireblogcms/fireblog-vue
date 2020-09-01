@@ -85,7 +85,7 @@
         slot="header"
       >
         <span class="text-4xl font-bold">API</span>
-        <a :href="blogApiUrl" target="_blank" class="hover:text-current">
+        <a :href="blogSetApiUrl" target="_blank" class="hover:text-current">
           <AppButton color="primary" size="small">
             {{ $t("apiModal.openGraphQLExplorer") }}
           </AppButton>
@@ -93,7 +93,7 @@
       </div>
       <div slot="body">
         <p class="text-2xl font-bold mb-4">GraphQL endpoint</p>
-        <AppFieldText readonly="true" :value="blogApiUrl" />
+        <AppFieldText readonly="true" :value="blogSetApiUrl" />
         <div
           :id="`example-${example.id}`"
           v-for="example in apiModalExampleList"
@@ -102,7 +102,7 @@
           <div class="my-4 flex">
             <span class="text-2xl font-bold mr-4">{{ example.label }}</span>
             <a
-              :href="`${blogApiUrl}?query=${encodeURI(example.snippet)}`"
+              :href="`${blogSetApiUrl}?query=${encodeURI(example.snippet)}`"
               target="_blank"
             >
               <AppButton color="primary-outlined" size="small">
@@ -142,8 +142,8 @@ export default {
     };
   },
   computed: {
-    blogApiUrl() {
-      return `${process.env.VUE_APP_GRAPHQL_POD_BASE_URL}/${this.$route.params.blogId}`;
+    blogSetApiUrl() {
+      return `${process.env.VUE_APP_GRAPHQL_BLOGSET_BASE_URL}/${this.$route.params.blogSetId}`;
     },
   },
   mounted() {

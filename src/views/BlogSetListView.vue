@@ -13,7 +13,7 @@
               />
               <div>
                 <h1 class="text-xl md:text-4xl font-bold uppercase mb-2">
-                  {{ $t("views.blogSetList.title", { user: blogSet.name }) }}
+                  {{ $t("views.blogSetList.title") }}
                 </h1>
                 <PlanInformations :blogSet="blogSet" />
               </div>
