@@ -274,7 +274,7 @@ let initialFormValues = {
 const randomHurraGifs = [
   "https://media.giphy.com/media/7IW6Jnw29TYmgkuu3M/giphy.gif",
   "https://media.giphy.com/media/Wq2xnn2ZnwiTtoD6Qk/giphy.gif",
-  "http://giphygifs.s3.amazonaws.com/media/7vfhdCIn13zm8/giphy.gif",
+  "https://giphygifs.s3.amazonaws.com/media/7vfhdCIn13zm8/giphy.gif",
   "https://66.media.tumblr.com/b53447fe9897178a2b4957a1ab32f6be/tumblr_n19pczDWI21ss6wowo9_250.gifv",
 ];
 
@@ -440,7 +440,9 @@ export default {
           this.$t("views.postForm.fields.title.errors.required"),
           "error"
         );
-        return Promise.reject(this.$t("views.postForm.fields.title.errors.required"));
+        return Promise.reject(
+          this.$t("views.postForm.fields.title.errors.required")
+        );
       }
       const savingPendingAction = pendingActions.add("Saving post");
       this.savingPost = {
