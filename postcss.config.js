@@ -14,11 +14,13 @@ module.exports = {
             },
             whitelist: [],
             whitelistPatterns: [
-              /^language-/, // for prismJS component
               /-(leave|enter|appear)(|-(to|from|active))$/,
               /^(?!(|.*?:)cursor-move).+-move$/,
               /^router-link(|-exact)-active$/,
               /^app-toast-/,
+            ],
+            whitelistPatternsChildren: [
+              /^language-/, // for prismJS component
             ],
           }),
         ]
