@@ -12,15 +12,13 @@ module.exports = {
                 content.match(/[^<>"'`\s.()]*[^<>"'`\s.():]/g) || [];
               return broadMatches.concat(innerMatches);
             },
+            ignore: ["prismjs/"], // Ignore files/folders
             whitelist: [],
             whitelistPatterns: [
               /-(leave|enter|appear)(|-(to|from|active))$/,
               /^(?!(|.*?:)cursor-move).+-move$/,
               /^router-link(|-exact)-active$/,
               /^app-toast-/,
-            ],
-            whitelistPatternsChildren: [
-              /^language-/, // for prismJS component
             ],
           }),
         ]
