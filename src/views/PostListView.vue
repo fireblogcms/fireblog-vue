@@ -322,6 +322,7 @@ function viewDataQuery({ blogId }) {
               _id
               title
               teaser
+              content
               image
             }
           }
@@ -333,6 +334,7 @@ function viewDataQuery({ blogId }) {
               _id
               title
               teaser
+              content
               image
             }
           }
