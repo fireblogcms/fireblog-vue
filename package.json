@@ -49,6 +49,7 @@
     "@babel/core": "^7.9.0",
     "@ckeditor/ckeditor5-inspector": "^1.5.0",
     "@fullhuman/postcss-purgecss": "^2.2.0",
+    "@packtracker/webpack-plugin": "^2.3.0",
     "@storybook/addon-actions": "^5.3.18",
     "@storybook/addon-docs": "^5.3.18",
     "@storybook/addon-links": "^5.3.18",
