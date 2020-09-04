@@ -3,7 +3,7 @@ name: Fireblog Vue Build
 on:
   push:
     branches:
-      - master
+      - "*"
 
 jobs:
   build:
@@ -22,6 +22,12 @@ jobs:
 
       - name: install packages
         run: yarn install
+
+      - name: report webpack stats
+        uses: packtracker/report@2.2.7
+        env:
+          PT_PROJECT_TOKEN: d23eafa4-20b9-4f5d-b3f6-8f3f49e13092
+          WEBPACK_CONFIG_PATH: ./node_modules/@vue/cli-service/webpack.config.js
 
       - name: build
         run: |
