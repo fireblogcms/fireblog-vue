@@ -1,4 +1,5 @@
 const fs = require("fs");
+const path = require("path");
 const dotenv = require("dotenv");
 const difference = require("lodash.difference");
 
@@ -78,6 +79,9 @@ const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 plugins.push(
   new BundleAnalyzerPlugin({
     token: "9135d4f9d2354ec446a821a26097ab8445c03470",
+    openAnalyzer: false,
+    analyzerMode: "disabled",
+    generateStatsFile: true,
   })
 );
 
