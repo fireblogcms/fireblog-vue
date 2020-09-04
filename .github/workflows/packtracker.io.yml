@@ -12,7 +12,9 @@ jobs:
         uses: actions/checkout@v1
 
       - name: fake .env configuration for local
-        run: cp ".env.example" ".env"
+        run: |
+          cp ".env.example" ".env"
+          echo "test"
 
       - name: report webpack stats
         uses: packtracker/report@2.2.7
