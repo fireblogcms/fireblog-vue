@@ -63,6 +63,7 @@
     "@vue/test-utils": "^1.0.0-beta.32",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.1.0",
+    "babel-plugin-prismjs": "^2.0.1",
     "babel-preset-vue": "^2.0.2",
     "core-js": "^2.6.11",
     "eslint": "^5.8.0",
