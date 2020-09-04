@@ -116,8 +116,10 @@
                 </AppButton>
               </a>
             </div>
-            <div class="bg-gray-100 rounded-md text-sm">
-              <prism language="graphql" :code="example.snippet"></prism>
+            <div class="px-6 bg-gray-100 rounded-md text-sm">
+              <pre>
+                <code>{{ example.snippet }}</code>
+              </pre>
             </div>
           </div>
         </template>
@@ -133,15 +135,12 @@ import AppModal from "@/ui-kit/AppModal";
 import { getBlog, getPost, getUser, toast } from "@/utils/helpers";
 import apiExamples from "@/apiExamples";
 import { ContentLoader } from "vue-content-loader";
-import Prism from "vue-prismjs";
-import "prismjs/themes/prism.css";
 
 export default {
   components: {
     AppButton,
     AppFieldText,
     AppModal,
-    Prism,
     ContentLoader,
   },
   data() {
