@@ -17,6 +17,9 @@ jobs:
         with:
           node-version: "12"
 
+      - name: fake .env configuration for local
+        run: cp ".env.example" ".env"
+
       - name: install packages
         run: yarn install
 
