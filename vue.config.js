@@ -75,7 +75,11 @@ checkEnvVars(".env.example");
 
 const plugins = [];
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
-plugins.push(new BundleAnalyzerPlugin());
+plugins.push(
+  new BundleAnalyzerPlugin({
+    token: "9135d4f9d2354ec446a821a26097ab8445c03470",
+  })
+);
 
 module.exports = {
   configureWebpack: {
