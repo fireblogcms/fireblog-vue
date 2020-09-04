@@ -26,4 +26,3 @@ jobs:
       - name: build
         run: |
           yarn build
-          process.exit(0)
