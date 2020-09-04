@@ -1,5 +1,4 @@
-name: Fireblog Vue Build
-
+name: Packtracker.io
 on:
   push:
     branches:
@@ -12,23 +11,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
-      - name: Setup node
-        uses: actions/setup-node@v1
-        with:
-          node-version: "12"
-
       - name: fake .env configuration for local
         run: cp ".env.example" ".env"
-
-      - name: install packages
-        run: yarn install
 
       - name: report webpack stats
         uses: packtracker/report@2.2.7
         env:
           PT_PROJECT_TOKEN: d23eafa4-20b9-4f5d-b3f6-8f3f49e13092
           WEBPACK_CONFIG_PATH: ./node_modules/@vue/cli-service/webpack.config.js
-
-      - name: build
-        run: |
-          yarn build
