@@ -1,7 +1,6 @@
 const fs = require("fs");
 const dotenv = require("dotenv");
 const difference = require("lodash.difference");
-const PacktrackerPlugin = require("@packtracker/webpack-plugin");
 
 /**
  * Make sure all env vars are correctly defined.
@@ -79,13 +78,6 @@ const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 plugins.push(
   new BundleAnalyzerPlugin({
     token: "9135d4f9d2354ec446a821a26097ab8445c03470",
-  })
-);
-plugins.push(
-  new PacktrackerPlugin({
-    project_token: "d23eafa4-20b9-4f5d-b3f6-8f3f49e13092",
-    upload: true,
-    fail_build: true,
   })
 );
 
