@@ -31,7 +31,8 @@ yarn build-report
 ### Run your tests
 
 ```
-yarn test
+yarn test:unit
+yarn test:e2e:headless
 ```
 
 ### Lints and fixes files
