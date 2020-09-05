@@ -16,6 +16,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v1
       - run: yarn install
+      - run: cp ".env.example" ".env"
       - run: yarn build
       - run: npx relative-ci-agent
         env:
