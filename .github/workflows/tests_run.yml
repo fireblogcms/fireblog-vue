@@ -1,4 +1,4 @@
-name: Test Run
+name: Run units and e2e tests
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
@@ -26,6 +26,9 @@ jobs:
         run: cp ".env.example" ".env"
 
       - name: build project
+        run: yarn install
+
+      - name: run tests
         run: |
           yarn install
           yarn test:unit
