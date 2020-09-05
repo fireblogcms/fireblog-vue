@@ -17,9 +17,11 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "-": "^0.0.1",
     "@auth0/auth0-spa-js": "^1.2.2",
     "@sentry/browser": "^5.6.2",
     "@sentry/integrations": "^5.6.1",
+    "D": "^1.0.0",
     "apollo-cache-inmemory": "^1.6.6",
     "apollo-client": "^2.6.3",
     "apollo-link-context": "^1.0.18",
@@ -43,7 +45,8 @@
     "vue-router": "^3.3.4",
     "vue-textarea-autosize": "^1.0.4",
     "vue-toasted": "^1.1.27",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "webpack-bundle-analyzer": "^3.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
