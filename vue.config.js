@@ -76,6 +76,6 @@ checkEnvVars(".env.example");
 
 module.exports = {
   configureWebpack: {
-    plugins: [RelativeCiAgentWebpackPlugin()],
+    plugins: [new RelativeCiAgentWebpackPlugin()],
   },
 };
