@@ -1,7 +1,7 @@
 const fs = require("fs");
-const path = require("path");
 const dotenv = require("dotenv");
 const difference = require("lodash.difference");
+const { RelativeCiAgentWebpackPlugin } = require("@relative-ci/agent");
 
 /**
  * Make sure all env vars are correctly defined.
@@ -74,16 +74,8 @@ function checkEnvVars(exampleEnvFile) {
 
 checkEnvVars(".env.example");
 
-const plugins = [];
-
 module.exports = {
   configureWebpack: {
-    plugins,
-    stats: {
-      assets: true,
-      entrypoints: true,
-      chunks: true,
-      modules: true,
-    },
+    plugins: [RelativeCiAgentWebpackPlugin()],
   },
 };
