@@ -5,8 +5,11 @@ name: Test Run
 on:
   push:
     branches:
-      - '*'
-  
+      - "*"
+  pull_request:
+    branches:
+      - master
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -16,22 +19,15 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v1
-      
-    - name: .env configuration for local
-      run: cp ".env.example" ".env"
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v1
 
-    - name: install yarn
-      run: |
-        curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-        echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-        sudo apt update && sudo apt install yarn
-        yarn --version
+      - name: .env configuration for local
+        run: cp ".env.example" ".env"
 
-    - name: build project
-      run: |
-        yarn install
-        yarn test:unit
-        yarn test:e2e:headless
-        yarn lint
+      - name: build project
+        run: |
+          yarn install
+          yarn test:unit
+          yarn test:e2e:headless
+          yarn lint
