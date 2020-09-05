@@ -79,7 +79,12 @@ checkEnvVars(".env.example");
 module.exports = {
   configureWebpack: {
     plugins: [
-      new BundleAnalyzerPlugin({ statsFilename: "webpack-stats.json" }),
+      new BundleAnalyzerPlugin({
+        generateStatsFile: true,
+        analyzerMode: "disabled",
+        statsFilename: "webpack-stats.json",
+        openAnalyzer: false,
+      }),
       new RelativeCiAgentWebpackPlugin(),
     ],
   },
