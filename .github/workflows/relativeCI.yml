@@ -1,0 +1,11 @@
+# .github/workflow/nodejs.yml
+name: relative CI - webpack stats
+
+jobs:
+  build:
+    steps:
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: npx relative-ci-agent
+        env:
+          RELATIVE_CI_KEY: "9fb2ccb0-eec3-11ea-b455-f18cf0efd406"

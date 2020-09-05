@@ -79,5 +79,12 @@ const plugins = [];
 module.exports = {
   configureWebpack: {
     plugins,
+    stats: {
+      context: "./src", // optional, will improve readability of the paths
+      assets: true,
+      entrypoints: true,
+      chunks: true,
+      modules: true,
+    },
   },
 };
