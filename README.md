@@ -35,7 +35,7 @@ yarn test:unit
 yarn test:e2e:headless
 ```
 
-### Lints and fixes files
+### Lint and fixes files
 
 ```
 yarn lint
