@@ -1,11 +1,5 @@
 name: Packtracker.io
-on:
-  push:
-    branches:
-      - "*"
-  pull_request:
-    branches:
-      - master
+on: push
 
 jobs:
   build:
