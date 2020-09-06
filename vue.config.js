@@ -81,7 +81,8 @@ module.exports = {
       new BundleAnalyzerPlugin({
         generateStatsFile: true,
         analyzerMode: "disabled",
-        statsFilename: "webpack-stats.json",
+        // do NOT ouput it in "dist" directory
+        statsFilename: "../webpack-stats.json",
         openAnalyzer: false,
       }),
       new RelativeCiAgentWebpackPlugin(),
