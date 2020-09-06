@@ -1,8 +1,6 @@
 const fs = require("fs");
 const dotenv = require("dotenv");
 const difference = require("lodash.difference");
-const { RelativeCiAgentWebpackPlugin } = require("@relative-ci/agent");
-const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 
 /**
  * Make sure all env vars are correctly defined.
@@ -77,15 +75,6 @@ checkEnvVars(".env.example");
 
 module.exports = {
   configureWebpack: {
-    plugins: [
-      new BundleAnalyzerPlugin({
-        generateStatsFile: true,
-        analyzerMode: "disabled",
-        // do NOT ouput it in "dist" directory
-        statsFilename: "../webpack-stats.json",
-        openAnalyzer: false,
-      }),
-      new RelativeCiAgentWebpackPlugin(),
-    ],
+    plugins: [],
   },
 };
