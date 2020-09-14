@@ -94,26 +94,35 @@
       <div slot="body">
         <p class="text-2xl font-bold mb-4">GraphQL endpoint</p>
         <AppFieldText disabled readonly="true" :value="blogSetApiUrl" />
-        <div
-          :id="`example-${example.id}`"
-          v-for="example in apiModalExampleList"
-          :key="example.id"
-        >
-          <div class="my-4 flex">
-            <span class="text-2xl font-bold mr-4">{{ example.label }}</span>
-            <a
-              :href="`${blogSetApiUrl}?query=${encodeURI(example.snippet)}`"
-              target="_blank"
-            >
-              <AppButton color="primary-outlined" size="small">
-                {{ $t("apiModal.tryItButton") }}
-              </AppButton>
-            </a>
+        <template v-if="apiModalExampleList.length === 0">
+          <ContentLoader height="200" class=" my-16">
+            <rect x="0" y="0" rx="3" ry="3" height="100%" />
+          </ContentLoader>
+        </template>
+        <template v-if="apiModalExampleList.length > 0">
+          <div
+            :id="`example-${example.id}`"
+            v-for="example in apiModalExampleList"
+            :key="example.id"
+          >
+            <div class="my-4 flex">
+              <span class="text-2xl font-bold mr-4">{{ example.label }}</span>
+              <a
+                :href="`${blogSetApiUrl}?query=${encodeURI(example.snippet)}`"
+                target="_blank"
+              >
+                <AppButton color="primary-outlined" size="small">
+                  {{ $t("apiModal.tryItButton") }}
+                </AppButton>
+              </a>
+            </div>
+            <div class="px-6 bg-gray-100 rounded-md text-sm">
+              <pre>
+                <code>{{ example.snippet }}</code>
+              </pre>
+            </div>
           </div>
-          <div class="bg-gray-100 rounded-md text-sm">
-            <prism language="javascript" :code="example.snippet"></prism>
-          </div>
-        </div>
+        </template>
       </div>
     </AppModal>
   </div>
@@ -125,15 +134,14 @@ import AppFieldText from "@/ui-kit/AppFieldText";
 import AppModal from "@/ui-kit/AppModal";
 import { getBlog, getPost, getUser, toast } from "@/utils/helpers";
 import apiExamples from "@/apiExamples";
-import Prism from "vue-prismjs";
-import "prismjs/themes/prism.css";
+import { ContentLoader } from "vue-content-loader";
 
 export default {
   components: {
     AppButton,
     AppFieldText,
     AppModal,
-    Prism,
+    ContentLoader,
   },
   data() {
     return {
@@ -177,27 +185,24 @@ export default {
       return false;
     },
     async onApiClick() {
+      this.$store.commit("modalShowing/open", "graphQLApiModal");
       const context = {
         slug: "{{POST_SLUG}}",
-        blogId: this.$route.params.blogId
-          ? this.$route.params.blogId
-          : "{{BLOG_ID}}",
-        locale: navigator.language || navigator.userLanguage,
+        blogId: "{{BLOG_ID}}",
       };
       if (this.$route.name === "postList") {
         const blog = await getBlog(this.$route.params.blogId);
-        context.locale = blog.contentDefaultLocale;
+        context.blogId = blog._id;
       }
       if (this.$route.name === "postUpdate") {
         const [blog, post] = await Promise.all([
           getBlog(this.$route.params.blogId),
           getPost(this.$route.params.postId),
         ]);
-        context.locale = blog.contentDefaultLocale;
+        context.blogId = blog._id;
         context.slug = post.slug;
       }
       this.apiModalExampleList = apiExamples(context);
-      this.$store.commit("modalShowing/open", "graphQLApiModal");
     },
   },
 };

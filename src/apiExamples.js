@@ -6,7 +6,7 @@ export default ({ blogId, slug, locale }) => [
     label: i18n.t("apiModal.getBlogInformations"),
     snippet: `
 {
-  blog(_id:"${blogId}") {
+  blog(filter: {_id: { eq: "${blogId}" } }) {
     name
     description
     image {
@@ -21,24 +21,33 @@ export default ({ blogId, slug, locale }) => [
     label: i18n.t("apiModal.getAllPublishedPosts"),
     snippet: `
 {
-  posts(last:50, blogId: "${blogId}") {
-    totalCount
-    edges {
-      cursor
-      node {
-        slug
-        title
-        teaser
-        content
-        updatedAt
-        publishedAt
-        image {
-          url
-        }
+  posts(
+    itemsPerPage: 20
+    page: 1
+    filter: { blog: { eq: "5f4e8705094947778f8da304" } }
+  ) {
+    pagination {
+      totalItems
+      totalPages
+      hasPreviousPage
+      hasNextPage
+    }
+    items {
+      slug
+      title
+      teaser
+      content
+      updatedAt
+      publishedAt
+      imageThumbnail: image(w: 200) {
+        url
+      }
+      imageFull: image {
+        url
       }
     }
   }
-}
+}    
 `,
   },
   {
@@ -46,22 +55,16 @@ export default ({ blogId, slug, locale }) => [
     label: i18n.t("apiModal.getASinglePostBySlug"),
     snippet: `
 {
-  post(slug: "${slug}", blogId: "${blogId}") {
+  post(filter: { slug: { eq: "${slug}" }, blog: { eq: "5f4e8705094947778f8da304" } }) {
     slug
     title
     content
     publishedAt
     image {
       url
-      alt
-    }
-    author {
-      name
-      email
-      picture
     }
   }
-}
+} 
     `,
   },
   {
@@ -69,14 +72,18 @@ export default ({ blogId, slug, locale }) => [
     label: i18n.t("apiModal.getAllBlogsInformations"),
     snippet: `
 {
-  blogs(first:20) {
-    edges {
-      node {
-        name
-        description
-        image {
-          url
-        }
+  blogs(itemsPerPage:20, page: 1) {
+    pagination {
+      totalItems
+      totalPages
+      hasPreviousPage
+      hasNextPage
+    }
+    items {
+      name
+      description
+      image {
+        url
       }
     }
   }

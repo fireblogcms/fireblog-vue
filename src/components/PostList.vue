@@ -77,8 +77,14 @@
                 })
               }}
             </p>
-            <p v-if="post.node.teaser.trim()" class="mt-4">
-              {{ striptags(post.node.teaser) }}
+            <p class="mt-4">
+              {{
+                striptags(
+                  post.node.teaser.trim()
+                    ? post.node.teaser
+                    : post.node.content.substring(0, 250)
+                )
+              }}
             </p>
           </div>
         </div>
