@@ -1,7 +1,7 @@
 <template>
   <div class="text-center">
     <!-- special text if this is the very first blog :) -->
-    <p v-if="isMyFirstBlog && user" class="mb-12 text-3xl font-bold">
+    <p v-if="isFirstBlog && user" class="mb-12 text-3xl font-bold">
       {{ $t("views.blogCreate.gladToSeeYouHere") }}, {{ user.name }} 🤗
     </p>
 
@@ -30,7 +30,7 @@
 
     <div class="flex flex-col md:flex-row items-center justify-center">
       <AppButton
-        v-if="!isMyFirstBlog"
+        v-if="!isFirstBlog"
         class="mb-4 md:mb-0 mx-4"
         @click="$router.push('/')"
       >
@@ -54,7 +54,7 @@ import AppFieldText from "@/ui-kit/AppFieldText";
 import AppTextarea from "@/ui-kit/AppTextarea";
 import { generate } from "@/utils/fantasyName.js";
 import apolloClient from "@/utils/apolloClient";
-import { getUser, REQUEST_STATE } from "@/utils/helpers";
+import { getUser, REQUEST_STATE, toast } from "@/utils/helpers";
 import gql from "graphql-tag";
 import {
   getMyBlogsQuery,
@@ -68,13 +68,9 @@ export default {
     AppFieldText,
     AppTextarea,
   },
-  props: {
-    isMyFirstBlog: {
-      type: Boolean,
-    },
-  },
   data() {
     return {
+      isFirstBlog: false,
       errors: [],
       formErrors: {},
       savingBlogState: REQUEST_STATE.NOT_STARTED,
@@ -88,6 +84,7 @@ export default {
   },
   created() {
     this.initData();
+    this.isFirstBlog = this.$route.query.first === "1";
     this.generate = generate;
   },
   methods: {
@@ -118,6 +115,7 @@ export default {
             blog: {
               name: this.inputs.name,
               description: this.inputs.description,
+              blogSet: this.$route.params.blogSetId,
             },
           },
         })
@@ -131,9 +129,7 @@ export default {
         })
         .catch(error => {
           this.savingBlogState = REQUEST_STATE.FINISHED_ERROR;
-          this.errors.push(
-            "Blog created failed with following message: " + error
-          );
+          toast(this, error, "error");
           throw new Error(error);
         });
     },

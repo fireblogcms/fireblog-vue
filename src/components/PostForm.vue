@@ -4,7 +4,10 @@
     <portal to="topbar-left">
       <AppBreadcrumb
         image="/images/book.png"
-        link="postList"
+        :routerOptions="{
+          name: 'postList',
+          params: { blogSetId: $route.params.blogSetId },
+        }"
         :name="$t('views.postForm.backToBlogLink')"
       />
     </portal>
@@ -236,11 +239,11 @@ import {
   REQUEST_STATE,
   getUser,
   getBlog,
-  createSlug,
   ckeditorIframelyMediaProvider,
   validateSlug,
   toast,
   formatDate,
+  generateSlugFromServer,
 } from "@/utils/helpers";
 import {
   vuexFormInit,
@@ -271,7 +274,7 @@ let initialFormValues = {
 const randomHurraGifs = [
   "https://media.giphy.com/media/7IW6Jnw29TYmgkuu3M/giphy.gif",
   "https://media.giphy.com/media/Wq2xnn2ZnwiTtoD6Qk/giphy.gif",
-  "http://giphygifs.s3.amazonaws.com/media/7vfhdCIn13zm8/giphy.gif",
+  "https://giphygifs.s3.amazonaws.com/media/7vfhdCIn13zm8/giphy.gif",
   "https://66.media.tumblr.com/b53447fe9897178a2b4957a1ab32f6be/tumblr_n19pczDWI21ss6wowo9_250.gifv",
 ];
 
@@ -321,9 +324,7 @@ export default {
       if (this.existingPost && this.existingPost.status === "PUBLISHED") {
         this.publish();
       } else {
-        this.saveAsDraft().catch(e => {
-          console.log("Cannot be saved: form validation failed: " + e);
-        });
+        this.saveAsDraft();
       }
       return false;
     });
@@ -431,8 +432,7 @@ export default {
       }
     ) {
       if (this.savingPost.state === REQUEST_STATE.PENDING) {
-        console.log("abort saving, this post is currently saving.");
-        return;
+        return Promise.reject("Abort saving, this post is currently saving.");
       }
       if (!vuexFormGetValue(FORM_ID, "title").trim()) {
         toast(
@@ -440,7 +440,9 @@ export default {
           this.$t("views.postForm.fields.title.errors.required"),
           "error"
         );
-        return;
+        return Promise.reject(
+          this.$t("views.postForm.fields.title.errors.required")
+        );
       }
       const savingPendingAction = pendingActions.add("Saving post");
       this.savingPost = {
@@ -587,11 +589,12 @@ export default {
         this.showMediaCurrentlyLoadingModal();
       } else {
         if (vuexFormGetValue(FORM_ID, "slug").trim().length === 0) {
-          vuexFormSetValue(
-            FORM_ID,
-            "slug",
-            createSlug(vuexFormGetValue(FORM_ID, "title"))
-          );
+          generateSlugFromServer({
+            blogId: this.$route.params.blogId,
+            source: vuexFormGetValue(FORM_ID, "title").trim(),
+          }).then(response => {
+            vuexFormSetValue(FORM_ID, "slug", response.slug);
+          });
         }
         // if post is published or has been published once, we lock slug field by default.
         // if "publishedAt" is not null, we know the post has been published or is published.

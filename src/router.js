@@ -1,14 +1,18 @@
 import Vue from "vue";
 import Router from "vue-router";
 import { auth0Client } from "./utils/auth";
+
 const PostFormView = () =>
   import(/* webpackChunkName: "PostFormView" */ "./views/PostFormView");
 const ProfileView = () =>
   import(/* webpackChunkName: "ProfileView" */ "./views/ProfileView");
 const BlogCreateView = () =>
   import(/* webpackChunkName: "BlogCreateView" */ "./views/BlogCreateView");
+// BlogListView not used anymore because only one blogset possible for now.
 const BlogListView = () =>
   import(/* webpackChunkName: "BlogListView" */ "./views/BlogListView");
+const BlogSetListView = () =>
+  import(/* webpackChunkName: "BlogSetListView" */ "./views/BlogSetListView");
 const BlogSettingsView = () =>
   import(/* webpackChunkName: "BlogSettingsView" */ "./views/BlogSettingsView");
 const PostListView = () =>
@@ -41,10 +45,10 @@ const router = new Router({
   routes: [
     {
       path: "/",
-      name: "blogList",
-      component: BlogListView,
+      name: "blogSetList",
+      component: BlogSetListView,
     },
-    // used for e2e:test
+    // DOT NOT REMOVE: used for e2e:test
     {
       path: "/test",
       name: "test",
@@ -70,32 +74,32 @@ const router = new Router({
       },
     },
     {
-      path: "/blog/create",
+      path: "/blogset/:blogSetId/blog/create",
       name: "blogCreate",
       component: BlogCreateView,
     },
     {
-      path: "/blog/:blogId",
+      path: "/blogset/:blogSetId/blog/:blogId",
       name: "postList",
       component: PostListView,
     },
     {
-      path: "/blog/:blogId/settings",
+      path: "/blogset/:blogSetId/blog/:blogId/settings",
       name: "blogSettings",
       component: BlogSettingsView,
     },
     {
-      path: "/blog/:blogId/post/create",
+      path: "/blogset/:blogSetId/blog/:blogId/post/create",
       name: "postCreate",
       component: PostFormView,
     },
     {
-      path: "/blog/:blogId/post/:postId",
+      path: "/blogset/:blogSetId/blog/:blogId/post/:postId",
       name: "postUpdate",
       component: PostFormView,
     },
     {
-      path: "/blog/:blogId/plans",
+      path: "/blogset/:blogSetId/plans",
       name: "plans",
       component: PlansView,
     },

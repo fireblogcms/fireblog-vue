@@ -8,6 +8,8 @@
       type="text"
       :value="value"
       @input="$emit('input', $event.target.value)"
+      @change="$emit('change', $event.target.value)"
+      v-debounce="onDebounce"
       v-bind="$attrs"
     />
     <p v-if="error" class="mt-2 text-sm text-red-600">
@@ -27,6 +29,15 @@ export default {
     },
     value: {
       type: String,
+    },
+    debounce: {
+      type: Function,
+      default: () => {},
+    },
+  },
+  methods: {
+    onDebounce(value) {
+      this.$emit("debounce", value);
     },
   },
 };

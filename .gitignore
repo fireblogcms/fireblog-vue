@@ -3,6 +3,7 @@ node_modules
 /dist
 .VSCodeCounter
 tests/e2e/videos
+webpack-stats.json
 
 # local env files
 .env

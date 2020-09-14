@@ -4,18 +4,21 @@
     <portal to="topbar-left">
       <AppBreadcrumb
         image="/images/books.png"
-        link="blogList"
+        :routerOptions="{ name: 'blogSetList' }"
         :name="$t('views.postList.backToBlogLink')"
       />
     </portal>
     <!-- END TOPBAR LEFT BUTTONS -->
 
     <div class="container mx-auto my-10 text-center">
-      <div class="flex justify-center mb-16" v-if="freePlan">
+      <div
+        class="flex justify-center mb-16"
+        v-if="blogSet.subscription && blogSet.subscription.trialEnd && !blogSet.subscription.hasToSubscribe"
+      >
         <div class="w-8/12 p-8 bg-white shadow-md rounded-lg">
           <p>
             {{ $t("views.plans.freeTrialFirst") }}
-            {{ freePlan.productName }}
+            {{ blogSet.subscription.plan.productName }}
             {{ $t("views.plans.freeTrialSecond", { daysFreeTrial }) }}
           </p>
         </div>
@@ -65,6 +68,14 @@
               {{ $t("views.plans.storage") }}
             </p>
           </div>
+          <AppButton
+            v-if="isPlanSubscribed(plan.id)"
+            @click="$store.commit('modalShowing/open', 'unsubscribeModal')"
+            color="primary-outlined"
+            size="small"
+          >
+            {{ $t("global.unsubscribeButton") }}
+          </AppButton>
           <AppButton
             v-if="!isPlanSubscribed(plan.id)"
             :loading="
@@ -128,6 +139,25 @@
         </AppButton>
       </div>
     </AppModal>
+
+    <!-- UNSUBSCRIBE MODAL -->
+    <AppModal name="unsubscribeModal">
+      <div class="text-4xl font-bold" slot="header">
+        {{ $t("views.plans.unsubscribeModal.title") }}
+      </div>
+      <div class="flex flex-col items-center" slot="body">
+        <p class="text-xl">
+          {{ $t("views.plans.unsubscribeModal.body") }}
+        </p>
+        <AppButton
+          class="mt-10"
+          color="primary"
+          @click="onUnsubscribeClick"
+        >
+          {{ $t("global.unsubscribeButton") }}
+        </AppButton>
+      </div>
+    </AppModal>
   </DefaultLayout>
 </template>
 
@@ -137,12 +167,10 @@ import AppBreadcrumb from "@/ui-kit/AppBreadcrumb";
 import AppModal from "@/ui-kit/AppModal";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import apolloClient from "@/utils/apolloClient";
-import { getPlansQuery, updateBlogMutation } from "@/utils/queries";
+import gql from "graphql-tag";
 import { ContentLoader } from "vue-content-loader";
 import {
-  getBlog,
   getUser,
-  getPlan,
   createStripeCheckoutSession,
   toast,
   REQUEST_STATE,
@@ -164,7 +192,7 @@ export default {
       },
       daysFreeTrial: process.env.VUE_APP_DAYS_FREE_TRIAL,
       blog: {},
-      freePlan: null,
+      blogSet: {},
       plans: [],
       changePlanModal: {
         plan: {},
@@ -182,7 +210,7 @@ export default {
   methods: {
     async onSubscribeClick(plan) {
       const user = await getUser();
-      if (!this.blog.subscription.id) {
+      if (!this.blogSet.subscription.id) {
         this.subscribeRequest.state = REQUEST_STATE.PENDING;
         this.subscribeRequest.planId = plan.id;
         const stripe = Stripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY);
@@ -192,10 +220,10 @@ export default {
           ...(user.customerId && {
             customerId: user.customerId,
           }),
-          blogId: this.$route.params.blogId,
+          blogSetId: this.$route.params.blogSetId,
           planId: plan.id,
-          successUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}`,
-          cancelUrl: `${process.env.VUE_APP_BASE_URL}/blog/${this.$route.params.blogId}/plans`,
+          successUrl: `${process.env.VUE_APP_BASE_URL}`,
+          cancelUrl: `${process.env.VUE_APP_BASE_URL}/blogset/${this.$route.params.blogSetId}/plans`,
         });
         stripe
           .redirectToCheckout({
@@ -203,10 +231,8 @@ export default {
           })
           .then(r => {
             this.subscribeRequest.state = REQUEST_STATE.FINISHED_OK;
-            console.log(r);
           })
           .catch(error => {
-            console.log(error);
             this.subscribeRequest.state = REQUEST_STATE.FINISHED_ERROR;
             toast(this, error, "error");
             throw new Error(error);
@@ -220,61 +246,128 @@ export default {
     },
     changePlan(plan) {
       const subscription = {
-        id: this.blog.subscription.id,
+        id: this.blogSet.subscription.id,
         planId: plan.id,
       };
       return apolloClient
         .mutate({
-          mutation: updateBlogMutation,
           variables: {
-            blog: {
-              _id: this.$route.params.blogId,
-              subscription,
+            blogSet: {
+              _id: this.$route.params.blogSetId,
+              subscription
             },
           },
+          mutation: gql`
+            mutation($blogSet: UpdateBlogSetInput!) {
+              updateBlogSet(blogSet: $blogSet) {
+                subscription {
+                  id
+                  planId
+                }
+              }
+            }
+          `
         })
-        .then(result => {
+        .then(() => {
           this.$router
             .push({
-              name: "postList",
-              params: { blogId: result.data.updateBlog._id },
+              name: "blogSetList"
             })
             .then(() => {
+              this.$store.commit("modalShowing/close", "changePlanModal");
               this.$store.commit("modalShowing/open", "paymentSuccessModal");
             });
-          return result.data.updateBlog;
+        });
+    },
+    onUnsubscribeClick() {
+      const subscription = {
+        id: this.blogSet.subscription.id,
+        planId: this.blogSet.subscription.planId,
+        hasToSubscribe: true
+      };
+      return apolloClient
+        .mutate({
+          variables: {
+            blogSet: {
+              _id: this.$route.params.blogSetId,
+              subscription
+            },
+          },
+          mutation: gql`
+            mutation($blogSet: UpdateBlogSetInput!) {
+              updateBlogSet(blogSet: $blogSet) {
+                subscription {
+                  id
+                  planId
+                  hasToSubscribe
+                }
+              }
+            }
+          `
         })
-        .catch(error => {
-          toast(this, error, "error");
-          throw new Error(error);
+        .then(() => {
+          this.$router
+            .push({
+              name: "blogSetList"
+            })
+            .then(() => {
+              this.$store.commit("modalShowing/close", "unsubscribeModal");
+              this.$store.commit("modalShowing/open", "unsubscribeSuccessModal");
+            });
         });
     },
     async fetchData() {
-      this.blog = await getBlog(this.$route.params.blogId);
-      if (this.blog.subscription.trialEnd) {
-        this.freePlan = await getPlan();
-      }
-      return apolloClient
+      apolloClient.query({
+        variables: {
+          blogSetId: this.$route.params.blogSetId
+        },
+        query: gql`
+          query blogSet($blogSetId: ID!) {
+            blogSet(_id: $blogSetId) {
+              _id
+              name
+              subscription {
+                id
+                planId
+                trialEnd
+                hasToSubscribe
+                plan {
+                  id
+                  amount
+                  productName
+                }
+              }
+            }
+          }
+        `,
+      })
+      .then(result => {
+        this.blogSet = result.data.blogSet;
+      });
+
+      apolloClient
         .query({
-          query: getPlansQuery,
+          query: gql`
+            query getPlansQuery {
+              plans {
+                id
+                amount
+                amountTaxes
+                metadata
+                productName
+              }
+            }
+          `
         })
         .then(result => {
           this.plans = result.data.plans;
-          return result;
-        })
-        .catch(error => {
-          toast(
-            this,
-            "Sorry, an error occured while fetching pricing",
-            "error"
-          );
-          throw new Error(error);
         });
     },
     isPlanSubscribed(planId) {
       return (
-        !this.blog.subscription.trialEnd &&
-        this.blog.subscription.planId === planId
+        this.blogSet.subscription &&
+        !this.blogSet.subscription.trialEnd &&
+        this.blogSet.subscription.planId === planId
       );
     },
   },

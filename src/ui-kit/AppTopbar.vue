@@ -44,7 +44,7 @@
             role="menu"
           >
             <router-link
-              :to="{ name: 'blogList' }"
+              :to="{ name: 'blogSetList' }"
               class="px-4 py-2 font-bold hover:bg-gray-100"
             >
               {{ $t("topbar.accountMenu.myBlogs") }}
@@ -85,7 +85,7 @@
         slot="header"
       >
         <span class="text-4xl font-bold">API</span>
-        <a :href="blogApiUrl" target="_blank" class="hover:text-current">
+        <a :href="blogSetApiUrl" target="_blank" class="hover:text-current">
           <AppButton color="primary" size="small">
             {{ $t("apiModal.openGraphQLExplorer") }}
           </AppButton>
@@ -93,29 +93,36 @@
       </div>
       <div slot="body">
         <p class="text-2xl font-bold mb-4">GraphQL endpoint</p>
-        <AppFieldText readonly="true" :value="blogApiUrl" />
-        <div
-          :id="`example-${example.id}`"
-          v-for="example in apiModalExampleList"
-          :key="example.id"
-        >
-          <div class="my-4 flex">
-            <span class="text-2xl font-bold mr-4">{{ example.label }}</span>
-            <a
-              :href="`${blogApiUrl}?query=${encodeURI(example.snippet)}`"
-              target="_blank"
-            >
-              <AppButton color="primary-outlined" size="small">
-                {{ $t("apiModal.tryItButton") }}
-              </AppButton>
-            </a>
+        <AppFieldText disabled readonly="true" :value="blogSetApiUrl" />
+        <template v-if="apiModalExampleList.length === 0">
+          <ContentLoader height="200" class=" my-16">
+            <rect x="0" y="0" rx="3" ry="3" height="100%" />
+          </ContentLoader>
+        </template>
+        <template v-if="apiModalExampleList.length > 0">
+          <div
+            :id="`example-${example.id}`"
+            v-for="example in apiModalExampleList"
+            :key="example.id"
+          >
+            <div class="my-4 flex">
+              <span class="text-2xl font-bold mr-4">{{ example.label }}</span>
+              <a
+                :href="`${blogSetApiUrl}?query=${encodeURI(example.snippet)}`"
+                target="_blank"
+              >
+                <AppButton color="primary-outlined" size="small">
+                  {{ $t("apiModal.tryItButton") }}
+                </AppButton>
+              </a>
+            </div>
+            <div class="px-6 bg-gray-100 rounded-md text-sm">
+              <pre>
+                <code>{{ example.snippet }}</code>
+              </pre>
+            </div>
           </div>
-          <div class="px-6 bg-gray-100 rounded-md text-xs">
-            <pre>
-              <code>{{ example.snippet }}</code>
-            </pre>
-          </div>
-        </div>
+        </template>
       </div>
     </AppModal>
   </div>
@@ -127,12 +134,14 @@ import AppFieldText from "@/ui-kit/AppFieldText";
 import AppModal from "@/ui-kit/AppModal";
 import { getBlog, getPost, getUser, toast } from "@/utils/helpers";
 import apiExamples from "@/apiExamples";
+import { ContentLoader } from "vue-content-loader";
 
 export default {
   components: {
     AppButton,
     AppFieldText,
     AppModal,
+    ContentLoader,
   },
   data() {
     return {
@@ -142,8 +151,8 @@ export default {
     };
   },
   computed: {
-    blogApiUrl() {
-      return `${process.env.VUE_APP_GRAPHQL_POD_BASE_URL}/${this.$route.params.blogId}`;
+    blogSetApiUrl() {
+      return `${process.env.VUE_APP_GRAPHQL_BLOGSET_BASE_URL}/${this.$route.params.blogSetId}`;
     },
   },
   mounted() {
@@ -176,25 +185,32 @@ export default {
       return false;
     },
     async onApiClick() {
+      this.$store.commit("modalShowing/open", "graphQLApiModal");
       const context = {
         slug: "{{POST_SLUG}}",
-        locale: navigator.language || navigator.userLanguage,
+        blogId: "{{BLOG_ID}}",
       };
       if (this.$route.name === "postList") {
         const blog = await getBlog(this.$route.params.blogId);
-        context.locale = blog.contentDefaultLocale;
+        context.blogId = blog._id;
       }
       if (this.$route.name === "postUpdate") {
         const [blog, post] = await Promise.all([
           getBlog(this.$route.params.blogId),
           getPost(this.$route.params.postId),
         ]);
-        context.locale = blog.contentDefaultLocale;
+        context.blogId = blog._id;
         context.slug = post.slug;
       }
       this.apiModalExampleList = apiExamples(context);
-      this.$store.commit("modalShowing/open", "graphQLApiModal");
     },
   },
 };
 </script>
+
+<style scoped>
+code[class*="language-"],
+pre[class*="language-"] {
+  background: inherit;
+}
+</style>

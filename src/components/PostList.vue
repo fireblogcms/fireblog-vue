@@ -1,5 +1,6 @@
 <template>
   <div class="min-h-10 flex flex-col">
+    <!--
     <div v-if="postsRequestState === 'PENDING'">
       <div
         class="px-8 py-4 md:py-6 border-b border-gray-300 last:border-b-0"
@@ -20,8 +21,9 @@
         </ContentLoader>
       </div>
     </div>
+    -->
     <div
-      v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length === 0"
+      v-if="posts.edges.length === 0"
       class="flex-1 flex items-center justify-center"
     >
       <p class="text-center text-xl">
@@ -29,9 +31,7 @@
       </p>
     </div>
 
-    <template
-      v-if="postsRequestState === 'FINISHED_OK' && posts.edges.length > 0"
-    >
+    <template v-if="posts.edges.length > 0">
       <div
         class="py-4 md:py-6 flex flex-col md:flex-row cursor-pointer border-b border-gray-300 last:border-b-0"
         v-for="post in posts.edges"
@@ -40,6 +40,7 @@
           $router.push({
             name: 'postUpdate',
             params: {
+              blogSetId: $route.params.blogSetId,
               blogId: $route.params.blogId,
               postId: post.node._id,
             },
@@ -76,8 +77,14 @@
                 })
               }}
             </p>
-            <p v-if="post.node.teaser.trim()" class="mt-4">
-              {{ striptags(post.node.teaser) }}
+            <p class="mt-4">
+              {{
+                striptags(
+                  post.node.teaser.trim()
+                    ? post.node.teaser
+                    : post.node.content.substring(0, 250)
+                )
+              }}
             </p>
           </div>
         </div>
@@ -95,22 +102,16 @@
 
 <script>
 import AppButton from "@/ui-kit/AppButton";
-import { ContentLoader } from "vue-content-loader";
 import striptags from "striptags";
 import { formatDate } from "@/utils/helpers";
 
 export default {
   components: {
     AppButton,
-    ContentLoader,
   },
   props: {
     posts: {
       type: Object,
-      required: true,
-    },
-    postsRequestState: {
-      type: String,
       required: true,
     },
   },

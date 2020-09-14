@@ -1,20 +1,19 @@
 import i18n from "./i18n/index";
 
-export default ({ slug, locale }) => [
+export default ({ blogId, slug, locale }) => [
   {
     id: "getBlogIinformations",
     label: i18n.t("apiModal.getBlogInformations"),
     snippet: `
-    {
-      blog {
-        name
-        description
-        image {
-          url
-          alt
-        }
-      }
+{
+  blog(filter: {_id: { eq: "${blogId}" } }) {
+    name
+    description
+    image {
+      url
     }
+  }
+}
   `,
   },
   {
@@ -22,30 +21,33 @@ export default ({ slug, locale }) => [
     label: i18n.t("apiModal.getAllPublishedPosts"),
     snippet: `
 {
-  posts(last:50) {
-    totalCount
-    edges {
-      cursor
-      node {
-        slug
-        title
-        teaser
-        content
-        updatedAt
-        publishedAt
-        image {
-          url
-          alt
-        }
-        author {
-          name
-          email
-          picture
-        }
+  posts(
+    itemsPerPage: 20
+    page: 1
+    filter: { blog: { eq: "5f4e8705094947778f8da304" } }
+  ) {
+    pagination {
+      totalItems
+      totalPages
+      hasPreviousPage
+      hasNextPage
+    }
+    items {
+      slug
+      title
+      teaser
+      content
+      updatedAt
+      publishedAt
+      imageThumbnail: image(w: 200) {
+        url
+      }
+      imageFull: image {
+        url
       }
     }
   }
-}
+}    
 `,
   },
   {
@@ -53,22 +55,39 @@ export default ({ slug, locale }) => [
     label: i18n.t("apiModal.getASinglePostBySlug"),
     snippet: `
 {
-  post(slug: "${slug}") {
+  post(filter: { slug: { eq: "${slug}" }, blog: { eq: "5f4e8705094947778f8da304" } }) {
     slug
     title
     content
     publishedAt
     image {
       url
-      alt
     }
-    author {
+  }
+} 
+    `,
+  },
+  {
+    id: "getAllBlogsIinformations",
+    label: i18n.t("apiModal.getAllBlogsInformations"),
+    snippet: `
+{
+  blogs(itemsPerPage:20, page: 1) {
+    pagination {
+      totalItems
+      totalPages
+      hasPreviousPage
+      hasNextPage
+    }
+    items {
       name
-      email
-      picture
+      description
+      image {
+        url
+      }
     }
   }
 }
-    `,
+  `,
   },
 ];

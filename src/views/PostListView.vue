@@ -4,21 +4,21 @@
     <portal to="topbar-left">
       <AppBreadcrumb
         image="/images/books.png"
-        link="blogList"
+        :routerOptions="{ name: 'blogSetList' }"
         :name="$t('views.postList.backToBlogLink')"
       />
     </portal>
     <!-- END TOPBAR LEFT BUTTONS -->
 
-    <AppLoader v-if="initDataState === 'PENDING'" />
+    <AppLoader v-if="viewDataLoading" />
 
-    <template v-if="initDataState === 'FINISHED_OK'">
+    <template v-if="viewData">
       <div class="container mx-auto my-10">
         <div class="flex flex-col md:flex-row justify-between">
           <div class="flex-1 flex items-center mb-8 md:mb-0">
             <h1 class="text-2xl md:text-4xl font-bold uppercase">
               <img class="w-10 h-10 mr-4 inline" src="/images/book.png" />
-              {{ blog.name }}
+              {{ viewData.blog.name }}
             </h1>
           </div>
           <div class="flex flex-col md:flex-row items-center">
@@ -27,7 +27,10 @@
               @click="
                 $router.push({
                   name: 'blogSettings',
-                  params: { blogId: $route.params.blogId },
+                  params: {
+                    blogSetId: $route.params.blogSetId,
+                    blogId: $route.params.blogId,
+                  },
                 })
               "
             >
@@ -42,7 +45,10 @@
               @click="
                 $router.push({
                   name: 'postCreate',
-                  params: { blogId: $route.params.blogId },
+                  params: {
+                    blogId: $route.params.blogId,
+                    blogSetId: $route.params.blogSetId,
+                  },
                 })
               "
             >
@@ -85,7 +91,7 @@
               <div
                 class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-100 text-sm"
               >
-                {{ postsPublished.totalCount }}
+                {{ viewData.postsPublished.totalCount }}
               </div>
             </div>
             <div class="shadow-mask" v-show="activeStatus == 'PUBLISHED'" />
@@ -100,7 +106,7 @@
               <div
                 class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-100 text-sm"
               >
-                {{ postsDraft.totalCount }}
+                {{ viewData.postsDraft.totalCount }}
               </div>
             </div>
             <div class="shadow-mask" v-show="activeStatus == 'DRAFT'" />
@@ -111,16 +117,14 @@
           class="container mx-auto mb-20 py-6 px-4 md:px-10 bg-white shadow-md rounded-lg"
         >
           <PostList
-            :postsRequestState="postsPublishedRequestState"
             @onDeleteClick="onDeleteClick"
             v-show="activeStatus === 'PUBLISHED'"
-            :posts="postsPublished"
+            :posts="viewData.postsPublished"
           />
           <PostList
             @onDeleteClick="onDeleteClick"
-            :postsRequestState="postsDraftRequestState"
             v-show="activeStatus === 'DRAFT'"
-            :posts="postsDraft"
+            :posts="viewData.postsDraft"
           />
         </div>
       </template>
@@ -156,22 +160,6 @@
         </div>
       </div>
     </AppModal>
-
-    <!-- PAYMENT SUCCESS MODAL -->
-    <AppModal name="paymentSuccessModal">
-      <div class="text-4xl font-bold" slot="header">
-        {{ $t("views.postList.paymentSuccess") }}
-      </div>
-      <div class="flex flex-col items-center" slot="body">
-        <img
-          class="h-64 mb-10 rounded"
-          src="https://camo.githubusercontent.com/581d9802c9e5716113238cc2fcaf938bf2dad338/68747470733a2f2f6d656469612e67697068792e636f6d2f6d656469612f6248757134736355373255496f2f67697068792e676966"
-        />
-        <AppButton color="primary" @click="closePaymentSuccessModal">
-          {{ $t("global.okayButton") }}
-        </AppButton>
-      </div>
-    </AppModal>
   </DefaultLayout>
 </template>
 
@@ -205,20 +193,14 @@ export default {
   },
   data() {
     return {
-      initDataState: REQUEST_STATE.NOT_STARTED,
-      postsRequestState: REQUEST_STATE.NOT_STARTED,
-      postsDraftRequestState: REQUEST_STATE.NOT_STARTED,
-      postsPublishedRequestState: REQUEST_STATE.NOT_STARTED,
+      viewData: null,
+      viewDataLoading: false,
       deletePostRequestState: REQUEST_STATE.NOT_STARTED,
       deleteModal: {
         title: null,
         data: null,
         post: null,
       },
-      blog: null,
-      posts: null,
-      postsPublished: null,
-      postsDraft: null,
       activeStatus: "PUBLISHED",
       // will be true or false, once we have counted all existing posts
       isFirstPost: null,
@@ -228,11 +210,12 @@ export default {
     this.striptags = striptags;
   },
   mounted() {
-    this.initData();
+    this.viewDataLoading = true;
+    this.fetchData();
   },
   watch: {
     $route: function(value) {
-      this.initData();
+      viewData();
     },
   },
   beforeRouteEnter(to, from, next) {
@@ -249,108 +232,28 @@ export default {
     });
   },
   methods: {
+    fetchData() {
+      this.viewDataLoading = true;
+      viewDataQuery({ blogId: this.$route.params.blogId })
+        .then(r => {
+          this.viewData = r.data;
+          this.isFirstPost =
+            this.viewData.allPosts.totalCount === 0 ? true : false;
+          this.viewDataLoading = false;
+        })
+        .catch(error => {
+          this.viewDataLoading = false;
+          throw new Error(error);
+        });
+    },
     /**
      * We need to run two requests, to know what user has to see;
      * - All existing post (is this user first post ?)
      * - All published post (displayed in the "published" tab)
      * We will display a loader until this two requests are finished
      */
-    initData() {
-      this.initDataState = REQUEST_STATE.PENDING;
-      Promise.all([
-        this.getBlog(),
-        this.getAllPosts(),
-        this.getPostsPublished(),
-        this.getPostsDraft(),
-      ])
-        .then(() => {
-          this.initDataState = REQUEST_STATE.FINISHED_OK;
-        })
-        .catch(error => {
-          this.initDataState = REQUEST_STATE.FINISHED_ERROR;
-          throw new Error(error);
-        });
-    },
-    async getAllPosts() {
-      return apolloClient
-        .query({
-          query: getPostsQuery,
-          variables: {
-            blog: this.$route.params.blogId,
-            last: 1,
-            status: ["PUBLISHED", "DRAFT"],
-          },
-        })
-        .then(result => {
-          this.isFirstPost =
-            result.data.posts.edges.length === 0 ? true : false;
-          return result;
-        })
-        .catch(error => {
-          toast(this, "Sorry, an error occured while fetching posts", "error");
-          throw new Error(error);
-        });
-    },
-    getBlog() {
-      return apolloClient
-        .query({
-          query: getBlogQuery,
-          variables: {
-            _id: this.$route.params.blogId,
-          },
-        })
-        .then(result => {
-          this.blog = result.data.blog;
-          return result;
-        });
-    },
-    getPostsPublished() {
-      this.postsPublishedRequestState = REQUEST_STATE.PENDING;
-      return apolloClient
-        .query({
-          query: getPostsQuery,
-          variables: {
-            blog: this.$route.params.blogId,
-            status: ["PUBLISHED"],
-          },
-        })
-        .then(result => {
-          this.postsPublishedRequestState = REQUEST_STATE.FINISHED_OK;
-          this.postsPublished = result.data.posts;
-          return result;
-        })
-        .catch(error => {
-          this.postsPublishedRequestState = REQUEST_STATE.FINISHED_ERROR;
-          toast(this, "Sorry, an error occured while fetching posts", "error");
-          throw new Error(error);
-        });
-    },
-    getPostsDraft() {
-      this.postsDraftRequestState = REQUEST_STATE.PENDING;
-      return apolloClient
-        .query({
-          query: getPostsQuery,
-          variables: {
-            blog: this.$route.params.blogId,
-            status: ["DRAFT"],
-          },
-        })
-        .then(result => {
-          this.postsDraftRequestState = REQUEST_STATE.FINISHED_OK;
-          this.postsDraft = result.data.posts;
-          return result;
-        })
-        .catch(error => {
-          this.postsDraftRequestState = REQUEST_STATE.FINISHED_ERROR;
-          toast(this, "Sorry, an error occured while fetching posts", "error");
-          throw new Error(error);
-        });
-    },
     closeDeletePostModal() {
       this.$store.commit("modalShowing/close", "deletePostModal");
-    },
-    closePaymentSuccessModal() {
-      this.$store.commit("modalShowing/close", "paymentSuccessModal");
     },
     deletePost(post) {
       this.deletePostRequestState = REQUEST_STATE.PENDING;
@@ -372,12 +275,6 @@ export default {
     },
     onStatusClick(status) {
       this.activeStatus = status;
-      if (status === "PUBLISHED") {
-        this.getPostsPublished();
-      }
-      if (status === "DRAFT") {
-        this.getPostsDraft();
-      }
     },
     onDeleteClick(post) {
       this.deleteModal.post = post;
@@ -389,16 +286,63 @@ export default {
     onDeleteModalConfirmClick() {
       this.deletePost(this.deleteModal.post).then(() => {
         this.closeDeletePostModal();
-        if (this.deleteModal.post.status === "PUBLISHED") {
-          this.getPostsPublished();
-        }
-        if (this.deleteModal.post.status === "DRAFT") {
-          this.getPostsDraft();
-        }
+        this.fetchData();
       });
     },
   },
 };
+
+function viewDataQuery({ blogId }) {
+  return apolloClient.query({
+    variables: {
+      blogId,
+    },
+    query: gql`
+      query postListViewQuery($blogId: ID!) {
+        blog(_id: $blogId) {
+          _id
+          name
+          deletedAt
+        }
+        allPosts: posts(blog: $blogId, filter: { status: [PUBLISHED, DRAFT] }) {
+          totalCount
+          edges {
+            node {
+              _id
+              title
+              teaser
+              image
+            }
+          }
+        }
+        postsPublished: posts(blog: $blogId, filter: { status: PUBLISHED }) {
+          totalCount
+          edges {
+            node {
+              _id
+              title
+              teaser
+              content
+              image
+            }
+          }
+        }
+        postsDraft: posts(blog: $blogId, filter: { status: DRAFT }) {
+          totalCount
+          edges {
+            node {
+              _id
+              title
+              teaser
+              content
+              image
+            }
+          }
+        }
+      }
+    `,
+  });
+}
 </script>
 
 <style scoped>
