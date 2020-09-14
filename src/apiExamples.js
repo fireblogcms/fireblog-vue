@@ -5,92 +5,89 @@ export default ({ blogId, slug, locale }) => [
     id: "getBlogIinformations",
     label: i18n.t("apiModal.getBlogInformations"),
     snippet: `
-    {
-      blog(_id:"${blogId}") {
-        name
-        description
-        image {
-          url
-        }
-      }
+{
+  blog(filter: {_id: { eq: "${blogId}" } }) {
+    name
+    description
+    image {
+      url
     }
+  }
+}
   `,
   },
   {
     id: "getAllPublishedPosts",
     label: i18n.t("apiModal.getAllPublishedPosts"),
     snippet: `
-    {
-      blog(_id: "${blogId}") {
-        posts(first: 20) {
-          totalCount
-          pageInfo {
-            hasNextPage
-            hasPreviousPage
-            startCursor
-            endCursor
-          }
-          edges {
-            node {
-              slug
-              title
-              teaser
-              content
-              updatedAt
-              publishedAt
-              imageThumbnail: image(w: 200) {
-                url
-              }
-              imageFull: image {
-                url
-              }
-            }
-          }
-        }
+{
+  posts(
+    itemsPerPage: 20
+    page: 1
+    filter: { blog: { eq: "5f4e8705094947778f8da304" } }
+  ) {
+    pagination {
+      totalItems
+      totalPages
+      hasPreviousPage
+      hasNextPage
+    }
+    items {
+      slug
+      title
+      teaser
+      content
+      updatedAt
+      publishedAt
+      imageThumbnail: image(w: 200) {
+        url
       }
-    }    
+      imageFull: image {
+        url
+      }
+    }
+  }
+}    
 `,
   },
   {
     id: "getSinglePostBySlug",
     label: i18n.t("apiModal.getASinglePostBySlug"),
     snippet: `
-    {
-      post(slug: "${slug}", blogId: "${blogId}") {
-        slug
-        title
-        content
-        publishedAt
-        image {
-          url
-          alt
-        }
-        author {
-          name
-          email
-          picture
-        }
-      }
+{
+  post(filter: { slug: { eq: "${slug}" }, blog: { eq: "5f4e8705094947778f8da304" } }) {
+    slug
+    title
+    content
+    publishedAt
+    image {
+      url
     }
+  }
+} 
     `,
   },
   {
     id: "getAllBlogsIinformations",
     label: i18n.t("apiModal.getAllBlogsInformations"),
     snippet: `
-    {
-      blogs(first:20) {
-        edges {
-          node {
-            name
-            description
-            image {
-              url
-            }
-          }
-        }
+{
+  blogs(itemsPerPage:20, page: 1) {
+    pagination {
+      totalItems
+      totalPages
+      hasPreviousPage
+      hasNextPage
+    }
+    items {
+      name
+      description
+      image {
+        url
       }
     }
+  }
+}
   `,
   },
 ];
