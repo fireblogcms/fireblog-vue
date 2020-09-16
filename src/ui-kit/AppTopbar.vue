@@ -93,7 +93,7 @@
       </div>
       <div slot="body">
         <p class="text-2xl font-bold mb-4">GraphQL endpoint</p>
-        <pre class="bg-gray-100 rounded-md px-6 py-3 mb-6">{{
+        <pre class="bg-gray-100 rounded-md px-6 py-3 mb-6 overflow-x-auto">{{
           blogSetApiUrl
         }}</pre>
 
