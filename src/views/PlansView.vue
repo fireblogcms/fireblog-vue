@@ -35,11 +35,11 @@
       <p>✔️ <span v-html="$t('views.plans.benefices.gatsby')" /></p>
 
       <div
-        class="mt-10 flex flex-col md:flex-row justify-between"
+        class="mt-10 flex flex-col md:flex-row justify-around"
         v-if="plans.length > 0"
       >
         <div
-          class="w-full md:w-1/4 my-4 md:mx-4 p-6 flex flex-col items-center justify-between bg-white shadow-md rounded-lg border-4"
+          class="w-full md:w-1/3 my-4 md:mx-4 p-6 flex flex-col items-center justify-between bg-white shadow-md rounded-lg border-4"
           :class="
             isPlanSubscribed(plan.id) ? 'border-primary' : 'border-transparent'
           "
@@ -48,9 +48,7 @@
         >
           <div>
             <p class="mb-4 text-2xl font-bold">{{ plan.productName }}</p>
-            <p class="mb-4 font-bold">
-              {{ $t(plan.metadata.SUBTITLE) }}
-            </p>
+            <p class="mb-4 font-bold" v-html="$t(plan.metadata.SUBTITLE)"></p>
             <p class="mb-4 text-xl font-bold">
               {{ (parseInt(plan.amountTaxes) / 100).toFixed(2) }}
               {{ $t("views.plans.eurosPerMonth") }}
@@ -93,22 +91,23 @@
 
       <!-- Loading placeholders -->
       <div
-        class="mt-10 flex flex-col md:flex-row justify-between"
+        class="mt-10 flex flex-col md:flex-row justify-around"
         v-if="plans.length === 0"
       >
         <div
-          class="w-full md:w-1/4 my-4 md:mx-4 p-6 bg-white shadow-md rounded-lg border-4 border-transparent"
-          v-for="(v, i) in [0, 1, 2, 3]"
+          class="w-full md:w-1/3 my-4 md:mx-4 p-6 bg-white shadow-md rounded-lg border-4 border-transparent"
+          v-for="(v, i) in [0, 1, 2]"
           :key="i"
         >
-          <ContentLoader :height="500">
-            <rect x="0" y="0" rx="3" ry="3" width="100%" height="60" />
-            <rect x="0" y="120" rx="3" ry="3" width="100%" height="20" />
-            <rect x="0" y="160" rx="3" ry="3" width="100%" height="20" />
-            <rect x="0" y="260" rx="3" ry="3" width="100%" height="40" />
-            <rect x="0" y="360" rx="3" ry="3" width="100%" height="20" />
-            <rect x="0" y="400" rx="3" ry="3" width="100%" height="20" />
-            <rect x="0" y="440" rx="3" ry="3" width="100%" height="20" />
+          <ContentLoader :height="400">
+            <rect x="20%" y="0" rx="3" ry="3" width="60%" height="50" />
+            <rect x="5%" y="80" rx="3" ry="3" width="90%" height="20" />
+            <rect x="25%" y="110" rx="3" ry="3" width="50%" height="20" />
+            <rect x="20%" y="160" rx="3" ry="3" width="60%" height="40" />
+            <rect x="35%" y="230" rx="3" ry="3" width="30%" height="20" />
+            <rect x="30%" y="260" rx="3" ry="3" width="40%" height="20" />
+            <rect x="30%" y="290" rx="3" ry="3" width="40%" height="20" />
+            <rect x="25%" y="340" rx="3" ry="3" width="50%" height="60" />
           </ContentLoader>
         </div>
       </div>
