@@ -96,7 +96,7 @@
         <input
           type="text"
           disabled
-          class="bg-gray-100 rounded-md w-full px-6 overflow-x-auto"
+          class="bg-gray-100 rounded-md w-full px-2 overflow-x-auto"
           :value="blogSetApiUrl"
         />
 
