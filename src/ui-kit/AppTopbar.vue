@@ -92,8 +92,14 @@
         </a>
       </div>
       <div slot="body">
-        <p class="text-2xl font-bold mb-4">GraphQL endpoint</p>
-        <AppFieldText disabled readonly="true" :value="blogSetApiUrl" />
+        <p class="text-lg font-bold mb-4">GraphQL endpoint</p>
+        <input
+          type="text"
+          disabled
+          class="bg-gray-100 rounded-md w-full px-2 overflow-x-auto"
+          :value="blogSetApiUrl"
+        />
+
         <template v-if="apiModalExampleList.length === 0">
           <ContentLoader height="200" class=" my-16">
             <rect x="0" y="0" rx="3" ry="3" height="100%" />
@@ -101,24 +107,25 @@
         </template>
         <template v-if="apiModalExampleList.length > 0">
           <div
+            class="mt-12"
             :id="`example-${example.id}`"
             v-for="example in apiModalExampleList"
             :key="example.id"
           >
-            <div class="my-4 flex">
-              <span class="text-2xl font-bold mr-4">{{ example.label }}</span>
+            <div class="my-4 flex justify-between">
+              <span class="text-lg font-bold">{{ example.label }}</span>
               <a
                 :href="`${blogSetApiUrl}?query=${encodeURI(example.snippet)}`"
                 target="_blank"
               >
-                <AppButton color="primary-outlined" size="small">
+                <span class="text-primary font-bold">
                   {{ $t("apiModal.tryItButton") }}
-                </AppButton>
+                </span>
               </a>
             </div>
-            <div class="px-6 bg-gray-100 rounded-md text-sm">
+            <div class="px-6 bg-gray-100 rounded-md text-xs">
               <pre>
-                <code>{{ example.snippet }}</code>
+                <code class="language-graphql">{{ example.snippet }}</code>
               </pre>
             </div>
           </div>
@@ -130,7 +137,6 @@
 
 <script>
 import AppButton from "@/ui-kit/AppButton";
-import AppFieldText from "@/ui-kit/AppFieldText";
 import AppModal from "@/ui-kit/AppModal";
 import { getBlog, getPost, getUser, toast } from "@/utils/helpers";
 import apiExamples from "@/apiExamples";
@@ -139,7 +145,6 @@ import { ContentLoader } from "vue-content-loader";
 export default {
   components: {
     AppButton,
-    AppFieldText,
     AppModal,
     ContentLoader,
   },

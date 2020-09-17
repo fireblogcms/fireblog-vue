@@ -54,17 +54,22 @@ export default ({ blogId, slug, locale }) => [
     id: "getSinglePostBySlug",
     label: i18n.t("apiModal.getASinglePostBySlug"),
     snippet: `
-{
-  post(filter: { slug: { eq: "${slug}" }, blog: { eq: "5f4e8705094947778f8da304" } }) {
-    slug
-    title
-    content
-    publishedAt
-    image {
-      url
+  {
+    post(
+      filter: {
+        slug: { eq: "${slug}" }
+        blog: { eq: "5f4e8705094947778f8da304" }
+      }
+    ) {
+      slug
+      title
+      content
+      publishedAt
+      image {
+        url
+      }
     }
-  }
-} 
+  }    
     `,
   },
   {
