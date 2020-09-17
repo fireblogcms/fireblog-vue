@@ -92,10 +92,13 @@
         </a>
       </div>
       <div slot="body">
-        <p class="text-2xl font-bold mb-4">GraphQL endpoint</p>
-        <pre class="bg-gray-100 rounded-md px-6 py-3 mb-6 overflow-x-auto">{{
-          blogSetApiUrl
-        }}</pre>
+        <p class="text-lg font-bold mb-4">GraphQL endpoint</p>
+        <input
+          type="text"
+          disabled
+          class="bg-gray-100 rounded-md w-full px-6 overflow-x-auto"
+          :value="blogSetApiUrl"
+        />
 
         <template v-if="apiModalExampleList.length === 0">
           <ContentLoader height="200" class=" my-16">
@@ -134,7 +137,6 @@
 
 <script>
 import AppButton from "@/ui-kit/AppButton";
-import AppFieldText from "@/ui-kit/AppFieldText";
 import AppModal from "@/ui-kit/AppModal";
 import { getBlog, getPost, getUser, toast } from "@/utils/helpers";
 import apiExamples from "@/apiExamples";
@@ -143,7 +145,6 @@ import { ContentLoader } from "vue-content-loader";
 export default {
   components: {
     AppButton,
-    AppFieldText,
     AppModal,
     ContentLoader,
   },
