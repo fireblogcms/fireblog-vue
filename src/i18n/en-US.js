@@ -133,7 +133,6 @@ export default {
   "views.plans.firstPlanDescription": "Perfect if you are writing from 1 to 5 articles per month",
   "views.plans.secondPlanDescription": "Perfect if you are writing from 5 to 10 articles per month",
   "views.plans.thirdPlanDescription": "Perfect if you are writing from 10 to 20 articles per month",
-  "views.plans.fourthPlanDescription": "Perfect if you are writing several articles per day",
   "views.plans.includes": "includes",
   "views.plans.eurosPerMonth": "€ per month",
   "views.plans.apiCalls": "API calls",
