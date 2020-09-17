@@ -24,7 +24,7 @@ export default ({ blogId, slug, locale }) => [
   posts(
     itemsPerPage: 20
     page: 1
-    filter: { blog: { eq: "5f4e8705094947778f8da304" } }
+    filter: { blog: { eq: "${blogId}" } }
   ) {
     pagination {
       totalItems
