@@ -48,9 +48,7 @@
         >
           <div>
             <p class="mb-4 text-2xl font-bold">{{ plan.productName }}</p>
-            <p class="mb-4 font-bold">
-              {{ $t(plan.metadata.SUBTITLE) }}
-            </p>
+            <p class="mb-4 font-bold" v-html="$t(plan.metadata.SUBTITLE)"></p>
             <p class="mb-4 text-xl font-bold">
               {{ (parseInt(plan.amountTaxes) / 100).toFixed(2) }}
               {{ $t("views.plans.eurosPerMonth") }}
