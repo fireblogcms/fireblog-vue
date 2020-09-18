@@ -130,7 +130,7 @@ export default {
           "views.plans.storageUnitMB",
           "",
         ];
-        return `${(bytes / Math.pow(1024, i)).toFixed(2) * 1} ${this.$t(
+        return `${(bytes / Math.pow(1024, i)).toFixed(2) * 1}${this.$t(
           sizes[i]
         )}`;
       }

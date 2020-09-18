@@ -28,6 +28,16 @@
           <span class="hidden md:inline">API</span>
         </AppButton>
 
+        <AppButton
+          size="small"
+          class="ml-2"
+          v-if="isContactVisible()"
+          @click="$store.commit('modalShowing/open', 'contactModal')"
+        >
+          <img class="w-6 md:mr-2" src="/images/contact.svg" />
+          <span class="hidden md:inline">Contact</span>
+        </AppButton>
+
         <div v-if="me" class="relative cursor-pointer ml-4 md:ml-6">
           <div @click="dropdownMenuActive = !dropdownMenuActive">
             <img
@@ -132,6 +142,22 @@
         </template>
       </div>
     </AppModal>
+
+    <!-- CONTACT -->
+    <AppModal name="contactModal">
+      <div class="text-4xl font-bold" slot="header">
+        {{ $t("contactModal.title") }}
+      </div>
+      <div class="flex flex-col items-center" slot="body">
+        <img class="h-64 mb-4 rounded" src="http://33.media.tumblr.com/3e788c19683d601f195d0d6c0891c28a/tumblr_n7d7i3RwqP1smcbm7o1_500.gif" />
+        <p>{{ $t("contactModal.content") }}</p>
+        <div class="flex items-center my-4">
+          <a class="text-primary font-bold" href="mailto:support@fireblogcms.com">
+            support@fireblogcms.com
+          </a>
+        </div>
+      </div>
+    </AppModal>
   </div>
 </template>
 
@@ -188,6 +214,9 @@ export default {
         return true;
       }
       return false;
+    },
+    isContactVisible() {
+      return this.$route.name !== "postUpdate" && this.$route.name !== "postCreate";
     },
     async onApiClick() {
       this.$store.commit("modalShowing/open", "graphQLApiModal");

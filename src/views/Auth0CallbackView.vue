@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen bg-gray-100">
+  <div class="h-screen bg-alabaster">
     <div class="py-10 text-center" v-if="error">
       <router-link :to="{ name: 'logout' }">
         {{ $t("global.retryLogin") }}
