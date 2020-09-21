@@ -21,30 +21,23 @@ export default ({ blogId, slug, locale }) => [
     label: i18n.t("apiModal.getAllPublishedPosts"),
     snippet: `
 {
+  postsCount(filter: { blog: { eq: "${blogId}" } })
   posts(
-    itemsPerPage: 20
-    page: 1
+    limit: 20
+    skip: 0
     filter: { blog: { eq: "${blogId}" } }
   ) {
-    pagination {
-      totalItems
-      totalPages
-      hasPreviousPage
-      hasNextPage
+    slug
+    title
+    teaser
+    content
+    updatedAt
+    publishedAt
+    imageThumbnail: image(w: 200) {
+      url
     }
-    items {
-      slug
-      title
-      teaser
-      content
-      updatedAt
-      publishedAt
-      imageThumbnail: image(w: 200) {
-        url
-      }
-      imageFull: image {
-        url
-      }
+    imageFull: image {
+      url
     }
   }
 }    
@@ -77,19 +70,11 @@ export default ({ blogId, slug, locale }) => [
     label: i18n.t("apiModal.getAllBlogsInformations"),
     snippet: `
 {
-  blogs(itemsPerPage:20, page: 1) {
-    pagination {
-      totalItems
-      totalPages
-      hasPreviousPage
-      hasNextPage
-    }
-    items {
-      name
-      description
-      image {
-        url
-      }
+  blogs(limit:20) {
+    name
+    description
+    image {
+      url
     }
   }
 }

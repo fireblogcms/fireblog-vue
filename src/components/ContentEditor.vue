@@ -28,8 +28,8 @@ export default {
   },
   data() {
     return {
-      changed: false
-    }
+      changed: false,
+    };
   },
   mounted() {
     Editor.create(this.$refs.editor, {
@@ -85,6 +85,8 @@ export default {
       ],
       autosave: {
         save: editor => {
+          console.log("editor.getData()", editor.getData());
+          console.log("this.$refs.editor", this.$refs.editor.innerHTML);
           if (this.operation === "create" && editor.getData().length === 0) {
             return;
           }

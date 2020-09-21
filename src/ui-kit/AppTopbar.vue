@@ -149,10 +149,16 @@
         {{ $t("contactModal.title") }}
       </div>
       <div class="flex flex-col items-center" slot="body">
-        <img class="h-64 mb-4 rounded" src="http://33.media.tumblr.com/3e788c19683d601f195d0d6c0891c28a/tumblr_n7d7i3RwqP1smcbm7o1_500.gif" />
+        <img
+          class="h-64 mb-4 rounded"
+          src="http://33.media.tumblr.com/3e788c19683d601f195d0d6c0891c28a/tumblr_n7d7i3RwqP1smcbm7o1_500.gif"
+        />
         <p>{{ $t("contactModal.content") }}</p>
         <div class="flex items-center my-4">
-          <a class="text-primary font-bold" href="mailto:support@fireblogcms.com">
+          <a
+            class="text-primary font-bold"
+            href="mailto:support@fireblogcms.com"
+          >
             support@fireblogcms.com
           </a>
         </div>
@@ -216,7 +222,9 @@ export default {
       return false;
     },
     isContactVisible() {
-      return this.$route.name !== "postUpdate" && this.$route.name !== "postCreate";
+      return (
+        this.$route.name !== "postUpdate" && this.$route.name !== "postCreate"
+      );
     },
     async onApiClick() {
       this.$store.commit("modalShowing/open", "graphQLApiModal");
