@@ -51,7 +51,7 @@ export default ({ blogId, slug, locale }) => [
     post(
       filter: {
         slug: { eq: "${slug}" }
-        blog: { eq: "5f4e8705094947778f8da304" }
+        blog: { eq: "${blogId}" }
       }
     ) {
       slug
