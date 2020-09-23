@@ -27,6 +27,8 @@ const LogoutView = () =>
   import(/* webpackChunkName: "LogoutView" */ "./views/LogoutView");
 const LoginView = () =>
   import(/* webpackChunkName: "LoginView" */ "./views/LoginView");
+const SignUpView = () =>
+  import(/* webpackChunkName: "SignUpView" */ "./views/SignUpView");
 const TestView = () =>
   import(/* webpackChunkName: "TestView" */ "./views/TestView");
 const PlansView = () =>
@@ -47,6 +49,14 @@ const router = new Router({
       path: "/",
       name: "blogSetList",
       component: BlogSetListView,
+    },
+    {
+      path: "/signup",
+      name: "signup",
+      component: SignUpView,
+      meta: {
+        public: true,
+      },
     },
     // DOT NOT REMOVE: used for e2e:test
     {
@@ -137,7 +147,7 @@ router.beforeEach(async (to, from, next) => {
   else {
     // abort the current navigation.
     next(false);
-    //  orce authentication.
+    // force authentication
     await auth0.loginWithRedirect({
       redirect_uri: `${process.env.VUE_APP_BASE_URL}/auth0-callback`,
     });
