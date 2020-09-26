@@ -157,7 +157,6 @@ function viewData() {
             status
             image {
               url
-              alt
             }
             description
             name
