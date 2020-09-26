@@ -49,7 +49,6 @@ export const FullBlogFragment = gql`
     blogSet
     image {
       url
-      alt
     }
     contentDefaultLocale
     description
