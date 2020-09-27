@@ -296,6 +296,8 @@ function viewData() {
         me {
           _id
           name
+          email
+          picture
           blogs(last: 100) {
             edges {
               node {
