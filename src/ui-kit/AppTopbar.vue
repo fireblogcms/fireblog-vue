@@ -180,7 +180,6 @@ import { ContentLoader } from "vue-content-loader";
 function getRandomSupportGif() {
   const gifs = [
     "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-dog.gif",
-    "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-jdepp.gif",
     "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-friends.gif",
     "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-ringo-star-tea.gif",
     "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-women.gif",
