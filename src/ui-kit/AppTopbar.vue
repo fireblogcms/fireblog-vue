@@ -32,7 +32,7 @@
           size="small"
           class="ml-2"
           v-if="isContactVisible()"
-          @click="$store.commit('modalShowing/open', 'contactModal')"
+          @click="onContactClick"
         >
           <img class="w-6 md:mr-2" src="/images/contact.svg" />
           <span class="hidden md:inline">Contact</span>
@@ -149,10 +149,7 @@
         {{ $t("contactModal.title") }}
       </div>
       <div class="flex flex-col items-center" slot="body">
-        <img
-          class="h-64 mb-4 rounded"
-          src="http://33.media.tumblr.com/3e788c19683d601f195d0d6c0891c28a/tumblr_n7d7i3RwqP1smcbm7o1_500.gif"
-        />
+        <img v-if="supportGif" class="h-64 mb-4 rounded" :src="supportGif" />
         <p>{{ $t("contactModal.content") }}</p>
         <div class="flex items-center my-4">
           <a
@@ -170,9 +167,26 @@
 <script>
 import AppButton from "@/ui-kit/AppButton";
 import AppModal from "@/ui-kit/AppModal";
-import { getBlog, getPost, getUser, toast } from "@/utils/helpers";
+import {
+  getBlog,
+  getPost,
+  getUser,
+  toast,
+  getRandomGif,
+} from "@/utils/helpers";
 import apiExamples from "@/apiExamples";
 import { ContentLoader } from "vue-content-loader";
+
+function getRandomSupportGif() {
+  const gifs = [
+    "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-dog.gif",
+    "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-jdepp.gif",
+    "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-friends.gif",
+    "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-ringo-star-tea.gif",
+    "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-women.gif",
+  ];
+  return getRandomGif(gifs);
+}
 
 export default {
   components: {
@@ -185,6 +199,7 @@ export default {
       apiModalExampleList: [],
       dropdownMenuActive: false,
       me: null,
+      supportGif: null, // do not load any gifs on first load of the page !
     };
   },
   computed: {
@@ -201,6 +216,20 @@ export default {
     },
   },
   methods: {
+    onContactClick() {
+      this.supportGif = getRandomSupportGif();
+      this.$store.commit("modalShowing/open", "contactModal");
+    },
+    getRandomSupportGif() {
+      const gifs = [
+        "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-dog.gif",
+        "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-jdepp.gif",
+        "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-ringo-star-tea.gif",
+        "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-women.gif",
+        "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-friends.gif",
+      ];
+      return getRandomGif(gifs);
+    },
     async initData() {
       getUser()
         .then(user => {

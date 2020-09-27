@@ -386,3 +386,11 @@ export function createStripeCheckoutSession({
       return sessionId;
     });
 }
+
+/**
+ * @param {array} gifsArray : array of gifs urls
+ * @return {string} a single gif url
+ */
+export function getRandomGif(gifsArray) {
+  return gifsArray[Math.floor(Math.floor(Math.random() * gifsArray.length))];
+}

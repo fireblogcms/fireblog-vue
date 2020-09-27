@@ -244,6 +244,7 @@ import {
   toast,
   formatDate,
   generateSlugFromServer,
+  getRandomGif,
 } from "@/utils/helpers";
 import {
   vuexFormInit,
@@ -270,13 +271,6 @@ let initialFormValues = {
   slugIsLocked: false,
   slugShowToggleLockButton: true,
 };
-
-const randomHurraGifs = [
-  "https://media.giphy.com/media/7IW6Jnw29TYmgkuu3M/giphy.gif",
-  "https://media.giphy.com/media/Wq2xnn2ZnwiTtoD6Qk/giphy.gif",
-  "https://giphygifs.s3.amazonaws.com/media/7vfhdCIn13zm8/giphy.gif",
-  "https://66.media.tumblr.com/b53447fe9897178a2b4957a1ab32f6be/tumblr_n19pczDWI21ss6wowo9_250.gifv",
-];
 
 const FORM_ID = "postForm";
 let pendingActions = null;
@@ -619,9 +613,13 @@ export default {
       this.savePost("DRAFT");
     },
     getRandomHurrahGif() {
-      return randomHurraGifs[
-        Math.floor(Math.floor(Math.random() * randomHurraGifs.length))
+      const hurraGifs = [
+        "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/publish-man-dancing.gif",
+        "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/publish-press.gif",
+        "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/publish-too-big-newspaper.gif",
+        "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/publish-women-newspaper.gif",
       ];
+      return getRandomGif(hurraGifs);
     },
     /**
      * Validation might differ according to what we are doing. Possibles types are:

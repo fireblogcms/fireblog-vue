@@ -81,8 +81,9 @@
       </div>
       <div class="flex flex-col items-center" slot="body">
         <img
+          loading="lazy"
           class="h-64 mb-10 rounded"
-          src="https://media.giphy.com/media/nwCXwQPoVfJHa/giphy.gif"
+          src="https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/unsubscribe-sad.gif"
         />
         <AppButton
           color="primary"
