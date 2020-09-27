@@ -102,7 +102,7 @@
         </a>
       </div>
       <div slot="body">
-        <p class="text-lg font-bold mb-4">GraphQL endpoint</p>
+        <p class="text-lg font-bold">GraphQL endpoint</p>
         <input
           type="text"
           disabled
@@ -176,6 +176,8 @@ import {
 } from "@/utils/helpers";
 import apiExamples from "@/apiExamples";
 import { ContentLoader } from "vue-content-loader";
+import apolloClient from "@/utils/apolloClient";
+import gql from "graphql-tag";
 
 function getRandomSupportGif() {
   const gifs = [
@@ -198,13 +200,10 @@ export default {
       apiModalExampleList: [],
       dropdownMenuActive: false,
       me: null,
-      supportGif: null, // do not load any gifs on first load of the page !
+      blogSet: null,
+      supportGif: null, // do not load any gifs on first load of the page !,
+      blogSetApiUrl: null,
     };
-  },
-  computed: {
-    blogSetApiUrl() {
-      return `${process.env.VUE_APP_GRAPHQL_BLOGSET_BASE_URL}/${this.$route.params.blogSetId}`;
-    },
   },
   mounted() {
     this.initData();
@@ -230,9 +229,13 @@ export default {
       return getRandomGif(gifs);
     },
     async initData() {
-      getUser()
-        .then(user => {
-          this.me = user;
+      return viewData()
+        .then(response => {
+          this.me = response.data.me;
+          // we can have only one blogset for now
+          this.blogSet = response.data.blogSets[0];
+          const blogSetId = this.$route.params.blogSetId || this.blogSet._id;
+          this.blogSetApiUrl = `${process.env.VUE_APP_GRAPHQL_BLOGSET_BASE_URL}/${blogSetId}`;
         })
         .catch(error => {
           toast(this, error, "error");
@@ -243,7 +246,12 @@ export default {
       this.$router.push("/");
     },
     isApiHelpVisible() {
-      const authorizedNames = ["postList", "postUpdate", "postCreate"];
+      const authorizedNames = [
+        "postList",
+        "postUpdate",
+        "postCreate",
+        "blogSetList",
+      ];
       if (authorizedNames.includes(this.$route.name)) {
         return true;
       }
@@ -276,6 +284,31 @@ export default {
     },
   },
 };
+
+function viewData() {
+  return apolloClient.query({
+    query: gql`
+      query appTopbarQuery {
+        blogSets {
+          _id
+          name
+        }
+        me {
+          _id
+          name
+          blogs(last: 100) {
+            edges {
+              node {
+                _id
+                name
+              }
+            }
+          }
+        }
+      }
+    `,
+  });
+}
 </script>
 
 <style scoped>
