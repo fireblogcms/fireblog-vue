@@ -146,5 +146,5 @@ export default {
   "views.plans.changePlanModal.title": "Subscribe to another plan",
   "views.plans.changePlanModal.body": "You are about to change your current plan for {planName} for an amount of {planAmount} € per month.",
   "views.plans.unsubscribeModal.title": "Unsubscribe from Fireblog",
-  "views.plans.unsubscribeModal.body": "You are about to cancel your subscription. If you proceed, it will be immediately cancelled and you will receive an email with the new invoice, indicating the remaining unused time until the subscription period end.",
+  "views.plans.unsubscribeModal.body": "You are about to cancel your subscription.",
 };
