@@ -55,7 +55,6 @@
     "@storybook/addons": "^5.3.18",
     "@storybook/vue": "^5.3.18",
     "@vue/cli-plugin-babel": "^3.0.5",
-    "@vue/cli-plugin-e2e-cypress": "^4.2.3",
     "@vue/cli-plugin-eslint": "^3.0.5",
     "@vue/cli-plugin-unit-jest": "^4.2.3",
     "@vue/cli-service": "^3.0.5",
