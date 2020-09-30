@@ -130,7 +130,6 @@ export default {
       this.uploadBlogImageState = state;
     },
     onUploaded(fileUrl) {
-      console.log("fileUrl", fileUrl);
       vuexFormSetValue(formId, "image", fileUrl);
     },
     validateForm() {
