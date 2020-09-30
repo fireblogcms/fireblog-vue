@@ -3,18 +3,18 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "vue-cli-service serve",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "build-report": "vue-cli-service build --report",
-    "deploy:staging": "git checkout master;git push;git checkout staging;git merge master;git push;git checkout master",
-    "deploy:production": "git checkout master;git push;git checkout production;git merge master;git push;git checkout master",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
-    "test:e2e:headless": "vue-cli-service test:e2e --headless",
+    "lint": "vue-cli-service lint",
+    "build-report": "vue-cli-service build --report",
+    "build-storybook": "build-storybook",
+    "deploy:production": "git checkout master;git push;git checkout production;git merge master;git push;git checkout master",
+    "deploy:staging": "git checkout master;git push;git checkout staging;git merge master;git push;git checkout master",
+    "dev": "vue-cli-service serve",
     "storybook": "start-storybook -s ./public -p 6006",
-    "build-storybook": "build-storybook"
+    "test:e2e:headless": "vue-cli-service test:e2e --headless"
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.2.2",
@@ -55,6 +55,7 @@
     "@storybook/addons": "^5.3.18",
     "@storybook/vue": "^5.3.18",
     "@vue/cli-plugin-babel": "^3.0.5",
+    "@vue/cli-plugin-e2e-cypress": "^4.5.6",
     "@vue/cli-plugin-eslint": "^3.0.5",
     "@vue/cli-plugin-unit-jest": "^4.2.3",
     "@vue/cli-service": "^3.0.5",
