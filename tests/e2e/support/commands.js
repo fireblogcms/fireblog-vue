@@ -1,25 +1,53 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add("login", (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add("dismiss", { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This is will overwrite an existing command --
-// Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+let TOKEN;
+
+// From https://auth0.com/blog/end-to-end-testing-with-cypress-and-auth0/
+Cypress.Commands.add("login", () => {
+  if (TOKEN) {
+    window.localStorage.setItem("token", TOKEN);
+  }
+
+  Cypress.log({
+    name: "loginViaAuth0",
+  });
+
+  const options = {
+    method: "POST",
+    url: `https://${Cypress.env("VUE_APP_AUTH0_DOMAIN")}/oauth/token`,
+    body: {
+      grant_type: "password",
+      username: Cypress.env("CYPRESS_AUTH0_USERNAME"),
+      password: Cypress.env("CYPRESS_AUTH0_PASSWORD"),
+      audience: Cypress.env("VUE_APP_AUTH0_AUDIENCE"),
+      client_id: Cypress.env("VUE_APP_AUTH0_CLIENTID"),
+      scope: "openid",
+      client_secret: Cypress.env("CYPRESS_AUTH0_SECRET"),
+      connection: "Username-Password-Authentication",
+    },
+  };
+
+  cy.request(options)
+    .then(({ body }) => body)
+    .then(({ access_token }) =>
+      cy
+        .request({
+          method: "POST",
+          url: Cypress.env("VUE_APP_GRAPHQL_URL"),
+          body: {
+            query: `
+            mutation syncAuth0UserWithServer {
+              syncAuth0User {
+                _id
+              }
+            }
+          `,
+          },
+          headers: {
+            authorization: `Bearer ${access_token}`,
+          },
+        })
+        .then(() => {
+          window.localStorage.setItem("token", access_token);
+          TOKEN = access_token;
+        })
+    );
+});

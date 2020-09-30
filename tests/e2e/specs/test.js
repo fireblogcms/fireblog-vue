@@ -1,8 +1,11 @@
 // https://docs.cypress.io/api/introduction/api.html
+beforeEach(() => {
+  cy.login();
+  cy.visit("/");
+});
 
 describe("My First Test", () => {
-  it("Visits the app root url", () => {
-    cy.visit("/");
-    cy.contains("h1", "Welcome to Your Vue.js App");
+  it("should display the blog create form because no blog yet", () => {
+    cy.url().should("include", "/blog/create?first=1");
   });
 });

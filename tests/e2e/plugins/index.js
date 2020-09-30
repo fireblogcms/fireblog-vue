@@ -1,3 +1,5 @@
+require("dotenv/config");
+
 /* eslint-disable arrow-body-style */
 // https://docs.cypress.io/guides/guides/plugins-guide.html
 
@@ -14,6 +16,12 @@ module.exports = (on, config) => {
   //  webpackOptions: require('@vue/cli-service/webpack.config'),
   //  watchOptions: {}
   // }))
+
+  Object.entries(process.env)
+    .filter(([key]) => key.startsWith("VUE_APP") || key.startsWith("CYPRESS"))
+    .forEach(([key, value]) => {
+      config.env[key] = value;
+    });
 
   return Object.assign({}, config, {
     fixturesFolder: "tests/e2e/fixtures",
