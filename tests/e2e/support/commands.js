@@ -27,27 +27,8 @@ Cypress.Commands.add("login", () => {
 
   cy.request(options)
     .then(({ body }) => body)
-    .then(({ access_token }) =>
-      cy
-        .request({
-          method: "POST",
-          url: Cypress.env("VUE_APP_GRAPHQL_URL"),
-          body: {
-            query: `
-            mutation syncAuth0UserWithServer {
-              syncAuth0User {
-                _id
-              }
-            }
-          `,
-          },
-          headers: {
-            authorization: `Bearer ${access_token}`,
-          },
-        })
-        .then(() => {
-          window.localStorage.setItem("token", access_token);
-          TOKEN = access_token;
-        })
-    );
+    .then(({ access_token }) => {
+      window.localStorage.setItem("token", access_token);
+      TOKEN = access_token;
+    });
 });
