@@ -28,7 +28,7 @@ Vue.use(VueTextareaAutosize);
 Vue.use(Toasted);
 Vue.use(vueDebounce);
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.VUE_APP_ENABLE_ANALYTICS) {
   Vue.use(VueMatomo, {
     host: "https://fireblogcms.matomo.cloud",
     siteId: 2,
