@@ -141,6 +141,12 @@ router.beforeEach(async (to, from, next) => {
 
   // user is already authenticated
   else if (isAuthenticated) {
+    auth0.getUser().then(user => {
+      if ($crisp) {
+        // prefill email field from currently logged in user.
+        $crisp.push(["set", "user:email", [user.email]]);
+      }
+    });
     next();
   }
   // in all other cases, user must be authenticated.
