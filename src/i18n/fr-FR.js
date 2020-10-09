@@ -146,5 +146,5 @@ export default {
   "views.plans.changePlanModal.title": "S'abonner à un autre plan",
   "views.plans.changePlanModal.body": "Vous êtes sur le point de changer votre plan actuel pour {planName} pour un montant de {planAmount} € par mois.",
   "views.plans.unsubscribeModal.title": "Se désabonner de Fireblog",
-  "views.plans.unsubscribeModal.body": "Vous êtes sur le point d'annuler votre abonnement.",
+  "views.plans.unsubscribeModal.body": "Vous êtes sur le point d'annuler votre abonnement. Si vous poursuivez, vous recevrez un remboursement très prochainement.",
 };

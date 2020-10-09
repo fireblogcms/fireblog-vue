@@ -11,6 +11,7 @@ import Toasted from "vue-toasted";
 import * as Sentry from "@sentry/browser";
 import { Vue as VueIntegration } from "@sentry/integrations";
 import vueDebounce from "vue-debounce";
+import VueMatomo from "vue-matomo";
 import "./scss/main.scss";
 
 if (process.env.VUE_APP_SENTRY_URL && process.env.NODE_ENV !== "development") {
@@ -26,6 +27,14 @@ Vue.use(PortalVue);
 Vue.use(VueTextareaAutosize);
 Vue.use(Toasted);
 Vue.use(vueDebounce);
+
+if (process.env.VUE_APP_ENABLE_ANALYTICS) {
+  Vue.use(VueMatomo, {
+    host: "https://fireblogcms.matomo.cloud",
+    siteId: 2,
+    router: router,
+  });
+}
 
 Vue.config.productionTip = false;
 
