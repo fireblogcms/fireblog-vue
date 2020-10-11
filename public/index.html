@@ -32,6 +32,20 @@
         s.async = 1;
         d.getElementsByTagName("head")[0].appendChild(s);
       })();
+      window.$crisp.push([
+        "on",
+        "chat:opened",
+        () => {
+          window._paq.push(["trackEvent", "Support", "Tchat", "Open"]);
+        },
+      ]);
+      window.$crisp.push([
+        "on",
+        "chat:closed",
+        () => {
+          window._paq.push(["trackEvent", "Support", "Tchat", "Close"]);
+        },
+      ]);
     </script>
   </body>
 </html>

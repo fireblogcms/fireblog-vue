@@ -375,12 +375,6 @@ export default {
       this.$refs.contentEditor.$refs.editor.focus();
     },
     closePublishingOptionsModal() {
-      window._paq.push([
-        "trackEvent",
-        "Modales",
-        "Publication options",
-        "Close",
-      ]);
       this.$store.commit("modalShowing/close", "publishingOptionsModal");
     },
     closePublishingChangesSuccessModal() {
@@ -612,12 +606,6 @@ export default {
           );
           vuexFormSetValue(FORM_ID, "teaser", teaserSuggestion);
         }
-        window._paq.push([
-          "trackEvent",
-          "Modales",
-          "Publication options",
-          "Open",
-        ]);
         this.$store.commit("modalShowing/open", "publishingOptionsModal");
       }
     },

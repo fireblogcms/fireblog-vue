@@ -233,7 +233,6 @@ export default {
       window._paq.push(["trackEvent", "Support", "Mail", "Click"]);
     },
     onContactClick() {
-      window._paq.push(["trackEvent", "Modales", "Contact", "Open"]);
       this.supportGif = getRandomSupportGif();
       this.$store.commit("modalShowing/open", "contactModal");
     },
@@ -282,7 +281,6 @@ export default {
       );
     },
     async onApiClick() {
-      window._paq.push(["trackEvent", "Modales", "API", "Open"]);
       this.$store.commit("modalShowing/open", "graphQLApiModal");
       const context = {
         slug: "{{POST_SLUG}}",
