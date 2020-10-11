@@ -388,9 +388,30 @@ export function createStripeCheckoutSession({
 }
 
 /**
- * @param {array} gifsArray : array of gifs urls
+ * Select a random GIF, but do not displayt twice the same gif
+ *
+ * @param {array} gifsArray : an array of gifs urls
  * @return {string} a single gif url
  */
+let previousDisplayedGif = null;
 export function getRandomGif(gifsArray) {
-  return gifsArray[Math.floor(Math.floor(Math.random() * gifsArray.length))];
+  // a security to avoid an infinite loop below: if there is only
+  // one gif; we have no way to display another gif than the previous one.
+  if (gifsArray.length === 1) {
+    return gifsArray[0];
+  }
+  const randomIndex = () => Math.floor(Math.random() * gifsArray.length);
+  let gif = gifsArray[randomIndex()];
+  if (!gif) {
+    console.error("getRandomGif() : no gif returned");
+    return;
+  }
+  // make sure we do not display twice the same gif
+  if (gif === previousDisplayedGif) {
+    while (gif == previousDisplayedGif) {
+      gif = gifsArray[randomIndex()];
+    }
+  }
+  previousDisplayedGif = gif;
+  return gif;
 }

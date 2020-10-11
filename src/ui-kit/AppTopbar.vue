@@ -153,11 +153,20 @@
         <p>{{ $t("contactModal.content") }}</p>
         <div class="flex items-center my-4">
           <a
+            @click="onMailSupportClick"
             class="text-primary font-bold"
             href="mailto:support@fireblogcms.com"
           >
             support@fireblogcms.com
           </a>
+        </div>
+        <div class="flex items-center">
+          <span
+            @click.prevent="onChatSupportClick"
+            class="text-primary font-bold cursor-pointer"
+          >
+            {{ $t("contactModal.chatWithUs") }}
+          </span>
         </div>
       </div>
     </AppModal>
@@ -214,7 +223,17 @@ export default {
     },
   },
   methods: {
+    onChatSupportClick() {
+      window._paq.push(["trackEvent", "Support", "Tchat", "Open"]);
+      if ($crisp) {
+        $crisp.push(["do", "chat:open"]);
+      }
+    },
+    onMailSupportClick() {
+      window._paq.push(["trackEvent", "Support", "Mail", "Click"]);
+    },
     onContactClick() {
+      window._paq.push(["trackEvent", "Modales", "Contact", "Open"]);
       this.supportGif = getRandomSupportGif();
       this.$store.commit("modalShowing/open", "contactModal");
     },
@@ -263,6 +282,7 @@ export default {
       );
     },
     async onApiClick() {
+      window._paq.push(["trackEvent", "Modales", "API", "Open"]);
       this.$store.commit("modalShowing/open", "graphQLApiModal");
       const context = {
         slug: "{{POST_SLUG}}",
