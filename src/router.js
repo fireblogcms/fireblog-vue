@@ -147,7 +147,7 @@ router.beforeEach(async (to, from, next) => {
         $crisp.push(["set", "user:email", [user.email]]);
       }
       if (window._paq) {
-        window._paq.push(["setUserId", user._id]);
+        window._paq.push(["setUserId", user.email]);
       }
     });
     next();
