@@ -13,7 +13,11 @@
     <div class="container mx-auto my-10 text-center">
       <div
         class="flex justify-center mb-16"
-        v-if="blogSet.subscription && blogSet.subscription.trialEnd && !blogSet.subscription.hasToSubscribe"
+        v-if="
+          blogSet.subscription &&
+            blogSet.subscription.trialEnd &&
+            !blogSet.subscription.hasToSubscribe
+        "
       >
         <div class="w-8/12 p-8 bg-white shadow-md rounded-lg">
           <p>
@@ -148,11 +152,7 @@
         <p class="text-xl">
           {{ $t("views.plans.unsubscribeModal.body") }}
         </p>
-        <AppButton
-          class="mt-10"
-          color="primary"
-          @click="onUnsubscribeClick"
-        >
+        <AppButton class="mt-10" color="primary" @click="onUnsubscribeClick">
           {{ $t("global.unsubscribeButton") }}
         </AppButton>
       </div>
@@ -208,6 +208,7 @@ export default {
   },
   methods: {
     async onSubscribeClick(plan) {
+      window._paq.push(["trackEvent", "Checkout", "Subscribe", plan.id]);
       const user = await getUser();
       if (!this.blogSet.subscription.id) {
         this.subscribeRequest.state = REQUEST_STATE.PENDING;
@@ -253,7 +254,7 @@ export default {
           variables: {
             blogSet: {
               _id: this.$route.params.blogSetId,
-              subscription
+              subscription,
             },
           },
           mutation: gql`
@@ -265,12 +266,12 @@ export default {
                 }
               }
             }
-          `
+          `,
         })
         .then(() => {
           this.$router
             .push({
-              name: "blogSetList"
+              name: "blogSetList",
             })
             .then(() => {
               this.$store.commit("modalShowing/close", "changePlanModal");
@@ -282,14 +283,14 @@ export default {
       const subscription = {
         id: this.blogSet.subscription.id,
         planId: this.blogSet.subscription.planId,
-        hasToSubscribe: true
+        hasToSubscribe: true,
       };
       return apolloClient
         .mutate({
           variables: {
             blogSet: {
               _id: this.$route.params.blogSetId,
-              subscription
+              subscription,
             },
           },
           mutation: gql`
@@ -302,47 +303,51 @@ export default {
                 }
               }
             }
-          `
+          `,
         })
         .then(() => {
           this.$router
             .push({
-              name: "blogSetList"
+              name: "blogSetList",
             })
             .then(() => {
               this.$store.commit("modalShowing/close", "unsubscribeModal");
-              this.$store.commit("modalShowing/open", "unsubscribeSuccessModal");
+              this.$store.commit(
+                "modalShowing/open",
+                "unsubscribeSuccessModal"
+              );
             });
         });
     },
     async fetchData() {
-      apolloClient.query({
-        variables: {
-          blogSetId: this.$route.params.blogSetId
-        },
-        query: gql`
-          query blogSet($blogSetId: ID!) {
-            blogSet(_id: $blogSetId) {
-              _id
-              name
-              subscription {
-                id
-                planId
-                trialEnd
-                hasToSubscribe
-                plan {
+      apolloClient
+        .query({
+          variables: {
+            blogSetId: this.$route.params.blogSetId,
+          },
+          query: gql`
+            query blogSet($blogSetId: ID!) {
+              blogSet(_id: $blogSetId) {
+                _id
+                name
+                subscription {
                   id
-                  amount
-                  productName
+                  planId
+                  trialEnd
+                  hasToSubscribe
+                  plan {
+                    id
+                    amount
+                    productName
+                  }
                 }
               }
             }
-          }
-        `,
-      })
-      .then(result => {
-        this.blogSet = result.data.blogSet;
-      });
+          `,
+        })
+        .then(result => {
+          this.blogSet = result.data.blogSet;
+        });
 
       apolloClient
         .query({
@@ -356,7 +361,7 @@ export default {
                 productName
               }
             }
-          `
+          `,
         })
         .then(result => {
           this.plans = result.data.plans;

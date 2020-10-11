@@ -146,6 +146,9 @@ router.beforeEach(async (to, from, next) => {
         // prefill email field from currently logged in user.
         $crisp.push(["set", "user:email", [user.email]]);
       }
+      if (window._paq) {
+        window._paq.push(["setUserId", user._id]);
+      }
     });
     next();
   }
