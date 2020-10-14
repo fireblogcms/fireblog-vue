@@ -120,6 +120,9 @@ export default {
           },
         })
         .then(async result => {
+          // goal: has created a blog
+          window._paq.push(["trackGoal", 1]);
+
           this.$router
             .push({
               name: "postList",

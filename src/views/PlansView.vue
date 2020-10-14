@@ -208,7 +208,10 @@ export default {
   },
   methods: {
     async onSubscribeClick(plan) {
+      // goal: has clicked on subscribe button
+      window._paq.push(["trackGoal", 5]);
       window._paq.push(["trackEvent", "Checkout", "Subscribe", plan.id]);
+
       const user = await getUser();
       if (!this.blogSet.subscription.id) {
         this.subscribeRequest.state = REQUEST_STATE.PENDING;

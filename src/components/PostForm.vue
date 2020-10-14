@@ -459,6 +459,7 @@ export default {
           this.$emit("onEdit", false);
           pendingActions.remove(savingPendingAction);
           const post = result.data.savePost;
+
           this.existingPost = post;
           this.$store.commit("lastVisitedPost", post);
           this.savingPost = {
@@ -469,6 +470,9 @@ export default {
             toast(this, this.$t("views.postForm.draftSaved"), "success");
           }
           if (this.$route.name === "postCreate") {
+            // goal: has created a post
+            window._paq.push(["trackGoal", 2]);
+
             // this route change WON'T retrigger this.init(), so passing from
             // postCreate to postUpdate page is a fluid experience for user
             this.$router.replace({
@@ -537,9 +541,7 @@ export default {
       });
     },
     publish() {
-      // disabled saving post as DRAFT, as post is now published.
-
-      // If article is published or re-published from draft, we display a "Hurrah modal".
+      // If article is published (or re-published) from draft, we display a "Hurrah modal".
       // If we only publish changes on a already published articles, we have a more
       // sober modal.
       let publishingChanges = false;
@@ -561,6 +563,8 @@ export default {
               "publishingChangesSuccessModal"
             );
           } else {
+            // goal: has published a post
+            window._paq.push(["trackGoal", 3]);
             this.$store.commit("modalShowing/open", "publishingSuccessModal");
           }
         });

@@ -95,11 +95,13 @@
         slot="header"
       >
         <span class="text-4xl font-bold">API</span>
-        <a :href="blogSetApiUrl" target="_blank" class="hover:text-current">
-          <AppButton color="primary" size="small">
-            {{ $t("apiModal.openGraphQLExplorer") }}
-          </AppButton>
-        </a>
+        <AppButton
+          @click="onOpenGraphQLExplorerClick"
+          color="primary"
+          size="small"
+        >
+          {{ $t("apiModal.openGraphQLExplorer") }}
+        </AppButton>
       </div>
       <div slot="body">
         <p class="text-lg font-bold">GraphQL endpoint</p>
@@ -190,7 +192,6 @@ import gql from "graphql-tag";
 
 function getRandomSupportGif() {
   const gifs = [
-    "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-dog.gif",
     "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-friends.gif",
     "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-ringo-star-tea.gif",
     "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-women.gif",
@@ -223,13 +224,22 @@ export default {
     },
   },
   methods: {
+    onOpenGraphQLExplorerClick() {
+      // goal: open GraphQL Explorer
+      window._paq.push(["trackGoal", 7]);
+      window.open(this.blogSetApiUrl, "_blank");
+    },
     onChatSupportClick() {
+      // goal: try to contact support by tchat
+      window._paq.push(["trackGoal", 8]);
       window._paq.push(["trackEvent", "Support", "Tchat", "Open"]);
       if ($crisp) {
         $crisp.push(["do", "chat:open"]);
       }
     },
     onMailSupportClick() {
+      // goal: try to contact support by mail
+      window._paq.push(["trackGoal", 9]);
       window._paq.push(["trackEvent", "Support", "Mail", "Click"]);
     },
     onContactClick() {
@@ -281,6 +291,9 @@ export default {
       );
     },
     async onApiClick() {
+      // goal: consulting API documentation
+      window._paq.push(["trackGoal", 6]);
+
       this.$store.commit("modalShowing/open", "graphQLApiModal");
       const context = {
         slug: "{{POST_SLUG}}",
