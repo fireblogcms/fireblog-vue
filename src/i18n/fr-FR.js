@@ -8,7 +8,7 @@ export default {
   "apiModal.title": "API GraphQL",
   "apiModal.tryItButton": "Essayer",
   "contactModal.chatWithUs": "Tchattez avec nous",
-  "contactModal.title": "Contactez-nous",
+  "contactModal.title": "Nous sommes là pour vous aider",
   "contactModal.content": "Un problème, une question, une suggestion ? N'hésitez pas à nous contacter, nous sommes à votre service et nous vous répondrons aussi vite que possible.",
   "components.slugField.errors.invalidCharacters": "Le slug peut seulement contenir des minuscules et le caractère '-'",
   "components.slugField.errors.required": "Le champ slug est obligatoire",

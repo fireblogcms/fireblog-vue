@@ -7,7 +7,7 @@ export default {
   "apiModal.openGraphQLExplorer": "Open GraphQL Explorer",
   "apiModal.title": "API GraphQL",
   "apiModal.tryItButton": "Try it!",
-  "contactModal.title": "Contact us",
+  "contactModal.title": "We are here to help",
   "contactModal.chatWithUs": "Chat with us",
   "contactModal.content": "A problem, a question, a suggestion? Feel free to contact us, we are at your service and we will come back to you as soon as possible.",
   "components.slugField.errors.invalidCharacters": "Slug can only contains minuscules and '-' characters.",
