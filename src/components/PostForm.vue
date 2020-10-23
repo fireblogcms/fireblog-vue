@@ -235,6 +235,7 @@ import Editor from "fireblog-ckeditor";
 import ContentEditor from "./ContentEditor";
 import { ckeditorS3UploadAdapterPlugin } from "@/utils/ckeditorS3UploadAdapterPlugin";
 import hotkeys from "hotkeys-js";
+import gql from "graphql-tag";
 import {
   REQUEST_STATE,
   getUser,
@@ -258,7 +259,6 @@ import {
 } from "@/utils/vuexForm";
 import { savePostMutation } from "@/utils/queries";
 import apolloClient from "@/utils/apolloClient";
-import { getPostQuery } from "@/utils/queries";
 import PostFormAdvancedSettings from "./PostFormAdvancedSettings";
 import striptags from "striptags";
 
@@ -299,6 +299,7 @@ export default {
         status: null,
       },
       isActionsVisibleOnMobile: false,
+      blogSetSubscription: null,
     };
   },
   created() {
@@ -498,11 +499,43 @@ export default {
     getExistingPost(id) {
       return apolloClient
         .query({
-          query: getPostQuery,
-          variables: { _id: id },
+          variables: {
+            blogSetId: this.$route.params.blogSetId,
+            postId: id
+          },
+          query: gql`
+            query postFormQuery($blogSetId: ID!, $postId: ID!) {
+              blogSet(_id: $blogSetId) {
+                subscription {
+                  id
+                  planId
+                  trialEnd
+                }
+              }
+              post(_id: $postId) {
+                _id
+                title
+                content
+                status
+                slug
+                teaser
+                image
+                publishedAt
+                updatedAt
+                createdAt
+                image
+                author {
+                  _id
+                  name
+                  email
+                }
+              }
+            }
+          `,
         })
         .then(result => {
           this.existingPost = result.data.post;
+          this.blogSetSubscription = result.data.blogSet.subscription;
           return result.data.post;
         })
         .catch(error => {
@@ -574,43 +607,52 @@ export default {
      * Open publication modal. This is NOT the final publish operation.
      */
     showAdvancedSettings() {
-      // we need at least the title to autocomplete the slug field
-      if (!vuexFormGetValue(FORM_ID, "title").trim()) {
-        toast(
-          this,
-          this.$t("views.postForm.fields.title.errors.required"),
-          "error"
-        );
-        return;
-      }
-      if (this.mediaLoadingCounter > 0) {
-        this.showMediaCurrentlyLoadingModal();
-      } else {
-        if (vuexFormGetValue(FORM_ID, "slug").trim().length === 0) {
-          generateSlugFromServer({
-            blogId: this.$route.params.blogId,
-            source: vuexFormGetValue(FORM_ID, "title").trim(),
-          }).then(response => {
-            vuexFormSetValue(FORM_ID, "slug", response.slug);
-          });
-        }
-        // if post is published or has been published once, we lock slug field by default.
-        // if "publishedAt" is not null, we know the post has been published or is published.
-        if (this.existingPost && this.existingPost.publishedAt) {
-          vuexFormSetValue(FORM_ID, "slugShowToggleLockButton", true);
-          vuexFormSetValue(FORM_ID, "slugIsLocked", true);
-        } else {
-          vuexFormSetValue(FORM_ID, "slugShowToggleLockButton", false);
-        }
+      this.blogSetSubscription.trialEnd = "2020-10-22T12:56:15.369Z";
+      const trialEnd = this.blogSetSubscription.trialEnd ?
+        new Date(this.blogSetSubscription.trialEnd) :
+        null;
 
-        // pre-fill teaser fied with the first sentence of the text.
-        if (vuexFormGetValue(FORM_ID, "teaser").trim().length === 0) {
-          const teaserSuggestion = striptags(
-            vuexFormGetValue(FORM_ID, "content").substr(0, 250)
+      if (this.blogSetSubscription.id || (trialEnd && new Date() <= trialEnd)) {
+        // we need at least the title to autocomplete the slug field
+        if (!vuexFormGetValue(FORM_ID, "title").trim()) {
+          toast(
+            this,
+            this.$t("views.postForm.fields.title.errors.required"),
+            "error"
           );
-          vuexFormSetValue(FORM_ID, "teaser", teaserSuggestion);
+          return;
         }
-        this.$store.commit("modalShowing/open", "publishingOptionsModal");
+        if (this.mediaLoadingCounter > 0) {
+          this.showMediaCurrentlyLoadingModal();
+        } else {
+          if (vuexFormGetValue(FORM_ID, "slug").trim().length === 0) {
+            generateSlugFromServer({
+              blogId: this.$route.params.blogId,
+              source: vuexFormGetValue(FORM_ID, "title").trim(),
+            }).then(response => {
+              vuexFormSetValue(FORM_ID, "slug", response.slug);
+            });
+          }
+          // if post is published or has been published once, we lock slug field by default.
+          // if "publishedAt" is not null, we know the post has been published or is published.
+          if (this.existingPost && this.existingPost.publishedAt) {
+            vuexFormSetValue(FORM_ID, "slugShowToggleLockButton", true);
+            vuexFormSetValue(FORM_ID, "slugIsLocked", true);
+          } else {
+            vuexFormSetValue(FORM_ID, "slugShowToggleLockButton", false);
+          }
+
+          // pre-fill teaser fied with the first sentence of the text.
+          if (vuexFormGetValue(FORM_ID, "teaser").trim().length === 0) {
+            const teaserSuggestion = striptags(
+              vuexFormGetValue(FORM_ID, "content").substr(0, 250)
+            );
+            vuexFormSetValue(FORM_ID, "teaser", teaserSuggestion);
+          }
+          this.$store.commit("modalShowing/open", "publishingOptionsModal");
+        }
+      } else {
+        console.log("NAH");
       }
     },
     onUnpublishClick() {

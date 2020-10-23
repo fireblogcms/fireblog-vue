@@ -42,15 +42,7 @@
             <AppButton
               v-if="!isFirstPost"
               color="primary"
-              @click="
-                $router.push({
-                  name: 'postCreate',
-                  params: {
-                    blogId: $route.params.blogId,
-                    blogSetId: $route.params.blogSetId,
-                  },
-                })
-              "
+              @click="onWriteNewPostClick"
             >
               {{ $t("views.postList.writeNewPostButton").toUpperCase() }}
             </AppButton>
@@ -234,7 +226,10 @@ export default {
   methods: {
     fetchData() {
       this.viewDataLoading = true;
-      viewDataQuery({ blogId: this.$route.params.blogId })
+      viewDataQuery({
+          blogSetId: this.$route.params.blogSetId,
+          blogId: this.$route.params.blogId,
+        })
         .then(r => {
           this.viewData = r.data;
           this.isFirstPost =
@@ -289,16 +284,42 @@ export default {
         this.fetchData();
       });
     },
+    onWriteNewPostClick() {
+      this.viewData.blogSet.subscription.trialEnd = "2020-10-24T12:56:15.369Z";
+      const trialEnd = this.viewData.blogSet.subscription.trialEnd ?
+        new Date(this.viewData.blogSet.subscription.trialEnd) :
+        null;
+
+      if (this.viewData.blogSet.subscription.id || (trialEnd && new Date() <= trialEnd)) {
+        this.$router.push({
+          name: 'postCreate',
+          params: {
+            blogId: this.$route.params.blogId,
+            blogSetId: this.$route.params.blogSetId,
+          },
+        });
+      } else {
+        console.log("NAH");
+      }
+    },
   },
 };
 
-function viewDataQuery({ blogId }) {
+function viewDataQuery({ blogSetId, blogId }) {
   return apolloClient.query({
     variables: {
+      blogSetId,
       blogId,
     },
     query: gql`
-      query postListViewQuery($blogId: ID!) {
+      query postListViewQuery($blogSetId: ID!, $blogId: ID!) {
+        blogSet(_id: $blogSetId) {
+          subscription {
+            id
+            planId
+            trialEnd
+          }
+        }
         blog(_id: $blogId) {
           _id
           name
