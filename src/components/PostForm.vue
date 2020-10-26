@@ -607,7 +607,6 @@ export default {
      * Open publication modal. This is NOT the final publish operation.
      */
     showAdvancedSettings() {
-      this.blogSetSubscription.trialEnd = "2020-10-22T12:56:15.369Z";
       const trialEnd = this.blogSetSubscription.trialEnd ?
         new Date(this.blogSetSubscription.trialEnd) :
         null;
@@ -652,7 +651,7 @@ export default {
           this.$store.commit("modalShowing/open", "publishingOptionsModal");
         }
       } else {
-        console.log("NAH");
+        this.$store.commit("modalShowing/open", "freeTrialEndedModal");
       }
     },
     onUnpublishClick() {

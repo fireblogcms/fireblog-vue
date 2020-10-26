@@ -285,21 +285,20 @@ export default {
       });
     },
     onWriteNewPostClick() {
-      this.viewData.blogSet.subscription.trialEnd = "2020-10-24T12:56:15.369Z";
       const trialEnd = this.viewData.blogSet.subscription.trialEnd ?
         new Date(this.viewData.blogSet.subscription.trialEnd) :
         null;
 
       if (this.viewData.blogSet.subscription.id || (trialEnd && new Date() <= trialEnd)) {
         this.$router.push({
-          name: 'postCreate',
+          name: "postCreate",
           params: {
             blogId: this.$route.params.blogId,
             blogSetId: this.$route.params.blogSetId,
           },
         });
       } else {
-        console.log("NAH");
+        this.$store.commit("modalShowing/open", "freeTrialEndedModal");
       }
     },
   },

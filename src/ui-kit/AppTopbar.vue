@@ -172,6 +172,26 @@
         </div>
       </div>
     </AppModal>
+
+    <!-- FREE TRIAL ENDED -->
+    <AppModal name="freeTrialEndedModal">
+      <div class="text-4xl font-bold" slot="header">
+        {{ $t("freeTrialEndedModal.title") }}
+      </div>
+      <div class="flex flex-col items-center" slot="body">
+        <img
+          loading="lazy"
+          class="h-64 mb-10 rounded"
+          src="https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/unsubscribe-sad.gif"
+        />
+        <p class="text-xl">
+          {{ $t("freeTrialEndedModal.body") }}
+        </p>
+        <AppButton class="mt-10" color="primary" @click="onCheckOutPlansClick">
+          {{ $t("freeTrialEndedModal.button") }}
+        </AppButton>
+      </div>
+    </AppModal>
   </div>
 </template>
 
@@ -313,6 +333,13 @@ export default {
       }
       this.apiModalExampleList = apiExamples(context);
     },
+    onCheckOutPlansClick() {
+      this.$router.push({
+        name: "plans",
+        params: { blogSetId: this.$route.params.blogSetId || this.blogSet._id }
+      });
+      this.$store.commit("modalShowing/close", "freeTrialEndedModal");
+    },
   },
 };
 
@@ -329,14 +356,6 @@ function viewData() {
           name
           email
           picture
-          blogs(last: 100) {
-            edges {
-              node {
-                _id
-                name
-              }
-            }
-          }
         }
       }
     `,
