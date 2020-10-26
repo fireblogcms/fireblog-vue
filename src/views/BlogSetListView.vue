@@ -21,12 +21,7 @@
             <AppButton
               color="primary"
               class="mb-2"
-              @click="
-                $router.push({
-                  name: 'blogCreate',
-                  params: { blogSetId: blogSet._id },
-                })
-              "
+              @click="onCreateNewBlogClick(blogSet)"
             >
               {{ $t("views.blogList.createNewBlogButton").toUpperCase() }}
             </AppButton>
@@ -142,6 +137,22 @@ export default {
       }
     });
   },
+  methods: {
+    onCreateNewBlogClick(blogSet) {
+      const trialEnd = blogSet.subscription.trialEnd ?
+        new Date(blogSet.subscription.trialEnd) :
+        null;
+
+      if (blogSet.subscription.id || (trialEnd && new Date() <= trialEnd)) {
+        this.$router.push({
+          name: "blogCreate",
+          params: { blogSetId: blogSet._id },
+        });
+      } else {
+        this.$store.commit("modalShowing/open", "freeTrialEndedModal");
+      }
+    },
+  }
 };
 
 function viewData() {
