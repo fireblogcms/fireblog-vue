@@ -46,6 +46,8 @@
             @onUnlock="onSlugUnlock"
             @onLock="onSlugLock"
           />
+
+          <HighlightField class="mt-8" />
         </div>
       </div>
 
@@ -75,6 +77,7 @@ import {
   vuexFormSetError,
 } from "@/utils/vuexForm";
 import SlugField from "./SlugField";
+import HighlightField from "./HighlightField";
 import PreviewGoogleResult from "./PreviewGoogleResult";
 import apolloClient from "@/utils/apolloClient";
 
@@ -86,6 +89,7 @@ export default {
     PreviewGoogleResult,
     S3ImageUpload,
     SlugField,
+    HighlightField,
   },
   props: {
     existingPost: {
