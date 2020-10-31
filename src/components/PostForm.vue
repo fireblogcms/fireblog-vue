@@ -394,6 +394,12 @@ export default {
     },
     // fill form fields from a post object
     prepareFormValuesFromPost(post) {
+
+      const descriptionTag = post.HTMLMetadata.find(meta => meta.tag === "meta" && meta.attributes.name === "description");
+      const titleTag = post.HTMLMetadata.find(meta => meta.tag === "title")
+      const metaTitle = titleTag.content;
+      const metaDescription = descriptionTag.attributes.content;
+
       let values = {
         ...initialFormValues,
         title: post.title ? post.title : "",
@@ -403,10 +409,11 @@ export default {
         title: post.title ? post.title : "",
         teaser: post.teaser ? post.teaser : "",
         image: post.image ? post.image : "",
-        metaDescription: post.HTMLMetadata ? post.HTMLMetadata.find(meta => tag === "meta" && name === "description") : "",
-        metaTitle: post.HTMLMetadata ? post.HTMLMetadata.find(meta => tag === "title") : "",
+        metaDescription: metaDescription,
+        metaTitle: metaTitle,
         image: post.image ? post.image : "",
       };
+      console.log('values', values)
       return values;
     },
     // Prepare a post object from form form.values, for a save operation
@@ -425,7 +432,8 @@ export default {
          {
            tag: "meta",
            attributes: {
-             description:  vuexFormGetValue(FORM_ID, "metaDescription"),
+             name: "description",
+             content:  vuexFormGetValue(FORM_ID, "metaDescription"),
            }
          }
         ]
@@ -545,6 +553,11 @@ export default {
                   _id
                   name
                   email
+                }
+                HTMLMetadata {
+                  tag
+                  content
+                  attributes
                 }
               }
             }

@@ -50,33 +50,36 @@
       </div>
 
       <!-- PREVIEW GOOGLE -->
-      <div>
-        <h2 class="font-bold">SEO</h2>
-        <div>
-          <AppFieldText
-            :value="vuexFormGetValue(FORM_ID, 'metaTitle')"
-            @input="onMetaTitleInput"
-            placeholder="Teaser"
-            maxlength="250"
-          />
-          <AppFieldText
-            :value="vuexFormGetValue(FORM_ID, 'metaDescription')"
-            @input="onMetaDescriptionInput"
-            placeholder="Teaser"
-            maxlength="250"
-          />
-          </div>
-        <div>
-          <p class="mt-16 mb-4 text-2xl font-bold">
-            {{ $t("views.postForm.advancedSettingsModal.previewGoogle") }}
-          </p>
-          <div class="p-6 bg-white shadow-around rounded-lg">
-            <PreviewGoogleResult
-              :title="vuexFormGetValue(FORM_ID, 'title')"
-              :description="vuexFormGetValue(FORM_ID, 'teaser')"
-              :url="`https://example.com/post/${vuexFormGetValue(FORM_ID, 'slug')}`"
+      <div class="mt-16">
+        <h2 class="font-bold text-2xl">SEO SETTINGS</h2>
+        <div class="flex flex-col md:flex-row">
+          <div class="w-full md:w-1/2 md:mr-3">
+            <h3 class="text-2xl font-bold mb-4">Meta tags</h3>
+            <AppFieldText
+              :value="vuexFormGetValue(FORM_ID, 'metaTitle')"
+              @input="onMetaTitleInput"
+              placeholder="Teaser"
+              maxlength="250"
             />
-         </div>
+            <AppFieldText
+              :value="vuexFormGetValue(FORM_ID, 'metaDescription')"
+              @input="onMetaDescriptionInput"
+              placeholder="Teaser"
+              maxlength="250"
+            />
+          </div>
+          <div class="w-full md:w-1/2 md:mr-3">
+            <p class="mb-4 text-2xl font-bold">
+              {{ $t("views.postForm.advancedSettingsModal.previewGoogle") }}
+            </p>
+            <div class="p-6 bg-white shadow-around rounded-lg">
+              <PreviewGoogleResult
+                :title="vuexFormGetValue(FORM_ID, 'metaTitle')"
+                :description="vuexFormGetValue(FORM_ID, 'metaDescription')"
+                :url="`https://example.com/post/${vuexFormGetValue(FORM_ID, 'slug')}`"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </form>
