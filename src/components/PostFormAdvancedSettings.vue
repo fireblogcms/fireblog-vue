@@ -50,15 +50,34 @@
       </div>
 
       <!-- PREVIEW GOOGLE -->
-      <p class="mt-16 mb-4 text-2xl font-bold">
-        {{ $t("views.postForm.advancedSettingsModal.previewGoogle") }}
-      </p>
-      <div class="p-6 bg-white shadow-around rounded-lg">
-        <PreviewGoogleResult
-          :title="vuexFormGetValue(FORM_ID, 'title')"
-          :description="vuexFormGetValue(FORM_ID, 'teaser')"
-          :url="`https://example.com/post/${vuexFormGetValue(FORM_ID, 'slug')}`"
-        />
+      <div>
+        <h2 class="font-bold">SEO</h2>
+        <div>
+          <AppFieldText
+            :value="vuexFormGetValue(FORM_ID, 'metaTitle')"
+            @input="onMetaTitleInput"
+            placeholder="Teaser"
+            maxlength="250"
+          />
+          <AppFieldText
+            :value="vuexFormGetValue(FORM_ID, 'metaDescription')"
+            @input="onMetaDescriptionInput"
+            placeholder="Teaser"
+            maxlength="250"
+          />
+          </div>
+        <div>
+          <p class="mt-16 mb-4 text-2xl font-bold">
+            {{ $t("views.postForm.advancedSettingsModal.previewGoogle") }}
+          </p>
+          <div class="p-6 bg-white shadow-around rounded-lg">
+            <PreviewGoogleResult
+              :title="vuexFormGetValue(FORM_ID, 'title')"
+              :description="vuexFormGetValue(FORM_ID, 'teaser')"
+              :url="`https://example.com/post/${vuexFormGetValue(FORM_ID, 'slug')}`"
+            />
+         </div>
+        </div>
       </div>
     </form>
   </div>
@@ -66,6 +85,7 @@
 
 <script>
 import AppTextarea from "@/ui-kit/AppTextarea";
+import AppFieldText from "@/ui-kit/AppFieldText";
 import S3ImageUpload from "./S3ImageUpload";
 import { REQUEST_STATE, generateSlugFromServer } from "@/utils/helpers";
 import {
@@ -83,6 +103,7 @@ const FORM_ID = "postForm";
 export default {
   components: {
     AppTextarea,
+    AppFieldText,
     PreviewGoogleResult,
     S3ImageUpload,
     SlugField,
@@ -109,8 +130,14 @@ export default {
     onUploaded(fileUrl) {
       vuexFormSetValue(FORM_ID, "image", fileUrl);
     },
-    onTeaserInput(event) {
-      vuexFormSetValue(FORM_ID, "teaser", event);
+    onTeaserInput(value) {
+      vuexFormSetValue(FORM_ID, "teaser", value);
+    },
+    onMetaTitleInput(value) {
+      vuexFormSetValue(FORM_ID, "metaTitle", value);
+    },
+    onMetaDescriptionInput(value) {
+      vuexFormSetValue(FORM_ID, "metaDescription", value);
     },
     onSlugChange(value) {
       if (value.length === 0) {

@@ -268,6 +268,8 @@ let initialFormValues = {
   slug: "",
   teaser: "",
   image: "",
+  metaDescription: "",
+  metaTitle: "",
   slugIsLocked: false,
   slugShowToggleLockButton: true,
 };
@@ -401,6 +403,9 @@ export default {
         title: post.title ? post.title : "",
         teaser: post.teaser ? post.teaser : "",
         image: post.image ? post.image : "",
+        metaDescription: post.HTMLMetadata ? post.HTMLMetadata.find(meta => tag === "meta" && name === "description") : "",
+        metaTitle: post.HTMLMetadata ? post.HTMLMetadata.find(meta => tag === "title") : "",
+        image: post.image ? post.image : "",
       };
       return values;
     },
@@ -412,6 +417,18 @@ export default {
         slug: vuexFormGetValue(FORM_ID, "slug"),
         teaser: vuexFormGetValue(FORM_ID, "teaser"),
         image: vuexFormGetValue(FORM_ID, "image"),
+        HTMLMetadata: [
+          {
+            tag: "title", 
+            content: vuexFormGetValue(FORM_ID, "metaTitle"),
+         },
+         {
+           tag: "meta",
+           attributes: {
+             description:  vuexFormGetValue(FORM_ID, "metaDescription"),
+           }
+         }
+        ]
       };
       // API will know that this is an UPDATE and not a CREATE
       // if we add _id key to our post.
