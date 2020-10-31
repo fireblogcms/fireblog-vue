@@ -353,7 +353,7 @@ export default {
 
       // no existing post, we are in CREATE MODE
       if (this.$route.name === "postCreate") {
-        this.postFormInit(initialFormValues);
+        this.initPostFormValues(initialFormValues);
       }
 
       // UPDATE MODE
@@ -365,7 +365,7 @@ export default {
         this.$store.commit("lastVisitedPost", this.existingPost);
         this.loadingAsyncData = false;
         const formValues = this.prepareFormValuesFromPost(this.existingPost);
-        this.postFormInit(formValues);
+        this.initPostFormValues(formValues);
       }
     },
     onTitleInput(value) {
@@ -389,7 +389,7 @@ export default {
     closePublishingSuccessModal() {
       this.$store.commit("modalShowing/close", "publishingSuccessModal");
     },
-    postFormInit(formValues) {
+    initPostFormValues(formValues) {
       vuexFormInit(FORM_ID, {
         initialValues: { ...formValues },
         onFormValueChange: ({ name, value }) => {},
@@ -438,7 +438,6 @@ export default {
         teaser: vuexFormGetValue(FORM_ID, "teaser"),
         image: vuexFormGetValue(FORM_ID, "image"),
       };
-
 
       const HTMLMetadata = [];
       const metaTitle = vuexFormGetValue(FORM_ID, "metaTitle");
@@ -511,6 +510,13 @@ export default {
           const post = result.data.savePost;
 
           this.existingPost = post;
+
+          // Refresh our Vuex form values with saved data from server. (some fields might have changed
+          // during save operation. For example, default HTMLMetadata might be generated
+          // to add a default meta title and meta description ) 
+          const formValues = this.prepareFormValuesFromPost(this.existingPost);
+          this.initPostFormValues(formValues);
+
           this.$store.commit("lastVisitedPost", post);
           this.savingPost = {
             state: REQUEST_STATE.FINISHED_OK,
