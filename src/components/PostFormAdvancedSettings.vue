@@ -50,32 +50,35 @@
       </div>
 
       <!-- PREVIEW GOOGLE -->
-      <div class="mt-16">
-        <h2 class="font-bold text-2xl">SEO SETTINGS</h2>
+      <div class="mt-16 ">
+        <h2 class="font-bold text-2xl border-gray-400 border-b mb-8">SEO</h2>
         <div class="flex flex-col md:flex-row">
-          <div class="w-full md:w-1/2 md:mr-3">
-            <h3 class="text-2xl font-bold mb-4">Meta tags</h3>
+          <div class="w-full md:w-1/2 md:mr-8">
+            <h3 class="text-2xl font-bold mb-4">Customize SEO meta tags</h3>
             <AppFieldText
+              label="Meta title"
               :value="vuexFormGetValue(FORM_ID, 'metaTitle')"
               @input="onMetaTitleInput"
-              placeholder="Teaser"
+              placeholder="Seo title"
               maxlength="250"
             />
             <AppFieldText
+              class="mt-8"
+              label="Meta description"
               :value="vuexFormGetValue(FORM_ID, 'metaDescription')"
               @input="onMetaDescriptionInput"
-              placeholder="Teaser"
+              placeholder="Seo description"
               maxlength="250"
             />
           </div>
           <div class="w-full md:w-1/2 md:mr-3">
-            <p class="mb-4 text-2xl font-bold">
+            <p class="mb-4 text-2xl font-bold mt-8 md:mt-0">
               {{ $t("views.postForm.advancedSettingsModal.previewGoogle") }}
             </p>
-            <div class="p-6 bg-white shadow-around rounded-lg">
+            <div class="p-6 bg-white shadow-around rounded-lg md:mt-10">
               <PreviewGoogleResult
-                :title="vuexFormGetValue(FORM_ID, 'metaTitle')"
-                :description="vuexFormGetValue(FORM_ID, 'metaDescription')"
+                :title="previewGoogleValues().title"
+                :description="previewGoogleValues().description"
                 :url="`https://example.com/post/${vuexFormGetValue(FORM_ID, 'slug')}`"
               />
             </div>
@@ -130,6 +133,23 @@ export default {
     this.FORM_ID = FORM_ID;
   },
   methods: {
+    previewGoogleValues() {
+
+      let title = vuexFormGetValue(FORM_ID, 'title');
+      let description = vuexFormGetValue(FORM_ID, 'teaser');
+
+      if (vuexFormGetValue(FORM_ID, 'metaTitle').trim()) {
+        title = vuexFormGetValue(FORM_ID, 'metaTitle').trim()
+      }
+      if (vuexFormGetValue(FORM_ID, 'metaDescription').trim()) {
+        description = vuexFormGetValue(FORM_ID, 'metaDescription').trim()
+      }
+
+      return {
+        title,
+        description
+      }
+    },
     onUploaded(fileUrl) {
       vuexFormSetValue(FORM_ID, "image", fileUrl);
     },

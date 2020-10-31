@@ -348,6 +348,9 @@ export default {
       editor.plugins.get("PendingActions").on("change:hasAny", actions => {});
     },
     async init() {
+
+      this.getSubscription();
+
       // no existing post, we are in CREATE MODE
       if (this.$route.name === "postCreate") {
         this.postFormInit(initialFormValues);
@@ -395,10 +398,20 @@ export default {
     // fill form fields from a post object
     prepareFormValuesFromPost(post) {
 
-      const descriptionTag = post.HTMLMetadata.find(meta => meta.tag === "meta" && meta.attributes.name === "description");
-      const titleTag = post.HTMLMetadata.find(meta => meta.tag === "title")
-      const metaTitle = titleTag.content;
-      const metaDescription = descriptionTag.attributes.content;
+      let metaTitle = "";
+      let metaDescription = "";
+
+      if (post.HTMLMetadata) {
+        const titleTag = post.HTMLMetadata.find(meta => meta.tag === "title")
+        if (titleTag) {
+          metaTitle = titleTag.content;
+        }
+
+        const descriptionTag = post.HTMLMetadata.find(meta => meta.tag === "meta" && meta.attributes.name === "description");
+        if (descriptionTag) {
+          metaDescription = descriptionTag.attributes.content;
+        }
+      }
 
       let values = {
         ...initialFormValues,
@@ -413,31 +426,42 @@ export default {
         metaTitle: metaTitle,
         image: post.image ? post.image : "",
       };
-      console.log('values', values)
       return values;
     },
     // Prepare a post object from form form.values, for a save operation
     preparePostFromCurrentFormValues() {
+
       const postToSave = {
         title: vuexFormGetValue(FORM_ID, "title"),
         content: vuexFormGetValue(FORM_ID, "content"),
         slug: vuexFormGetValue(FORM_ID, "slug"),
         teaser: vuexFormGetValue(FORM_ID, "teaser"),
         image: vuexFormGetValue(FORM_ID, "image"),
-        HTMLMetadata: [
-          {
-            tag: "title", 
-            content: vuexFormGetValue(FORM_ID, "metaTitle"),
-         },
-         {
-           tag: "meta",
-           attributes: {
-             name: "description",
-             content:  vuexFormGetValue(FORM_ID, "metaDescription"),
-           }
-         }
-        ]
       };
+
+
+      const HTMLMetadata = [];
+      const metaTitle = vuexFormGetValue(FORM_ID, "metaTitle");
+      const metaDescription = vuexFormGetValue(FORM_ID, "metaDescription");
+
+      if (metaTitle) {
+        HTMLMetadata.push({
+          tag: "title", 
+          content: metaTitle,
+        })
+      }
+      if (metaDescription) {
+        HTMLMetadata.push({
+          tag: "meta",
+          attributes: {
+            name: "description",
+            content: metaDescription,
+           }
+        })
+      }
+
+      postToSave.HTMLMetadata = HTMLMetadata;
+
       // API will know that this is an UPDATE and not a CREATE
       // if we add _id key to our post.
       if (this.$route.params.postId) {
@@ -521,6 +545,28 @@ export default {
           throw new Error(error);
         });
     },
+    getSubscription() {
+      const query = gql`
+        query blogSetQuery($blogSetId: ID!) {
+          blogSet(_id: $blogSetId) {
+            subscription {
+              id
+              planId
+              trialEnd
+            }
+          }
+        }
+      `
+      return apolloClient.query({
+        query,
+        variables: {
+          blogSetId: this.$route.params.blogSetId,
+        }
+      }).then(result => {
+        this.blogSetSubscription = result.data.blogSet.subscription;
+        return result.data.blogSet.subscription;
+      })
+    },
     getExistingPost(id) {
       return apolloClient
         .query({
@@ -529,14 +575,7 @@ export default {
             postId: id
           },
           query: gql`
-            query postFormQuery($blogSetId: ID!, $postId: ID!) {
-              blogSet(_id: $blogSetId) {
-                subscription {
-                  id
-                  planId
-                  trialEnd
-                }
-              }
+            query postFormQuery($postId: ID!) {
               post(_id: $postId) {
                 _id
                 title
@@ -565,7 +604,6 @@ export default {
         })
         .then(result => {
           this.existingPost = result.data.post;
-          this.blogSetSubscription = result.data.blogSet.subscription;
           return result.data.post;
         })
         .catch(error => {
