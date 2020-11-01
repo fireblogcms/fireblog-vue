@@ -113,6 +113,8 @@ export default {
   "views.postForm.publishNowButton": "Publier maintenant",
   "views.postForm.saveDraft": "Sauvegarder le brouillon",
   "views.postForm.savedAt {time}": "sauvegardé le {time}",
+  "views.postForm.sectionSeo.title": "Personnaliser vos metadonnées SEO",
+  "views.postForm.sectionSeo.description": "Par défaut, fireblog utilise le titre et l'accroche de votre article, mais vous pouvez personnalisez ces données si besoin.",
   "views.postForm.unpublishButton": "Dépublier",
   "views.postList.backToBlogLink": "Mes blogs",
   "views.postList.deleteButton": "Supprimer",

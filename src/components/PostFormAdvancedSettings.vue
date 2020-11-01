@@ -50,15 +50,44 @@
       </div>
 
       <!-- PREVIEW GOOGLE -->
-      <p class="mt-16 mb-4 text-2xl font-bold">
-        {{ $t("views.postForm.advancedSettingsModal.previewGoogle") }}
-      </p>
-      <div class="p-6 bg-white shadow-around rounded-lg">
-        <PreviewGoogleResult
-          :title="vuexFormGetValue(FORM_ID, 'title')"
-          :description="vuexFormGetValue(FORM_ID, 'teaser')"
-          :url="`https://example.com/post/${vuexFormGetValue(FORM_ID, 'slug')}`"
-        />
+      <div class="mt-16 ">
+        <div class="flex flex-col md:flex-row">
+          <div class="w-full md:w-1/2 md:mr-8">
+            <h3 class="text-2xl font-bold mb-4">
+              {{ $t("views.postForm.sectionSeo.title") }}
+            </h3>
+            <p class="text-sm italic mb-2">
+              {{ $t("views.postForm.sectionSeo.description") }}
+            </p>
+            <AppFieldText
+              label="Meta title"
+              :value="vuexFormGetValue(FORM_ID, 'metaTitle')"
+              @input="onMetaTitleInput"
+              placeholder="Seo title"
+              maxlength="250"
+            />
+            <AppFieldText
+              class="mt-8"
+              label="Meta description"
+              :value="vuexFormGetValue(FORM_ID, 'metaDescription')"
+              @input="onMetaDescriptionInput"
+              placeholder="Seo description"
+              maxlength="250"
+            />
+          </div>
+          <div class="w-full md:w-1/2 md:mr-3">
+            <p class="mb-4 text-2xl font-bold mt-8 md:mt-0">
+              {{ $t("views.postForm.advancedSettingsModal.previewGoogle") }}
+            </p>
+            <div class="p-6 bg-white shadow-around rounded-lg md:mt-10">
+              <PreviewGoogleResult
+                :title="previewGoogleValues().title"
+                :description="previewGoogleValues().description"
+                :url="`https://example.com/post/${vuexFormGetValue(FORM_ID, 'slug')}`"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </form>
   </div>
@@ -66,6 +95,7 @@
 
 <script>
 import AppTextarea from "@/ui-kit/AppTextarea";
+import AppFieldText from "@/ui-kit/AppFieldText";
 import S3ImageUpload from "./S3ImageUpload";
 import { REQUEST_STATE, generateSlugFromServer } from "@/utils/helpers";
 import {
@@ -83,6 +113,7 @@ const FORM_ID = "postForm";
 export default {
   components: {
     AppTextarea,
+    AppFieldText,
     PreviewGoogleResult,
     S3ImageUpload,
     SlugField,
@@ -106,11 +137,31 @@ export default {
     this.FORM_ID = FORM_ID;
   },
   methods: {
+    previewGoogleValues() {
+      let title = vuexFormGetValue(FORM_ID, 'title');
+      let description = vuexFormGetValue(FORM_ID, 'teaser');
+      if (vuexFormGetValue(FORM_ID, 'metaTitle').trim()) {
+        title = vuexFormGetValue(FORM_ID, 'metaTitle').trim()
+      }
+      if (vuexFormGetValue(FORM_ID, 'metaDescription').trim()) {
+        description = vuexFormGetValue(FORM_ID, 'metaDescription').trim()
+      }
+      return {
+        title,
+        description
+      }
+    },
     onUploaded(fileUrl) {
       vuexFormSetValue(FORM_ID, "image", fileUrl);
     },
-    onTeaserInput(event) {
-      vuexFormSetValue(FORM_ID, "teaser", event);
+    onTeaserInput(value) {
+      vuexFormSetValue(FORM_ID, "teaser", value);
+    },
+    onMetaTitleInput(value) {
+      vuexFormSetValue(FORM_ID, "metaTitle", value);
+    },
+    onMetaDescriptionInput(value) {
+      vuexFormSetValue(FORM_ID, "metaDescription", value);
     },
     onSlugChange(value) {
       if (value.length === 0) {
