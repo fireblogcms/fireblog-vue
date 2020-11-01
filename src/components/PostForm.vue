@@ -397,22 +397,6 @@ export default {
     },
     // fill form fields from a post object
     prepareFormValuesFromPost(post) {
-
-      let metaTitle = "";
-      let metaDescription = "";
-
-      if (post.HTMLMetadata) {
-        const titleTag = post.HTMLMetadata.find(meta => meta.tag === "title")
-        if (titleTag) {
-          metaTitle = titleTag.content;
-        }
-
-        const descriptionTag = post.HTMLMetadata.find(meta => meta.tag === "meta" && meta.attributes.name === "description");
-        if (descriptionTag) {
-          metaDescription = descriptionTag.attributes.content;
-        }
-      }
-
       let values = {
         ...initialFormValues,
         title: post.title ? post.title : "",
@@ -422,45 +406,23 @@ export default {
         title: post.title ? post.title : "",
         teaser: post.teaser ? post.teaser : "",
         image: post.image ? post.image : "",
-        metaDescription: metaDescription,
-        metaTitle: metaTitle,
+        metaDescription: post.metaDescription ? post.metaDescription : "",
+        metaTitle: post.metaTitle ? post.metaTitle : "",
         image: post.image ? post.image : "",
       };
       return values;
     },
     // Prepare a post object from form form.values, for a save operation
     preparePostFromCurrentFormValues() {
-
       const postToSave = {
         title: vuexFormGetValue(FORM_ID, "title"),
         content: vuexFormGetValue(FORM_ID, "content"),
         slug: vuexFormGetValue(FORM_ID, "slug"),
         teaser: vuexFormGetValue(FORM_ID, "teaser"),
         image: vuexFormGetValue(FORM_ID, "image"),
+        metaTitle: vuexFormGetValue(FORM_ID, "metaTitle"),
+        metaDescription: vuexFormGetValue(FORM_ID, "metaDescription"),
       };
-
-      const HTMLMetadata = [];
-      const metaTitle = vuexFormGetValue(FORM_ID, "metaTitle");
-      const metaDescription = vuexFormGetValue(FORM_ID, "metaDescription");
-
-      if (metaTitle) {
-        HTMLMetadata.push({
-          tag: "title", 
-          content: metaTitle,
-        })
-      }
-      if (metaDescription) {
-        HTMLMetadata.push({
-          tag: "meta",
-          attributes: {
-            name: "description",
-            content: metaDescription,
-           }
-        })
-      }
-
-      postToSave.HTMLMetadata = HTMLMetadata;
-
       // API will know that this is an UPDATE and not a CREATE
       // if we add _id key to our post.
       if (this.$route.params.postId) {
@@ -508,15 +470,7 @@ export default {
           this.$emit("onEdit", false);
           pendingActions.remove(savingPendingAction);
           const post = result.data.savePost;
-
           this.existingPost = post;
-
-          // Refresh our Vuex form values with saved data from server. (some fields might have changed
-          // during save operation. For example, default HTMLMetadata might be generated
-          // to add a default meta title and meta description ) 
-          const formValues = this.prepareFormValuesFromPost(this.existingPost);
-          this.initPostFormValues(formValues);
-
           this.$store.commit("lastVisitedPost", post);
           this.savingPost = {
             state: REQUEST_STATE.FINISHED_OK,
@@ -599,11 +553,8 @@ export default {
                   name
                   email
                 }
-                HTMLMetadata {
-                  tag
-                  content
-                  attributes
-                }
+                metaTitle
+                metaDescription
               }
             }
           `,
