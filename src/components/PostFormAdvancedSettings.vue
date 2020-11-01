@@ -53,9 +53,11 @@
       <div class="mt-16 ">
         <div class="flex flex-col md:flex-row">
           <div class="w-full md:w-1/2 md:mr-8">
-            <h3 class="text-2xl font-bold mb-4">Custom SEO meta tags</h3>
+            <h3 class="text-2xl font-bold mb-4">
+              {{ $t("views.postForm.sectionSeo.title") }}
+            </h3>
             <p class="text-sm italic mb-2">
-              Fireblog use your title and teaser by default, but in some cases, you might want to customize them !
+              {{ $t("views.postForm.sectionSeo.description") }}
             </p>
             <AppFieldText
               label="Meta title"

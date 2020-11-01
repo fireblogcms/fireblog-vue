@@ -316,8 +316,8 @@ export default {
 
       this.$store.commit("modalShowing/open", "graphQLApiModal");
       const context = {
-        slug: "{{POST_SLUG}}",
-        blogId: "{{BLOG_ID}}",
+        slug: "{{INSERT_YOUR_POST_SLUG}}",
+        blogId: "{{INSERT_YOUR_BLOG_ID}}",
       };
       if (this.$route.name === "postList") {
         const blog = await getBlog(this.$route.params.blogId);
