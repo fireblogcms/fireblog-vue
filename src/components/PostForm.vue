@@ -408,7 +408,6 @@ export default {
         image: post.image ? post.image : "",
         metaDescription: post.metaDescription ? post.metaDescription : "",
         metaTitle: post.metaTitle ? post.metaTitle : "",
-        image: post.image ? post.image : "",
       };
       return values;
     },
