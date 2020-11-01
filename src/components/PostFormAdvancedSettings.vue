@@ -51,7 +51,6 @@
 
       <!-- PREVIEW GOOGLE -->
       <div class="mt-16 ">
-        <h2 class="font-bold text-2xl border-gray-400 border-b mb-8">SEO</h2>
         <div class="flex flex-col md:flex-row">
           <div class="w-full md:w-1/2 md:mr-8">
             <h3 class="text-2xl font-bold mb-4">Customize SEO meta tags</h3>
