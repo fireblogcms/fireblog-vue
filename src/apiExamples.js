@@ -41,6 +41,8 @@ export default ({ blogId, slug, locale }) => [
     }
     metaTitle
     metaDescription
+    readingTime
+    wordCount
   }
 }    
 `,
@@ -65,6 +67,8 @@ export default ({ blogId, slug, locale }) => [
       }
       metaTitle
       metaDescription
+      readingTime
+      wordCount
     }
   }    
     `,

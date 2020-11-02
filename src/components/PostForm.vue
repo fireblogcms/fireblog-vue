@@ -131,6 +131,7 @@
               :value="vuexFormGetValue('postForm', 'content')"
               :autosave="saveIfDraft"
               :operation="existingPost ? 'update' : 'create'"
+              :onWordCountUpdate="onWordCountUpdate"
               @change="onContentChange"
               @editorReady="onEditorReady"
             />
@@ -302,6 +303,7 @@ export default {
       },
       isActionsVisibleOnMobile: false,
       blogSetSubscription: null,
+      wordCount: 0,
     };
   },
   created() {
@@ -340,6 +342,9 @@ export default {
     },
   },
   methods: {
+    onWordCountUpdate(stats) {
+      this.wordCount = stats.words;
+    },
     onEditorReady(editor) {
       const wordCountPlugin = editor.plugins.get("WordCount");
       const wordCountWrapper = this.$refs.wordcount;
@@ -421,6 +426,7 @@ export default {
         image: vuexFormGetValue(FORM_ID, "image"),
         metaTitle: vuexFormGetValue(FORM_ID, "metaTitle"),
         metaDescription: vuexFormGetValue(FORM_ID, "metaDescription"),
+        wordCount: this.wordCount,
       };
       // API will know that this is an UPDATE and not a CREATE
       // if we add _id key to our post.
