@@ -20,6 +20,8 @@ export const FullPostFragment = gql`
       name
       email
     }
+    metaTitle
+    metaDescription
   }
 `;
 

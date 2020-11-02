@@ -269,6 +269,8 @@ let initialFormValues = {
   slug: "",
   teaser: "",
   image: "",
+  metaDescription: "",
+  metaTitle: "",
   slugIsLocked: false,
   slugShowToggleLockButton: true,
 };
@@ -352,9 +354,12 @@ export default {
       editor.plugins.get("PendingActions").on("change:hasAny", actions => {});
     },
     async init() {
+
+      this.getSubscription();
+
       // no existing post, we are in CREATE MODE
       if (this.$route.name === "postCreate") {
-        this.postFormInit(initialFormValues);
+        this.initPostFormValues(initialFormValues);
       }
 
       // UPDATE MODE
@@ -366,7 +371,7 @@ export default {
         this.$store.commit("lastVisitedPost", this.existingPost);
         this.loadingAsyncData = false;
         const formValues = this.prepareFormValuesFromPost(this.existingPost);
-        this.postFormInit(formValues);
+        this.initPostFormValues(formValues);
       }
     },
     onTitleInput(value) {
@@ -390,7 +395,7 @@ export default {
     closePublishingSuccessModal() {
       this.$store.commit("modalShowing/close", "publishingSuccessModal");
     },
-    postFormInit(formValues) {
+    initPostFormValues(formValues) {
       vuexFormInit(FORM_ID, {
         initialValues: { ...formValues },
         onFormValueChange: ({ name, value }) => {},
@@ -407,6 +412,8 @@ export default {
         title: post.title ? post.title : "",
         teaser: post.teaser ? post.teaser : "",
         image: post.image ? post.image : "",
+        metaDescription: post.metaDescription ? post.metaDescription : "",
+        metaTitle: post.metaTitle ? post.metaTitle : "",
       };
       return values;
     },
@@ -418,6 +425,8 @@ export default {
         slug: vuexFormGetValue(FORM_ID, "slug"),
         teaser: vuexFormGetValue(FORM_ID, "teaser"),
         image: vuexFormGetValue(FORM_ID, "image"),
+        metaTitle: vuexFormGetValue(FORM_ID, "metaTitle"),
+        metaDescription: vuexFormGetValue(FORM_ID, "metaDescription"),
       };
       // API will know that this is an UPDATE and not a CREATE
       // if we add _id key to our post.
@@ -466,7 +475,6 @@ export default {
           this.$emit("onEdit", false);
           pendingActions.remove(savingPendingAction);
           const post = result.data.savePost;
-
           this.existingPost = post;
           this.$store.commit("lastVisitedPost", post);
           this.savingPost = {
@@ -502,6 +510,28 @@ export default {
           throw new Error(error);
         });
     },
+    getSubscription() {
+      const query = gql`
+        query blogSetQuery($blogSetId: ID!) {
+          blogSet(_id: $blogSetId) {
+            subscription {
+              id
+              planId
+              trialEnd
+            }
+          }
+        }
+      `
+      return apolloClient.query({
+        query,
+        variables: {
+          blogSetId: this.$route.params.blogSetId,
+        }
+      }).then(result => {
+        this.blogSetSubscription = result.data.blogSet.subscription;
+        return result.data.blogSet.subscription;
+      })
+    },
     getExistingPost(id) {
       return apolloClient
         .query({
@@ -510,14 +540,7 @@ export default {
             postId: id
           },
           query: gql`
-            query postFormQuery($blogSetId: ID!, $postId: ID!) {
-              blogSet(_id: $blogSetId) {
-                subscription {
-                  id
-                  planId
-                  trialEnd
-                }
-              }
+            query postFormQuery($postId: ID!) {
               post(_id: $postId) {
                 _id
                 title
@@ -535,13 +558,14 @@ export default {
                   name
                   email
                 }
+                metaTitle
+                metaDescription
               }
             }
           `,
         })
         .then(result => {
           this.existingPost = result.data.post;
-          this.blogSetSubscription = result.data.blogSet.subscription;
           return result.data.post;
         })
         .catch(error => {

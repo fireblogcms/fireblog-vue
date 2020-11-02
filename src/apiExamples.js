@@ -39,6 +39,8 @@ export default ({ blogId, slug, locale }) => [
     imageFull: image {
       url
     }
+    metaTitle
+    metaDescription
   }
 }    
 `,
@@ -61,6 +63,8 @@ export default ({ blogId, slug, locale }) => [
       image {
         url
       }
+      metaTitle
+      metaDescription
     }
   }    
     `,

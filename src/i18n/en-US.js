@@ -113,6 +113,8 @@ export default {
   "views.postForm.publishNowButton": "Publish now",
   "views.postForm.savedAt {time}": "saved on {time}",
   "views.postForm.saveDraft": "Save draft",
+  "views.postForm.sectionSeo.title": "Customize your SEO metadatas",
+  "views.postForm.sectionSeo.description": "Fireblog use your title and teaser by default, but you can customize your metadas if needed.",
   "views.postForm.unpublishButton": "Unpublish",
   "views.postList.backToBlogLink": "My blogs",
   "views.postList.deleteButton": "Delete",
