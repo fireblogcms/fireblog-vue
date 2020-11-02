@@ -47,7 +47,11 @@
             @onLock="onSlugLock"
           />
 
-          <HighlightField class="mt-8" />
+          <!-- HIGHLIGHT FIELD -->
+          <HighlightField
+            :checked="vuexFormGetValue(FORM_ID, 'highlighted')"
+            @onHighlightChange="onHighlightChange"
+            class="mt-8" />
         </div>
       </div>
 
@@ -115,6 +119,9 @@ export default {
     },
     onTeaserInput(event) {
       vuexFormSetValue(FORM_ID, "teaser", event);
+    },
+    onHighlightChange(value) {
+      vuexFormSetValue(FORM_ID, "highlighted", value);
     },
     onSlugChange(value) {
       if (value.length === 0) {

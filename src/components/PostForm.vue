@@ -268,6 +268,7 @@ let initialFormValues = {
   slug: "",
   teaser: "",
   image: "",
+  highlighted: false,
   slugIsLocked: false,
   slugShowToggleLockButton: true,
 };
@@ -401,6 +402,7 @@ export default {
         title: post.title ? post.title : "",
         teaser: post.teaser ? post.teaser : "",
         image: post.image ? post.image : "",
+        highlighted: post.highlighted ? post.highlighted : false,
       };
       return values;
     },
@@ -412,6 +414,7 @@ export default {
         slug: vuexFormGetValue(FORM_ID, "slug"),
         teaser: vuexFormGetValue(FORM_ID, "teaser"),
         image: vuexFormGetValue(FORM_ID, "image"),
+        highlighted: vuexFormGetValue(FORM_ID, "highlighted"),
       };
       // API will know that this is an UPDATE and not a CREATE
       // if we add _id key to our post.
@@ -524,6 +527,7 @@ export default {
                 updatedAt
                 createdAt
                 image
+                highlighted
                 author {
                   _id
                   name

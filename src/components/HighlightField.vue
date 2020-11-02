@@ -1,40 +1,27 @@
 <template>
   <div class="flex items-center">
     <p class="font-bold mr-10">{{ $t("components.highlightField.title") }}</p>
-    <label class="switch relative inline-block">
-      <input type="checkbox" class="opacity-0 w-0 h-0">
-      <span class="slider absolute inset-0 duration-500 bg-gray-300 rounded-full cursor-pointer"></span>
-    </label>
+    <AppFieldToggle :checked="checked" @change="onToggleChange" />
   </div>
 </template>
 
 <script>
-export default {}
-</script>
+import AppFieldToggle from "@/ui-kit/AppFieldToggle";
 
-<style scoped>
-.switch {
-  width: 58px;
-  height: 32px;
+export default {
+  components: {
+    AppFieldToggle,
+  },
+  props: {
+    checked: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  methods: {
+    onToggleChange(value) {
+      this.$emit('onHighlightChange', value);
+    },
+  },
 }
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 25px;
-  width: 25px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  border-radius: 100%;
-  transition: .5s;
-}
-input:checked + .slider {
-  background-color: #735cd9;
-}
-input:focus + .slider {
-  box-shadow: 0 0 1px #735cd9;
-}
-input:checked + .slider:before {
-  transform: translateX(25px);
-}
-</style>
+</script>
