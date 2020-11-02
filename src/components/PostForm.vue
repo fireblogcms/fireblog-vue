@@ -343,7 +343,6 @@ export default {
   },
   methods: {
     onWordCountUpdate(stats) {
-      console.log('stats', stats);
       this.wordCount = stats.words;
     },
     onEditorReady(editor) {
