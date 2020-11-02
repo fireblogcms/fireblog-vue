@@ -129,6 +129,7 @@ export default {
   "views.postList.noDraftPostFound": "Aucun brouillon trouvé pour le moment.",
   "views.postList.publishedTab": "Publiés",
   "views.postList.publishedOn": "publié le {date}",
+  "views.postList.readingTime": "temps de lecture: ",
   "views.postList.writeNewPostButton": "Nouveau post",
   "views.postList.updatedOn": "mis à jour le {date}",
   "views.plans.title": "Plans",

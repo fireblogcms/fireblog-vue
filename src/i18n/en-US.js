@@ -130,6 +130,7 @@ export default {
   "views.postList.noPublishedPostFound": "No published post found",
   "views.postList.noDraftPostFound": "No draft post found.",
   "views.postList.updatedOn": "updated on {date}",
+  "views.postList.readingTime": "reading time : ",
   "views.postList.writeNewPostButton": "New post",
   "views.plans.title": "Plans",
   "views.plans.freeTrialFirst": "Your current plan is",

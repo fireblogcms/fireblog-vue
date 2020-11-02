@@ -334,6 +334,7 @@ function viewDataQuery({ blogSetId, blogId }) {
               image
               wordCount
               readingTime
+              status
             }
           }
         }
@@ -348,6 +349,9 @@ function viewDataQuery({ blogSetId, blogId }) {
               image
               wordCount
               readingTime
+              status
+              updatedAt
+              publishedAt
             }
           }
         }
@@ -362,6 +366,8 @@ function viewDataQuery({ blogSetId, blogId }) {
               image
               wordCount
               readingTime
+              status
+              updatedAt
             }
           }
         }
