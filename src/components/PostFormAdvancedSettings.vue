@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pb-12">
     <form @submit.prevent>
       <div class="flex flex-col md:flex-row">
         <div class="w-full md:w-1/2 md:mr-3">
@@ -53,7 +53,7 @@
       <div class="mt-16 ">
         <div class="flex flex-col md:flex-row">
           <div class="w-full md:w-1/2 md:mr-8">
-            <h3 class="text-2xl font-bold mb-4">
+            <h3 class="text-2xl font-bold">
               {{ $t("views.postForm.sectionSeo.title") }}
             </h3>
             <p class="text-sm italic mb-2">
@@ -79,7 +79,7 @@
             <p class="mb-4 text-2xl font-bold mt-8 md:mt-0">
               {{ $t("views.postForm.advancedSettingsModal.previewGoogle") }}
             </p>
-            <div class="p-6 bg-white shadow-around rounded-lg md:mt-10">
+            <div class="p-6 bg-white shadow-around rounded-lg">
               <PreviewGoogleResult
                 :title="previewGoogleValues().title"
                 :description="previewGoogleValues().description"
