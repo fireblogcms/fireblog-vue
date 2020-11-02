@@ -20,6 +20,12 @@ export default {
         return Promise.resolve(data);
       },
     },
+    onWordCountUpdate: {
+      type: Function,
+      default: data => {
+        return Promise.resolve(data);
+      },
+    },
     // Possible values: create or update
     operation: {
       type: String,
@@ -92,6 +98,11 @@ export default {
             return this.autosave();
           }
         },
+      },
+      wordCount: {
+        onUpdate: stats => {
+          this.onWordCountUpdate(stats);
+        }
       },
       mediaEmbed: {
         previewsInData: false,
