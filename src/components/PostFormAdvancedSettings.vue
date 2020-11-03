@@ -46,6 +46,12 @@
             @onUnlock="onSlugUnlock"
             @onLock="onSlugLock"
           />
+
+          <!-- FEATURE FIELD -->
+          <FeatureField
+            :checked="vuexFormGetValue(FORM_ID, 'featured')"
+            @onFeatureChange="onFeatureChange"
+            class="mt-8" />
         </div>
       </div>
 
@@ -105,6 +111,7 @@ import {
   vuexFormSetError,
 } from "@/utils/vuexForm";
 import SlugField from "./SlugField";
+import FeatureField from "./FeatureField";
 import PreviewGoogleResult from "./PreviewGoogleResult";
 import apolloClient from "@/utils/apolloClient";
 
@@ -117,6 +124,7 @@ export default {
     PreviewGoogleResult,
     S3ImageUpload,
     SlugField,
+    FeatureField,
   },
   props: {
     existingPost: {
@@ -162,6 +170,9 @@ export default {
     },
     onMetaDescriptionInput(value) {
       vuexFormSetValue(FORM_ID, "metaDescription", value);
+    },
+    onFeatureChange(value) {
+      vuexFormSetValue(FORM_ID, "featured", value);
     },
     onSlugChange(value) {
       if (value.length === 0) {
