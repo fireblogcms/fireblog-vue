@@ -332,6 +332,9 @@ function viewDataQuery({ blogSetId, blogId }) {
               title
               teaser
               image
+              wordCount
+              readingTime
+              status
             }
           }
         }
@@ -344,6 +347,11 @@ function viewDataQuery({ blogSetId, blogId }) {
               teaser
               content
               image
+              wordCount
+              readingTime
+              status
+              updatedAt
+              publishedAt
             }
           }
         }
@@ -356,6 +364,10 @@ function viewDataQuery({ blogSetId, blogId }) {
               teaser
               content
               image
+              wordCount
+              readingTime
+              status
+              updatedAt
             }
           }
         }

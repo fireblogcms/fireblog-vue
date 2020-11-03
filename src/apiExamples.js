@@ -39,6 +39,10 @@ export default ({ blogId, slug, locale }) => [
     imageFull: image {
       url
     }
+    metaTitle
+    metaDescription
+    readingTime
+    wordCount
   }
 }    
 `,
@@ -61,6 +65,10 @@ export default ({ blogId, slug, locale }) => [
       image {
         url
       }
+      metaTitle
+      metaDescription
+      readingTime
+      wordCount
     }
   }    
     `,

@@ -65,6 +65,11 @@
                 $t("views.postList.publishedOn", {
                   date: publishedOnDate(post),
                 })
+              }} /
+              {{
+                $t("views.postList.updatedOn", {
+                  date: updatedOnDate(post),
+                })
               }}
             </p>
             <p
@@ -77,6 +82,8 @@
                 })
               }}
             </p>
+            <p class="text-sm italic text-gray-600">
+              {{$t("views.postList.readingTime")}} : {{ post.node.readingTime }} min </p>
             <p class="mt-4">
               {{
                 striptags(
