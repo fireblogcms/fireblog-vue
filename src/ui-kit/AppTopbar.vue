@@ -64,7 +64,7 @@
               :key="edge.node._id"
               :to="{
                 name: 'postList',
-                params: { blogId: edge.node._id },
+                params: { blogId: edge.node._id, blogSetId: edge.node.blogSet },
               }"
               class="px-4 py-2 hover:bg-gray-100"
             >
@@ -356,6 +356,15 @@ function viewData() {
           name
           email
           picture
+          blogs(last:100) {
+            edges {
+              node {
+                _id
+                name
+                blogSet
+              }
+            }
+          }
         }
       }
     `,
