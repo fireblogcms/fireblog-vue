@@ -23,6 +23,7 @@ export default {
   "components.slugField.unlockConfirmModal.content": "Attention ! Changer l'url alors que le post a déjà été publié  cassera les liens existants vers votre article et causera des erreurs 404 de page non trouvée. Ne modifiez ce paramètre que si vous savez ce que vous faites !",
   "components.slugField.unlockConfirmModal.title": "Confirmer le changement de slug",
   "components.highlightField.title": "Mis en avant",
+  "components.highlightField.description": "Mettez en valeur ce post sur votre site (par exemple la page d'accueil).",
   "components.planInformations.name": "Plan :",
   "components.planInformations.freeTrial": "essai gratuit :",
   "components.planInformations.daysLeftTrial": "jours restants",
