@@ -1,8 +1,8 @@
 <template>
   <div class="flex items-center justify-between">
     <div>
-      <p class="font-bold mr-10">{{ $t("components.highlightField.title") }}</p>
-      <p class="text-sm italic">{{ $t("components.highlightField.description") }}</p>
+      <p class="font-bold mr-10">{{ $t("components.featureField.title") }}</p>
+      <p class="text-sm italic">{{ $t("components.featureField.description") }}</p>
     </div>
     <AppFieldToggle :checked="checked" @change="onToggleChange" class="mr-6" />
   </div>
@@ -23,7 +23,7 @@ export default {
   },
   methods: {
     onToggleChange(value) {
-      this.$emit('onHighlightChange', value);
+      this.$emit('onFeatureChange', value);
     },
   },
 }

@@ -269,7 +269,7 @@ let initialFormValues = {
   slug: "",
   teaser: "",
   image: "",
-  highlighted: false,
+  featured: false,
   metaDescription: "",
   metaTitle: "",
   slugIsLocked: false,
@@ -412,7 +412,7 @@ export default {
         title: post.title ? post.title : "",
         teaser: post.teaser ? post.teaser : "",
         image: post.image ? post.image : "",
-        highlighted: post.highlighted ? post.highlighted : false,
+        featured: post.featured ? post.featured : false,
         metaDescription: post.metaDescription ? post.metaDescription : "",
         metaTitle: post.metaTitle ? post.metaTitle : "",
       };
@@ -426,7 +426,7 @@ export default {
         slug: vuexFormGetValue(FORM_ID, "slug"),
         teaser: vuexFormGetValue(FORM_ID, "teaser"),
         image: vuexFormGetValue(FORM_ID, "image"),
-        highlighted: vuexFormGetValue(FORM_ID, "highlighted"),
+        featured: vuexFormGetValue(FORM_ID, "featured"),
         metaTitle: vuexFormGetValue(FORM_ID, "metaTitle"),
         metaDescription: vuexFormGetValue(FORM_ID, "metaDescription"),
         wordCount: this.wordCount,
@@ -556,7 +556,7 @@ export default {
                 updatedAt
                 createdAt
                 image
-                highlighted
+                featured
                 author {
                   _id
                   name

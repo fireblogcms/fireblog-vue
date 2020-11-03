@@ -15,7 +15,7 @@ export const FullPostFragment = gql`
     updatedAt
     createdAt
     image
-    highlighted
+    featured
     author {
       _id
       name

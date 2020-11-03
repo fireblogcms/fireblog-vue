@@ -39,6 +39,7 @@ export default ({ blogId, slug, locale }) => [
     imageFull: image {
       url
     }
+    featured
     metaTitle
     metaDescription
     readingTime
@@ -65,6 +66,7 @@ export default ({ blogId, slug, locale }) => [
       image {
         url
       }
+      featured
       metaTitle
       metaDescription
       readingTime
