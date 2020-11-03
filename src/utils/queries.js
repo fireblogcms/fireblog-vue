@@ -68,6 +68,7 @@ export const FullBlogFragment = gql`
 
 export const FullTagFragment = gql`
   fragment FullTagFragment on Tag {
+    _id
     name
     slug
     description
