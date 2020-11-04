@@ -39,7 +39,7 @@
       <p>✔️ <span v-html="$t('views.plans.benefices.gatsby')" /></p>
 
       <div
-        class="mt-10 flex flex-col md:flex-row justify-around"
+        class="mt-10 flex flex-col md:flex-row justify-center"
         v-if="plans.length > 0"
       >
         <div
@@ -95,12 +95,12 @@
 
       <!-- Loading placeholders -->
       <div
-        class="mt-10 flex flex-col md:flex-row justify-around"
+        class="mt-10 flex flex-col md:flex-row justify-center"
         v-if="plans.length === 0"
       >
         <div
           class="w-full md:w-1/3 my-4 md:mx-4 p-6 bg-white shadow-md rounded-lg border-4 border-transparent"
-          v-for="(v, i) in [0, 1, 2]"
+          v-for="(v, i) in [0, 1]"
           :key="i"
         >
           <ContentLoader :height="400">
