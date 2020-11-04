@@ -52,10 +52,10 @@
             params: { blogSetId: blogSet._id },
           }"
         >
-          <template v-if="!blogSet.subscription.trialEnd && !blogSet.subscription.hasToSubscribe">
+          <template v-if="blogSet.subscription.status === 'ACTIVE'">
             {{ $t("global.changePlanButton") }}
           </template>
-          <template v-if="blogSet.subscription.trialEnd || blogSet.subscription.hasToSubscribe">
+          <template v-if="blogSet.subscription.status === 'TRIAL'">
             {{ $t("global.subscribeButton") }}
           </template>
         </router-link>

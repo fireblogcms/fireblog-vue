@@ -177,7 +177,7 @@ function viewData() {
             id
             planId
             trialEnd
-            hasToSubscribe
+            status
           }
         }
       }
