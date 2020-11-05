@@ -136,3 +136,28 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+  .vue-tags-input {
+    .ti-input{
+      @apply p-2 text-xl shadow-sm appearance-none border rounded w-full text-current;
+      :focus {
+        @apply outline-none shadow-outline;
+      }
+    }
+    .ti-tag {
+      @apply bg-primary p-2;
+    }
+    .ti-new-tag-input {
+      @apply p-2;
+    }
+    .ti-autocomplete {
+      @apply border rounded-b shadow-sm;
+      .ti-item {
+        :hover {
+          @apply bg-primary;
+        }
+      }
+    }
+  }
+</style>
