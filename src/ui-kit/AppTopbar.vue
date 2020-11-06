@@ -153,7 +153,7 @@
       <div class="flex flex-col items-center" slot="body">
         <img v-if="supportGif" class="h-64 mb-4 rounded" :src="supportGif" />
         <p>{{ $t("contactModal.content") }}</p>
-        <div class="flex items-center my-4">
+        <div class="flex items-center mt-2">
           <a
             @click="onMailSupportClick"
             class="text-primary font-bold"
@@ -162,13 +162,22 @@
             support@fireblogcms.com
           </a>
         </div>
-        <div class="flex items-center">
+        <div class="flex items-center mt-2">
           <span
             @click.prevent="onChatSupportClick"
             class="text-primary font-bold cursor-pointer"
           >
             {{ $t("contactModal.chatWithUs") }}
           </span>
+        </div>
+        <div class="flex items-center mt-2">
+          <a
+            href="https://discord.gg/zuNUKNx3hH"
+            target="_blank"
+            class="text-primary font-bold cursor-pointer"
+          >
+            {{ $t("contactModal.discord") }}
+          </a>
         </div>
       </div>
     </AppModal>

@@ -89,6 +89,7 @@ export default {
   },
   mounted() {
     this.fetchData();
+    // @FIXME: remaining trial days should be returned from API
     if (this.blogSet.subscription.trialEnd) {
       this.numberDaysLeftTrial = Math.round(
         (new Date(this.blogSet.subscription.trialEnd) - new Date()) /

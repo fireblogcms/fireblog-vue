@@ -10,6 +10,7 @@ export default {
   "contactModal.title": "We are here to help",
   "contactModal.chatWithUs": "Chat with us",
   "contactModal.content": "A problem, a question, a suggestion? Feel free to contact us, we are at your service and we will come back to you as soon as possible.",
+  "contactModal.discord": "Discord community",
   "freeTrialEndedModal.title": "Your free trial ended",
   "freeTrialEndedModal.body": "Some features are not available anymore because your free trial ended. To keep using them, you must subscribe to one of our plans.",
   "freeTrialEndedModal.button": "Check out our plans",
