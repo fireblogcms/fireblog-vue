@@ -93,6 +93,12 @@
                 )
               }}
             </p>
+
+            <div class="mt-3">
+              <span :key="tag.name" v-for="tag in post.node.tags" class="bg-gray-200 shadow-sm rounded text-current p-2 mr-1">
+                {{ tag.name }} 
+              </span>
+            </div>
           </div>
         </div>
         <AppButton

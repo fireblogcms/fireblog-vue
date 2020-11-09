@@ -66,6 +66,15 @@ export const FullBlogFragment = gql`
   }
 `;
 
+export const FullTagFragment = gql`
+  fragment FullTagFragment on Tag {
+    _id
+    name
+    slug
+    description
+  }
+`;
+
 export const getUserQuery = gql`
   query getUserQuery {
     me {
@@ -262,6 +271,15 @@ export const getPlanQuery = gql`
       amountTaxes
       metadata
       productName
+    }
+  }
+`;
+
+export const createTagMutation = gql`
+  ${FullTagFragment}
+  mutation createTagMutation($blog: ID!, $tag: CreateTagInput!) {
+    createTag(blog: $blog, tag: $tag) {
+      ...FullTagFragment
     }
   }
 `;

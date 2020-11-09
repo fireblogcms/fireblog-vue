@@ -95,6 +95,20 @@
           </div>
         </div>
       </div>
+      <!-- TAGS -->
+      <div class="mt-16 ">
+        <div class="flex flex-col md:flex-row">
+          <div class="w-full md:w-1/2 md:mr-8">
+            <h3 class="text-2xl font-bold">
+              {{ $t("views.postForm.sectionTags.title") }}
+            </h3>
+            <p class="text-sm italic mb-2">
+              {{ $t("views.postForm.sectionTags.description") }}
+            </p>
+            <TagAutocomplete :blogId="$route.params.blogId" :formId="FORM_ID" />
+          </div>
+        </div>
+      </div>
     </form>
   </div>
 </template>
@@ -103,6 +117,7 @@
 import AppTextarea from "@/ui-kit/AppTextarea";
 import AppFieldText from "@/ui-kit/AppFieldText";
 import S3ImageUpload from "./S3ImageUpload";
+import TagAutocomplete from "./TagAutocomplete";
 import { REQUEST_STATE, generateSlugFromServer } from "@/utils/helpers";
 import {
   vuexFormGetValue,
@@ -123,6 +138,7 @@ export default {
     AppFieldText,
     PreviewGoogleResult,
     S3ImageUpload,
+    TagAutocomplete,
     SlugField,
     FeatureField,
   },

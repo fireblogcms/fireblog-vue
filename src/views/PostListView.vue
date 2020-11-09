@@ -335,6 +335,9 @@ function viewDataQuery({ blogSetId, blogId }) {
               wordCount
               readingTime
               status
+              tags {
+                name
+              }
             }
           }
         }
@@ -350,6 +353,9 @@ function viewDataQuery({ blogSetId, blogId }) {
               wordCount
               readingTime
               status
+              tags {
+                name
+              }
               updatedAt
               publishedAt
             }
@@ -367,6 +373,9 @@ function viewDataQuery({ blogSetId, blogId }) {
               wordCount
               readingTime
               status
+              tags {
+                name
+              }
               updatedAt
             }
           }

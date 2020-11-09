@@ -272,6 +272,7 @@ let initialFormValues = {
   featured: false,
   metaDescription: "",
   metaTitle: "",
+  tags: [],
   slugIsLocked: false,
   slugShowToggleLockButton: true,
 };
@@ -405,7 +406,7 @@ export default {
     prepareFormValuesFromPost(post) {
       let values = {
         ...initialFormValues,
-        title: post.title ? post.title : "",
+        title: post.title ? post.title : initialFormValues.title,
         content: post.content ? post.content : "",
         // slug is the slug value after being slugified by SlugField component
         slug: post.slug ? post.slug : "",
@@ -415,6 +416,7 @@ export default {
         featured: post.featured ? post.featured : false,
         metaDescription: post.metaDescription ? post.metaDescription : "",
         metaTitle: post.metaTitle ? post.metaTitle : "",
+        tags: post.tags || initialFormValues.tags
       };
       return values;
     },
@@ -429,6 +431,7 @@ export default {
         featured: vuexFormGetValue(FORM_ID, "featured"),
         metaTitle: vuexFormGetValue(FORM_ID, "metaTitle"),
         metaDescription: vuexFormGetValue(FORM_ID, "metaDescription"),
+        tags: vuexFormGetValue(FORM_ID, "tags").map(tag => tag._id),
         wordCount: this.wordCount,
       };
       // API will know that this is an UPDATE and not a CREATE
@@ -564,6 +567,11 @@ export default {
                 }
                 metaTitle
                 metaDescription
+                tags {
+                  _id
+                  name
+                  slug
+                }
               }
             }
           `,
