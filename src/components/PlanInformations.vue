@@ -41,7 +41,7 @@
           </span>
           <span v-if="blogSet.subscription.trialEnd">
             ({{ $t("components.planInformations.freeTrial") }}
-            {{ numberDaysLeftTrial }}
+            {{ blogSet.subscription.numberDaysLeftTrial }}
             {{ $t("components.planInformations.daysLeftTrial") }})
           </span>
         </div>
@@ -55,7 +55,7 @@
           <template v-if="blogSet.subscription.status === 'ACTIVE'">
             {{ $t("global.changePlanButton") }}
           </template>
-          <template v-if="blogSet.subscription.status === 'TRIAL'">
+          <template v-if="blogSet.subscription.status !== 'ACTIVE'">
             {{ $t("global.subscribeButton") }}
           </template>
         </router-link>
@@ -84,20 +84,10 @@ export default {
     return {
       resourcesUseData: false,
       plan: null,
-      numberDaysLeftTrial: null,
     };
   },
   mounted() {
     this.fetchData();
-    if (this.blogSet.subscription.trialEnd) {
-      this.numberDaysLeftTrial = Math.round(
-        (new Date(this.blogSet.subscription.trialEnd) - new Date()) /
-          (1000 * 60 * 60 * 24)
-      );
-      if (this.numberDaysLeftTrial < 0) {
-        this.numberDaysLeftTrial = 0;
-      }
-    }
   },
   methods: {
     async fetchData() {

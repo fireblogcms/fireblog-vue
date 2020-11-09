@@ -521,6 +521,7 @@ export default {
               id
               planId
               trialEnd
+              status
             }
           }
         }
@@ -641,11 +642,7 @@ export default {
      * Open publication modal. This is NOT the final publish operation.
      */
     showAdvancedSettings() {
-      const trialEnd = this.blogSetSubscription.trialEnd ?
-        new Date(this.blogSetSubscription.trialEnd) :
-        null;
-
-      if (this.blogSetSubscription.id || (trialEnd && new Date() <= trialEnd)) {
+      if (this.blogSetSubscription.status === "TRIAL" || this.blogSetSubscription.status === "ACTIVE") {
         // we need at least the title to autocomplete the slug field
         if (!vuexFormGetValue(FORM_ID, "title").trim()) {
           toast(
