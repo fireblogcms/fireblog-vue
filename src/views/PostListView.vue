@@ -285,11 +285,7 @@ export default {
       });
     },
     onWriteNewPostClick() {
-      const trialEnd = this.viewData.blogSet.subscription.trialEnd ?
-        new Date(this.viewData.blogSet.subscription.trialEnd) :
-        null;
-
-      if (this.viewData.blogSet.subscription.id || (trialEnd && new Date() <= trialEnd)) {
+      if (this.viewData.blogSet.subscription.status === "TRIAL" || this.viewData.blogSet.subscription.status === "ACTIVE") {
         this.$router.push({
           name: "postCreate",
           params: {
@@ -317,6 +313,7 @@ function viewDataQuery({ blogSetId, blogId }) {
             id
             planId
             trialEnd
+            status
           }
         }
         blog(_id: $blogId) {
