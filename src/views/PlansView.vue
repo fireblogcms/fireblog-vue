@@ -13,11 +13,7 @@
     <div class="container mx-auto my-10 text-center">
       <div
         class="flex justify-center mb-16"
-        v-if="
-          blogSet.subscription &&
-            blogSet.subscription.trialEnd &&
-            !blogSet.subscription.hasToSubscribe
-        "
+        v-if="blogSet.subscription && blogSet.subscription.status === 'TRIAL'"
       >
         <div class="w-8/12 p-8 bg-white shadow-md rounded-lg">
           <p>
@@ -283,26 +279,20 @@ export default {
         });
     },
     onUnsubscribeClick() {
-      const subscription = {
-        id: this.blogSet.subscription.id,
-        planId: this.blogSet.subscription.planId,
-        hasToSubscribe: true,
-      };
       return apolloClient
         .mutate({
           variables: {
             blogSet: {
               _id: this.$route.params.blogSetId,
-              subscription,
+              subscription: this.blogSet.subscription,
             },
+            deleteSubscription: true,
           },
           mutation: gql`
-            mutation($blogSet: UpdateBlogSetInput!) {
-              updateBlogSet(blogSet: $blogSet) {
+            mutation($blogSet: UpdateBlogSetInput!, $deleteSubscription: Boolean) {
+              updateBlogSet(blogSet: $blogSet, deleteSubscription: $deleteSubscription) {
                 subscription {
-                  id
-                  planId
-                  hasToSubscribe
+                  status
                 }
               }
             }
@@ -337,7 +327,7 @@ export default {
                   id
                   planId
                   trialEnd
-                  hasToSubscribe
+                  status
                   plan {
                     id
                     amount

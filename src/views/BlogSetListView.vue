@@ -139,11 +139,7 @@ export default {
   },
   methods: {
     onCreateNewBlogClick(blogSet) {
-      const trialEnd = blogSet.subscription.trialEnd ?
-        new Date(blogSet.subscription.trialEnd) :
-        null;
-
-      if (blogSet.subscription.id || (trialEnd && new Date() <= trialEnd)) {
+      if (blogSet.subscription.status === "TRIAL" || blogSet.subscription.status === "ACTIVE") {
         this.$router.push({
           name: "blogCreate",
           params: { blogSetId: blogSet._id },
@@ -177,7 +173,8 @@ function viewData() {
             id
             planId
             trialEnd
-            hasToSubscribe
+            numberDaysLeftTrial
+            status
           }
         }
       }
