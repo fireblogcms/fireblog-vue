@@ -25,6 +25,7 @@ module.exports = {
               /^token/,
               /^pre/,
               /^code/,
+              /^tag-auto-complete/,
             ],
           }),
         ]
