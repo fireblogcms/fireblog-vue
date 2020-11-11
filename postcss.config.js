@@ -17,6 +17,7 @@ module.exports = {
               /^(?!(|.*?:)cursor-move).+-move$/,
               /^router-link(|-exact)-active$/,
               /^app-toast-/,
+              /^vue-tags-input/,
             ],
             whitelistPatternsChildren: [
               // for prismJS component
