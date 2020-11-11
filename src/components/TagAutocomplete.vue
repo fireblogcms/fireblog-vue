@@ -69,7 +69,8 @@ export default {
       async init() {
           this.getTags();
           this.tags = this.getTagsLabels(vuexFormGetValue(this.FORM_ID, 'tags'))
-          console.log(this.tags);
+            .map(tag => ({ text: tag }))
+          // console.log(this.tags);
       },
       getTagsLabels(tags) {
         return tags.map(tag => tag.name);
@@ -137,27 +138,23 @@ export default {
 };
 </script>
 
-<style lang="scss">
-  .vue-tags-input {
-    .ti-input{
-      @apply p-2 text-xl shadow-sm appearance-none border rounded w-full text-current;
-      :focus {
-        @apply outline-none shadow-outline;
-      }
-    }
-    .ti-tag {
-      @apply bg-primary p-2;
-    }
-    .ti-new-tag-input {
-      @apply p-2;
-    }
-    .ti-autocomplete {
-      @apply border rounded-b shadow-sm;
-      .ti-item {
-        :hover {
-          @apply bg-primary;
-        }
-      }
-    }
+<style>
+  .vue-tags-input .ti-input{
+    @apply p-2 text-xl shadow-sm appearance-none border rounded w-full text-current;
+  }
+  .vue-tags-input .ti-input:focus {
+    @apply outline-none shadow-outline;
+  }
+  .vue-tags-input .ti-tag {
+    @apply bg-primary p-2;
+  }
+  .vue-tags-input .ti-new-tag-input {
+    @apply p-2;
+  }
+  .vue-tags-input .ti-autocomplete {
+    @apply border rounded-b shadow-sm;
+  }
+  .vue-tags-input .ti-item:hover {
+    @apply bg-primary;
   }
 </style>
