@@ -15,12 +15,56 @@
             $t("views.blogSettings.technicalSettingsForm.fields.webhooks.help")
           }}
         </p>
-        <AppTextarea
-          :value="vuexFormGetValue(formId, 'staticBuildWebhooks')"
-          @input="vuexFormSetValue(formId, 'staticBuildWebhooks', $event)"
-          maxlength="250"
-          placeholder="e.g. Hello world"
-        />
+        <div class="flex">
+          <div class="mr-2">
+            <AppFieldSelect 
+              label="Method"
+              :options="[{ value:'POST', label : 'POST' }, { value:'GET', label: 'GET'}]" 
+              :value="vuexFormGetValue(formId, 'webhookMethod')"
+              @input="vuexFormSetValue(formId, 'webhookMethod', $event)"
+            />
+          </div>
+          <div class="flex-grow">
+            <AppFieldText
+              label="URL"
+              placeholder="https://example.com"
+              :value="vuexFormGetValue(formId, 'webhookUrl')" 
+              @input="vuexFormSetValue(formId, 'webhookUrl', $event)"
+            />
+          </div>
+        </div>
+        <div class="my-4">
+          <div 
+            class="font-bold text-primary cursor-pointer" 
+            v-if="showAdvancedSettings === false"
+            @click="showAdvancedSettings = true"
+          >
+            Show advanced settings <span class="">▼</span>
+          </div>
+          <div 
+            class="font-bold text-primary cursor-pointer" 
+            v-if="showAdvancedSettings === true"
+            @click="showAdvancedSettings = false"
+          >
+            Hide advanced settings <span class="">▲</span>
+          </div>
+        </div>
+        <div v-show="showAdvancedSettings">
+          <AppTextarea
+            label="Headers (JSON Format)"
+            :value="vuexFormGetValue(formId, 'staticBuildRequestHeaders')"
+            @input="vuexFormSetValue(formId, 'staticBuildRequestHeaders', $event)"
+            maxlength="250"
+            placeholder="{}"
+          />
+          <AppTextarea
+            label="Body"
+            :value="vuexFormGetValue(formId, 'staticBuildRequestBody')"
+            @input="vuexFormSetValue(formId, 'staticBuildRequestBody', $event)"
+            maxlength="250"
+            placeholder='{"Authorization": "token abcdefghijk"}'
+          />
+        </div>
       </div>
       <AppButton
         color="primary-outlined"
@@ -37,6 +81,8 @@
 import AppButton from "@/ui-kit/AppButton";
 import AppPanel from "@/ui-kit/AppPanel";
 import AppTextarea from "@/ui-kit/AppTextarea";
+import AppFieldText from "@/ui-kit/AppFieldText";
+import AppFieldSelect from "@/ui-kit/AppFieldSelect";
 import {
   vuexFormInit,
   vuexFormSetValue,
@@ -52,8 +98,10 @@ import { updateBlogMutation } from "@/utils/queries";
 
 const formId = "technicalSettingsForm";
 const initialFormValues = {
-  staticBuildWebhooks: [],
-  url: "",
+  webhookUrl: "",
+  webhookMethod: "POST",
+  webhookBody:"",
+  webhookHeaders:"{}",
 };
 
 export default {
@@ -61,6 +109,8 @@ export default {
     AppButton,
     AppPanel,
     AppTextarea,
+    AppFieldText,
+    AppFieldSelect
   },
   props: {
     blog: {
@@ -70,6 +120,7 @@ export default {
   },
   data() {
     return {
+      showAdvancedSettings: false,
       savingState: REQUEST_STATE.NOT_STARTED,
     };
   },
@@ -81,7 +132,7 @@ export default {
 
     vuexFormInit(formId, {
       initialValues: {
-        staticBuildWebhooks: this.blog.webhooks
+        webhookUrl: this.blog.webhooks
           ? this.blog.webhooks.map(v => v.url).join(",")
           : initialFormValues.webhooks,
       },
@@ -116,15 +167,15 @@ export default {
       const webhooks = [];
       const webhooksFieldValue = vuexFormGetValue(
         formId,
-        "staticBuildWebhooks"
+        "webhookUrl"
       );
       if (webhooksFieldValue.trim()) {
-        let staticBuildWebhooksArray = webhooksFieldValue.split(",");
+        let webhookUrlArray = webhooksFieldValue.split(",");
         //remove extra spaces
-        staticBuildWebhooksArray = staticBuildWebhooksArray.map(webhook =>
+        webhookUrlArray = webhookUrlArray.map(webhook =>
           webhook.trim()
         );
-        staticBuildWebhooksArray.forEach(webhook => {
+        webhookUrlArray.forEach(webhook => {
           webhooks.push({
             name: webhook,
             url: webhook,
