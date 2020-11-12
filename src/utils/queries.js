@@ -62,6 +62,8 @@ export const FullBlogFragment = gql`
       name
       onEvents
       url
+      headers
+      body
     }
   }
 `;
