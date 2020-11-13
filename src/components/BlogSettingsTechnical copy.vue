@@ -17,55 +17,52 @@
         </p>
         <div class="flex">
           <div class="mr-2">
-            <AppFieldSelect
+            <AppFieldSelect 
               label="Method"
-              :options="[
-                { value: 'POST', label: 'POST' },
-                { value: 'GET', label: 'GET' },
-              ]"
+              :options="[{ value:'POST', label : 'POST' }, { value:'GET', label: 'GET'}]" 
               :value="vuexFormGetValue(formId, 'webhookMethod')"
-              @change="vuexFormSetValue(formId, 'webhookMethod', $event)"
+              @input="vuexFormSetValue(formId, 'webhookMethod', $event)"
             />
           </div>
           <div class="flex-grow">
             <AppFieldText
               label="URL"
               placeholder="https://example.com"
-              :value="vuexFormGetValue(formId, 'webhookUrl')"
+              :value="vuexFormGetValue(formId, 'webhookUrl')" 
               @input="vuexFormSetValue(formId, 'webhookUrl', $event)"
             />
           </div>
         </div>
         <div class="my-4">
-          <div
-            class="font-bold text-primary cursor-pointer"
-            v-if="showWebhookAdvancedSettings === false"
-            @click="showWebhookAdvancedSettings = true"
+          <div 
+            class="font-bold text-primary cursor-pointer" 
+            v-if="showAdvancedSettings === false"
+            @click="showAdvancedSettings = true"
           >
             Show advanced settings <span class="">▼</span>
           </div>
-          <div
-            class="font-bold text-primary cursor-pointer"
-            v-if="showWebhookAdvancedSettings === true"
-            @click="showWebhookAdvancedSettings = false"
+          <div 
+            class="font-bold text-primary cursor-pointer" 
+            v-if="showAdvancedSettings === true"
+            @click="showAdvancedSettings = false"
           >
             Hide advanced settings <span class="">▲</span>
           </div>
         </div>
-        <div v-show="showWebhookAdvancedSettings">
+        <div v-show="showAdvancedSettings">
           <AppTextarea
             label="Headers (JSON Format)"
-            :value="vuexFormGetValue(formId, 'webhookHeaders')"
-            @input="vuexFormSetValue(formId, 'webhookHeaders', $event)"
+            :value="vuexFormGetValue(formId, 'staticBuildRequestHeaders')"
+            @input="vuexFormSetValue(formId, 'staticBuildRequestHeaders', $event)"
             maxlength="250"
             placeholder="{}"
           />
           <AppTextarea
             label="Body"
-            :value="vuexFormGetValue(formId, 'webhookBody')"
-            @input="vuexFormSetValue(formId, 'webhookBody', $event)"
+            :value="vuexFormGetValue(formId, 'staticBuildRequestBody')"
+            @input="vuexFormSetValue(formId, 'staticBuildRequestBody', $event)"
             maxlength="250"
-            placeholder=""
+            placeholder='{"Authorization": "token abcdefghijk"}'
           />
         </div>
       </div>
@@ -100,18 +97,11 @@ import apolloClient from "@/utils/apolloClient";
 import { updateBlogMutation } from "@/utils/queries";
 
 const formId = "technicalSettingsForm";
-
-const initFormValues = blog => {
-  // for now we can register only ONE webhook:
-  // so let's just use the first webhook found for this blog.
-  const webhook = blog && blog.webhooks ? blog.webhooks[0] : {};
-  const values = {
-    webhookUrl: webhook.url ? webhook.url : "",
-    webhookMethod: webhook.method ? webhook.method : "POST",
-    webhookHeaders: webhook.headers ? webhook.headers : "",
-    webhookBody: webhook.body ? webhook.body : "",
-  };
-  return values;
+const initialFormValues = {
+  webhookUrl: "",
+  webhookMethod: "POST",
+  webhookBody:"",
+  webhookHeaders:"{}",
 };
 
 export default {
@@ -120,7 +110,7 @@ export default {
     AppPanel,
     AppTextarea,
     AppFieldText,
-    AppFieldSelect,
+    AppFieldSelect
   },
   props: {
     blog: {
@@ -130,7 +120,7 @@ export default {
   },
   data() {
     return {
-      showWebhookAdvancedSettings: false,
+      showAdvancedSettings: false,
       savingState: REQUEST_STATE.NOT_STARTED,
     };
   },
@@ -139,8 +129,13 @@ export default {
     this.vuexFormSetValue = vuexFormSetValue;
     this.vuexFormGetValue = vuexFormGetValue;
     this.vuexFormGetError = vuexFormGetError;
+
     vuexFormInit(formId, {
-      initialValues: initFormValues(this.blog),
+      initialValues: {
+        webhookUrl: this.blog.webhooks
+          ? this.blog.webhooks.map(v => v.url).join(",")
+          : initialFormValues.webhooks,
+      },
     });
   },
   methods: {
@@ -169,19 +164,26 @@ export default {
         });
     },
     prepareWebhooksValuesForSave() {
-      // webooks is an array in our database, even if we allow only
-      // one webhook to be saved for now.
-      const wehbooks = [
-        {
-          name: vuexFormGetValue(formId, "webhookUrl"),
-          url: vuexFormGetValue(formId, "webhookUrl"),
-          method: vuexFormGetValue(formId, "webhookMethod"),
-          headers: vuexFormGetValue(formId, "webhookHeaders"),
-          body: vuexFormGetValue(formId, "webhookBody"),
-          onEvents: ["global:staticBuildNeeded"],
-        },
-      ];
-      return wehbooks;
+      const webhooks = [];
+      const webhooksFieldValue = vuexFormGetValue(
+        formId,
+        "webhookUrl"
+      );
+      if (webhooksFieldValue.trim()) {
+        let webhookUrlArray = webhooksFieldValue.split(",");
+        //remove extra spaces
+        webhookUrlArray = webhookUrlArray.map(webhook =>
+          webhook.trim()
+        );
+        webhookUrlArray.forEach(webhook => {
+          webhooks.push({
+            name: webhook,
+            url: webhook,
+            onEvents: ["global:staticBuildNeeded"],
+          });
+        });
+      }
+      return webhooks;
     },
     updateBlog(blog) {
       return apolloClient

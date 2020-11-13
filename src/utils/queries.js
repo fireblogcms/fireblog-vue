@@ -61,6 +61,7 @@ export const FullBlogFragment = gql`
     webhooks {
       name
       onEvents
+      method
       url
       headers
       body
