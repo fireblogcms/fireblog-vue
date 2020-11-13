@@ -1,16 +1,15 @@
 <template>
-  <DefaultLayout>
+  <DefaultLayout class="relative">
+    <div class="absolute pt-10">
+      <AnimatedBirds />
+    </div>
     <template v-if="viewData">
-      <div class="container mx-auto my-10">
+      <div class="container mx-auto my-10 relative">
         <div v-for="blogSet in viewData.blogSets" :key="blogSet._id">
           <div
             class="flex flex-col md:flex-row justify-between items-center md:items-start mb-20"
           >
             <div class="flex mb-12 md:mb-0">
-              <img
-                class="w-8 h-8 mr-4 md:w-16 md:h-16 md:mr-10"
-                src="/images/books.png"
-              />
               <div>
                 <h1 class="text-xl md:text-4xl font-bold uppercase mb-2">
                   {{ $t("views.blogSetList.title") }}
@@ -106,6 +105,7 @@ import DefaultLayout from "@/layouts/DefaultLayout";
 import gql from "graphql-tag";
 import { REQUEST_STATE, toast } from "@/utils/helpers";
 import { getMyBlogs } from "@/utils/helpers";
+import AnimatedBirds from "@/components/AnimatedBirds";
 
 export default {
   components: {
@@ -115,6 +115,7 @@ export default {
     AppButton,
     PlanInformations,
     AppModal,
+    AnimatedBirds,
   },
   data() {
     return {
@@ -139,7 +140,10 @@ export default {
   },
   methods: {
     onCreateNewBlogClick(blogSet) {
-      if (blogSet.subscription.status === "TRIAL" || blogSet.subscription.status === "ACTIVE") {
+      if (
+        blogSet.subscription.status === "TRIAL" ||
+        blogSet.subscription.status === "ACTIVE"
+      ) {
         this.$router.push({
           name: "blogCreate",
           params: { blogSetId: blogSet._id },
@@ -148,7 +152,7 @@ export default {
         this.$store.commit("modalShowing/open", "freeTrialEndedModal");
       }
     },
-  }
+  },
 };
 
 function viewData() {

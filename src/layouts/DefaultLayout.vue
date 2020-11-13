@@ -1,5 +1,10 @@
 <template>
-  <div id="default-layout" class="flex flex-col">
+  <div
+    id="default-layout"
+    class="flex flex-col"
+    :class="`view-${$route.name}`"
+    style="min-height:100vh"
+  >
     <AppTopbar v-show="isTopbarVisible()" />
     <div class="flex-1">
       <slot />
@@ -22,3 +27,23 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/*
+.view-postList {
+  background-image: url("/illustrations/flying-whale.jpg");
+  background-size: contain;
+}
+*/
+
+.view-postUpdate,
+.view-postCreate {
+  background-image: url("/illustrations/flying-whale.jpg");
+  background-size: contain;
+}
+.view-blogCreate {
+  background-image: url("/illustrations/flying-whale.jpg");
+  background-attachment: fixed;
+  background-size: cover;
+}
+</style>

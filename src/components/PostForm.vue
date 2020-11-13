@@ -3,7 +3,6 @@
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
       <AppBreadcrumb
-        image="/images/book.png"
         :routerOptions="{
           name: 'postList',
           params: { blogSetId: $route.params.blogSetId },
@@ -355,7 +354,6 @@ export default {
       editor.plugins.get("PendingActions").on("change:hasAny", actions => {});
     },
     async init() {
-
       this.getSubscription();
 
       // no existing post, we are in CREATE MODE
@@ -416,7 +414,7 @@ export default {
         featured: post.featured ? post.featured : false,
         metaDescription: post.metaDescription ? post.metaDescription : "",
         metaTitle: post.metaTitle ? post.metaTitle : "",
-        tags: post.tags || initialFormValues.tags
+        tags: post.tags || initialFormValues.tags,
       };
       return values;
     },
@@ -528,23 +526,25 @@ export default {
             }
           }
         }
-      `
-      return apolloClient.query({
-        query,
-        variables: {
-          blogSetId: this.$route.params.blogSetId,
-        }
-      }).then(result => {
-        this.blogSetSubscription = result.data.blogSet.subscription;
-        return result.data.blogSet.subscription;
-      })
+      `;
+      return apolloClient
+        .query({
+          query,
+          variables: {
+            blogSetId: this.$route.params.blogSetId,
+          },
+        })
+        .then(result => {
+          this.blogSetSubscription = result.data.blogSet.subscription;
+          return result.data.blogSet.subscription;
+        });
     },
     getExistingPost(id) {
       return apolloClient
         .query({
           variables: {
             blogSetId: this.$route.params.blogSetId,
-            postId: id
+            postId: id,
           },
           query: gql`
             query postFormQuery($postId: ID!) {
@@ -650,7 +650,10 @@ export default {
      * Open publication modal. This is NOT the final publish operation.
      */
     showAdvancedSettings() {
-      if (this.blogSetSubscription.status === "TRIAL" || this.blogSetSubscription.status === "ACTIVE") {
+      if (
+        this.blogSetSubscription.status === "TRIAL" ||
+        this.blogSetSubscription.status === "ACTIVE"
+      ) {
         // we need at least the title to autocomplete the slug field
         if (!vuexFormGetValue(FORM_ID, "title").trim()) {
           toast(

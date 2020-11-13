@@ -3,7 +3,6 @@
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
       <AppBreadcrumb
-        image="/images/books.png"
         :routerOptions="{ name: 'blogSetList' }"
         :name="$t('views.postList.backToBlogLink')"
       />
@@ -227,9 +226,9 @@ export default {
     fetchData() {
       this.viewDataLoading = true;
       viewDataQuery({
-          blogSetId: this.$route.params.blogSetId,
-          blogId: this.$route.params.blogId,
-        })
+        blogSetId: this.$route.params.blogSetId,
+        blogId: this.$route.params.blogId,
+      })
         .then(r => {
           this.viewData = r.data;
           this.isFirstPost =
@@ -285,7 +284,10 @@ export default {
       });
     },
     onWriteNewPostClick() {
-      if (this.viewData.blogSet.subscription.status === "TRIAL" || this.viewData.blogSet.subscription.status === "ACTIVE") {
+      if (
+        this.viewData.blogSet.subscription.status === "TRIAL" ||
+        this.viewData.blogSet.subscription.status === "ACTIVE"
+      ) {
         this.$router.push({
           name: "postCreate",
           params: {
