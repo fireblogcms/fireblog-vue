@@ -40,3 +40,11 @@ yarn test:e2e:headless
 ```
 yarn lint
 ```
+
+### Server local build
+
+```
+yarn build && yarn serve
+```
+
+Note: must serve site on localhost:8080 to allow Auth0 to work.

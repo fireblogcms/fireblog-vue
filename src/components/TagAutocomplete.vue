@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="tag-auto-complete">
     <vue-tags-input
       v-model="tag"
       :tags="tags"
@@ -139,22 +139,22 @@ export default {
 </script>
 
 <style>
-  .vue-tags-input .ti-input{
+  .tag-auto-complete .vue-tags-input .ti-input {
     @apply p-2 text-xl shadow-sm appearance-none border rounded w-full text-current;
   }
-  .vue-tags-input .ti-input:focus {
+  .tag-auto-complete .vue-tags-input .ti-input:focus {
     @apply outline-none shadow-outline;
   }
-  .vue-tags-input .ti-tag {
+  .tag-auto-complete .vue-tags-input .ti-tag {
     @apply bg-primary p-2;
   }
-  .vue-tags-input .ti-new-tag-input {
+  .tag-auto-complete .vue-tags-input .ti-new-tag-input {
     @apply p-2;
   }
-  .vue-tags-input .ti-autocomplete {
+  .tag-auto-complete .vue-tags-input .ti-autocomplete {
     @apply border rounded-b shadow-sm;
   }
-  .vue-tags-input .ti-item:hover {
+  .tag-auto-complete .vue-tags-input .ti-item:hover {
     @apply bg-primary;
   }
 </style>
