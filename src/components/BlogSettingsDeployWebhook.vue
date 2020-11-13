@@ -1,23 +1,16 @@
 <template>
   <AppPanel class="pt-0">
     <h2 class="text-4xl font-bold">
-      {{ $t("views.blogSettings.technicalSettingsForm.title") }}
+      {{ $t("views.blogSettings.deployWebhookForm.title") }}
     </h2>
 
     <div class="mt-6 mb-10">
-      <label class="text-md font-bold">
-        {{
-          $t("views.blogSettings.technicalSettingsForm.fields.webhooks.label")
-        }}
-      </label>
-      <p class="mb-4 text-sm">
-        {{
-          $t("views.blogSettings.technicalSettingsForm.fields.webhooks.help")
-        }}
-      </p>
       <div>
         <AppFieldText
           label="URL"
+          :help="
+            $t('views.blogSettings.deployWebhookForm.fields.webhooks.help')
+          "
           placeholder="https://example.com"
           :value="vuexFormGetValue(formId, 'webhookUrl')"
           @input="vuexFormSetValue(formId, 'webhookUrl', $event)"
@@ -47,7 +40,7 @@
             :value="vuexFormGetValue(formId, 'webhookHeaders')"
             @input="onHeadersInput"
             maxlength="250"
-            placeholder="{}"
+            placeholder='{"Authorization": "token abcdefghijklmnopqrstuvwxyz"}'
             :error="webhookHeadersJSONError"
           />
           <AppTextarea
@@ -81,7 +74,7 @@
         :loading="savingState === 'PENDING'"
         @click="onSave"
       >
-        {{ $t("views.blogSettings.technicalSettingsForm.saveButton") }}
+        {{ $t("views.blogSettings.deployWebhookForm.saveButton") }}
       </AppButton>
 
       <div class="mt-6" v-if="triggerWebhookResponse">
@@ -142,7 +135,7 @@ import apolloClient from "@/utils/apolloClient";
 import { updateBlogMutation } from "@/utils/queries";
 import gql from "graphql-tag";
 
-const formId = "technicalSettingsForm";
+const formId = "deployWebhookForm";
 
 const initFormValues = blog => {
   let existingWebhook = {};
@@ -209,14 +202,10 @@ export default {
         for (const header in headers) {
           preview.push(`-H "${header}: ${headers[header]}"`);
         }
-        console.log("headers", headers);
       }
 
       // add body, if any
-      if (
-        vuexFormGetValue(formId, "webhookBody").trim().length > 0 &&
-        this.headersJsonIsValid()
-      ) {
+      if (vuexFormGetValue(formId, "webhookBody").trim().length > 0) {
         preview.push(`-d '${vuexFormGetValue(formId, "webhookBody")}'`);
       }
 
@@ -257,9 +246,7 @@ export default {
           this.savingState = REQUEST_STATE.FINISHED_OK;
           toast(
             this,
-            this.$t(
-              "views.blogSettings.technicalSettingsForm.notifications.saved"
-            ),
+            this.$t("views.blogSettings.deployWebhookForm.notifications.saved"),
             "success"
           );
         })

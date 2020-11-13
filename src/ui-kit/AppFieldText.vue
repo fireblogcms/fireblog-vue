@@ -3,6 +3,9 @@
     <label v-if="label" class="font-bold">
       {{ label }}
     </label>
+    <div v-if="help" class="text-sm mb-4">
+      {{ help }}
+    </div>
     <input
       class="p-4 text-xl shadow-sm appearance-none border rounded w-full text-current focus:outline-none focus:shadow-outline"
       type="text"
@@ -28,6 +31,9 @@ export default {
       type: String,
     },
     value: {
+      type: String,
+    },
+    help: {
       type: String,
     },
     debounce: {

@@ -4,7 +4,7 @@
 
     <template v-if="initDataState === 'FINISHED_OK'">
       <BlogSettingsGeneral :blog="blog" />
-      <BlogSettingsTechnical :blog="blog" />
+      <BlogSettingsDeployWebhook :blog="blog" />
       <BlogSettingsDeleteBlog :blog="blog" />
     </template>
   </div>
@@ -16,7 +16,7 @@ import { getBlog, REQUEST_STATE, toast } from "@/utils/helpers";
 import { vuexFormInitData } from "@/utils/vuexForm";
 import apolloClient from "@/utils/apolloClient";
 import BlogSettingsGeneral from "@/components/BlogSettingsGeneral";
-import BlogSettingsTechnical from "@/components/BlogSettingsTechnical";
+import BlogSettingsDeployWebhook from "@/components/BlogSettingsDeployWebhook";
 import BlogSettingsDeleteBlog from "@/components/BlogSettingsDeleteBlog";
 import gql from "graphql-tag";
 import {
@@ -30,7 +30,7 @@ export default {
   components: {
     AppLoader,
     BlogSettingsGeneral,
-    BlogSettingsTechnical,
+    BlogSettingsDeployWebhook,
     BlogSettingsDeleteBlog,
   },
   data() {
