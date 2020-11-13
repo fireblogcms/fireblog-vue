@@ -15,26 +15,13 @@
             $t("views.blogSettings.technicalSettingsForm.fields.webhooks.help")
           }}
         </p>
-        <div class="flex">
-          <div class="mr-2">
-            <AppFieldSelect
-              label="Method"
-              :options="[
-                { value: 'POST', label: 'POST' },
-                { value: 'GET', label: 'GET' },
-              ]"
-              :value="vuexFormGetValue(formId, 'webhookMethod')"
-              @change="vuexFormSetValue(formId, 'webhookMethod', $event)"
-            />
-          </div>
-          <div class="flex-grow">
-            <AppFieldText
-              label="URL"
-              placeholder="https://example.com"
-              :value="vuexFormGetValue(formId, 'webhookUrl')"
-              @input="vuexFormSetValue(formId, 'webhookUrl', $event)"
-            />
-          </div>
+        <div>
+          <AppFieldText
+            label="URL"
+            placeholder="https://example.com"
+            :value="vuexFormGetValue(formId, 'webhookUrl')"
+            @input="vuexFormSetValue(formId, 'webhookUrl', $event)"
+          />
         </div>
         <div class="my-4">
           <div
@@ -42,7 +29,7 @@
             v-if="showWebhookAdvancedSettings === false"
             @click="showWebhookAdvancedSettings = true"
           >
-            Show advanced settings <span class="">▼</span>
+            Show webhook advanced settings <span class="">▼</span>
           </div>
           <div
             class="font-bold text-primary cursor-pointer"
@@ -53,7 +40,18 @@
           </div>
         </div>
         <div v-show="showWebhookAdvancedSettings">
+          <AppFieldSelect
+            class="mb-6"
+            label="Method"
+            :options="[
+              { value: 'POST', label: 'POST' },
+              { value: 'GET', label: 'GET' },
+            ]"
+            :value="vuexFormGetValue(formId, 'webhookMethod')"
+            @change="vuexFormSetValue(formId, 'webhookMethod', $event)"
+          />
           <AppTextarea
+            class="mb-6"
             label="Headers (JSON Format)"
             :value="vuexFormGetValue(formId, 'webhookHeaders')"
             @input="vuexFormSetValue(formId, 'webhookHeaders', $event)"
