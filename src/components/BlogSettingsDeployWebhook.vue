@@ -228,6 +228,10 @@ export default {
         toast(this, `Headers error: ${this.webhookHeadersJSONError}`, "error");
         isValid = false;
       }
+      if (!vuexFormGetValue(formId, "webhookUrl").startsWith("https://")) {
+        toast(this, `Webhook url must begin with https://`, "error");
+        isValid = false;
+      }
       return isValid;
     },
     onSave() {
