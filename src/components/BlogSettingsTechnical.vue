@@ -21,6 +21,7 @@
             placeholder="https://example.com"
             :value="vuexFormGetValue(formId, 'webhookUrl')"
             @input="vuexFormSetValue(formId, 'webhookUrl', $event)"
+            required
           />
         </div>
         <div class="my-4">
@@ -100,14 +101,15 @@ import { updateBlogMutation } from "@/utils/queries";
 const formId = "technicalSettingsForm";
 
 const initFormValues = blog => {
-  // for now we can register only ONE webhook:
-  // so let's just use the first webhook found for this blog.
-  const webhook = blog && blog.webhooks ? blog.webhooks[0] : {};
+  let existingWebhook = {};
+  if (blog && blog.webhooks && blog.webhooks.length > 0) {
+    existingWebhook = blog.webhooks[0];
+  }
   const values = {
-    webhookUrl: webhook.url ? webhook.url : "",
-    webhookMethod: webhook.method ? webhook.method : "POST",
-    webhookHeaders: webhook.headers ? webhook.headers : "",
-    webhookBody: webhook.body ? webhook.body : "",
+    webhookUrl: existingWebhook.url ? existingWebhook.url : "",
+    webhookMethod: existingWebhook.method ? existingWebhook.method : "POST",
+    webhookHeaders: existingWebhook.headers ? existingWebhook.headers : "",
+    webhookBody: existingWebhook.body ? existingWebhook.body : "",
   };
   return values;
 };
@@ -171,11 +173,11 @@ export default {
       // one webhook to be saved for now.
       const wehbooks = [
         {
-          name: vuexFormGetValue(formId, "webhookUrl"),
-          url: vuexFormGetValue(formId, "webhookUrl"),
-          method: vuexFormGetValue(formId, "webhookMethod"),
-          headers: vuexFormGetValue(formId, "webhookHeaders"),
-          body: vuexFormGetValue(formId, "webhookBody"),
+          name: vuexFormGetValue(formId, "webhookUrl").trim(),
+          url: vuexFormGetValue(formId, "webhookUrl").trim(),
+          method: vuexFormGetValue(formId, "webhookMethod").trim(),
+          headers: vuexFormGetValue(formId, "webhookHeaders").trim(),
+          body: vuexFormGetValue(formId, "webhookBody").trim(),
           onEvents: ["global:staticBuildNeeded"],
         },
       ];
