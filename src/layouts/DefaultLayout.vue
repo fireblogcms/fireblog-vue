@@ -32,6 +32,7 @@ export default {
 /*
 .view-postList {
   background-image: url("/illustrations/flying-whale.jpg");
+  background-attachment: fixed;
   background-size: contain;
 }
 */
@@ -43,7 +44,6 @@ export default {
 }
 .view-blogCreate {
   background-image: url("/illustrations/flying-whale.jpg");
-  background-attachment: fixed;
   background-size: cover;
 }
 </style>

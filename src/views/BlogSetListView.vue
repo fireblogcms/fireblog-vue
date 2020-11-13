@@ -1,8 +1,10 @@
 <template>
   <DefaultLayout class="relative">
+    <!--
     <div class="absolute pt-10">
       <AnimatedBirds />
     </div>
+    -->
     <template v-if="viewData">
       <div class="container mx-auto my-10 relative">
         <div v-for="blogSet in viewData.blogSets" :key="blogSet._id">
