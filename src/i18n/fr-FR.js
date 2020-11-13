@@ -81,7 +81,7 @@ export default {
   "views.blogSettings.deployWebhookForm.fields.webhooks.help": "Cette URL sera appelée automatiquement à chaque fois que le contenu de votre blog change; typiquemement pour déclencher le rebuild de votre front-end statique.",
   "views.blogSettings.deployWebhookForm.fields.webhooks.label": "URL à appeler quand le contenu du blog change.",
   "views.blogSettings.deployWebhookForm.fields.url.label": "URL absolue de votre blog",
-  "views.blogSettings.deployWebhookForm.notifications.saved": "Les modifications des réglages techniques ont été enregistrées.",
+  "views.blogSettings.deployWebhookForm.notifications.saved": "Les réglages du webhook ont été enregistrés.",
   "views.blogSettings.deployWebhookForm.saveButton": "Enregistrer",
   "views.blogSettings.deployWebhookForm.title": "Webhook de déploiement",
   "views.blogSettings.planSettings.title": "Réglages du plan",
