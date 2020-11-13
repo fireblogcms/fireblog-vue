@@ -24,49 +24,41 @@
           required
         />
       </div>
-      <div class="my-4">
-        <div
-          class="font-bold text-primary cursor-pointer"
-          v-if="showWebhookAdvancedSettings === false"
-          @click="showWebhookAdvancedSettings = true"
+      <details>
+        <summary
+          class="outline-none cursor-pointer mt-6 text-primary font-bold"
         >
-          Show webhook advanced settings <span class="">▼</span>
+          Show webhook advanced settings
+        </summary>
+        <div class="mt-6">
+          <AppFieldSelect
+            class="mb-6"
+            label="Method"
+            :options="[
+              { value: 'POST', label: 'POST' },
+              { value: 'GET', label: 'GET' },
+            ]"
+            :value="vuexFormGetValue(formId, 'webhookMethod')"
+            @change="vuexFormSetValue(formId, 'webhookMethod', $event)"
+          />
+          <AppTextarea
+            class="mb-6 webhook-headers"
+            label="Headers (JSON Format)"
+            :value="vuexFormGetValue(formId, 'webhookHeaders')"
+            @input="onHeadersInput"
+            maxlength="250"
+            placeholder="{}"
+            :error="webhookHeadersJSONError"
+          />
+          <AppTextarea
+            label="Body"
+            :value="vuexFormGetValue(formId, 'webhookBody')"
+            @input="vuexFormSetValue(formId, 'webhookBody', $event)"
+            maxlength="250"
+            placeholder=""
+          />
         </div>
-        <div
-          class="font-bold text-primary cursor-pointer"
-          v-if="showWebhookAdvancedSettings === true"
-          @click="showWebhookAdvancedSettings = false"
-        >
-          Hide advanced settings <span class="">▲</span>
-        </div>
-      </div>
-      <div v-show="showWebhookAdvancedSettings">
-        <AppFieldSelect
-          class="mb-6"
-          label="Method"
-          :options="[
-            { value: 'POST', label: 'POST' },
-            { value: 'GET', label: 'GET' },
-          ]"
-          :value="vuexFormGetValue(formId, 'webhookMethod')"
-          @change="vuexFormSetValue(formId, 'webhookMethod', $event)"
-        />
-        <AppTextarea
-          class="mb-6"
-          label="Headers (JSON Format)"
-          :value="vuexFormGetValue(formId, 'webhookHeaders')"
-          @input="vuexFormSetValue(formId, 'webhookHeaders', $event)"
-          maxlength="250"
-          placeholder="{}"
-        />
-        <AppTextarea
-          label="Body"
-          :value="vuexFormGetValue(formId, 'webhookBody')"
-          @input="vuexFormSetValue(formId, 'webhookBody', $event)"
-          maxlength="250"
-          placeholder=""
-        />
-      </div>
+      </details>
     </div>
     <div>
       <AppButton
@@ -87,7 +79,10 @@
 
       <div class="mt-6" v-if="triggerWebhookResponse">
         <span
-          v-if="triggerWebhookResponse.status === 200"
+          v-if="
+            triggerWebhookResponse.status >= 200 &&
+              triggerWebhookResponse.status < 300
+          "
           class="text-green-600"
         >
           <details>
@@ -96,7 +91,11 @@
               {{ triggerWebhookResponse.status }} OK
             </summary>
             <div class="py-6">
-              {{ triggerWebhookResponse.body }}
+              {{
+                triggerWebhookResponse.body
+                  ? triggerWebhookResponse.body
+                  : "Response body is empty"
+              }}
             </div>
           </details>
         </span>
@@ -172,6 +171,7 @@ export default {
       savingState: REQUEST_STATE.NOT_STARTED,
       triggerWebhookState: REQUEST_STATE.NOT_STARTED,
       triggerWebhookResponse: null,
+      webhookHeadersJSONError: null,
     };
   },
   created() {
@@ -184,7 +184,22 @@ export default {
     });
   },
   methods: {
+    onHeadersInput(value) {
+      vuexFormSetValue(formId, "webhookHeaders", value);
+      this.headersJsonIsValid();
+    },
+    validateForm() {
+      let isValid = true;
+      if (!this.headersJsonIsValid()) {
+        toast(this, `Headers error: ${this.webhookHeadersJSONError}`, "error");
+        isValid = false;
+      }
+      return isValid;
+    },
     onSave() {
+      if (!this.validateForm()) {
+        return;
+      }
       const webhooks = this.prepareWebhooksValuesForSave();
       const update = {
         _id: this.$route.params.blogId,
@@ -240,6 +255,9 @@ export default {
         });
     },
     onTriggerWebhookClick() {
+      if (!this.validateForm()) {
+        return;
+      }
       this.triggerWebhookResponse = null;
       this.triggerWebhookState = REQUEST_STATE.PENDING;
       const webhook = {
@@ -278,7 +296,6 @@ export default {
         })
         .then(async result => {
           this.triggerWebhookState = REQUEST_STATE.FINISHED_OK;
-          console.log("result", result);
           this.triggerWebhookResponse = result.data.testDeployWebhook;
           return result.data.testDeployWebhook;
         })
@@ -287,6 +304,20 @@ export default {
           this.triggerWebhookState = REQUEST_STATE.FINISHED_ERROR;
           throw new Error(error);
         });
+    },
+    headersJsonIsValid: function() {
+      // reset error
+      this.webhookHeadersJSONError = "";
+      if (vuexFormGetValue(formId, "webhookHeaders").trim().length === 0) {
+        return true;
+      }
+      try {
+        // try to parse
+        JSON.parse(vuexFormGetValue(formId, "webhookHeaders"));
+      } catch (e) {
+        this.webhookHeadersJSONError = JSON.stringify(e.message);
+        return false;
+      }
     },
   },
 };
