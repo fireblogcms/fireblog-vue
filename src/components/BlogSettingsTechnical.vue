@@ -57,6 +57,13 @@
             maxlength="250"
             placeholder=""
           />
+          <div class="mt-6">
+            <span class="font-bold">Curl preview</span>
+            <div
+              class="bg-black text-white p-6 rounded font-mono"
+              v-html="curlPreview"
+            />
+          </div>
         </div>
       </details>
     </div>
@@ -182,6 +189,44 @@ export default {
     vuexFormInit(formId, {
       initialValues: initFormValues(this.blog),
     });
+  },
+  computed: {
+    curlPreview() {
+      let preview = [];
+
+      // add url
+      preview.push("curl " + vuexFormGetValue(formId, "webhookUrl"));
+      // add method
+      if (vuexFormGetValue(formId, "webhookMethod") === "POST") {
+        preview.push("-X " + vuexFormGetValue(formId, "webhookMethod"));
+      }
+      // add headers, if any valid headers are present.
+      if (
+        vuexFormGetValue(formId, "webhookHeaders").trim().length > 0 &&
+        this.headersJsonIsValid()
+      ) {
+        const headers = JSON.parse(vuexFormGetValue(formId, "webhookHeaders"));
+        for (const header in headers) {
+          preview.push(`-H "${header}: ${headers[header]}"`);
+        }
+        console.log("headers", headers);
+      }
+
+      // add body, if any
+      if (
+        vuexFormGetValue(formId, "webhookBody").trim().length > 0 &&
+        this.headersJsonIsValid()
+      ) {
+        preview.push(`-d '${vuexFormGetValue(formId, "webhookBody")}'`);
+      }
+
+      if (false) {
+        preview.push("-X " + vuexFormGetValue(formId, "webhookMethod"));
+      }
+
+      //return preview.join(" \\ <br />");
+      return preview.join(" ");
+    },
   },
   methods: {
     onHeadersInput(value) {
@@ -318,6 +363,7 @@ export default {
         this.webhookHeadersJSONError = JSON.stringify(e.message);
         return false;
       }
+      return true;
     },
   },
 };
