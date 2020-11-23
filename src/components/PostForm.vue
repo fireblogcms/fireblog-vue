@@ -263,9 +263,12 @@ import apolloClient from "@/utils/apolloClient";
 import PostFormAdvancedSettings from "./PostFormAdvancedSettings";
 import striptags from "striptags";
 
+const FORM_ID = "postForm";
+let pendingActions = null;
+
 const initFormValues = (post = {}) => {
   const formValues = {
-    title: post.title ? post.title : initialFormValues.title,
+    title: post.title ? post.title : "",
     content: post.content ? post.content : "",
     // slug is the slug value after being slugified by SlugField component
     slug: post.slug ? post.slug : "",
@@ -278,38 +281,20 @@ const initFormValues = (post = {}) => {
     tags: post.tags || [],
     slugIsLocked: false,
     slugShowToggleLockButton: true,
-    publishedScheduleAtDate: new Date(),
-    publishedScheduleAtTime: "11:00",
-    // can be "NOW" or "LATER"
-    publishedScheduleAtOption: "NOW",
+    publishedScheduleAtDateLater: new Date(),
+    publishedScheduleAtDateEarlier: new Date(),
+    publishedScheduleAtTimeLater: null,
+    publishedScheduleAtTimeEarlier: null,
+    // can be "NOW", "LATER" or "EARLIER"
+    publishedScheduleAtType: "NOW",
   };
+  if (post.status === "PUBLISHED") {
+    formValues.publishedScheduleAtType = "KEEP";
+  }
   vuexFormInit(FORM_ID, {
     initialValues: { ...formValues },
-    onFormValueChange: ({ name, value }) => {},
   });
 };
-
-let initialFormValues = {
-  title: "",
-  content: "",
-  slug: "",
-  teaser: "",
-  image: "",
-  featured: false,
-  metaDescription: "",
-  metaTitle: "",
-  tags: [],
-  slugIsLocked: false,
-  slugShowToggleLockButton: true,
-  publishedAt: null,
-  publishTime: null,
-};
-
-const FORM_ID = "postForm";
-let pendingActions = null;
-
-let strokesCountIndex = 0;
-const saveAfterKeyStrokesNumber = 50;
 
 export default {
   components: {
@@ -424,6 +409,15 @@ export default {
     },
     // Prepare a post object from form form.values, for a save operation
     preparePostFromCurrentFormValues() {
+      const publishedScheduleAtType = vuexFormGetValue(
+        FORM_ID,
+        "publishedScheduleAtType"
+      );
+      if (publishedScheduleAtType === "LATER") {
+        //const
+      }
+      console.log("publishedScheduleAtType", publishedScheduleAtType);
+      const publishedAt = "";
       const postToSave = {
         title: vuexFormGetValue(FORM_ID, "title"),
         content: vuexFormGetValue(FORM_ID, "content"),

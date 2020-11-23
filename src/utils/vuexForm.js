@@ -57,9 +57,11 @@ export function vuexFormInit(
     formId,
     form: {
       errors: {},
+      // those values will change according to user input
       values: {
         ...initialValues,
       },
+      // this values won't be changed
       initialValues,
       // this callback is called every time a form value has changed.
       onFormValueChange,
@@ -75,6 +77,11 @@ export function vuexFormInit(
  */
 
 export function vuexFormGetValue(formId, name) {
+  if (!Store.state[formsStoreKey][formId]) {
+    throw new Error(
+      `"${formId}.${name}": formId ${formId} not found in the store !`
+    );
+  }
   return Store.state[formsStoreKey][formId].values[name];
 }
 

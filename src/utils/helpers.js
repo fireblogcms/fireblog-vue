@@ -415,3 +415,27 @@ export function getRandomGif(gifsArray) {
   previousDisplayedGif = gif;
   return gif;
 }
+
+/**
+ * Return current time with format hh:mm:ss
+ */
+export function getCurrentTime() {
+  function prefixZero(i) {
+    if (i < 10) {
+      i = "0" + i;
+    }
+    return i;
+  }
+  function time() {
+    var today = new Date();
+    var h = today.getHours();
+    var m = today.getMinutes();
+    var s = today.getSeconds();
+    // add a zero in front of numbers<10
+    h = prefixZero(h);
+    m = prefixZero(m);
+    s = prefixZero(s);
+    return h + ":" + m + ":" + s;
+  }
+  return time();
+}

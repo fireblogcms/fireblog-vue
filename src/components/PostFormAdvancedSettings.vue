@@ -47,54 +47,10 @@
             @onLock="onSlugLock"
           />
 
-          <!-- publication date -->
-          <div class="mt-10">
-            <AppFieldSelect
-              class="mb-6"
-              label="Publier"
-              :options="[
-                {
-                  value: 'NOW',
-                  label: $t('views.postForm.publishedScheduleAtOption.now'),
-                },
-                {
-                  value: 'LATER',
-                  label: $t('views.postForm.publishedScheduleAtOption.later'),
-                },
-              ]"
-              :value="vuexFormGetValue(FORM_ID, 'publishedScheduleAtOption')"
-              @change="
-                vuexFormSetValue(FORM_ID, 'publishedScheduleAtOption', $event)
-              "
-            />
-            <!-- publish later -->
-            {{ vuexFormGetValue(FORM_ID, "publishedScheduleAt") }}
-            <div
-              class="flex w-full"
-              v-if="
-                vuexFormGetValue(FORM_ID, 'publishedScheduleAtOption') ===
-                  'LATER'
-              "
-            >
-              <div class="flex-1">
-                <AppFieldDate
-                  :disabled-dates="publishLaterDisabledDates"
-                  @input="
-                    vuexFormSetValue(FORM_ID, 'publishedScheduleAtDate', $event)
-                  "
-                  :value="vuexFormGetValue(FORM_ID, 'publishedScheduleAtDate')"
-                />
-              </div>
-              <div class="pl-5">
-                <AppFieldTime
-                  :value="vuexFormGetValue(FORM_ID, 'publishedScheduleAtTime')"
-                  @input="
-                    vuexFormSetValue(FORM_ID, 'publishedScheduleAtTime', value)
-                  "
-                />
-              </div>
-            </div>
-          </div>
+          <PostFormSchedulePublication
+            :formId="FORM_ID"
+            :existingPost="existingPost"
+          />
 
           <!-- FEATURE FIELD -->
           <FeatureField
@@ -182,11 +138,9 @@ import {
 } from "@/utils/vuexForm";
 import SlugField from "./SlugField";
 import FeatureField from "./FeatureField";
+import PostFormSchedulePublication from "./PostFormSchedulePublication";
 import PreviewGoogleResult from "./PreviewGoogleResult";
 import apolloClient from "@/utils/apolloClient";
-import AppFieldSelect from "@/ui-kit/AppFieldSelect";
-import AppFieldDate from "@/ui-kit/AppFieldDate";
-import AppFieldTime from "@/ui-kit/AppFieldTime";
 
 const FORM_ID = "postForm";
 
@@ -199,14 +153,11 @@ export default {
     TagAutocomplete,
     SlugField,
     FeatureField,
-    AppFieldSelect,
-    AppFieldDate,
-    AppFieldTime,
+    PostFormSchedulePublication,
   },
   props: {
     existingPost: {
       type: [Object, null],
-      default: () => null,
     },
   },
   data() {
