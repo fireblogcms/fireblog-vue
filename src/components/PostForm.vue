@@ -263,6 +263,29 @@ import apolloClient from "@/utils/apolloClient";
 import PostFormAdvancedSettings from "./PostFormAdvancedSettings";
 import striptags from "striptags";
 
+const initFormValues = (post = {}) => {
+  const formValues = {
+    title: post.title ? post.title : initialFormValues.title,
+    content: post.content ? post.content : "",
+    // slug is the slug value after being slugified by SlugField component
+    slug: post.slug ? post.slug : "",
+    title: post.title ? post.title : "",
+    teaser: post.teaser ? post.teaser : "",
+    image: post.image ? post.image : "",
+    featured: post.featured ? post.featured : false,
+    metaDescription: post.metaDescription ? post.metaDescription : "",
+    metaTitle: post.metaTitle ? post.metaTitle : "",
+    tags: post.tags || [],
+    slugIsLocked: false,
+    slugShowToggleLockButton: true,
+    publishedAt: null,
+  };
+  vuexFormInit(FORM_ID, {
+    initialValues: { ...formValues },
+    onFormValueChange: ({ name, value }) => {},
+  });
+};
+
 let initialFormValues = {
   title: "",
   content: "",
@@ -275,6 +298,8 @@ let initialFormValues = {
   tags: [],
   slugIsLocked: false,
   slugShowToggleLockButton: true,
+  publishedAt: null,
+  publishTime: null,
 };
 
 const FORM_ID = "postForm";
@@ -355,12 +380,11 @@ export default {
       editor.plugins.get("PendingActions").on("change:hasAny", actions => {});
     },
     async init() {
-
       this.getSubscription();
 
       // no existing post, we are in CREATE MODE
       if (this.$route.name === "postCreate") {
-        this.initPostFormValues(initialFormValues);
+        initFormValues();
       }
 
       // UPDATE MODE
@@ -371,8 +395,7 @@ export default {
         );
         this.$store.commit("lastVisitedPost", this.existingPost);
         this.loadingAsyncData = false;
-        const formValues = this.prepareFormValuesFromPost(this.existingPost);
-        this.initPostFormValues(formValues);
+        initFormValues(this.existingPost);
       }
     },
     onTitleInput(value) {
@@ -395,30 +418,6 @@ export default {
     },
     closePublishingSuccessModal() {
       this.$store.commit("modalShowing/close", "publishingSuccessModal");
-    },
-    initPostFormValues(formValues) {
-      vuexFormInit(FORM_ID, {
-        initialValues: { ...formValues },
-        onFormValueChange: ({ name, value }) => {},
-      });
-    },
-    // fill form fields from a post object
-    prepareFormValuesFromPost(post) {
-      let values = {
-        ...initialFormValues,
-        title: post.title ? post.title : initialFormValues.title,
-        content: post.content ? post.content : "",
-        // slug is the slug value after being slugified by SlugField component
-        slug: post.slug ? post.slug : "",
-        title: post.title ? post.title : "",
-        teaser: post.teaser ? post.teaser : "",
-        image: post.image ? post.image : "",
-        featured: post.featured ? post.featured : false,
-        metaDescription: post.metaDescription ? post.metaDescription : "",
-        metaTitle: post.metaTitle ? post.metaTitle : "",
-        tags: post.tags || initialFormValues.tags
-      };
-      return values;
     },
     // Prepare a post object from form form.values, for a save operation
     preparePostFromCurrentFormValues() {
@@ -528,23 +527,25 @@ export default {
             }
           }
         }
-      `
-      return apolloClient.query({
-        query,
-        variables: {
-          blogSetId: this.$route.params.blogSetId,
-        }
-      }).then(result => {
-        this.blogSetSubscription = result.data.blogSet.subscription;
-        return result.data.blogSet.subscription;
-      })
+      `;
+      return apolloClient
+        .query({
+          query,
+          variables: {
+            blogSetId: this.$route.params.blogSetId,
+          },
+        })
+        .then(result => {
+          this.blogSetSubscription = result.data.blogSet.subscription;
+          return result.data.blogSet.subscription;
+        });
     },
     getExistingPost(id) {
       return apolloClient
         .query({
           variables: {
             blogSetId: this.$route.params.blogSetId,
-            postId: id
+            postId: id,
           },
           query: gql`
             query postFormQuery($postId: ID!) {
@@ -650,7 +651,10 @@ export default {
      * Open publication modal. This is NOT the final publish operation.
      */
     showAdvancedSettings() {
-      if (this.blogSetSubscription.status === "TRIAL" || this.blogSetSubscription.status === "ACTIVE") {
+      if (
+        this.blogSetSubscription.status === "TRIAL" ||
+        this.blogSetSubscription.status === "ACTIVE"
+      ) {
         // we need at least the title to autocomplete the slug field
         if (!vuexFormGetValue(FORM_ID, "title").trim()) {
           toast(

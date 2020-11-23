@@ -47,11 +47,28 @@
             @onLock="onSlugLock"
           />
 
+          <!-- publication date -->
+          <div class="flex">
+            <div>
+              <AppFieldSelect
+                class="mb-6"
+                label="Publier"
+                :options="[
+                  { value: 'now', label: 'Now' },
+                  { value: 'later', label: 'Later' },
+                ]"
+                :value="vuexFormGetValue(FORM_ID, 'publishedAt')"
+                @change="vuexFormSetValue(FORM_ID, 'publishedAt', $event)"
+              />
+            </div>
+          </div>
+
           <!-- FEATURE FIELD -->
           <FeatureField
             :checked="vuexFormGetValue(FORM_ID, 'featured')"
             @onFeatureChange="onFeatureChange"
-            class="mt-8" />
+            class="mt-8"
+          />
         </div>
       </div>
 
@@ -89,7 +106,12 @@
               <PreviewGoogleResult
                 :title="previewGoogleValues().title"
                 :description="previewGoogleValues().description"
-                :url="`https://example.com/post/${vuexFormGetValue(FORM_ID, 'slug')}`"
+                :url="
+                  `https://example.com/post/${vuexFormGetValue(
+                    FORM_ID,
+                    'slug'
+                  )}`
+                "
               />
             </div>
           </div>
@@ -129,6 +151,8 @@ import SlugField from "./SlugField";
 import FeatureField from "./FeatureField";
 import PreviewGoogleResult from "./PreviewGoogleResult";
 import apolloClient from "@/utils/apolloClient";
+import Datepicker from "vuejs-datepicker";
+import AppFieldSelect from "@/ui-kit/AppFieldSelect";
 
 const FORM_ID = "postForm";
 
@@ -141,6 +165,8 @@ export default {
     TagAutocomplete,
     SlugField,
     FeatureField,
+    Datepicker,
+    AppFieldSelect,
   },
   props: {
     existingPost: {
@@ -162,18 +188,18 @@ export default {
   },
   methods: {
     previewGoogleValues() {
-      let title = vuexFormGetValue(FORM_ID, 'title');
-      let description = vuexFormGetValue(FORM_ID, 'teaser');
-      if (vuexFormGetValue(FORM_ID, 'metaTitle').trim()) {
-        title = vuexFormGetValue(FORM_ID, 'metaTitle').trim()
+      let title = vuexFormGetValue(FORM_ID, "title");
+      let description = vuexFormGetValue(FORM_ID, "teaser");
+      if (vuexFormGetValue(FORM_ID, "metaTitle").trim()) {
+        title = vuexFormGetValue(FORM_ID, "metaTitle").trim();
       }
-      if (vuexFormGetValue(FORM_ID, 'metaDescription').trim()) {
-        description = vuexFormGetValue(FORM_ID, 'metaDescription').trim()
+      if (vuexFormGetValue(FORM_ID, "metaDescription").trim()) {
+        description = vuexFormGetValue(FORM_ID, "metaDescription").trim();
       }
       return {
         title,
-        description
-      }
+        description,
+      };
     },
     onUploaded(fileUrl) {
       vuexFormSetValue(FORM_ID, "image", fileUrl);
