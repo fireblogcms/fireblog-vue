@@ -278,7 +278,10 @@ const initFormValues = (post = {}) => {
     tags: post.tags || [],
     slugIsLocked: false,
     slugShowToggleLockButton: true,
-    publishedAt: null,
+    publishedScheduleAtDate: new Date(),
+    publishedScheduleAtTime: "11:00",
+    // can be "NOW" or "LATER"
+    publishedScheduleAtOption: "NOW",
   };
   vuexFormInit(FORM_ID, {
     initialValues: { ...formValues },

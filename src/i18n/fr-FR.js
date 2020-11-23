@@ -114,6 +114,8 @@ export default {
   "views.postForm.publishChangesHurralModal.okayButton": "Ok!",
   "views.postForm.publishChangesButton": "Publier les changements",
   "views.postForm.publishNowButton": "Publier maintenant",
+  "views.postForm.publishedScheduleAtOption.now": "Maintenant",
+  "views.postForm.publishedScheduleAtOption.later": "Plus tard",
   "views.postForm.saveDraft": "Sauvegarder le brouillon",
   "views.postForm.savedAt {time}": "sauvegardé le {time}",
   "views.postForm.sectionSeo.title": "Personnaliser vos metadonnées SEO",
