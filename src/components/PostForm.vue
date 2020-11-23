@@ -407,17 +407,49 @@ export default {
     closePublishingSuccessModal() {
       this.$store.commit("modalShowing/close", "publishingSuccessModal");
     },
-    // Prepare a post object from form form.values, for a save operation
-    preparePostFromCurrentFormValues() {
+    reconcilyDateAndTimeFields(date, time) {
+      let timeExploded = time.split(":");
+      let datetime = new Date(date);
+      const result = datetime.setHours(
+        timeExploded[0],
+        timeExploded[1],
+        timeExploded[2]
+      );
+      return datetime;
+    },
+    /**
+     * return publication date value for saving.
+     * Might be null if post is draft and no specific date has been specified.
+     */
+    preparePublishedAtValueForSave() {
+      let datetime = null;
       const publishedScheduleAtType = vuexFormGetValue(
         FORM_ID,
         "publishedScheduleAtType"
       );
       if (publishedScheduleAtType === "LATER") {
-        //const
+        const date = vuexFormGetValue(FORM_ID, "publishedScheduleAtDateLater");
+        const time = vuexFormGetValue(FORM_ID, "publishedScheduleAtTimeLater");
+        datetime = this.reconcilyDateAndTimeFields(date, time);
       }
-      console.log("publishedScheduleAtType", publishedScheduleAtType);
-      const publishedAt = "";
+      if (publishedScheduleAtType === "EARLIER") {
+        const date = vuexFormGetValue(
+          FORM_ID,
+          "publishedScheduleAtDateEarlier"
+        );
+        const time = vuexFormGetValue(
+          FORM_ID,
+          "publishedScheduleAtTimeEarlier"
+        );
+        datetime = this.reconcilyDateAndTimeFields(date, time);
+      }
+      if (publishedScheduleAtType === "KEEP") {
+        datetime = this.existingPost.publishedAt;
+      }
+      return datetime;
+    },
+    // Prepare a post object from form form.values, for a save operation
+    preparePostFromCurrentFormValues() {
       const postToSave = {
         title: vuexFormGetValue(FORM_ID, "title"),
         content: vuexFormGetValue(FORM_ID, "content"),
@@ -429,7 +461,9 @@ export default {
         metaDescription: vuexFormGetValue(FORM_ID, "metaDescription"),
         tags: vuexFormGetValue(FORM_ID, "tags").map(tag => tag._id),
         wordCount: this.wordCount,
+        publishedAt: this.preparePublishedAtValueForSave(),
       };
+
       // API will know that this is an UPDATE and not a CREATE
       // if we add _id key to our post.
       if (this.$route.params.postId) {

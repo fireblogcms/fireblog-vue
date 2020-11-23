@@ -4,7 +4,7 @@
       {{ label }}
     </label>
     <input
-      @input="value => $emit('value')"
+      @input="onInput"
       :value="value"
       class="p-4 text-xl shadow-sm border rounded w-full text-current focus:outline-none focus:shadow-outline"
       type="time"
@@ -26,6 +26,11 @@ export default {
     },
     error: {
       type: String,
+    },
+  },
+  methods: {
+    onInput(event) {
+      this.$emit("input", event.target.value);
     },
   },
 };
