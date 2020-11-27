@@ -8,6 +8,7 @@
       :value="value"
       class="p-4 text-xl shadow-sm border rounded w-full text-current focus:outline-none focus:shadow-outline"
       type="time"
+      v-bind="$attrs"
     />
     <p v-if="error" class="mt-2 text-sm text-red-600">
       {{ error }}

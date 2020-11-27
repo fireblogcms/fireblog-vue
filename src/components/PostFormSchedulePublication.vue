@@ -3,14 +3,20 @@
 
   <div class="mt-10">
     <p class="mb-4 font-bold">
-      Publié le
-      {{ new Date(vuexFormGetValue(formId, "publishedAt")).toLocaleString() }}
+      Date de publication
+      <span v-if="vuexFormGetValue(formId, 'publishedAt')">
+        :
+        {{ new Date(vuexFormGetValue(formId, "publishedAt")).toLocaleString() }}
+      </span>
     </p>
     <!-- publish later -->
     <div class="mb-10">
       <div class="flex border rounded-lg text-center items-center">
         <div
-          v-if="existingPost && existingPost.status !== 'PUBLISHED'"
+          v-if="
+            !existingPost ||
+              (existingPost && existingPost.status !== 'PUBLISHED')
+          "
           @click="onTabClick('NOW')"
           class="p-5 flex-1 cursor-pointer text-lg border-r border-gray-200"
           :class="{
@@ -48,45 +54,45 @@
             ' bg-indigo-100': getActiveTab() === 'EARLIER',
           }"
         >
-          Antidater
+          Modifier
         </div>
       </div>
     </div>
     <!-- calendar later -->
     <div
       class="flex w-full"
-      v-show="vuexFormGetValue(formId, 'publishedScheduleAtType') === 'LATER'"
+      v-show="vuexFormGetValue(formId, 'publishedAtType') === 'LATER'"
     >
       <div class="flex-1">
         <AppFieldDate
-          @input="vuexFormSetValue(formId, 'publishedAt', $event)"
-          :value="vuexFormGetValue(formId, 'publishedAt')"
+          @input="vuexFormSetValue(formId, 'publishedAtCustomDate', $event)"
+          :value="vuexFormGetValue(formId, 'publishedAtCustomDate')"
           :disabled-dates="disabledDatesLater"
         />
       </div>
       <div class="pl-5">
         <AppFieldTime
-          :value="vuexFormGetValue(formId, 'publishedAtTime')"
-          @input="vuexFormSetValue(formId, 'publishedAtTime', $event)"
+          :value="vuexFormGetValue(formId, 'publishedAtCustomTime')"
+          @input="vuexFormSetValue(formId, 'publishedAtCustomTime', $event)"
         />
       </div>
     </div>
     <!-- calendar earlier -->
     <div
       class="flex w-full"
-      v-show="vuexFormGetValue(formId, 'publishedScheduleAtType') === 'EARLIER'"
+      v-show="vuexFormGetValue(formId, 'publishedAtType') === 'EARLIER'"
     >
       <div class="flex-1">
         <AppFieldDate
-          :value="vuexFormGetValue(formId, 'publishedAt')"
-          @input="vuexFormSetValue(formId, 'publishedAt', $event)"
+          :value="vuexFormGetValue(formId, 'publishedAtCustomDate')"
+          @input="vuexFormSetValue(formId, 'publishedAtCustomDate', $event)"
           :disabled-dates="disabledDatesEarlier"
         />
       </div>
       <div class="pl-5">
         <AppFieldTime
-          :value="vuexFormGetValue(formId, 'publishedAtTime')"
-          @input="vuexFormSetValue(formId, 'publishedAtTime', $event)"
+          :value="vuexFormGetValue(formId, 'publishedAtCustomTime')"
+          @input="vuexFormSetValue(formId, 'publishedAtCustomTime', $event)"
         />
       </div>
     </div>
@@ -102,7 +108,7 @@ import {
 } from "@/utils/vuexForm";
 import AppFieldDate from "@/ui-kit/AppFieldDate";
 import AppFieldTime from "@/ui-kit/AppFieldTime";
-import { getCurrentTime } from "@/utils/helpers";
+import { getTimeFromDateString } from "@/utils/helpers";
 
 export default {
   components: {
@@ -118,6 +124,11 @@ export default {
       type: [Object, null],
     },
   },
+  data() {
+    return {
+      timeMax: getTimeFromDateString(),
+    };
+  },
   created() {
     this.vuexFormGetError = vuexFormGetError;
     this.vuexFormGetValue = vuexFormGetValue;
@@ -126,10 +137,10 @@ export default {
   watch: {
     "existingPost.status": function(status) {
       if (status === "PUBLISHED") {
-        vuexFormSetValue(this.formId, "publishedScheduleAtType", "KEEP");
+        vuexFormSetValue(this.formId, "publishedAtType", "KEEP");
       }
       if (status === "DRAFT") {
-        vuexFormSetValue(this.formId, "publishedScheduleAtType", "NOW");
+        vuexFormSetValue(this.formId, "publishedAtType", "NOW");
       }
     },
   },
@@ -149,19 +160,20 @@ export default {
   },
   methods: {
     getActiveTab() {
-      return vuexFormGetValue(this.formId, "publishedScheduleAtType");
+      return vuexFormGetValue(this.formId, "publishedAtType");
     },
     onTabClick(tabId) {
-      vuexFormSetValue(this.formId, "publishedScheduleAtType", tabId);
+      vuexFormSetValue(this.formId, "publishedAtType", tabId);
       let today = new Date();
-      const time = getCurrentTime();
+      const time = getTimeFromDateString();
+      this.timeMax = time;
 
       if (tabId === "LATER" || tabId === "EARLIER") {
         if (!vuexFormGetValue(this.formId, "publishedAt")) {
-          vuexFormSetValue(this.formId, "publishedAt", today);
+          vuexFormSetValue(this.formId, "publishedAtCustomDate", today);
         }
-        if (!vuexFormGetValue(this.formId, "publishedAtTime")) {
-          vuexFormSetValue(this.formId, "publishedAtTime", "10:21");
+        if (!vuexFormGetValue(this.formId, "publishedAt")) {
+          vuexFormSetValue(this.formId, "publishedAtCustomTime", time);
         }
       }
     },

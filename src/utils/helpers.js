@@ -419,7 +419,7 @@ export function getRandomGif(gifsArray) {
 /**
  * Return current time with format hh:mm
  */
-export function getCurrentTime() {
+export function getTimeFromDateString(date = null) {
   function prefixZero(i) {
     if (i < 10) {
       i = "0" + i;
@@ -427,7 +427,7 @@ export function getCurrentTime() {
     return i;
   }
   function time() {
-    var today = new Date();
+    var today = date ? new Date(date) : new Date();
     var h = today.getHours();
     var m = today.getMinutes();
     // add a zero in front of numbers<10

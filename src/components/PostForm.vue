@@ -248,6 +248,7 @@ import {
   formatDate,
   generateSlugFromServer,
   getRandomGif,
+  getTimeFromDateString,
 } from "@/utils/helpers";
 import {
   vuexFormInit,
@@ -283,15 +284,22 @@ const initFormValues = (post = {}) => {
     slugIsLocked: false,
     slugShowToggleLockButton: true,
     publishedAt: post.publishedAt ? post.publishedAt : null,
-    publishedAtTime: null,
+
     // can be "NOW", (set publish date to now, when creating new post)
     // "KEEP", (when editing a post, do not change publication date)
     // "LATER" ( publish later )
     // "EARLIER" (anterior date)
-    publishedScheduleAtType: "NOW",
+    publishedAtType: "NOW",
+
+    // user can enter a custom publication date.
+    publishedAtCustomDate: post.publishedAt ? post.publishedAt : null,
+    // use can enter a custom time (hh:mm) for publication date.
+    publishedAtCustomTime: post.publishedAt
+      ? getTimeFromDateString(post.publishedAt)
+      : null,
   };
   if (post.status === "PUBLISHED") {
-    formValues.publishedScheduleAtType = "KEEP";
+    formValues.publishedAtType = "KEEP";
   }
   vuexFormInit(FORM_ID, {
     initialValues: { ...formValues },
@@ -422,30 +430,24 @@ export default {
      */
     preparePublishedAtValueForSave() {
       let datetime = null;
-      const publishedScheduleAtType = vuexFormGetValue(
-        FORM_ID,
-        "publishedScheduleAtType"
-      );
-      if (publishedScheduleAtType === "NOW") {
+      const publishedAtType = vuexFormGetValue(FORM_ID, "publishedAtType");
+      if (publishedAtType === "NOW") {
         datetime = new Date();
       }
       // use want to publish to an older date.
-      else if (
-        publishedScheduleAtType === "EARLIER" ||
-        publishedScheduleAtType === "LATER"
-      ) {
-        const date = vuexFormGetValue(FORM_ID, "publishedAt");
-        const time = vuexFormGetValue(FORM_ID, "publishedAtTime");
+      else if (publishedAtType === "EARLIER" || publishedAtType === "LATER") {
+        const date = vuexFormGetValue(FORM_ID, "publishedAtCustomDate");
+        const time = vuexFormGetValue(FORM_ID, "publishedAtCustomTime");
         datetime = this.reconcilyDateAndTimeFields(date, time);
       }
       // if post is published, by default we Keep the existing publication date
-      else if (publishedScheduleAtType === "KEEP") {
+      else if (publishedAtType === "KEEP") {
         datetime = this.existingPost.publishedAt;
       }
       return datetime;
     },
     // Prepare a post object from form form.values, for a save operation
-    preparePostFromCurrentFormValues() {
+    preparePostFromCurrentFormValues(status) {
       const postToSave = {
         title: vuexFormGetValue(FORM_ID, "title"),
         content: vuexFormGetValue(FORM_ID, "content"),
@@ -457,7 +459,9 @@ export default {
         metaDescription: vuexFormGetValue(FORM_ID, "metaDescription"),
         tags: vuexFormGetValue(FORM_ID, "tags").map(tag => tag._id),
         wordCount: this.wordCount,
-        publishedAt: this.preparePublishedAtValueForSave(),
+        // publishedAt remains null, until we actualky publish the post.
+        publishedAt:
+          status === "PUBLISHED" ? this.preparePublishedAtValueForSave() : null,
       };
 
       // API will know that this is an UPDATE and not a CREATE
@@ -492,7 +496,7 @@ export default {
         status,
       };
       const post = {
-        ...this.preparePostFromCurrentFormValues(),
+        ...this.preparePostFromCurrentFormValues(status),
         status,
       };
       return apolloClient
