@@ -53,7 +53,6 @@
           Antidater
         </div>
       </div>
-      <div v-if="vuexFormGetValue(formId, 'publishedScheduleAtDate')"></div>
     </div>
     <!-- calendar later -->
     <div
@@ -62,19 +61,15 @@
     >
       <div class="flex-1">
         <AppFieldDate
-          @input="
-            vuexFormSetValue(formId, 'publishedScheduleAtDateLater', $event)
-          "
+          @input="vuexFormSetValue(formId, 'publishedAt', $event)"
           :value="vuexFormGetValue(formId, 'publishedAt')"
           :disabled-dates="disabledDatesLater"
         />
       </div>
       <div class="pl-5">
         <AppFieldTime
-          :value="vuexFormGetValue(formId, 'publishedAt')"
-          @input="
-            vuexFormSetValue(formId, 'publishedScheduleAtTimeLater', $event)
-          "
+          :value="vuexFormGetValue(formId, 'publishedAtTime')"
+          @input="vuexFormSetValue(formId, 'publishedAtTime', $event)"
         />
       </div>
     </div>
@@ -85,19 +80,15 @@
     >
       <div class="flex-1">
         <AppFieldDate
-          @input="
-            vuexFormSetValue(formId, 'publishedScheduleAtDateEarlier', $event)
-          "
           :value="vuexFormGetValue(formId, 'publishedAt')"
+          @input="vuexFormSetValue(formId, 'publishedAt', $event)"
           :disabled-dates="disabledDatesEarlier"
         />
       </div>
       <div class="pl-5">
         <AppFieldTime
-          :value="vuexFormGetValue(formId, 'publishedScheduleAtTimeEarlier')"
-          @input="
-            vuexFormSetValue(formId, 'publishedScheduleAtTimeEarlier', $event)
-          "
+          :value="vuexFormGetValue(formId, 'publishedAtTime')"
+          @input="vuexFormSetValue(formId, 'publishedAtTime', $event)"
         />
       </div>
     </div>

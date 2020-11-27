@@ -283,10 +283,7 @@ const initFormValues = (post = {}) => {
     slugIsLocked: false,
     slugShowToggleLockButton: true,
     publishedAt: post.publishedAt ? post.publishedAt : null,
-    publishedScheduleAtDateLater: new Date(),
-    publishedScheduleAtDateEarlier: new Date(),
-    publishedScheduleAtTimeLater: null,
-    publishedScheduleAtTimeEarlier: null,
+    publishedAtTime: "11:00",
     // can be "NOW", (set publish date to now, when creating new post)
     // "KEEP", (when editing a post, do not change publication date)
     // "LATER" ( publish later )
@@ -413,13 +410,10 @@ export default {
       this.$store.commit("modalShowing/close", "publishingSuccessModal");
     },
     reconcilyDateAndTimeFields(date, time) {
+      console.log("date", date, "time", time, "datetime", datetime);
       let timeExploded = time.split(":");
       let datetime = new Date(date);
-      const result = datetime.setHours(
-        timeExploded[0],
-        timeExploded[1],
-        timeExploded[2]
-      );
+      const result = datetime.setHours(timeExploded[0], timeExploded[1]);
       return datetime;
     },
     /**
@@ -436,15 +430,12 @@ export default {
         datetime = new Date();
       }
       // use want to publish to an older date.
-      else if (publishedScheduleAtType === "EARLIER") {
-        const date = vuexFormGetValue(
-          FORM_ID,
-          "publishedScheduleAtDateEarlier"
-        );
-        const time = vuexFormGetValue(
-          FORM_ID,
-          "publishedScheduleAtTimeEarlier"
-        );
+      else if (
+        publishedScheduleAtType === "EARLIER" ||
+        publishedScheduleAtType === "LATER"
+      ) {
+        const date = vuexFormGetValue(FORM_ID, "publishedAt");
+        const time = vuexFormGetValue(FORM_ID, "publishedAtTime");
         datetime = this.reconcilyDateAndTimeFields(date, time);
       }
       // if post is published, by default we Keep the existing publication date
@@ -516,7 +507,13 @@ export default {
           this.$emit("onEdit", false);
           pendingActions.remove(savingPendingAction);
           const post = result.data.savePost;
-          //this.existingPost = post;
+          // update existing post : we use it our components
+          // to determine current post status for example.
+          this.existingPost = {
+            ...this.existingPost,
+            ...post,
+          };
+          // update form values, some of theme are dependant from current post values.
           initFormValues(post);
           this.$store.commit("lastVisitedPost", post);
           this.savingPost = {
