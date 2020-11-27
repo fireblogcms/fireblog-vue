@@ -761,6 +761,29 @@ export default {
         vuexFormSetError(FORM_ID, "title", message);
         toast(this, message, "error");
       }
+
+      // custom datetime can't be superior to now, for now.
+      const customPublicationDate = vuexFormGetValue(
+        FORM_ID,
+        "publishedAtCustomDate"
+      );
+      const customPublicationTime = vuexFormGetValue(
+        FORM_ID,
+        "publishedAtCustomTime"
+      );
+      const customPublicationDateTime = this.reconcilyDateAndTimeFields(
+        customPublicationDate,
+        customPublicationTime
+      );
+      if (customPublicationDateTime > new Date()) {
+        vuexFormSetError(
+          FORM_ID,
+          "customPublicationDateTime",
+          "publication date can't be superior to now"
+        );
+        toast(this, "Publication date can't be superior to now", "error");
+      }
+
       if (action === "PUBLISH") {
         if (!validateSlug(vuexFormGetValue(FORM_ID, "slug"))) {
           // SLUG

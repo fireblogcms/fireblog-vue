@@ -153,8 +153,10 @@ export default {
       };
     },
     disabledDatesEarlier() {
+      var date = new Date();
+      date.setDate(date.getDate() + 1);
       return {
-        from: new Date(),
+        from: date,
       };
     },
   },
