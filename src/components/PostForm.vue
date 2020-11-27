@@ -22,7 +22,7 @@
           size="small"
           @click="isActionsVisibleOnMobile = !isActionsVisibleOnMobile"
         >
-          <img class="w-6" src="/images/pencil.svg" />
+          class="w-6" src="/images/pencil.svg" />
         </AppButton>
         <div
           v-click-outside="() => (isActionsVisibleOnMobile = false)"
@@ -174,6 +174,7 @@
           {{ $t("views.postForm.advancedSettingsModal.title") }}
         </span>
         <div class="flex mt-8 md:mt-0">
+          <!-- PUBLISH / PUBLISH CHANGES BUTTON -->
           <AppButton class="mr-4" @click="closePublishingOptionsModal">
             {{ $t("views.postForm.publicationCancel") }}
           </AppButton>
@@ -281,11 +282,15 @@ const initFormValues = (post = {}) => {
     tags: post.tags || [],
     slugIsLocked: false,
     slugShowToggleLockButton: true,
+    publishedAt: post.publishedAt ? post.publishedAt : null,
     publishedScheduleAtDateLater: new Date(),
     publishedScheduleAtDateEarlier: new Date(),
     publishedScheduleAtTimeLater: null,
     publishedScheduleAtTimeEarlier: null,
-    // can be "NOW", "LATER" or "EARLIER"
+    // can be "NOW", (set publish date to now, when creating new post)
+    // "KEEP", (when editing a post, do not change publication date)
+    // "LATER" ( publish later )
+    // "EARLIER" (anterior date)
     publishedScheduleAtType: "NOW",
   };
   if (post.status === "PUBLISHED") {
@@ -427,12 +432,11 @@ export default {
         FORM_ID,
         "publishedScheduleAtType"
       );
-      if (publishedScheduleAtType === "LATER") {
-        const date = vuexFormGetValue(FORM_ID, "publishedScheduleAtDateLater");
-        const time = vuexFormGetValue(FORM_ID, "publishedScheduleAtTimeLater");
-        datetime = this.reconcilyDateAndTimeFields(date, time);
+      if (publishedScheduleAtType === "NOW") {
+        datetime = new Date();
       }
-      if (publishedScheduleAtType === "EARLIER") {
+      // use want to publish to an older date.
+      else if (publishedScheduleAtType === "EARLIER") {
         const date = vuexFormGetValue(
           FORM_ID,
           "publishedScheduleAtDateEarlier"
@@ -443,7 +447,8 @@ export default {
         );
         datetime = this.reconcilyDateAndTimeFields(date, time);
       }
-      if (publishedScheduleAtType === "KEEP") {
+      // if post is published, by default we Keep the existing publication date
+      else if (publishedScheduleAtType === "KEEP") {
         datetime = this.existingPost.publishedAt;
       }
       return datetime;
@@ -511,7 +516,8 @@ export default {
           this.$emit("onEdit", false);
           pendingActions.remove(savingPendingAction);
           const post = result.data.savePost;
-          this.existingPost = post;
+          //this.existingPost = post;
+          initFormValues(post);
           this.$store.commit("lastVisitedPost", post);
           this.savingPost = {
             state: REQUEST_STATE.FINISHED_OK,
@@ -648,7 +654,7 @@ export default {
         name: "postList",
       });
     },
-    publish() {
+    publish(scheduled = false) {
       // If article is published (or re-published) from draft, we display a "Hurrah modal".
       // If we only publish changes on a already published articles, we have a more
       // sober modal.
@@ -660,8 +666,9 @@ export default {
       if (Object.keys(errors).length > 0) {
         return false;
       } else {
+        const status = scheduled ? "SCHEDULED_PUBLISH" : "PUBLISHED";
         // make sure there is not an autoSaveAsDraft triggered
-        this.savePost("PUBLISHED").then(() => {
+        this.savePost(status).then(() => {
           this.closePublishingOptionsModal();
           // make sure user can not change slug anymore without confirmation.
           vuexFormSetValue(FORM_ID, "slugIsLocked", true);

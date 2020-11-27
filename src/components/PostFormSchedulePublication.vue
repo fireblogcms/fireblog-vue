@@ -7,7 +7,7 @@
     <div class="mb-10">
       <div class="flex border rounded-lg text-center items-center">
         <div
-          v-if="existingPost.status !== 'PUBLISHED'"
+          v-if="existingPost && existingPost.status !== 'PUBLISHED'"
           @click="onTabClick('NOW')"
           class="p-5 flex-1 cursor-pointer text-lg border-r border-gray-200"
           :class="{
@@ -16,9 +16,10 @@
         >
           Publish now
         </div>
+        <!--
         <div
           class="p-5 flex-1 cursor-pointer text-lg"
-          v-if="existingPost.status !== 'PUBLISHED'"
+          v-if="existingPost && existingPost.status !== 'PUBLISHED'"
           @click="onTabClick('LATER')"
           :class="{
             ' bg-indigo-100': getActiveTab() === 'LATER',
@@ -26,8 +27,9 @@
         >
           Publish later
         </div>
+        -->
         <div
-          v-if="existingPost.status === 'PUBLISHED'"
+          v-if="existingPost && existingPost.status === 'PUBLISHED'"
           @click="onTabClick('KEEP')"
           class="p-5 flex-1 cursor-pointer text-lg border-r border-gray-200"
           :class="{
@@ -35,6 +37,11 @@
           }"
         >
           Garder la date actuelle
+          <span class="block text-sm">
+            {{
+              new Date(vuexFormGetValue(formId, "publishedAt")).toLocaleString()
+            }}
+          </span>
         </div>
         <div
           class="p-5 flex-1 cursor-pointer text-lg"
@@ -58,13 +65,13 @@
           @input="
             vuexFormSetValue(formId, 'publishedScheduleAtDateLater', $event)
           "
-          :value="vuexFormGetValue(formId, 'publishedScheduleAtDateLater')"
+          :value="vuexFormGetValue(formId, 'publishedAt')"
           :disabled-dates="disabledDatesLater"
         />
       </div>
       <div class="pl-5">
         <AppFieldTime
-          :value="vuexFormGetValue(formId, 'publishedScheduleAtTimeLater')"
+          :value="vuexFormGetValue(formId, 'publishedAt')"
           @input="
             vuexFormSetValue(formId, 'publishedScheduleAtTimeLater', $event)
           "
@@ -81,7 +88,7 @@
           @input="
             vuexFormSetValue(formId, 'publishedScheduleAtDateEarlier', $event)
           "
-          :value="vuexFormGetValue(formId, 'publishedScheduleAtDateEarlier')"
+          :value="vuexFormGetValue(formId, 'publishedAt')"
           :disabled-dates="disabledDatesEarlier"
         />
       </div>
