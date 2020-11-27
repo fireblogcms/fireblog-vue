@@ -2,7 +2,10 @@
   <!-- publication date -->
 
   <div class="mt-10">
-    <p class="font-bold mb-4">Publication date</p>
+    <p class="mb-4 font-bold">
+      Publié le
+      {{ new Date(vuexFormGetValue(formId, "publishedAt")).toLocaleString() }}
+    </p>
     <!-- publish later -->
     <div class="mb-10">
       <div class="flex border rounded-lg text-center items-center">
@@ -37,11 +40,6 @@
           }"
         >
           Garder la date actuelle
-          <span class="block text-sm">
-            {{
-              new Date(vuexFormGetValue(formId, "publishedAt")).toLocaleString()
-            }}
-          </span>
         </div>
         <div
           class="p-5 flex-1 cursor-pointer text-lg"
@@ -73,7 +71,7 @@
         />
       </div>
     </div>
-    <!-- calendar ealier -->
+    <!-- calendar earlier -->
     <div
       class="flex w-full"
       v-show="vuexFormGetValue(formId, 'publishedScheduleAtType') === 'EARLIER'"
@@ -158,24 +156,12 @@ export default {
       let today = new Date();
       const time = getCurrentTime();
 
-      if (tabId === "LATER") {
-        if (!vuexFormGetValue(this.formId, "publishedScheduleAtDateLater")) {
-          vuexFormSetValue(this.formId, "publishedScheduleAtDateLater", today);
+      if (tabId === "LATER" || tabId === "EARLIER") {
+        if (!vuexFormGetValue(this.formId, "publishedAt")) {
+          vuexFormSetValue(this.formId, "publishedAt", today);
         }
-        if (!vuexFormGetValue(this.formId, "publishedScheduleAtTimeLater")) {
-          vuexFormSetValue(this.formId, "publishedScheduleAtTimeLater", time);
-        }
-      }
-      if (tabId === "EARLIER") {
-        if (!vuexFormGetValue(this.formId, "publishedScheduleAtEarlierLater")) {
-          vuexFormSetValue(
-            this.formId,
-            "publishedScheduleAtEarlierLater",
-            today
-          );
-        }
-        if (!vuexFormGetValue(this.formId, "publishedScheduleAtTimeEarlier")) {
-          vuexFormSetValue(this.formId, "publishedScheduleAtTimeEarlier", time);
+        if (!vuexFormGetValue(this.formId, "publishedAtTime")) {
+          vuexFormSetValue(this.formId, "publishedAtTime", "10:21");
         }
       }
     },

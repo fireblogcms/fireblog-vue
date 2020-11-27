@@ -283,7 +283,7 @@ const initFormValues = (post = {}) => {
     slugIsLocked: false,
     slugShowToggleLockButton: true,
     publishedAt: post.publishedAt ? post.publishedAt : null,
-    publishedAtTime: "11:00",
+    publishedAtTime: null,
     // can be "NOW", (set publish date to now, when creating new post)
     // "KEEP", (when editing a post, do not change publication date)
     // "LATER" ( publish later )
