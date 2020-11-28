@@ -47,11 +47,17 @@
             @onLock="onSlugLock"
           />
 
+          <PostFormSchedulePublication
+            :formId="FORM_ID"
+            :existingPost="existingPost"
+          />
+
           <!-- FEATURE FIELD -->
           <FeatureField
             :checked="vuexFormGetValue(FORM_ID, 'featured')"
             @onFeatureChange="onFeatureChange"
-            class="mt-8" />
+            class="mt-8"
+          />
         </div>
       </div>
 
@@ -89,7 +95,12 @@
               <PreviewGoogleResult
                 :title="previewGoogleValues().title"
                 :description="previewGoogleValues().description"
-                :url="`https://example.com/post/${vuexFormGetValue(FORM_ID, 'slug')}`"
+                :url="
+                  `https://example.com/post/${vuexFormGetValue(
+                    FORM_ID,
+                    'slug'
+                  )}`
+                "
               />
             </div>
           </div>
@@ -127,6 +138,7 @@ import {
 } from "@/utils/vuexForm";
 import SlugField from "./SlugField";
 import FeatureField from "./FeatureField";
+import PostFormSchedulePublication from "./PostFormSchedulePublication";
 import PreviewGoogleResult from "./PreviewGoogleResult";
 import apolloClient from "@/utils/apolloClient";
 
@@ -141,11 +153,11 @@ export default {
     TagAutocomplete,
     SlugField,
     FeatureField,
+    PostFormSchedulePublication,
   },
   props: {
     existingPost: {
       type: [Object, null],
-      default: () => null,
     },
   },
   data() {
@@ -158,22 +170,32 @@ export default {
   created() {
     this.vuexFormGetError = vuexFormGetError;
     this.vuexFormGetValue = vuexFormGetValue;
+    this.vuexFormSetValue = vuexFormSetValue;
     this.FORM_ID = FORM_ID;
+  },
+  computed: {
+    publishLaterDisabledDates() {
+      const d = new Date();
+      d.setDate(d.getDate() - 1);
+      return {
+        to: d,
+      };
+    },
   },
   methods: {
     previewGoogleValues() {
-      let title = vuexFormGetValue(FORM_ID, 'title');
-      let description = vuexFormGetValue(FORM_ID, 'teaser');
-      if (vuexFormGetValue(FORM_ID, 'metaTitle').trim()) {
-        title = vuexFormGetValue(FORM_ID, 'metaTitle').trim()
+      let title = vuexFormGetValue(FORM_ID, "title");
+      let description = vuexFormGetValue(FORM_ID, "teaser");
+      if (vuexFormGetValue(FORM_ID, "metaTitle").trim()) {
+        title = vuexFormGetValue(FORM_ID, "metaTitle").trim();
       }
-      if (vuexFormGetValue(FORM_ID, 'metaDescription').trim()) {
-        description = vuexFormGetValue(FORM_ID, 'metaDescription').trim()
+      if (vuexFormGetValue(FORM_ID, "metaDescription").trim()) {
+        description = vuexFormGetValue(FORM_ID, "metaDescription").trim();
       }
       return {
         title,
-        description
-      }
+        description,
+      };
     },
     onUploaded(fileUrl) {
       vuexFormSetValue(FORM_ID, "image", fileUrl);

@@ -3,12 +3,17 @@
     <label v-if="label" class="font-bold">
       {{ label }}
     </label>
-    <select 
+    <select
       class="p-4 text-xl shadow-sm border rounded w-full text-current focus:outline-none focus:shadow-outline"
-      :value="value" 
-      @change="$emit('change', $event.target.value)">
-      <option v-for="option in options" :key="option.value">
-        {{option.label}}
+      :value="value"
+      @change="$emit('change', $event.target.value)"
+    >
+      <option
+        v-for="option in options"
+        :value="option.value"
+        :key="option.value"
+      >
+        {{ option.label }}
       </option>
     </select>
   </div>
@@ -24,7 +29,7 @@ export default {
       type: String,
     },
     value: {
-      type: String,
+      type: [String, Boolean, Number],
     },
     // - option.value
     // - option.label
@@ -35,5 +40,3 @@ export default {
   },
 };
 </script>
-
-

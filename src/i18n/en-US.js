@@ -114,6 +114,8 @@ export default {
   "views.postForm.publishChangesButton": "Publish changes",
   "views.postForm.publishChangesHurralModal.title": "Your changes have been published!",
   "views.postForm.publishNowButton": "Publish now",
+  "views.postForm.publishedAtType.now": "Now",
+  "views.postForm.publishedAtType.later": "Later",
   "views.postForm.savedAt {time}": "saved on {time}",
   "views.postForm.saveDraft": "Save draft",
   "views.postForm.sectionSeo.title": "Customize your SEO metadatas",

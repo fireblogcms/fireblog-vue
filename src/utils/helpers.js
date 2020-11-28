@@ -415,3 +415,37 @@ export function getRandomGif(gifsArray) {
   previousDisplayedGif = gif;
   return gif;
 }
+
+/**
+ * Return current time with format hh:mm
+ */
+export function getTimeFromDateString(date = null) {
+  function prefixZero(i) {
+    if (i < 10) {
+      i = "0" + i;
+    }
+    return i;
+  }
+  function time() {
+    var today = date ? new Date(date) : new Date();
+    var h = today.getHours();
+    var m = today.getMinutes();
+    // add a zero in front of numbers<10
+    h = prefixZero(h);
+    m = prefixZero(m);
+    return h + ":" + m;
+  }
+  return time();
+}
+
+/**
+ * @param date string
+ * @param time string hh:mm
+ * @return Date object
+ */
+export function combineDateAndTime(date, time) {
+  let timeExploded = time.split(":");
+  let datetime = new Date(date);
+  datetime.setHours(timeExploded[0], timeExploded[1]);
+  return datetime;
+}

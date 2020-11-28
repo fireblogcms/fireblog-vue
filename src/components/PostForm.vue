@@ -22,7 +22,7 @@
           size="small"
           @click="isActionsVisibleOnMobile = !isActionsVisibleOnMobile"
         >
-          <img class="w-6" src="/images/pencil.svg" />
+          class="w-6" src="/images/pencil.svg" />
         </AppButton>
         <div
           v-click-outside="() => (isActionsVisibleOnMobile = false)"
@@ -174,6 +174,7 @@
           {{ $t("views.postForm.advancedSettingsModal.title") }}
         </span>
         <div class="flex mt-8 md:mt-0">
+          <!-- PUBLISH / PUBLISH CHANGES BUTTON -->
           <AppButton class="mr-4" @click="closePublishingOptionsModal">
             {{ $t("views.postForm.publicationCancel") }}
           </AppButton>
@@ -247,6 +248,8 @@ import {
   formatDate,
   generateSlugFromServer,
   getRandomGif,
+  getTimeFromDateString,
+  combineDateAndTime,
 } from "@/utils/helpers";
 import {
   vuexFormInit,
@@ -263,25 +266,46 @@ import apolloClient from "@/utils/apolloClient";
 import PostFormAdvancedSettings from "./PostFormAdvancedSettings";
 import striptags from "striptags";
 
-let initialFormValues = {
-  title: "",
-  content: "",
-  slug: "",
-  teaser: "",
-  image: "",
-  featured: false,
-  metaDescription: "",
-  metaTitle: "",
-  tags: [],
-  slugIsLocked: false,
-  slugShowToggleLockButton: true,
-};
-
 const FORM_ID = "postForm";
 let pendingActions = null;
 
-let strokesCountIndex = 0;
-const saveAfterKeyStrokesNumber = 50;
+const initFormValues = (post = {}) => {
+  const formValues = {
+    title: post.title ? post.title : "",
+    content: post.content ? post.content : "",
+    // slug is the slug value after being slugified by SlugField component
+    slug: post.slug ? post.slug : "",
+    title: post.title ? post.title : "",
+    teaser: post.teaser ? post.teaser : "",
+    image: post.image ? post.image : "",
+    featured: post.featured ? post.featured : false,
+    metaDescription: post.metaDescription ? post.metaDescription : "",
+    metaTitle: post.metaTitle ? post.metaTitle : "",
+    tags: post.tags || [],
+    slugIsLocked: false,
+    slugShowToggleLockButton: true,
+    publishedAt: post.publishedAt ? post.publishedAt : null,
+
+    // can be "NOW", (set publish date to now, when creating new post)
+    // "KEEP", (when editing a post, do not change publication date)
+    // "LATER" ( publish later )
+    // "EARLIER" (anterior date)
+    publishedAtType: "NOW",
+
+    // user can enter a custom publication date.
+    publishedAtCustomDate: post.publishedAt ? post.publishedAt : null,
+    // use can enter a custom time (hh:mm) for publication date.
+    publishedAtCustomTime: post.publishedAt
+      ? getTimeFromDateString(post.publishedAt)
+      : null,
+  };
+  if (post.status === "PUBLISHED") {
+    formValues.publishedAtType = "KEEP";
+  }
+  vuexFormInit(FORM_ID, {
+    initialValues: { ...formValues },
+  });
+};
 
 export default {
   components: {
@@ -355,12 +379,11 @@ export default {
       editor.plugins.get("PendingActions").on("change:hasAny", actions => {});
     },
     async init() {
-
       this.getSubscription();
 
       // no existing post, we are in CREATE MODE
       if (this.$route.name === "postCreate") {
-        this.initPostFormValues(initialFormValues);
+        initFormValues();
       }
 
       // UPDATE MODE
@@ -371,8 +394,7 @@ export default {
         );
         this.$store.commit("lastVisitedPost", this.existingPost);
         this.loadingAsyncData = false;
-        const formValues = this.prepareFormValuesFromPost(this.existingPost);
-        this.initPostFormValues(formValues);
+        initFormValues(this.existingPost);
       }
     },
     onTitleInput(value) {
@@ -396,32 +418,31 @@ export default {
     closePublishingSuccessModal() {
       this.$store.commit("modalShowing/close", "publishingSuccessModal");
     },
-    initPostFormValues(formValues) {
-      vuexFormInit(FORM_ID, {
-        initialValues: { ...formValues },
-        onFormValueChange: ({ name, value }) => {},
-      });
-    },
-    // fill form fields from a post object
-    prepareFormValuesFromPost(post) {
-      let values = {
-        ...initialFormValues,
-        title: post.title ? post.title : initialFormValues.title,
-        content: post.content ? post.content : "",
-        // slug is the slug value after being slugified by SlugField component
-        slug: post.slug ? post.slug : "",
-        title: post.title ? post.title : "",
-        teaser: post.teaser ? post.teaser : "",
-        image: post.image ? post.image : "",
-        featured: post.featured ? post.featured : false,
-        metaDescription: post.metaDescription ? post.metaDescription : "",
-        metaTitle: post.metaTitle ? post.metaTitle : "",
-        tags: post.tags || initialFormValues.tags
-      };
-      return values;
+    /**
+     * return publication date value for saving.
+     * Might be null if post is draft and no specific date has been specified.
+     */
+    preparePublishedAtValueForSave() {
+      let datetime = null;
+      const publishedAtType = vuexFormGetValue(FORM_ID, "publishedAtType");
+      // user want to publish with the current date.
+      if (publishedAtType === "NOW") {
+        datetime = new Date();
+      }
+      // user want to publish to a different date.
+      else if (publishedAtType === "EARLIER" || publishedAtType === "LATER") {
+        const date = vuexFormGetValue(FORM_ID, "publishedAtCustomDate");
+        const time = vuexFormGetValue(FORM_ID, "publishedAtCustomTime");
+        datetime = combineDateAndTime(date, time);
+      }
+      // post is published and user just want to keep the current publication date
+      else if (publishedAtType === "KEEP") {
+        datetime = this.existingPost.publishedAt;
+      }
+      return datetime;
     },
     // Prepare a post object from form form.values, for a save operation
-    preparePostFromCurrentFormValues() {
+    preparePostFromCurrentFormValues(status) {
       const postToSave = {
         title: vuexFormGetValue(FORM_ID, "title"),
         content: vuexFormGetValue(FORM_ID, "content"),
@@ -433,7 +454,11 @@ export default {
         metaDescription: vuexFormGetValue(FORM_ID, "metaDescription"),
         tags: vuexFormGetValue(FORM_ID, "tags").map(tag => tag._id),
         wordCount: this.wordCount,
+        // publishedAt remains null, until we actualky publish the post.
+        publishedAt:
+          status === "PUBLISHED" ? this.preparePublishedAtValueForSave() : null,
       };
+
       // API will know that this is an UPDATE and not a CREATE
       // if we add _id key to our post.
       if (this.$route.params.postId) {
@@ -466,7 +491,7 @@ export default {
         status,
       };
       const post = {
-        ...this.preparePostFromCurrentFormValues(),
+        ...this.preparePostFromCurrentFormValues(status),
         status,
       };
       return apolloClient
@@ -481,7 +506,14 @@ export default {
           this.$emit("onEdit", false);
           pendingActions.remove(savingPendingAction);
           const post = result.data.savePost;
-          this.existingPost = post;
+          // update existing post : we use it our components
+          // to determine current post status for example.
+          this.existingPost = {
+            ...this.existingPost,
+            ...post,
+          };
+          // update form values, some of theme are dependant from current post values.
+          initFormValues(post);
           this.$store.commit("lastVisitedPost", post);
           this.savingPost = {
             state: REQUEST_STATE.FINISHED_OK,
@@ -528,23 +560,25 @@ export default {
             }
           }
         }
-      `
-      return apolloClient.query({
-        query,
-        variables: {
-          blogSetId: this.$route.params.blogSetId,
-        }
-      }).then(result => {
-        this.blogSetSubscription = result.data.blogSet.subscription;
-        return result.data.blogSet.subscription;
-      })
+      `;
+      return apolloClient
+        .query({
+          query,
+          variables: {
+            blogSetId: this.$route.params.blogSetId,
+          },
+        })
+        .then(result => {
+          this.blogSetSubscription = result.data.blogSet.subscription;
+          return result.data.blogSet.subscription;
+        });
     },
     getExistingPost(id) {
       return apolloClient
         .query({
           variables: {
             blogSetId: this.$route.params.blogSetId,
-            postId: id
+            postId: id,
           },
           query: gql`
             query postFormQuery($postId: ID!) {
@@ -616,7 +650,7 @@ export default {
         name: "postList",
       });
     },
-    publish() {
+    publish(scheduled = false) {
       // If article is published (or re-published) from draft, we display a "Hurrah modal".
       // If we only publish changes on a already published articles, we have a more
       // sober modal.
@@ -628,8 +662,9 @@ export default {
       if (Object.keys(errors).length > 0) {
         return false;
       } else {
+        const status = scheduled ? "SCHEDULED_PUBLISH" : "PUBLISHED";
         // make sure there is not an autoSaveAsDraft triggered
-        this.savePost("PUBLISHED").then(() => {
+        this.savePost(status).then(() => {
           this.closePublishingOptionsModal();
           // make sure user can not change slug anymore without confirmation.
           vuexFormSetValue(FORM_ID, "slugIsLocked", true);
@@ -650,7 +685,10 @@ export default {
      * Open publication modal. This is NOT the final publish operation.
      */
     showAdvancedSettings() {
-      if (this.blogSetSubscription.status === "TRIAL" || this.blogSetSubscription.status === "ACTIVE") {
+      if (
+        this.blogSetSubscription.status === "TRIAL" ||
+        this.blogSetSubscription.status === "ACTIVE"
+      ) {
         // we need at least the title to autocomplete the slug field
         if (!vuexFormGetValue(FORM_ID, "title").trim()) {
           toast(
@@ -718,6 +756,29 @@ export default {
         vuexFormSetError(FORM_ID, "title", message);
         toast(this, message, "error");
       }
+
+      // custom datetime can't be superior to now, for now.
+      const customPublicationDate = vuexFormGetValue(
+        FORM_ID,
+        "publishedAtCustomDate"
+      );
+      const customPublicationTime = vuexFormGetValue(
+        FORM_ID,
+        "publishedAtCustomTime"
+      );
+      const customPublicationDateTime = combineDateAndTime(
+        customPublicationDate,
+        customPublicationTime
+      );
+      if (customPublicationDateTime > new Date()) {
+        vuexFormSetError(
+          FORM_ID,
+          "customPublicationDateTime",
+          "publication date can't be superior to now"
+        );
+        toast(this, "Publication date can't be superior to now", "error");
+      }
+
       if (action === "PUBLISH") {
         if (!validateSlug(vuexFormGetValue(FORM_ID, "slug"))) {
           // SLUG
