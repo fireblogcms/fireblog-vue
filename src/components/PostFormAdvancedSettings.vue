@@ -1,5 +1,5 @@
 <template>
-  <div class="pb-12">
+  <div class="pb-12 container mx-auto">
     <form @submit.prevent>
       <!-- PUBLICATION PARAMETERS -->
       <div class="">

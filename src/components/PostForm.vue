@@ -362,7 +362,7 @@ export default {
   },
   computed: {
     publishModalPublishButtonText() {
-      let text = this.$t("views.postForm.publishNowButton");
+      let text = this.$t("views.postForm.publishButton");
       if (this.existingPost && this.existingPost.status === "PUBLISHED") {
         text = this.$t("views.postForm.publishChangesButton");
       }

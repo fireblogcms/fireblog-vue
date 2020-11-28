@@ -115,7 +115,7 @@ export default {
   "views.postForm.publishChangesHurralModal.title": "Vos changements ont été publiés !",
   "views.postForm.publishChangesHurralModal.okayButton": "Ok!",
   "views.postForm.publishChangesButton": "Publier les changements",
-  "views.postForm.publishNowButton": "Publier maintenant",
+  "views.postForm.publishButton": "Publier",
   "views.postForm.publicationDateChange": "Changer",
   "views.postForm.publicationDateKeepCurrent":"Garder la date actuelle",
   "views.postForm.publicationDatePublishNow": "Maintenant",

@@ -118,7 +118,7 @@ export default {
   "views.postForm.publicationDateChange": "Change",
   "views.postForm.publicationDatePublishNow": "Now",
   "views.postForm.publicationDateKeepCurrent":"Keep current date",
-  "views.postForm.publishNowButton": "Publish now",
+  "views.postForm.publishButton": "Publish",
   "views.postForm.publishedAtType.now": "Now",
   "views.postForm.publishedAtType.later": "Later",
   "views.postForm.savedAt {time}": "saved on {time}",
