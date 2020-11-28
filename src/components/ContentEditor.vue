@@ -102,7 +102,7 @@ export default {
       wordCount: {
         onUpdate: stats => {
           this.onWordCountUpdate(stats);
-        }
+        },
       },
       mediaEmbed: {
         previewsInData: false,
@@ -170,7 +170,7 @@ export default {
   outline: none !important;
   padding: 0;
   font-size: 1.25rem;
-  line-height: 36px;
+  line-height: 32px;
 }
 #editor a {
   @apply text-blue-600;

@@ -7,7 +7,7 @@
       {{ help }}
     </div>
     <input
-      class="p-4 text-xl shadow-sm appearance-none border rounded w-full text-current focus:outline-none focus:shadow-outline"
+      class="p-4 text-xl bg-gray-200 shadow-sm appearance-none rounded-lg w-full text-current focus:outline-none focus:shadow-outline"
       type="text"
       :value="value"
       @input="$emit('input', $event.target.value)"
