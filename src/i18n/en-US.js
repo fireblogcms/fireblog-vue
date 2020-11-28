@@ -45,6 +45,7 @@ export default {
   "global.pageNotFound": "Page not found",
   "global.retryLogin": "Retry to login",
   "global.chooseFile": "Choose file",
+  "global.uploadImage": "Upload an image",
   "topbar.accountMenu.myBlogs": "My blogs",
   "topbar.accountMenu.myAccount": "My account",
   "topbar.accountMenu.logout": "Logout",

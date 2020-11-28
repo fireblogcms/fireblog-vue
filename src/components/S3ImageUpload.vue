@@ -1,16 +1,23 @@
 <template>
-  <div class="flex flex-col items-center">
+  <div
+    id="image-upload-widget"
+    class="flex flex-col items-center rounded relative"
+    style="min-height:400px"
+    :class="{ 'bg-gray-100': !uploadedImage }"
+  >
     <img v-if="uploadedImage" :src="uploadedImage" />
     <img v-if="!uploadedImage" :src="initialImage" />
 
+    <!--
     <progress
       v-show="uploadingState === 'PENDING'"
-      class="w-64"
+      class="w-full bg-indigo-300"
       :value="uploadProgress"
       max="100"
     >
       {{ uploadProgress }}
     </progress>
+    -->
 
     <label class="mt-6 cursor-pointer">
       <input
@@ -20,19 +27,29 @@
         @change="processImage($event)"
         name="file"
       />
-      <div
-        class="flex items-center border-2 rounded-md bg-white border-gray-200 py-3 px-6 text-2xl"
-      >
-        <img class="w-6 mr-4" src="/images/icon-upload.svg" />
-        <span>
-          {{ $t("global.chooseFile") }}
-        </span>
+      <div class="border-2 rounded-md bg-white border-gray-200 relative">
+        <div class="flex py-3 px-6 items-center text-2xl">
+          <img width="50" src="/images/upload-image-placeholder.png" />
+          <span>
+            {{ $t("global.uploadImage") }}
+          </span>
+        </div>
+      </div>
+      <div class="pt-1 w-full" v-show="uploadingState === 'PENDING'">
+        <div class="overflow-hidden h-4 text-xs flex rounded bg-indigo-200">
+          <div
+            :style="`width: ${uploadProgress}%`"
+            class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-indigo-500"
+          ></div>
+        </div>
       </div>
     </label>
 
+    <!--
     <p v-if="file" class="text-sm">
       {{ file.name }}
     </p>
+    -->
   </div>
 </template>
 
