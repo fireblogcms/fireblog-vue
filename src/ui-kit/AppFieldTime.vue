@@ -6,7 +6,7 @@
     <input
       @input="onInput"
       :value="value"
-      class="p-4 text-xl shadow-sm border rounded w-full text-current focus:outline-none focus:shadow-outline"
+      class="p-4 text-xl bg-gray-100 shadow-sm border rounded w-full text-current focus:outline-none focus:shadow-outline"
       type="time"
       v-bind="$attrs"
     />
