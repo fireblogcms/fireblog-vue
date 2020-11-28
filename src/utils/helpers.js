@@ -437,3 +437,15 @@ export function getTimeFromDateString(date = null) {
   }
   return time();
 }
+
+/**
+ * @param date string
+ * @param time string hh:mm
+ * @return Date object
+ */
+export function combineDateAndTime(date, time) {
+  let timeExploded = time.split(":");
+  let datetime = new Date(date);
+  datetime.setHours(timeExploded[0], timeExploded[1]);
+  return datetime;
+}

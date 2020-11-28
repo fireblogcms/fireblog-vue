@@ -249,6 +249,7 @@ import {
   generateSlugFromServer,
   getRandomGif,
   getTimeFromDateString,
+  combineDateAndTime,
 } from "@/utils/helpers";
 import {
   vuexFormInit,
@@ -417,13 +418,6 @@ export default {
     closePublishingSuccessModal() {
       this.$store.commit("modalShowing/close", "publishingSuccessModal");
     },
-    reconcilyDateAndTimeFields(date, time) {
-      console.log("date", date, "time", time, "datetime", datetime);
-      let timeExploded = time.split(":");
-      let datetime = new Date(date);
-      const result = datetime.setHours(timeExploded[0], timeExploded[1]);
-      return datetime;
-    },
     /**
      * return publication date value for saving.
      * Might be null if post is draft and no specific date has been specified.
@@ -438,7 +432,7 @@ export default {
       else if (publishedAtType === "EARLIER" || publishedAtType === "LATER") {
         const date = vuexFormGetValue(FORM_ID, "publishedAtCustomDate");
         const time = vuexFormGetValue(FORM_ID, "publishedAtCustomTime");
-        datetime = this.reconcilyDateAndTimeFields(date, time);
+        datetime = combineDateAndTime(date, time);
       }
       // if post is published, by default we Keep the existing publication date
       else if (publishedAtType === "KEEP") {
@@ -771,7 +765,7 @@ export default {
         FORM_ID,
         "publishedAtCustomTime"
       );
-      const customPublicationDateTime = this.reconcilyDateAndTimeFields(
+      const customPublicationDateTime = combineDateAndTime(
         customPublicationDate,
         customPublicationTime
       );

@@ -85,14 +85,14 @@
       <div class="flex-1">
         <AppFieldDate
           :value="vuexFormGetValue(formId, 'publishedAtCustomDate')"
-          @input="vuexFormSetValue(formId, 'publishedAtCustomDate', $event)"
+          @input="onDateInput"
           :disabled-dates="disabledDatesEarlier"
         />
       </div>
       <div class="pl-5">
         <AppFieldTime
           :value="vuexFormGetValue(formId, 'publishedAtCustomTime')"
-          @input="vuexFormSetValue(formId, 'publishedAtCustomTime', $event)"
+          @input="onTimeInput"
         />
       </div>
     </div>
@@ -108,7 +108,7 @@ import {
 } from "@/utils/vuexForm";
 import AppFieldDate from "@/ui-kit/AppFieldDate";
 import AppFieldTime from "@/ui-kit/AppFieldTime";
-import { getTimeFromDateString } from "@/utils/helpers";
+import { getTimeFromDateString, combineDateAndTime } from "@/utils/helpers";
 
 export default {
   components: {
@@ -154,28 +154,47 @@ export default {
     },
     disabledDatesEarlier() {
       var date = new Date();
-      date.setDate(date.getDate() + 1);
       return {
         from: date,
       };
     },
   },
   methods: {
+    validateDateTime() {
+      // do not allow date in the future for now
+      const customDate = vuexFormGetValue("postForm", "publishedAtCustomDate");
+      const customTime = vuexFormGetValue("postForm", "publishedAtCustomTime");
+      const currentTime = getTimeFromDateString();
+      let customDateTime = null;
+      if (customDate && customTime) {
+        customDateTime = combineDateAndTime(customDate, customTime);
+        if (new Date(customDateTime) > new Date()) {
+          //vuexFormSetValue("postForm", "publishedAtCustomTime", currentTime);
+        }
+      }
+    },
+    onDateInput(value) {
+      vuexFormSetValue("postForm", "publishedAtCustomDate", value);
+      this.validateDateTime();
+    },
+    onTimeInput(value) {
+      vuexFormSetValue("postForm", "publishedAtCustomTime", value);
+      this.validateDateTime();
+    },
     getActiveTab() {
       return vuexFormGetValue(this.formId, "publishedAtType");
     },
     onTabClick(tabId) {
       vuexFormSetValue(this.formId, "publishedAtType", tabId);
-      let today = new Date();
-      const time = getTimeFromDateString();
-      this.timeMax = time;
+      const today = new Date();
+      const currentTime = getTimeFromDateString();
 
       if (tabId === "LATER" || tabId === "EARLIER") {
         if (!vuexFormGetValue(this.formId, "publishedAt")) {
           vuexFormSetValue(this.formId, "publishedAtCustomDate", today);
         }
         if (!vuexFormGetValue(this.formId, "publishedAt")) {
-          vuexFormSetValue(this.formId, "publishedAtCustomTime", time);
+          vuexFormSetValue(this.formId, "publishedAtCustomTime", currentTime);
         }
       }
     },
