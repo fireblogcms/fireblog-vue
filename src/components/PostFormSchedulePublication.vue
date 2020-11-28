@@ -3,7 +3,7 @@
 
   <div class="mt-10">
     <p class="mb-4 font-bold">
-      Date de publication
+      {{ $t("views.postForm.publicationDate") }}
       <span v-if="vuexFormGetValue(formId, 'publishedAt')">
         :
         {{ new Date(vuexFormGetValue(formId, "publishedAt")).toLocaleString() }}
@@ -23,7 +23,7 @@
             ' bg-indigo-100': getActiveTab() === 'NOW',
           }"
         >
-          Publish now
+          {{ $t("views.postForm.publicationDatePublishNow") }}
         </div>
         <!--
         <div
@@ -45,7 +45,7 @@
             ' bg-indigo-100': getActiveTab() === 'KEEP',
           }"
         >
-          Garder la date actuelle
+          {{ $t("views.postForm.publicationDateKeepCurrent") }}
         </div>
         <div
           class="p-5 flex-1 cursor-pointer text-lg"
@@ -54,7 +54,7 @@
             ' bg-indigo-100': getActiveTab() === 'EARLIER',
           }"
         >
-          Modifier
+          {{ $t("views.postForm.publicationDateChange") }}
         </div>
       </div>
     </div>
