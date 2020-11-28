@@ -156,18 +156,23 @@ export default {
 .tag-auto-complete .vue-tags-input {
   @apply bg-gray-100 border-0 max-w-none;
 }
+
 .tag-auto-complete .vue-tags-input .ti-input {
   @apply p-2 text-xl border-0 shadow-sm appearance-none rounded text-current;
 }
+
 .tag-auto-complete .vue-tags-input .ti-input:focus {
   @apply outline-none shadow-outline;
 }
+
 .tag-auto-complete .vue-tags-input .ti-tag {
   @apply bg-primary p-2 rounded;
 }
+
 .tag-auto-complete .vue-tags-input .ti-new-tag-input {
   @apply p-2 bg-gray-100;
 }
+
 .tag-auto-complete .vue-tags-input .ti-autocomplete {
   @apply border-gray-200 rounded-b shadow-sm;
 }
