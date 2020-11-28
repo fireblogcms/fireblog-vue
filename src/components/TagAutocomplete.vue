@@ -153,8 +153,8 @@ export default {
 </script>
 
 <style>
-.tag-auto-complete .vue-tags-input {
-  @apply bg-gray-100 border-0 max-w-none;
+.tag-auto-complete > .vue-tags-input {
+  @apply bg-gray-100 border-0 max-w-none !important;
 }
 
 .tag-auto-complete .vue-tags-input .ti-input {
