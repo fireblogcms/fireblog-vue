@@ -1,81 +1,94 @@
 <template>
   <div class="pb-12">
     <form @submit.prevent>
-      <div class="flex flex-col md:flex-row">
-        <div class="w-full md:w-1/2 md:mr-3">
-          <!-- IMAGE UPLOAD FIELD -->
-          <label class="font-bold">
-            {{ $t("views.postForm.fields.featuredImage.label") }}
-          </label>
-          <p class="text-sm italic mb-2">
-            {{ $t("views.postForm.fields.featuredImage.help") }}
-          </p>
-          <S3ImageUpload
-            :blogId="$route.params.blogId"
-            @onUploadingStateChange="onUploadingStateChange"
-            :initialImage="vuexFormGetValue(FORM_ID, 'image')"
-            @onUploaded="onUploaded"
-          />
-        </div>
-        <div class="w-full md:w-1/2 md:ml-3 mt-4 md:mt-0">
-          <!-- TEASER FIELD -->
-          <label class="font-bold">
-            {{ $t("views.postForm.fields.teaser.label") }}
-          </label>
-          <p class="text-sm italic mb-2">
-            {{ $t("views.postForm.fields.teaser.help") }}
-          </p>
-          <!-- limited to 250 because of google, facebook, twitter and co preview card limitation -->
-          <AppTextarea
-            :value="vuexFormGetValue(FORM_ID, 'teaser')"
-            @input="onTeaserInput"
-            placeholder="Teaser"
-            maxlength="250"
-          />
+      <!-- PUBLICATION PARAMETERS -->
+      <div class="">
+        <h3 class="text-2xl font-bold mx-8 flex items-center">
+          <div>
+            <img
+              width="50"
+              class="inline mr-5"
+              src="/images/icon-feather.png"
+            />
+          </div>
+          <div>PUBLICATION SETTINGS</div>
+        </h3>
+        <div class="flex flex-col md:flex-row p-8">
+          <div class="w-full md:w-1/2 md:mr-3">
+            <!-- IMAGE UPLOAD FIELD -->
+            <label class="font-bold">
+              {{ $t("views.postForm.fields.featuredImage.label") }}
+            </label>
+            <p class="text-sm italic mb-2">
+              {{ $t("views.postForm.fields.featuredImage.help") }}
+            </p>
+            <S3ImageUpload
+              :blogId="$route.params.blogId"
+              @onUploadingStateChange="onUploadingStateChange"
+              :initialImage="vuexFormGetValue(FORM_ID, 'image')"
+              @onUploaded="onUploaded"
+            />
+          </div>
+          <div class="w-full md:w-1/2 md:ml-3 mt-4 md:mt-0">
+            <!-- TEASER FIELD -->
+            <label class="font-bold">
+              {{ $t("views.postForm.fields.teaser.label") }}
+            </label>
+            <p class="text-sm italic mb-2">
+              {{ $t("views.postForm.fields.teaser.help") }}
+            </p>
+            <!-- limited to 250 because of google, facebook, twitter and co preview card limitation -->
+            <AppTextarea
+              :value="vuexFormGetValue(FORM_ID, 'teaser')"
+              @input="onTeaserInput"
+              placeholder="Teaser"
+              maxlength="250"
+            />
 
-          <PostFormSchedulePublication
-            class="mt-5"
-            :formId="FORM_ID"
-            :existingPost="existingPost"
-          />
+            <PostFormSchedulePublication
+              class="mt-5"
+              :formId="FORM_ID"
+              :existingPost="existingPost"
+            />
 
-          <!-- FEATURE FIELD -->
-          <FeatureField
-            class="mt-10"
-            :checked="vuexFormGetValue(FORM_ID, 'featured')"
-            @onFeatureChange="onFeatureChange"
-          />
+            <!-- FEATURE FIELD -->
+            <FeatureField
+              class="mt-10"
+              :checked="vuexFormGetValue(FORM_ID, 'featured')"
+              @onFeatureChange="onFeatureChange"
+            />
 
-          <!-- TAGS -->
-          <div class="mt-10">
-            <div class="flex flex-col md:flex-row">
-              <div class="w-full">
-                <h3 class="font-bold">
-                  {{ $t("views.postForm.sectionTags.title") }}
-                </h3>
-                <p class="text-sm italic mb-2">
-                  {{ $t("views.postForm.sectionTags.description") }}
-                </p>
-                <TagAutocomplete
-                  :blogId="$route.params.blogId"
-                  :formId="FORM_ID"
-                />
+            <!-- TAGS -->
+            <div class="mt-10">
+              <div class="flex flex-col md:flex-row">
+                <div class="w-full">
+                  <h3 class="font-bold">
+                    {{ $t("views.postForm.sectionTags.title") }}
+                  </h3>
+                  <p class="text-sm italic mb-2">
+                    {{ $t("views.postForm.sectionTags.description") }}
+                  </p>
+                  <TagAutocomplete
+                    :blogId="$route.params.blogId"
+                    :formId="FORM_ID"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- PREVIEW GOOGLE -->
-      <div class="mt-16 ">
-        <div class="flex flex-col md:flex-row">
+      <!-- SEO PARAMETERS -->
+      <div class="mt-16 p-8">
+        <h3 class="text-2xl font-bold flex items-center mb-8">
+          <div>
+            <img width="50" class="inline mr-5" src="/images/icon-seo.png" />
+          </div>
+          <div>SEARCH ENGINE OPTIMIZATIONS</div>
+        </h3>
+        <div class="flex flex-col md:flex-row items-top">
           <div class="w-full md:w-1/2 md:mr-8">
-            <h3 class="text-2xl font-bold">
-              {{ $t("views.postForm.sectionSeo.title") }}
-            </h3>
-            <p class="text-sm italic mb-2">
-              {{ $t("views.postForm.sectionSeo.description") }}
-            </p>
             <!-- SLUG FIELD -->
             <SlugField
               class="mt-4"
@@ -92,6 +105,7 @@
 
             <AppFieldText
               label="Meta title"
+              class="mt-10"
               :value="vuexFormGetValue(FORM_ID, 'metaTitle')"
               @input="onMetaTitleInput"
               placeholder="Seo title"
@@ -107,7 +121,7 @@
             />
           </div>
           <div class="w-full md:w-1/2 md:mr-3">
-            <p class="mb-4 text-2xl font-bold mt-8 md:mt-0">
+            <p class="mb-4 font-bold mt-8 md:mt-0">
               {{ $t("views.postForm.advancedSettingsModal.previewGoogle") }}
             </p>
             <div class="p-6 bg-white shadow-around rounded-lg">

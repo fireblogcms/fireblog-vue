@@ -3,7 +3,6 @@
     <label class="font-bold">
       {{ label }}
     </label>
-    <p v-if="computedHelp" v-html="computedHelp" class="text-sm italic mb-2" />
 
     <div class="flex">
       <AppFieldText
@@ -22,6 +21,7 @@
         }}
       </AppButton>
     </div>
+    <p v-if="computedHelp" v-html="computedHelp" class="text-sm italic mt-2" />
 
     <AppModal name="unlockConfirmModal">
       <div class="text-4xl font-bold" slot="header">
@@ -135,7 +135,7 @@ export default {
   computed: {
     computedHelp() {
       return this.$t("components.slugField.help", {
-        exampleUrl: `https://example.com/post/<mark class="font-bold bg-secondary text-current">${this.slug}</mark>`,
+        exampleUrl: `https://example.com/post/<mark class="font-bold bg-indigo-200 text-current">${this.slug}</mark>`,
       });
     },
   },

@@ -167,12 +167,14 @@
       :fullscreen="true"
     >
       <div
-        class="flex flex-col md:flex-row items-center justify-between flex-1"
+        class="flex flex-col md:flex-row items-center justify-end flex-1"
         slot="header"
       >
+        <!--
         <span class="text-4xl font-bold">
           {{ $t("views.postForm.advancedSettingsModal.title") }}
         </span>
+        -->
         <div class="flex mt-8 md:mt-0">
           <!-- PUBLISH / PUBLISH CHANGES BUTTON -->
           <AppButton class="mr-4" @click="closePublishingOptionsModal">

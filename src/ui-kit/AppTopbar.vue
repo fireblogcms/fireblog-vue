@@ -345,7 +345,7 @@ export default {
     onCheckOutPlansClick() {
       this.$router.push({
         name: "plans",
-        params: { blogSetId: this.$route.params.blogSetId || this.blogSet._id }
+        params: { blogSetId: this.$route.params.blogSetId || this.blogSet._id },
       });
       this.$store.commit("modalShowing/close", "freeTrialEndedModal");
     },
@@ -365,7 +365,7 @@ function viewData() {
           name
           email
           picture
-          blogs(last:100) {
+          blogs(last: 100) {
             edges {
               node {
                 _id
