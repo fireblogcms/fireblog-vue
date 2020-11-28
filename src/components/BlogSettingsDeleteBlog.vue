@@ -1,6 +1,6 @@
 <template>
   <div>
-    <AppPanel type="danger">
+    <AppPanel type="danger" class="text-center">
       <h2 class="mb-6 text-4xl font-bold">
         {{ $t("views.blogSettings.dangerZone.title") }}
       </h2>

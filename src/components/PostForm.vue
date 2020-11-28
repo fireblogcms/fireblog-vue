@@ -768,17 +768,19 @@ export default {
         FORM_ID,
         "publishedAtCustomTime"
       );
-      const customPublicationDateTime = combineDateAndTime(
-        customPublicationDate,
-        customPublicationTime
-      );
-      if (customPublicationDateTime > new Date()) {
-        vuexFormSetError(
-          FORM_ID,
-          "customPublicationDateTime",
-          "publication date can't be superior to now"
+      if (customPublicationDate && customPublicationTime) {
+        const customPublicationDateTime = combineDateAndTime(
+          customPublicationDate,
+          customPublicationTime
         );
-        toast(this, "Publication date can't be superior to now", "error");
+        if (customPublicationDateTime > new Date()) {
+          vuexFormSetError(
+            FORM_ID,
+            "customPublicationDateTime",
+            "publication date can't be superior to now"
+          );
+          toast(this, "Publication date can't be superior to now", "error");
+        }
       }
 
       if (action === "PUBLISH") {

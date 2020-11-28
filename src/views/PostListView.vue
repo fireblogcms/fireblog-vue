@@ -75,7 +75,7 @@
             class="rounded-t-lg cursor-pointer relative"
             @click="onStatusClick('PUBLISHED')"
             :class="{
-              'bg-white shadow-md': activeStatus == 'PUBLISHED',
+              'bg-white shadow': activeStatus == 'PUBLISHED',
             }"
           >
             <div class="flex items-center py-4 px-4 md:px-10 text-xl">
@@ -91,7 +91,7 @@
           <li
             class="rounded-t-lg cursor-pointer relative"
             @click="onStatusClick('DRAFT')"
-            :class="{ 'bg-white shadow-md': activeStatus == 'DRAFT' }"
+            :class="{ 'bg-white shadow': activeStatus == 'DRAFT' }"
           >
             <div class="flex items-center py-4 px-4 md:px-10 text-xl">
               <span>{{ $t("views.postList.draftTab") }}</span>
@@ -106,7 +106,7 @@
         </ul>
 
         <div
-          class="container mx-auto mb-20 py-6 px-4 md:px-10 bg-white shadow-md rounded-lg"
+          class="container mx-auto mb-20 py-6 px-4 md:px-10 bg-white shadow rounded-lg"
         >
           <PostList
             @onDeleteClick="onDeleteClick"
@@ -227,9 +227,9 @@ export default {
     fetchData() {
       this.viewDataLoading = true;
       viewDataQuery({
-          blogSetId: this.$route.params.blogSetId,
-          blogId: this.$route.params.blogId,
-        })
+        blogSetId: this.$route.params.blogSetId,
+        blogId: this.$route.params.blogId,
+      })
         .then(r => {
           this.viewData = r.data;
           this.isFirstPost =
@@ -285,7 +285,10 @@ export default {
       });
     },
     onWriteNewPostClick() {
-      if (this.viewData.blogSet.subscription.status === "TRIAL" || this.viewData.blogSet.subscription.status === "ACTIVE") {
+      if (
+        this.viewData.blogSet.subscription.status === "TRIAL" ||
+        this.viewData.blogSet.subscription.status === "ACTIVE"
+      ) {
         this.$router.push({
           name: "postCreate",
           params: {

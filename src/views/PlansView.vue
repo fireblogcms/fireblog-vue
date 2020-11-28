@@ -15,7 +15,7 @@
         class="flex justify-center mb-16"
         v-if="blogSet.subscription && blogSet.subscription.status === 'TRIAL'"
       >
-        <div class="w-8/12 p-8 bg-white shadow-md rounded-lg">
+        <div class="w-8/12 p-8 bg-white shadow rounded-lg">
           <p>
             {{ $t("views.plans.freeTrialFirst") }}
             {{ blogSet.subscription.plan.productName }}
@@ -39,7 +39,7 @@
         v-if="plans.length > 0"
       >
         <div
-          class="w-full md:w-1/3 my-4 md:mx-4 p-6 flex flex-col items-center justify-between bg-white shadow-md rounded-lg border-4"
+          class="w-full md:w-1/3 my-4 md:mx-4 p-6 flex flex-col items-center justify-between bg-white shadow rounded-lg border-4"
           :class="
             isPlanSubscribed(plan.id) ? 'border-primary' : 'border-transparent'
           "
@@ -95,7 +95,7 @@
         v-if="plans.length === 0"
       >
         <div
-          class="w-full md:w-1/3 my-4 md:mx-4 p-6 bg-white shadow-md rounded-lg border-4 border-transparent"
+          class="w-full md:w-1/3 my-4 md:mx-4 p-6 bg-white shadow rounded-lg border-4 border-transparent"
           v-for="(v, i) in [0, 1]"
           :key="i"
         >
@@ -289,8 +289,14 @@ export default {
             deleteSubscription: true,
           },
           mutation: gql`
-            mutation($blogSet: UpdateBlogSetInput!, $deleteSubscription: Boolean) {
-              updateBlogSet(blogSet: $blogSet, deleteSubscription: $deleteSubscription) {
+            mutation(
+              $blogSet: UpdateBlogSetInput!
+              $deleteSubscription: Boolean
+            ) {
+              updateBlogSet(
+                blogSet: $blogSet
+                deleteSubscription: $deleteSubscription
+              ) {
                 subscription {
                   status
                 }

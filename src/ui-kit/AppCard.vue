@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white shadow-md rounded-lg overflow-hidden">
+  <div class="bg-white shadow rounded-lg overflow-hidden">
     <div class="h-320 bg-cover bg-center" :style="background" v-if="image">
       <slot />
     </div>
