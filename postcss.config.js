@@ -4,15 +4,19 @@ module.exports = {
     ...(process.env.NODE_ENV !== "development"
       ? [
           require("@fullhuman/postcss-purgecss")({
+            // https://medium.com/@kyis/vue-tailwind-purgecss-the-right-way-c70d04461475#3f95
             content: ["./public/**/*.html", "./src/**/*.vue"],
             defaultExtractor: content => {
-              const broadMatches =
-                content.match(/[^<>"'`\s]*[^<>"'`\s:]/g) || [];
-              const innerMatches =
-                content.match(/[^<>"'`\s.()]*[^<>"'`\s.():]/g) || [];
-              return broadMatches.concat(innerMatches);
+              const contentWithoutStyleBlocks = content.replace(
+                /<style[^]+?<\/style>/gi,
+                ""
+              );
+              return (
+                contentWithoutStyleBlocks.match(
+                  /[A-Za-z0-9-_/:]*[A-Za-z0-9-_/]+/g
+                ) || []
+              );
             },
-            whitelist: [],
             whitelistPatterns: [
               /-(leave|enter|appear)(|-(to|from|active))$/,
               /^(?!(|.*?:)cursor-move).+-move$/,
