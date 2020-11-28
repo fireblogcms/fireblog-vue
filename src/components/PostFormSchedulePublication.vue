@@ -1,7 +1,7 @@
 <template>
   <!-- publication date -->
 
-  <div class="mt-10">
+  <div>
     <p class="mb-4 font-bold">
       {{ $t("views.postForm.publicationDate") }}
       <span v-if="vuexFormGetValue(formId, 'publishedAt')">
@@ -20,7 +20,7 @@
           @click="onTabClick('NOW')"
           class="p-5 flex-1 cursor-pointer text-lg border-r border-gray-200"
           :class="{
-            ' bg-indigo-100': getActiveTab() === 'NOW',
+            'bg-indigo-100': getActiveTab() === 'NOW',
           }"
         >
           {{ $t("views.postForm.publicationDatePublishNow") }}

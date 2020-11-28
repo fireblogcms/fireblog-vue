@@ -33,31 +33,36 @@
             maxlength="250"
           />
 
-          <!-- SLUG FIELD -->
-          <SlugField
-            class="mt-4"
-            :value="vuexFormGetValue(FORM_ID, 'slug')"
-            :error="vuexFormGetError(FORM_ID, 'slug')"
-            :showToggleLockButton="
-              vuexFormGetValue(FORM_ID, 'slugShowToggleLockButton')
-            "
-            :locked="vuexFormGetValue(FORM_ID, 'slugIsLocked')"
-            @onSlugChange="onSlugChange"
-            @onUnlock="onSlugUnlock"
-            @onLock="onSlugLock"
-          />
-
           <PostFormSchedulePublication
+            class="mt-5"
             :formId="FORM_ID"
             :existingPost="existingPost"
           />
 
           <!-- FEATURE FIELD -->
           <FeatureField
+            class="mt-10"
             :checked="vuexFormGetValue(FORM_ID, 'featured')"
             @onFeatureChange="onFeatureChange"
-            class="mt-8"
           />
+
+          <!-- TAGS -->
+          <div class="mt-10">
+            <div class="flex flex-col md:flex-row">
+              <div class="w-full">
+                <h3 class="font-bold">
+                  {{ $t("views.postForm.sectionTags.title") }}
+                </h3>
+                <p class="text-sm italic mb-2">
+                  {{ $t("views.postForm.sectionTags.description") }}
+                </p>
+                <TagAutocomplete
+                  :blogId="$route.params.blogId"
+                  :formId="FORM_ID"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -71,6 +76,20 @@
             <p class="text-sm italic mb-2">
               {{ $t("views.postForm.sectionSeo.description") }}
             </p>
+            <!-- SLUG FIELD -->
+            <SlugField
+              class="mt-4"
+              :value="vuexFormGetValue(FORM_ID, 'slug')"
+              :error="vuexFormGetError(FORM_ID, 'slug')"
+              :showToggleLockButton="
+                vuexFormGetValue(FORM_ID, 'slugShowToggleLockButton')
+              "
+              :locked="vuexFormGetValue(FORM_ID, 'slugIsLocked')"
+              @onSlugChange="onSlugChange"
+              @onUnlock="onSlugUnlock"
+              @onLock="onSlugLock"
+            />
+
             <AppFieldText
               label="Meta title"
               :value="vuexFormGetValue(FORM_ID, 'metaTitle')"
@@ -103,20 +122,6 @@
                 "
               />
             </div>
-          </div>
-        </div>
-      </div>
-      <!-- TAGS -->
-      <div class="mt-16 ">
-        <div class="flex flex-col md:flex-row">
-          <div class="w-full md:w-1/2 md:mr-8">
-            <h3 class="text-2xl font-bold">
-              {{ $t("views.postForm.sectionTags.title") }}
-            </h3>
-            <p class="text-sm italic mb-2">
-              {{ $t("views.postForm.sectionTags.description") }}
-            </p>
-            <TagAutocomplete :blogId="$route.params.blogId" :formId="FORM_ID" />
           </div>
         </div>
       </div>

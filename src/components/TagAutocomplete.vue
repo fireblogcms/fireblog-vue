@@ -154,7 +154,7 @@ export default {
 
 <style>
 .tag-auto-complete .vue-tags-input {
-  @apply bg-gray-100 border-0;
+  @apply bg-gray-100 border-0 max-w-none;
 }
 .tag-auto-complete .vue-tags-input .ti-input {
   @apply p-2 text-xl border-0 shadow-sm appearance-none rounded text-current;
@@ -163,14 +163,19 @@ export default {
   @apply outline-none shadow-outline;
 }
 .tag-auto-complete .vue-tags-input .ti-tag {
-  @apply bg-primary p-2;
+  @apply bg-primary p-2 rounded;
 }
 .tag-auto-complete .vue-tags-input .ti-new-tag-input {
   @apply p-2 bg-gray-100;
 }
 .tag-auto-complete .vue-tags-input .ti-autocomplete {
-  @apply border rounded-b shadow-sm;
+  @apply border-gray-200 rounded-b shadow-sm;
 }
+
+.tag-auto-complete .vue-tags-input .ti-item {
+  @apply py-4;
+}
+
 .tag-auto-complete .vue-tags-input .ti-item:hover {
   @apply bg-primary;
 }
