@@ -6,7 +6,7 @@
       @click.self="close"
     >
       <div
-        class="flex flex-col bg-white"
+        class="flex flex-col bg-white container"
         :class="{
           'w-11/12 md:w-1/2 max-h-9/10 shadow-around rounded-lg':
             !fullscreen && !big,
