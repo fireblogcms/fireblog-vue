@@ -425,16 +425,17 @@ export default {
     preparePublishedAtValueForSave() {
       let datetime = null;
       const publishedAtType = vuexFormGetValue(FORM_ID, "publishedAtType");
+      // user want to publish with the current date.
       if (publishedAtType === "NOW") {
         datetime = new Date();
       }
-      // use want to publish to an older date.
+      // user want to publish to a different date.
       else if (publishedAtType === "EARLIER" || publishedAtType === "LATER") {
         const date = vuexFormGetValue(FORM_ID, "publishedAtCustomDate");
         const time = vuexFormGetValue(FORM_ID, "publishedAtCustomTime");
         datetime = combineDateAndTime(date, time);
       }
-      // if post is published, by default we Keep the existing publication date
+      // post is published and user just want to keep the current publication date
       else if (publishedAtType === "KEEP") {
         datetime = this.existingPost.publishedAt;
       }
