@@ -1,7 +1,7 @@
 <template>
   <div
     id="image-upload-widget"
-    class="flex flex-col items-center rounded relative rounded pb-6"
+    class="flex flex-col items-center relative rounded pb-6"
     :class="{ 'bg-gray-100': !uploadedImage }"
   >
     <img v-if="uploadedImage" :src="uploadedImage" />

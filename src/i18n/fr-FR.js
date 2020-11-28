@@ -126,7 +126,7 @@ export default {
   "views.postForm.sectionSeo.title": "Personnaliser vos metadonnées SEO",
   "views.postForm.sectionSeo.description": "Par défaut, fireblog utilise le titre et l'accroche de votre article, mais vous pouvez personnaliser ces données si besoin.",
   "views.postForm.sectionTags.title": "Tags",
-  "views.postForm.sectionTags.description": "Ajouter des catégories et/ou mots clés associées à votre article",
+  "views.postForm.sectionTags.description": "Catégorisez vos articles.",
   "views.postForm.sectionTags.addLabel": "Ajouter",
   "views.postForm.unpublishButton": "Dépublier",
   "views.postList.backToBlogLink": "Mes blogs",
