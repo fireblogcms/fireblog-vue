@@ -153,7 +153,9 @@ export default {
       };
     },
     disabledDatesEarlier() {
-      var date = new Date();
+      const date = new Date();
+      date.setDate(date.getDate() + 1);
+      date.setHours(0, 0, 0, 0);
       return {
         from: date,
       };
@@ -169,7 +171,7 @@ export default {
       if (customDate && customTime) {
         customDateTime = combineDateAndTime(customDate, customTime);
         if (new Date(customDateTime) > new Date()) {
-          //vuexFormSetValue("postForm", "publishedAtCustomTime", currentTime);
+          vuexFormSetValue("postForm", "publishedAtCustomTime", currentTime);
         }
       }
     },
@@ -188,7 +190,6 @@ export default {
       vuexFormSetValue(this.formId, "publishedAtType", tabId);
       const today = new Date();
       const currentTime = getTimeFromDateString();
-
       if (tabId === "LATER" || tabId === "EARLIER") {
         if (!vuexFormGetValue(this.formId, "publishedAt")) {
           vuexFormSetValue(this.formId, "publishedAtCustomDate", today);
