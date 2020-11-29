@@ -46,7 +46,7 @@
             <div
               :key="blog._id"
               v-for="blog in blogSet.blogs"
-              class="w-full sm:w-full md:w-1/2 lg:w-1/3 py-2 px-0 md:px-2"
+              class=" mx-auto w-2/3 py-2 px-0 md:px-2"
             >
               <BlogCard :blogSet="blogSet" :blog="blog" />
             </div>
