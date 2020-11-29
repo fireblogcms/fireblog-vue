@@ -11,7 +11,9 @@
               src="/images/icon-feather.png"
             />
           </div>
-          <div class="text-xl md:text-2xl">PUBLICATION SETTINGS</div>
+          <div class="text-xl md:text-2xl">
+            {{ $t("views.postForm.publicationSettings") }}
+          </div>
         </h3>
         <div class="flex flex-col md:flex-row p-8">
           <div class="w-full md:w-1/2 md:mr-3">
@@ -85,7 +87,9 @@
           <div>
             <img width="30" class="inline mr-5" src="/images/icon-seo.png" />
           </div>
-          <div class="text-xl md:text-2xl">SEARCH ENGINE OPTIMIZATIONS</div>
+          <div class="text-xl md:text-2xl">
+            {{ $t("views.postForm.seoOptimizations") }}
+          </div>
         </h3>
         <div class="flex flex-col md:flex-row items-top">
           <div class="w-full md:w-1/2 md:mr-8">
