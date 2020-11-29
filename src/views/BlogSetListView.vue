@@ -20,7 +20,7 @@
                 class="mb-2"
                 @click="onCreateNewBlogClick(blogSet)"
               >
-                <span class="text-sm uppercase md:text-lg">Nouveau blog</span>
+                <span class="text-sm uppercase md:text-lg">Nouveau pod</span>
               </AppButton>
             </div>
           </div>

@@ -3,7 +3,6 @@
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
       <AppBreadcrumb
-        image="/images/book.png"
         :routerOptions="{
           name: 'postList',
           params: { blogSetId: $route.params.blogSetId },
@@ -22,7 +21,7 @@
           size="small"
           @click="isActionsVisibleOnMobile = !isActionsVisibleOnMobile"
         >
-          class="w-6" src="/images/pencil.svg" />
+          <img class="w-6" src="/images/pencil.svg" />
         </AppButton>
         <div
           v-click-outside="() => (isActionsVisibleOnMobile = false)"
@@ -42,7 +41,9 @@
             size="small"
             @click="saveAsDraft"
           >
-            {{ $t("views.postForm.saveDraft").toUpperCase() }}
+            <span class="text-sm md:text-md">
+              {{ $t("views.postForm.saveDraft").toUpperCase() }}
+            </span>
           </AppButton>
 
           <!-- ADVANCED OPTIONS BUTTON -->
@@ -53,7 +54,9 @@
             size="small"
             @click="showAdvancedSettings"
           >
-            {{ $t("views.postForm.advancedSettingsButton").toUpperCase() }}
+            <span class="text-sm md:text-md">
+              {{ $t("views.postForm.advancedSettingsButton").toUpperCase() }}
+            </span>
           </AppButton>
 
           <!-- BEGIN PUBLICATION BUTTON (launch advanced settings modal) -->
@@ -69,7 +72,9 @@
             size="small"
             @click="showAdvancedSettings"
           >
-            {{ $t("views.postForm.publicationButton").toUpperCase() }}
+            <span class="text-sm md:text-md">
+              {{ $t("views.postForm.publicationButton").toUpperCase() }}
+            </span>
           </AppButton>
 
           <!-- UNPUBLISH BUTTON  -->
@@ -83,7 +88,9 @@
             size="small"
             @click="onUnpublishClick"
           >
-            {{ $t("views.postForm.unpublishButton").toUpperCase() }}
+            <span class="text-sm md:text-md">
+              {{ $t("views.postForm.unpublishButton").toUpperCase() }}
+            </span>
           </AppButton>
 
           <!-- PUBLISH CHANGES BUTTON -->
@@ -99,7 +106,9 @@
             size="small"
             @click="publish"
           >
-            {{ $t("views.postForm.publishChangesButton").toUpperCase() }}
+            <span class="text-sm md:text-md">
+              {{ $t("views.postForm.publishChangesButton").toUpperCase() }}
+            </span>
           </AppButton>
         </div>
       </div>
@@ -178,7 +187,9 @@
         <div class="flex mt-8 md:mt-0">
           <!-- PUBLISH / PUBLISH CHANGES BUTTON -->
           <AppButton class="mr-4" @click="closePublishingOptionsModal">
-            {{ $t("views.postForm.publicationCancel") }}
+            <span class="text-sm md:text-xl uppercase">
+              {{ $t("views.postForm.publicationCancel") }}
+            </span>
           </AppButton>
           <AppButton
             color="primary"
@@ -188,7 +199,9 @@
             "
             @click="publish"
           >
-            {{ publishModalPublishButtonText }}
+            <span class="text-sm md:text-xl uppercase">
+              {{ publishModalPublishButtonText }}
+            </span>
           </AppButton>
         </div>
       </div>
