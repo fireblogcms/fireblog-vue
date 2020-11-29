@@ -5,6 +5,13 @@ module.exports = {
       ? [
           require("@fullhuman/postcss-purgecss")({
             content: ["./public/**/*.html", "./src/**/*.vue"],
+            defaultExtractor: content => {
+              const broadMatches =
+                content.match(/[^<>"'`\s]*[^<>"'`\s:]/g) || [];
+              const innerMatches =
+                content.match(/[^<>"'`\s.()]*[^<>"'`\s.():]/g) || [];
+              return broadMatches.concat(innerMatches);
+            },
             whitelistPatterns: [
               /-(leave|enter|appear)(|-(to|from|active))$/,
               /^(?!(|.*?:)cursor-move).+-move$/,
