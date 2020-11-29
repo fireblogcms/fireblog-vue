@@ -3,7 +3,7 @@
     <p class="text-sm">
       {{ computedUrl }}
     </p>
-    <p class="pt-2 text-xl text-indigo-700">
+    <p class="text-xl text-indigo-700">
       {{ computedTitle }}
     </p>
     <p class="text-sm">
