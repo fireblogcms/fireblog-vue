@@ -60,7 +60,7 @@ export default {
   "views.blogSetList.title": "Mes blogs",
   "views.blogSetList.paymentSuccess": "Félicitations, vous vous êtes abonné à Fireblog avec succès !",
   "views.blogSetList.unsubscribeSuccess": "Vous vous êtes désabonné de Fireblog avec succès...",
-  "views.blogList.createNewBlogButton": "Nouveau pod",
+  "views.blogList.createNewBlogButton": "Nouveau blog",
   "views.blogList.title": "Mes blogs",
   "views.blogList.settingsButton": "Réglages",
   "views.blogSettings.dangerZone.title": "Zone dangereuse",

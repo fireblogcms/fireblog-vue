@@ -39,7 +39,9 @@
           @click="onContactClick"
         >
           <img class="w-6 md:mr-2" src="/images/contact.svg" />
-          <span class="hidden md:inline text-sm md:text-md">Help</span>
+          <span class="hidden md:inline text-sm md:text-md uppercase"
+            >Help</span
+          >
         </AppButton>
 
         <div v-if="me" class="relative cursor-pointer ml-4 md:ml-6">
@@ -225,8 +227,8 @@ import gql from "graphql-tag";
 
 function getRandomSupportGif() {
   const gifs = [
-    "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-friends.gif",
-    "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-ringo-star-tea.gif",
+    // "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-friends.gif",
+    // "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-ringo-star-tea.gif",
     "https://s3.eu-west-3.amazonaws.com/app.fireblogcms.com/gifs/support-women.gif",
   ];
   return getRandomGif(gifs);

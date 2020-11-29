@@ -12,17 +12,16 @@
           'w-full h-screen': fullscreen,
         }"
       >
-        <div class="p-6 flex items-center justify-between">
+        <div class="p-6 flex items-center justify-between container mx-auto">
           <slot name="header" />
-          <AppButton
+
+          <div
             v-if="!fullscreen"
-            aria-label="close"
-            size="small"
-            class="ml-4"
             @click="close"
+            class="font-bold cursor-pointer"
           >
-            ×
-          </AppButton>
+            <img width="30" src="/images/icon-close.svg" />
+          </div>
         </div>
         <div class="p-6 overflow-y-auto">
           <slot name="body" />

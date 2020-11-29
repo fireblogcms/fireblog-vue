@@ -32,7 +32,9 @@
                   class="mb-2"
                   @click="onCreateNewBlogClick(blogSet)"
                 >
-                  <span class="text-sm uppercase md:text-lg">Nouveau pod</span>
+                  <span class="text-sm uppercase md:text-lg">{{
+                    $t("views.blogList.createNewBlogButton")
+                  }}</span>
                 </AppButton>
               </div>
             </div>
