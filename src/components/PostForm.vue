@@ -186,20 +186,25 @@
         -->
         <div class="flex mt-8 md:mt-0">
           <!-- PUBLISH / PUBLISH CHANGES BUTTON -->
-          <AppButton class="mr-4" @click="closePublishingOptionsModal">
-            <span class="text-sm md:text-xl uppercase">
+          <AppButton
+            class="mr-4"
+            @click="closePublishingOptionsModal"
+            size="small"
+          >
+            <span class="uppercase">
               {{ $t("views.postForm.publicationCancel") }}
             </span>
           </AppButton>
           <AppButton
             color="primary"
+            size="small"
             :loading="
               savingPost.state === 'PENDING' &&
                 savingPost.status === 'PUBLISHED'
             "
             @click="publish"
           >
-            <span class="text-sm md:text-xl uppercase">
+            <span class="uppercase">
               {{ publishModalPublishButtonText }}
             </span>
           </AppButton>

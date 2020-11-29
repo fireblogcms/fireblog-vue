@@ -4,7 +4,7 @@
     @click="$router.push(routerOptions)"
   >
     <img class="w-4 h-4 mr-2" src="/images/left-arrow.svg" />
-    <span class="font-bold text-indigo-600">{{ name }}</span>
+    <span class="text-indigo-600">{{ name }}</span>
   </button>
 </template>
 

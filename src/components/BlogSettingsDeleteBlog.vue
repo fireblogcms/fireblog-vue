@@ -1,16 +1,18 @@
 <template>
   <div>
     <AppPanel type="danger" class="text-center">
-      <h2 class="mb-6 text-4xl font-bold">
+      <h2 class="mb-6 text-xl md:text-2xl font-bold uppercase">
         {{ $t("views.blogSettings.dangerZone.title") }}
       </h2>
       <AppButton color="danger" @click="onDeleteBlogClick">
-        {{ $t("views.blogSettings.dangerZone.deleteButton") }}
+        <span class="text-xl">{{
+          $t("views.blogSettings.dangerZone.deleteButton")
+        }}</span>
       </AppButton>
     </AppPanel>
 
     <AppModal name="deleteBlogModal">
-      <div class="text-4xl font-bold" slot="header">
+      <div class="text-xl md:text-2xl font-bold" slot="header">
         {{
           $t("views.blogSettings.dangerZone.deleteModal.title", {
             blogName: `"${blog.name}"`,
@@ -28,7 +30,9 @@
           class="pt-12 flex flex-col md:flex-row items-center justify-center"
         >
           <AppButton class="mx-4" @click="closeDeleteBlogModal">
-            {{ $t("views.blogSettings.dangerZone.deleteModal.cancelButton") }}
+            <span class="text-xl">
+              {{ $t("views.blogSettings.dangerZone.deleteModal.cancelButton") }}
+            </span>
           </AppButton>
 
           <AppButton
@@ -37,7 +41,9 @@
             color="danger"
             @click="onDeleteBlogConfirm"
           >
-            {{ $t("global.delete") }}
+            <span class="text-xl">
+              {{ $t("global.delete") }}
+            </span>
           </AppButton>
         </div>
       </div>

@@ -16,7 +16,7 @@
       <div class="container mx-auto my-10 px-2">
         <div class="flex flex-col md:flex-row justify-between">
           <div class="flex-1 flex items-top md:mb-0">
-            <h1 class="text-2xl md:text-4xl font-bold uppercase mb-4">
+            <h1 class="text-xl md:text-2xl font-bold uppercase mb-4">
               {{ viewData.blog.name }}
             </h1>
           </div>
@@ -59,7 +59,7 @@
         </div>
       </div>
 
-      <AppPanel v-if="isFirstPost" class="mb-20">
+      <AppPanel v-if="isFirstPost" class="mb-20 container mx-auto">
         <h2 class="text-center text-3xl font-bold">
           {{ $t("views.postList.firstBlogSentence") }}
         </h2>

@@ -4,8 +4,8 @@
     <button
       class="flex items-center border rounded whitespace-no-wrap focus:outline-none focus:shadow-outline"
       :class="{
-        'py-3 px-6 text-2xl': size === '',
-        'py-2 px-4 text-md': size === 'small',
+        'py-3 px-6 text-xl': size === '',
+        'py-2 px-4 text-xl': size === 'small',
         'bg-white border-gray-200': color === '',
         'bg-primary border-primary text-white active:bg-primary-dark active:border-primary-dark':
           color === 'primary',

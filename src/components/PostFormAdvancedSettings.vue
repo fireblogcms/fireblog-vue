@@ -6,12 +6,12 @@
         <h3 class="text-2xl font-bold mx-8 flex items-center">
           <div>
             <img
-              width="50"
+              width="30"
               class="inline mr-5"
               src="/images/icon-feather.png"
             />
           </div>
-          <div>PUBLICATION SETTINGS</div>
+          <div class="text-xl md:text-2xl">PUBLICATION SETTINGS</div>
         </h3>
         <div class="flex flex-col md:flex-row p-8">
           <div class="w-full md:w-1/2 md:mr-3">
@@ -83,9 +83,9 @@
       <div class="mt-16 p-8">
         <h3 class="text-2xl font-bold flex items-center mb-8">
           <div>
-            <img width="50" class="inline mr-5" src="/images/icon-seo.png" />
+            <img width="30" class="inline mr-5" src="/images/icon-seo.png" />
           </div>
-          <div>SEARCH ENGINE OPTIMIZATIONS</div>
+          <div class="text-xl md:text-2xl">SEARCH ENGINE OPTIMIZATIONS</div>
         </h3>
         <div class="flex flex-col md:flex-row items-top">
           <div class="w-full md:w-1/2 md:mr-8">

@@ -1,64 +1,58 @@
 <template>
   <DefaultLayout>
     <template v-if="viewData">
-      <div class="container mx-auto my-10">
-        <div v-for="blogSet in viewData.blogSets" :key="blogSet._id">
-          <div
-            class="flex flex-col md:flex-row justify-between px-5 items-center"
-          >
-            <!-- PAGE TITLE -->
-            <div>
-              <h1 class="text-xl font-bold uppercase mb-4">
-                {{ $t("views.blogSetList.title") }}
-              </h1>
-            </div>
-            <!-- BUTTONS -->
-            <div>
-              <AppButton
-                color=""
-                class="mb-2 mr-2"
-                @click="
-                  $router.push({
-                    name: 'plans',
-                    params: { blogSetId: blogSet._id },
-                  })
-                "
-              >
-                <span class="text-sm uppercase md:text-lg">Abonnement</span>
-              </AppButton>
-              <AppButton
-                color="primary"
-                class="mb-2"
-                @click="onCreateNewBlogClick(blogSet)"
-              >
-                <span class="text-sm uppercase md:text-lg">Nouveau pod</span>
-              </AppButton>
-            </div>
-          </div>
-          <!-- consommation -->
-          <div class="px-5 hidden md:block mt-5">
-            <PlanInformations :blogSet="blogSet" />
-          </div>
-          <div
-            v-if="blogSet.blogs.length > 0"
-            class="flex flex-wrap items-center px-3 mt-5"
-          >
+      <div class="container mx-auto mt-10">
+        <div class="">
+          <!-- BLOGSET TITLE -->
+          <div v-for="blogSet in viewData.blogSets" :key="blogSet._id">
             <div
-              :key="blog._id"
-              v-for="blog in blogSet.blogs"
-              class="w-full sm:w-full md:w-1/2 lg:w-1/3 py-2 px-0 md:px-2"
+              class="flex flex-col md:flex-row justify-between px-5 items-center"
             >
-              <BlogCard :blogSet="blogSet" :blog="blog" />
+              <div>
+                <h1 class="md:text-2xl text-xl font-bold uppercase mb-4">
+                  {{ $t("views.blogSetList.title") }}
+                </h1>
+              </div>
+              <!-- BUTTONS -->
+              <div>
+                <AppButton
+                  color=""
+                  class="mb-2 mr-2"
+                  @click="
+                    $router.push({
+                      name: 'plans',
+                      params: { blogSetId: blogSet._id },
+                    })
+                  "
+                >
+                  <span class="text-sm uppercase md:text-lg">Abonnement</span>
+                </AppButton>
+                <AppButton
+                  color="primary"
+                  class="mb-2"
+                  @click="onCreateNewBlogClick(blogSet)"
+                >
+                  <span class="text-sm uppercase md:text-lg">Nouveau pod</span>
+                </AppButton>
+              </div>
             </div>
-            <!-- create a blog big + button -->
-            <div
-              @click="onCreateNewBlogClick(blogSet)"
-              class="h-320 w-full sm:w-full md:w-1/2 lg:w-1/3 px-0 md:px-2"
-            >
+
+            <div class="bg-white shadow p-5 rounded m-5">
               <div
-                class="cursor-pointer rounded-lg hover:bg-gray-300 bg-gray-200 text-center py-2"
+                v-if="blogSet.blogs.length > 0"
+                class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5"
               >
-                <span style="font-size:200px">+</span>
+                <div :key="blog._id" v-for="blog in blogSet.blogs">
+                  <BlogCard :blogSet="blogSet" :blog="blog" />
+                </div>
+                <div
+                  class="cursor-pointer rounded-lg hover:bg-gray-300 bg-gray-200 text-center py-2"
+                  @click="onCreateNewBlogClick(blogSet)"
+                >
+                  <div>
+                    <span style="font-size:200px">+</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -120,7 +114,6 @@
 <script>
 import AppButton from "@/ui-kit/AppButton";
 import { ContentLoader } from "vue-content-loader";
-import AppPanel from "@/ui-kit/AppPanel";
 import AppModal from "@/ui-kit/AppModal";
 import BlogCard from "@/components/BlogCard";
 import PlanInformations from "@/components/PlanInformations";
@@ -157,6 +150,7 @@ export default {
           query: { first: 1 },
         });
       } else {
+        console.log("data", response.data);
         this.viewData = response.data;
       }
     });

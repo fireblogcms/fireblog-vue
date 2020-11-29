@@ -1,6 +1,6 @@
 <template>
   <AppPanel>
-    <h2 class="text-4xl font-bold">
+    <h2 class="text-xl md:text-2xl font-bold">
       {{ $t("views.blogSettings.deployWebhookForm.title") }}
     </h2>
 

@@ -27,7 +27,9 @@
 
         <AppButton size="small" v-if="isApiHelpVisible()" @click="onApiClick">
           <img class="w-6 md:mr-2" src="/images/graphql.svg" />
-          <span class="hidden md:inline">API</span>
+          <span class="text-sm md:text-md">
+            <span class="hidden md:inline">API</span>
+          </span>
         </AppButton>
 
         <AppButton
@@ -37,7 +39,7 @@
           @click="onContactClick"
         >
           <img class="w-6 md:mr-2" src="/images/contact.svg" />
-          <span class="hidden md:inline">Help</span>
+          <span class="hidden md:inline text-sm md:text-md">Help</span>
         </AppButton>
 
         <div v-if="me" class="relative cursor-pointer ml-4 md:ml-6">
