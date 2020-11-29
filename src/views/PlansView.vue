@@ -4,8 +4,8 @@
     <portal to="topbar-left">
       <AppBreadcrumb
         image="/images/books.png"
-        :routerOptions="{ name: 'blogSetList' }"
-        :name="$t('views.postList.backToBlogLink')"
+        :routerOptions="{ name: 'profile' }"
+        :name="$t('topbar.accountMenu.myAccount')"
       />
     </portal>
     <!-- END TOPBAR LEFT BUTTONS -->

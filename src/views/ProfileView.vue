@@ -1,10 +1,20 @@
 <template>
   <DefaultLayout>
+    <!-- TOPBAR LEFT BUTTONS -->
+
+    <portal to="topbar-left">
+      <AppBreadcrumb
+        image="/images/books.png"
+        :routerOptions="{ name: 'blogSetList' }"
+        :name="$t('views.postList.backToBlogLink')"
+      />
+    </portal>
+
     <AppLoader v-if="initDataState === 'PENDING'" />
 
     <div class="max-w-4xl mx-auto">
       <h1 class="md:text-2xl text-xl font-bold uppercase mb-4 px-5 mt-10">
-        My account
+        {{ $t("topbar.accountMenu.myAccount") }}
       </h1>
 
       <AppPanel v-if="initDataState === 'FINISHED_OK'">
@@ -13,7 +23,7 @@
         >
           <div>
             <img
-              class="w-32 h-32 rounded-full"
+              class="w-32 h-32 rounded-full shadow"
               :src="viewData.me.picture"
               alt="User's profile picture"
             />
@@ -43,6 +53,7 @@ import { REQUEST_STATE, getUser, toast } from "@/utils/helpers";
 import gql from "graphql-tag";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import PlanInformations from "@/components/PlanInformations";
+import AppBreadcrumb from "@/ui-kit/AppBreadcrumb";
 
 export default {
   components: {
@@ -50,6 +61,7 @@ export default {
     AppPanel,
     DefaultLayout,
     PlanInformations,
+    AppBreadcrumb,
   },
   data() {
     return {

@@ -3,8 +3,8 @@
     class="flex items-center py-1 text-xl rounded-md whitespace-no-wrap focus:outline-none focus:shadow-outline"
     @click="$router.push(routerOptions)"
   >
-    <img class="w-4 h-4 mr-2" src="/images/left-arrow.svg" />
-    <span class="text-indigo-600">{{ name }}</span>
+    <span class="text-indigo-600 text-2xl mr-2 font-bold">&lsaquo;</span>
+    <span class="text-indigo-600 text-md">{{ name }}</span>
   </button>
 </template>
 

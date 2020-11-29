@@ -16,18 +16,6 @@
               <!-- BUTTONS -->
               <div>
                 <AppButton
-                  color=""
-                  class="mb-2 mr-2"
-                  @click="
-                    $router.push({
-                      name: 'plans',
-                      params: { blogSetId: blogSet._id },
-                    })
-                  "
-                >
-                  <span class="text-sm uppercase md:text-lg">Abonnement</span>
-                </AppButton>
-                <AppButton
                   color="primary"
                   class="mb-2"
                   @click="onCreateNewBlogClick(blogSet)"
@@ -118,7 +106,6 @@ import AppButton from "@/ui-kit/AppButton";
 import { ContentLoader } from "vue-content-loader";
 import AppModal from "@/ui-kit/AppModal";
 import BlogCard from "@/components/BlogCard";
-import PlanInformations from "@/components/PlanInformations";
 import apolloClient from "@/utils/apolloClient";
 import BlogCreateForm from "@/components/BlogCreateForm";
 import DefaultLayout from "@/layouts/DefaultLayout";
@@ -132,7 +119,6 @@ export default {
     BlogCard,
     ContentLoader,
     AppButton,
-    PlanInformations,
     AppModal,
   },
   data() {
