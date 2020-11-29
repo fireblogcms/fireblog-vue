@@ -1,5 +1,5 @@
 <template>
-  <AppPanel class="pt-0">
+  <AppPanel>
     <h2 class="text-4xl font-bold">
       {{ $t("views.blogSettings.deployWebhookForm.title") }}
     </h2>

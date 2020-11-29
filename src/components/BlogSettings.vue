@@ -3,9 +3,11 @@
     <AppLoader v-if="initDataState === 'PENDING'" />
 
     <template v-if="initDataState === 'FINISHED_OK'">
-      <BlogSettingsGeneral :blog="blog" />
-      <BlogSettingsDeployWebhook :blog="blog" />
-      <BlogSettingsDeleteBlog :blog="blog" />
+      <div class="max-w-4xl mx-auto">
+        <BlogSettingsGeneral :blog="blog" />
+        <BlogSettingsDeployWebhook :blog="blog" />
+        <BlogSettingsDeleteBlog :blog="blog" />
+      </div>
     </template>
   </div>
 </template>
