@@ -54,33 +54,11 @@
             class="w-40 mr-10 rounded bg-center bg-no-repeat bg-cover"
           ></div>
           <div>
-            <p
-              class="text-xs uppercase text-gray-600"
-              v-if="post.node.status === 'PUBLISHED'"
-            >
-              {{ publishedOnDate(post) }}
-            </p>
             <p class="text-xl md:text-3xl font-bold">
               {{ post.node.title }}
             </p>
-            <p
-              class="text-sm italic text-gray-600"
-              v-if="post.node.status === 'DRAFT'"
-            >
-              {{
-                $t("views.postList.updatedOn", {
-                  date: updatedOnDate(post),
-                })
-              }}
-            </p>
-            <!--
-            <p class="text-sm italic text-gray-600">
-              {{ $t("views.postList.readingTime") }} :
-              {{ post.node.readingTime }} min
-            </p>
-            -->
 
-            <p class="text-gray-600">
+            <p class="text-gray-600 mb-2">
               {{
                 striptags(
                   post.node.teaser.trim()
@@ -88,6 +66,28 @@
                     : post.node.content.substring(0, 100) + "..."
                 )
               }}
+            </p>
+            <p
+              class="text-xs uppercase text-indigo-600"
+              v-if="post.node.status === 'DRAFT'"
+            >
+              {{
+                $t("views.postList.updatedOn", {
+                  date: updatedOnDate(post),
+                })
+              }}
+              - {{ $t("views.postList.readingTime") }} :{{
+                post.node.readingTime
+              }}
+              min
+            </p>
+            <p
+              class="text-xs uppercase text-indigo-600"
+              v-if="post.node.status === 'PUBLISHED'"
+            >
+              {{ publishedOnDate(post) }} -
+              {{ $t("views.postList.readingTime") }} :
+              {{ post.node.readingTime }} min
             </p>
 
             <div class="mt-3">
