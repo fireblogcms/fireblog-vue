@@ -36,6 +36,8 @@ export default {
   "global.loading": "Loading",
   "global.published": "Published",
   "global.okayButton": "Okay!",
+  "global.seePlans": "See our plans",
+  "global.subscription": "Abonnement",
   "global.subscribeButton": "Subscribe",
   "global.unsubscribeButton": "Unsubscribe",
   "global.changePlanButton": "Change plan",
