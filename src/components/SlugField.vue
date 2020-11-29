@@ -24,7 +24,7 @@
     <p v-if="computedHelp" v-html="computedHelp" class="text-sm italic mt-2" />
 
     <AppModal name="unlockConfirmModal">
-      <div class="text-4xl font-bold" slot="header">
+      <div class="text-xl font-bold" slot="header">
         {{ $t("components.slugField.unlockConfirmModal.title") }}
       </div>
       <template #body>

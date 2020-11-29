@@ -13,14 +13,16 @@
         }"
       >
         <div class="p-6 flex items-center justify-between container mx-auto">
-          <slot name="header" />
+          <div class="flex-grow text-center">
+            <slot name="header" />
+          </div>
 
           <div
             v-if="!fullscreen"
             @click="close"
             class="font-bold cursor-pointer"
           >
-            <img width="30" src="/images/icon-close.svg" />
+            <img width="15" src="/images/icon-close.png" />
           </div>
         </div>
         <div class="p-6 overflow-y-auto">

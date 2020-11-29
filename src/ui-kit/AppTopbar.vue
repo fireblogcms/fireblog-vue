@@ -97,17 +97,16 @@
     <!-- GRAPHQL API DOCUMENTATION -->
     <AppModal name="graphQLApiModal">
       <div
-        class="flex flex-col md:flex-row items-center justify-between flex-1"
+        class="flex flex-col md:flex-row items-center justify-between"
         slot="header"
       >
-        <span class="text-4xl font-bold">API</span>
-        <AppButton
+        <span class="text-2xl font-bold">API</span>
+        <span
           @click="onOpenGraphQLExplorerClick"
-          color="primary"
-          size="small"
+          class="text-indigo-600 mr-5 font-bold cursor-pointer"
         >
           {{ $t("apiModal.openGraphQLExplorer") }}
-        </AppButton>
+        </span>
       </div>
       <div slot="body">
         <p class="text-lg font-bold">GraphQL endpoint</p>
@@ -136,7 +135,9 @@
                 :href="`${blogSetApiUrl}?query=${encodeURI(example.snippet)}`"
                 target="_blank"
               >
-                <span class="text-primary font-bold">
+                <span
+                  class="font-bold bg-primary text-white py-3 rounded px-5 shadow hover:bg-primary-darker transition-all"
+                >
                   {{ $t("apiModal.tryItButton") }}
                 </span>
               </a>
@@ -153,7 +154,7 @@
 
     <!-- CONTACT -->
     <AppModal name="contactModal">
-      <div class="text-4xl font-bold" slot="header">
+      <div class="text-2xl font-bold" slot="header">
         {{ $t("contactModal.title") }}
       </div>
       <div class="flex flex-col items-center" slot="body">
@@ -190,7 +191,7 @@
 
     <!-- FREE TRIAL ENDED -->
     <AppModal name="freeTrialEndedModal">
-      <div class="text-4xl font-bold" slot="header">
+      <div class="text-2xl font-bold" slot="header">
         {{ $t("freeTrialEndedModal.title") }}
       </div>
       <div class="flex flex-col items-center" slot="body">

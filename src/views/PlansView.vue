@@ -115,7 +115,7 @@
 
     <!-- CHANGE PLAN MODAL -->
     <AppModal name="changePlanModal">
-      <div class="text-4xl font-bold" slot="header">
+      <div class="text-2xl font-bold" slot="header">
         {{ $t("views.plans.changePlanModal.title") }}
       </div>
       <div class="flex flex-col items-center" slot="body">
@@ -141,7 +141,7 @@
 
     <!-- UNSUBSCRIBE MODAL -->
     <AppModal name="unsubscribeModal">
-      <div class="text-4xl font-bold" slot="header">
+      <div class="text-2xl font-bold" slot="header">
         {{ $t("views.plans.unsubscribeModal.title") }}
       </div>
       <div class="flex flex-col items-center" slot="body">

@@ -179,11 +179,6 @@
         class="flex flex-col md:flex-row items-center justify-end flex-1"
         slot="header"
       >
-        <!--
-        <span class="text-4xl font-bold">
-          {{ $t("views.postForm.advancedSettingsModal.title") }}
-        </span>
-        -->
         <div class="flex mt-8 md:mt-0">
           <!-- PUBLISH / PUBLISH CHANGES BUTTON -->
           <AppButton
@@ -222,7 +217,7 @@
 
     <!-- SUCCESS MODAL FOR FIRST PUBLICATION -->
     <AppModal name="publishingSuccessModal">
-      <div class="text-4xl font-bold" slot="header">
+      <div class="text-2xl font-bold" slot="header">
         {{ $t("views.postForm.firstPublicationHurralModal.title") }}
       </div>
       <div class="flex flex-col items-center" slot="body">
@@ -235,7 +230,7 @@
 
     <!-- SUCCESS MODAL WHEN PUBLISHING CHANGES ON ALREADY PUBLISHED POST -->
     <AppModal name="publishingChangesSuccessModal">
-      <div class="text-4xl font-bold" slot="header">
+      <div class="text-xl font-bold" slot="header">
         {{ $t("views.postForm.publishChangesHurralModal.title") }}
       </div>
       <div class="flex flex-col items-center" slot="body">

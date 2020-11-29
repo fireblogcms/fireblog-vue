@@ -29,7 +29,7 @@
             />
           </div>
           <div>
-            <p class="text-4xl font-bold">
+            <p class="text-2xl font-bold">
               {{ viewData.me.name }}
             </p>
             <p class="text-xl text-indigo-600">

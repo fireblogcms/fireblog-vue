@@ -135,7 +135,7 @@
 
     <!-- DELETE POST MODAL -->
     <AppModal name="deletePostModal" v-if="deleteModal.post">
-      <div class="text-4xl font-bold" slot="header">
+      <div class="text-2xl font-bold" slot="header">
         {{ deleteModal.title }}
       </div>
       <div class="flex flex-col items-center" slot="body">

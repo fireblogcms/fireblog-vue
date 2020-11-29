@@ -60,7 +60,7 @@
 
     <!-- PAYMENT SUCCESS MODAL -->
     <AppModal name="paymentSuccessModal">
-      <div class="text-4xl font-bold" slot="header">
+      <div class="text-2xl font-bold" slot="header">
         {{ $t("views.blogSetList.paymentSuccess") }}
       </div>
       <div class="flex flex-col items-center" slot="body">
@@ -79,7 +79,7 @@
 
     <!-- UNSUBSCRIBE SUCCESS MODAL -->
     <AppModal name="unsubscribeSuccessModal">
-      <div class="text-4xl font-bold" slot="header">
+      <div class="text-2xl font-bold" slot="header">
         {{ $t("views.blogSetList.unsubscribeSuccess") }}
       </div>
       <div class="flex flex-col items-center" slot="body">

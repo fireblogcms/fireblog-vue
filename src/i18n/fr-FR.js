@@ -35,7 +35,7 @@ export default {
   "global.draft": "Brouillon",
   "global.loading": "Loading",
   "global.published": "Publié",
-  "global.okayButton": "Ok !",
+  "global.okayButton": "OK !",
   "global.subscribeButton": "S'abonner",
   "global.subscription": "Abonnement",
   "global.unsubscribeButton": "Se désabonner",

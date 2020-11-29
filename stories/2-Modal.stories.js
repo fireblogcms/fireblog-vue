@@ -5,7 +5,7 @@ import store from "../src/store";
 
 export default {
   title: "Modal",
-  component: AppModal
+  component: AppModal,
 };
 
 export const Default = () => ({
@@ -14,7 +14,7 @@ export const Default = () => ({
   template: `<div>
       <AppButton color="primary" @click="$store.commit('modalShowing/open', 'storyModal')">Open modal</AppButton>
       <AppModal name="storyModal">
-        <div class="text-4xl font-bold" slot="header">
+        <div class="text-2xl font-bold" slot="header">
           Title of the modal
         </div>
         <div class="flex flex-col items-center" slot="body">
@@ -30,7 +30,7 @@ export const Default = () => ({
           </AppButton>
         </div>
       </AppModal>
-    </div>`
+    </div>`,
 });
 
 export const Fullscreen = () => ({
@@ -39,7 +39,7 @@ export const Fullscreen = () => ({
   template: `<div>
       <AppButton color="primary" @click="$store.commit('modalShowing/open', 'storyModal')">Open modal</AppButton>
       <AppModal name="storyModal" :fullscreen="true">
-        <div class="text-4xl font-bold" slot="header">
+        <div class="text-2xl font-bold" slot="header">
           Title of the modal
         </div>
         <div class="flex flex-col items-center" slot="body">
@@ -55,5 +55,5 @@ export const Fullscreen = () => ({
           </AppButton>
         </div>
       </AppModal>
-    </div>`
+    </div>`,
 });
