@@ -13,7 +13,7 @@ export default {
   props: {
     image: {
       type: String,
-      required: true,
+      required: false,
     },
     routerOptions: {
       type: Object,

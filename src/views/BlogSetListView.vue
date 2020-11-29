@@ -46,9 +46,20 @@
             <div
               :key="blog._id"
               v-for="blog in blogSet.blogs"
-              class=" mx-auto w-2/3 py-2 px-0 md:px-2"
+              class="w-full sm:w-full md:w-1/2 lg:w-1/3 py-2 px-0 md:px-2"
             >
               <BlogCard :blogSet="blogSet" :blog="blog" />
+            </div>
+            <!-- create a blog big + button -->
+            <div
+              @click="onCreateNewBlogClick(blogSet)"
+              class="h-320 w-full sm:w-full md:w-1/2 lg:w-1/3 px-0 md:px-2"
+            >
+              <div
+                class="cursor-pointer rounded-lg hover:bg-gray-300 bg-gray-200 text-center py-2"
+              >
+                <span style="font-size:200px">+</span>
+              </div>
             </div>
           </div>
         </div>
