@@ -1,6 +1,6 @@
 <template>
   <div class="relative h-20 z-20 bg-white" :class="`route-${$route.name}`">
-    <div class="h-full flex justify-between px-2 md:px-10 py-4">
+    <div class="h-full flex justify-between px-3 py-4 container mx-auto">
       <div class="flex items-center">
         <!--
         <img

@@ -101,13 +101,15 @@
             </div>
           </div>
         </div>
-        <AppButton
-          size="small"
-          class="self-center mt-6 md:mt-0"
-          @click="onDeleteClick(post.node)"
-        >
-          {{ $t("views.postList.deleteButton") }}
-        </AppButton>
+        <div class="flex justify-end">
+          <AppButton
+            size="small"
+            class="mt-6 md:mt-0"
+            @click="onDeleteClick(post.node)"
+          >
+            {{ $t("views.postList.deleteButton") }}
+          </AppButton>
+        </div>
       </div>
     </template>
   </div>

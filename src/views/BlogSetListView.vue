@@ -4,17 +4,28 @@
       <div class="container mx-auto my-10">
         <div v-for="blogSet in viewData.blogSets" :key="blogSet._id">
           <div
-            class="flex flex-col mb-4 md:mb-10 justify-between px-3 items-center"
+            class="flex flex-col md:flex-row justify-between px-5 items-center"
           >
+            <!-- PAGE TITLE -->
             <div>
               <h1 class="text-xl font-bold uppercase mb-4">
                 {{ $t("views.blogSetList.title") }}
               </h1>
-              <!--
-                <PlanInformations :blogSet="blogSet" />
-                -->
             </div>
+            <!-- BUTTONS -->
             <div>
+              <AppButton
+                color=""
+                class="mb-2 mr-2"
+                @click="
+                  $router.push({
+                    name: 'plans',
+                    params: { blogSetId: blogSet._id },
+                  })
+                "
+              >
+                <span class="text-sm uppercase md:text-lg">Abonnement</span>
+              </AppButton>
               <AppButton
                 color="primary"
                 class="mb-2"
@@ -24,9 +35,13 @@
               </AppButton>
             </div>
           </div>
+          <!-- consommation -->
+          <div class="px-5 hidden md:block mt-5">
+            <PlanInformations :blogSet="blogSet" />
+          </div>
           <div
             v-if="blogSet.blogs.length > 0"
-            class="flex flex-wrap items-center px-3"
+            class="flex flex-wrap items-center px-3 mt-5"
           >
             <div
               :key="blog._id"

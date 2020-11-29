@@ -1,8 +1,9 @@
 <template>
   <div>
+    <!--
     <ContentLoader
       class="md:hidden"
-      :height="170"
+      :height="50"
       v-if="!plan || !resourcesUseData"
     >
       <rect x="0" y="0" rx="100%" ry="100%" width="9%" height="23%" />
@@ -24,8 +25,12 @@
       <rect x="125" y="10%" rx="2" ry="2" width="90" height="24%" />
       <rect x="125" y="60%" rx="2" ry="2" width="70" height="24%" />
     </ContentLoader>
+    -->
     <!-- v-show necessary and not v-if to instantiate ResourcesUse and get onViewData event -->
-    <div class="flex flex-col md:flex-row md:items-center" v-show="plan && resourcesUseData">
+    <div
+      class="flex flex-col md:flex-row md:items-center"
+      v-show="plan && resourcesUseData"
+    >
       <ResourcesUse
         v-if="plan"
         :blogSetId="blogSet._id"
@@ -33,33 +38,6 @@
         :sizePerMonth="plan.metadata.STORAGE_GB"
         @onViewData="resourcesUseData = true"
       />
-      <div class="flex flex-col mt-2 md:mt-0 md:ml-10" v-if="plan">
-        <div class="font-bold mb-1 md:mb-3">
-          <span>
-            {{ $t("components.planInformations.name") }}
-            {{ plan.productName }}
-          </span>
-          <span v-if="blogSet.subscription.trialEnd">
-            ({{ $t("components.planInformations.freeTrial") }}
-            {{ blogSet.subscription.numberDaysLeftTrial }}
-            {{ $t("components.planInformations.daysLeftTrial") }})
-          </span>
-        </div>
-        <router-link
-          class="text-primary font-bold"
-          :to="{
-            name: 'plans',
-            params: { blogSetId: blogSet._id },
-          }"
-        >
-          <template v-if="blogSet.subscription.status === 'ACTIVE'">
-            {{ $t("global.changePlanButton") }}
-          </template>
-          <template v-if="blogSet.subscription.status !== 'ACTIVE'">
-            {{ $t("global.subscribeButton") }}
-          </template>
-        </router-link>
-      </div>
     </div>
   </div>
 </template>
@@ -72,7 +50,7 @@ import { ContentLoader } from "vue-content-loader";
 export default {
   components: {
     ContentLoader,
-    ResourcesUse
+    ResourcesUse,
   },
   props: {
     blogSet: {
@@ -92,7 +70,7 @@ export default {
   methods: {
     async fetchData() {
       this.plan = await getPlan(this.blogSet.subscription.planId);
-    }
+    },
   },
 };
 </script>

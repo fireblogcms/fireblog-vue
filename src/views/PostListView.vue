@@ -35,10 +35,12 @@
                 })
               "
             >
+              <!--
               <img
                 class="w-8 hidden md:inline"
                 src="/images/icon-settings.svg"
               />
+              -->
               <span class="text-sm md:text-xl">
                 {{ $t("views.blogList.settingsButton").toUpperCase() }}
               </span>

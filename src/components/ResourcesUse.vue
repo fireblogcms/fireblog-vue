@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-col" v-if="resourcesUse">
-    <div class="flex items-center mt-2 md:mt-0">
+  <div class="flex flex-row" v-if="resourcesUse">
+    <div class="flex items-center md:mt-0 mr-4">
       <div class="flex w-8 h-8 mr-3">
         <div class="w-full">
           <svg viewBox="0 0 36 36">
