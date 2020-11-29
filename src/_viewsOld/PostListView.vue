@@ -13,18 +13,17 @@
     <AppLoader v-if="viewDataLoading" />
 
     <template v-if="viewData">
-      <div class="container mx-auto my-10 px-2">
+      <div class="container mx-auto my-10">
         <div class="flex flex-col md:flex-row justify-between">
-          <div class="flex-1 flex items-top md:mb-0">
-            <h1 class="text-2xl md:text-4xl font-bold uppercase mb-4">
+          <div class="flex-1 flex items-center mb-8 md:mb-0">
+            <h1 class="text-2xl md:text-4xl font-bold uppercase">
+              <img class="w-10 h-10 mr-4 inline" src="/images/book.png" />
               {{ viewData.blog.name }}
             </h1>
           </div>
-          <div
-            class="flex flex-row-reverse justify-end md:flex-row md:justify-end items-center"
-          >
+          <div class="flex flex-col md:flex-row items-center">
             <AppButton
-              class="mr-4"
+              class="mb-4 md:mb-0 md:mr-4"
               @click="
                 $router.push({
                   name: 'blogSettings',
@@ -35,23 +34,17 @@
                 })
               "
             >
-              <img
-                class="w-8 hidden md:inline"
-                src="/images/icon-settings.svg"
-              />
-              <span class="text-sm md:text-xl">
+              <img class="w-8 mr-2" src="/images/icon-settings.svg" />
+              <span>
                 {{ $t("views.blogList.settingsButton").toUpperCase() }}
               </span>
             </AppButton>
             <AppButton
-              class="mr-4 md:mr-0"
               v-if="!isFirstPost"
               color="primary"
               @click="onWriteNewPostClick"
             >
-              <span class="text-sm md:text-xl">
-                {{ $t("views.postList.writeNewPostButton").toUpperCase() }}
-              </span>
+              {{ $t("views.postList.writeNewPostButton").toUpperCase() }}
             </AppButton>
           </div>
         </div>
@@ -77,56 +70,54 @@
       </AppPanel>
 
       <template v-if="!isFirstPost">
-        <div class="container mx-auto px-2">
-          <ul class="flex">
-            <li
-              class="rounded-t-lg cursor-pointer relative"
-              @click="onStatusClick('PUBLISHED')"
-              :class="{
-                'bg-white shadow': activeStatus == 'PUBLISHED',
-              }"
-            >
-              <div class="flex items-center py-4 px-4 md:px-10 text-xl">
-                <span>{{ $t("views.postList.publishedTab") }}</span>
-                <div
-                  class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-100 text-sm"
-                >
-                  {{ viewData.postsPublished.totalCount }}
-                </div>
-              </div>
-              <div class="shadow-mask" v-show="activeStatus == 'PUBLISHED'" />
-            </li>
-            <li
-              class="rounded-t-lg cursor-pointer relative"
-              @click="onStatusClick('DRAFT')"
-              :class="{ 'bg-white shadow': activeStatus == 'DRAFT' }"
-            >
-              <div class="flex items-center py-4 px-4 md:px-10 text-xl">
-                <span>{{ $t("views.postList.draftTab") }}</span>
-                <div
-                  class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-100 text-sm"
-                >
-                  {{ viewData.postsDraft.totalCount }}
-                </div>
-              </div>
-              <div class="shadow-mask" v-show="activeStatus == 'DRAFT'" />
-            </li>
-          </ul>
-
-          <div
-            class="container mx-auto mb-20 py-6 px-4 md:px-10 bg-white shadow rounded-lg"
+        <ul class="container mx-auto flex">
+          <li
+            class="rounded-t-lg cursor-pointer relative"
+            @click="onStatusClick('PUBLISHED')"
+            :class="{
+              'bg-white shadow': activeStatus == 'PUBLISHED',
+            }"
           >
-            <PostList
-              @onDeleteClick="onDeleteClick"
-              v-show="activeStatus === 'PUBLISHED'"
-              :posts="viewData.postsPublished"
-            />
-            <PostList
-              @onDeleteClick="onDeleteClick"
-              v-show="activeStatus === 'DRAFT'"
-              :posts="viewData.postsDraft"
-            />
-          </div>
+            <div class="flex items-center py-4 px-4 md:px-10 text-xl">
+              <span>{{ $t("views.postList.publishedTab") }}</span>
+              <div
+                class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-100 text-sm"
+              >
+                {{ viewData.postsPublished.totalCount }}
+              </div>
+            </div>
+            <div class="shadow-mask" v-show="activeStatus == 'PUBLISHED'" />
+          </li>
+          <li
+            class="rounded-t-lg cursor-pointer relative"
+            @click="onStatusClick('DRAFT')"
+            :class="{ 'bg-white shadow': activeStatus == 'DRAFT' }"
+          >
+            <div class="flex items-center py-4 px-4 md:px-10 text-xl">
+              <span>{{ $t("views.postList.draftTab") }}</span>
+              <div
+                class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-100 text-sm"
+              >
+                {{ viewData.postsDraft.totalCount }}
+              </div>
+            </div>
+            <div class="shadow-mask" v-show="activeStatus == 'DRAFT'" />
+          </li>
+        </ul>
+
+        <div
+          class="container mx-auto mb-20 py-6 px-4 md:px-10 bg-white shadow rounded-lg"
+        >
+          <PostList
+            @onDeleteClick="onDeleteClick"
+            v-show="activeStatus === 'PUBLISHED'"
+            :posts="viewData.postsPublished"
+          />
+          <PostList
+            @onDeleteClick="onDeleteClick"
+            v-show="activeStatus === 'DRAFT'"
+            :posts="viewData.postsDraft"
+          />
         </div>
       </template>
     </template>
@@ -331,9 +322,6 @@ function viewDataQuery({ blogSetId, blogId }) {
         blog(_id: $blogId) {
           _id
           name
-          image {
-            url
-          }
           deletedAt
         }
         allPosts: posts(blog: $blogId, filter: { status: [PUBLISHED, DRAFT] }) {

@@ -54,14 +54,23 @@
             class="w-40 mr-10 rounded bg-center bg-no-repeat bg-cover"
           ></div>
           <div>
+            <p class="text-3xl font-bold">
+              {{ post.node.title }}
+            </p>
             <p
-              class="text-xs uppercase text-gray-600"
+              class="text-sm italic text-gray-600"
               v-if="post.node.status === 'PUBLISHED'"
             >
-              {{ publishedOnDate(post) }}
-            </p>
-            <p class="text-xl md:text-3xl font-bold">
-              {{ post.node.title }}
+              {{
+                $t("views.postList.publishedOn", {
+                  date: publishedOnDate(post),
+                })
+              }} /
+              {{
+                $t("views.postList.updatedOn", {
+                  date: updatedOnDate(post),
+                })
+              }}
             </p>
             <p
               class="text-sm italic text-gray-600"
@@ -73,30 +82,21 @@
                 })
               }}
             </p>
-            <!--
             <p class="text-sm italic text-gray-600">
-              {{ $t("views.postList.readingTime") }} :
-              {{ post.node.readingTime }} min
-            </p>
-            -->
-
-            <p class="text-gray-600">
+              {{$t("views.postList.readingTime")}} : {{ post.node.readingTime }} min </p>
+            <p class="mt-4">
               {{
                 striptags(
                   post.node.teaser.trim()
-                    ? post.node.teaser.substring(0, 100) + "..."
-                    : post.node.content.substring(0, 100) + "..."
+                    ? post.node.teaser
+                    : post.node.content.substring(0, 250)
                 )
               }}
             </p>
 
             <div class="mt-3">
-              <span
-                :key="tag.name"
-                v-for="tag in post.node.tags"
-                class="bg-gray-200 shadow-sm rounded text-current p-2 mr-1"
-              >
-                {{ tag.name }}
+              <span :key="tag.name" v-for="tag in post.node.tags" class="bg-gray-200 shadow-sm rounded text-current p-2 mr-1">
+                {{ tag.name }} 
               </span>
             </div>
           </div>
@@ -133,7 +133,7 @@ export default {
   },
   methods: {
     publishedOnDate(item) {
-      return formatDate(new Date(item.node.publishedAt), "ddMyyyyhhmm");
+      return formatDate(new Date(item.node.publishedAt), "long");
     },
     updatedOnDate(item) {
       return formatDate(new Date(item.node.updatedAt), "long");

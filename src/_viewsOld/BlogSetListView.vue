@@ -4,37 +4,39 @@
       <div class="container mx-auto my-10">
         <div v-for="blogSet in viewData.blogSets" :key="blogSet._id">
           <div
-            class="flex flex-col mb-4 md:mb-10 justify-between px-3 items-center"
+            class="flex flex-col md:flex-row justify-between items-center md:items-start mb-20"
           >
-            <div>
-              <h1 class="text-xl font-bold uppercase mb-4">
-                {{ $t("views.blogSetList.title") }}
-              </h1>
-              <!--
+            <div class="flex mb-12 md:mb-0">
+              <img
+                class="w-8 h-8 mr-4 md:w-16 md:h-16 md:mr-10"
+                src="/images/books.png"
+              />
+              <div>
+                <h1 class="text-xl md:text-4xl font-bold uppercase mb-2">
+                  {{ $t("views.blogSetList.title") }}
+                </h1>
                 <PlanInformations :blogSet="blogSet" />
-                -->
+              </div>
             </div>
-            <div>
-              <AppButton
-                color="primary"
-                class="mb-2"
-                @click="onCreateNewBlogClick(blogSet)"
-              >
-                <span class="text-sm uppercase md:text-lg">Nouveau blog</span>
-              </AppButton>
-            </div>
+            <AppButton
+              color="primary"
+              class="mb-2"
+              @click="onCreateNewBlogClick(blogSet)"
+            >
+              {{ $t("views.blogList.createNewBlogButton").toUpperCase() }}
+            </AppButton>
           </div>
           <div
             v-if="blogSet.blogs.length > 0"
-            class="flex flex-wrap items-center px-3"
+            class="flex flex-col items-center"
           >
-            <div
-              :key="blog._id"
+            <BlogCard
               v-for="blog in blogSet.blogs"
-              class="w-full sm:w-full md:w-1/2 lg:w-1/3 py-2 px-0 md:px-2"
-            >
-              <BlogCard :blogSet="blogSet" :blog="blog" />
-            </div>
+              :blogSet="blogSet"
+              :blog="blog"
+              :key="blog._id"
+              class="w-full md:w-3/5 mb-16"
+            />
           </div>
         </div>
       </div>

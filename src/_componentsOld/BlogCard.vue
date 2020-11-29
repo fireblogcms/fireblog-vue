@@ -4,7 +4,7 @@
       class="h-full flex items-center cursor-pointer"
       @click="onCardImageClick(blog)"
     >
-      <div class="w-full text-center text-white bg-blackOpacity50">
+      <div class="w-full text-center text-white py-2 bg-blackOpacity50">
         <p class="text-3xl font-bold">{{ blog.name }}</p>
         <p class="text-xl italic" v-if="blog.description">
           {{ blog.description }}
