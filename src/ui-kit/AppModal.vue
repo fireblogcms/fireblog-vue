@@ -34,12 +34,7 @@
 </template>
 
 <script>
-import AppButton from "@/ui-kit/AppButton";
-
 export default {
-  components: {
-    AppButton,
-  },
   props: {
     fullscreen: {
       type: Boolean,
