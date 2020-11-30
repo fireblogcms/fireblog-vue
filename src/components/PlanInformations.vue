@@ -33,11 +33,11 @@
         <div class="mb-5 font-bold text-xl">
           {{ $t("components.planInformations.name") }}
           {{ plan.productName }}
-        </div>
-        <div v-if="blogSet.subscription.status === 'TRIAL'">
-          ({{ $t("components.planInformations.freeTrial") }}
-          {{ blogSet.subscription.numberDaysLeftTrial }}
-          {{ $t("components.planInformations.daysLeftTrial") }})
+          <span v-if="blogSet.subscription.status === 'TRIAL'">
+            ({{ $t("components.planInformations.freeTrial") }}
+            {{ blogSet.subscription.numberDaysLeftTrial }}
+            {{ $t("components.planInformations.daysLeftTrial") }})
+          </span>
         </div>
       </div>
       <ResourcesUse
