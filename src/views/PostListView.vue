@@ -218,7 +218,7 @@ export default {
   },
   watch: {
     $route: function(value) {
-      viewData();
+      this.fetchData();
     },
   },
   beforeRouteEnter(to, from, next) {
