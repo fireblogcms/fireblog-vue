@@ -54,7 +54,7 @@
             class="w-40 mr-10 rounded bg-center bg-no-repeat bg-cover"
           ></div>
           <div>
-            <p class="text-xl md:text-3xl font-bold text-gray-800">
+            <p class="text-xl md:text-2xl font-bold text-gray-800">
               {{ post.node.title }}
             </p>
 
