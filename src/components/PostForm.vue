@@ -123,7 +123,7 @@
         >
           <form @submit.prevent class="bg-white">
             <textarea-autosize
-              class="w-full text-5xl font-serif outline-none"
+              class="w-full text-5xl font-serif outline-none leading-tight"
               maxlength="250"
               @keydown.enter.native.prevent="onTitleEnter"
               autofocus
