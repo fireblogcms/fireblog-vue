@@ -12,15 +12,13 @@
 
     <AppLoader v-if="initDataState === 'PENDING'" />
 
-    <div class="max-w-4xl mx-auto">
+    <div v-if="initDataState !== 'PENDING'" class="max-w-4xl mx-auto">
       <h1 class="md:text-2xl text-xl font-bold uppercase mb-4 px-5 mt-10">
         {{ $t("topbar.accountMenu.myAccount") }}
       </h1>
 
-      <AppPanel v-if="initDataState === 'FINISHED_OK'">
-        <div
-          class="flex flex-row flex-row-reverse items-center justify-between"
-        >
+      <AppPanel>
+        <div class="flex flex-row-reverse items-center justify-between">
           <div>
             <img
               class="w-32 h-32 rounded-full shadow"

@@ -10,9 +10,9 @@
     </portal>
     <!-- END TOPBAR LEFT BUTTONS -->
 
-    <AppLoader v-if="viewDataLoading" />
+    <AppLoader v-if="viewDataState === 'PENDING'" />
 
-    <template v-if="viewData">
+    <template v-if="viewDataState !== 'PENDING'">
       <div class="container mx-auto my-10 px-2">
         <div class="flex flex-col md:flex-row justify-between">
           <div class="flex-1 flex items-top md:mb-0">
@@ -197,7 +197,7 @@ export default {
   data() {
     return {
       viewData: null,
-      viewDataLoading: false,
+      viewDataState: "NOT_STARTED",
       deletePostRequestState: REQUEST_STATE.NOT_STARTED,
       deleteModal: {
         title: null,
@@ -213,7 +213,6 @@ export default {
     this.striptags = striptags;
   },
   mounted() {
-    this.viewDataLoading = true;
     this.fetchData();
   },
   watch: {
@@ -236,7 +235,7 @@ export default {
   },
   methods: {
     fetchData() {
-      this.viewDataLoading = true;
+      this.viewDataState = "PENDING";
       viewDataQuery({
         blogSetId: this.$route.params.blogSetId,
         blogId: this.$route.params.blogId,
@@ -245,10 +244,10 @@ export default {
           this.viewData = r.data;
           this.isFirstPost =
             this.viewData.allPosts.totalCount === 0 ? true : false;
-          this.viewDataLoading = false;
+          this.viewDataState = "FINISHED_OK";
         })
         .catch(error => {
-          this.viewDataLoading = false;
+          this.viewDataState = "FINISHED_ERROR";
           throw new Error(error);
         });
     },
