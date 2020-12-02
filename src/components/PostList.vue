@@ -58,7 +58,7 @@
               {{ post.node.title }}
             </p>
 
-            <p class="text-gray-600 mb-2">
+            <p class="text-gray-700 mb-2">
               {{
                 striptags(
                   post.node.teaser.trim()
@@ -67,27 +67,32 @@
                 )
               }}
             </p>
-            <p
-              class="text-xs uppercase text-indigo-600"
-              v-if="post.node.status === 'DRAFT'"
-            >
-              {{
-                $t("views.postList.updatedOn", {
-                  date: updatedOnDate(post),
-                })
-              }}
-              - {{ $t("views.postList.readingTime") }} :{{
-                post.node.readingTime
-              }}
-              min
+            <p class="text-xs uppercase" v-if="post.node.status === 'DRAFT'">
+              <span class="text-indigo-700">
+                {{
+                  $t("views.postList.updatedOn", {
+                    date: updatedOnDate(post),
+                  })
+                }}
+              </span>
+              -
+              <span class="text-gray-600"
+                >{{ $t("views.postList.readingTime") }} :{{
+                  post.node.readingTime
+                }}
+                min
+              </span>
             </p>
             <p
               class="text-xs uppercase text-indigo-600"
               v-if="post.node.status === 'PUBLISHED'"
             >
-              {{ publishedOnDate(post) }} -
-              {{ $t("views.postList.readingTime") }} :
-              {{ post.node.readingTime }} min
+              <span class="text-indigo-700"> {{ publishedOnDate(post) }}</span>
+              -
+              <span class="text-gray-600">
+                {{ $t("views.postList.readingTime") }} :
+                {{ post.node.readingTime }} min
+              </span>
             </p>
 
             <div class="mt-3">
