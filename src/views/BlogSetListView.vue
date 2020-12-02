@@ -138,7 +138,6 @@ export default {
           query: { first: 1 },
         });
       } else {
-        console.log("data", response.data);
         this.viewData = response.data;
       }
     });

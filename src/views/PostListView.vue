@@ -12,7 +12,7 @@
 
     <AppLoader v-if="viewDataState === 'PENDING'" />
 
-    <template v-if="viewDataState !== 'PENDING'">
+    <template v-if="viewDataState === 'FINISHED_OK'">
       <div class="container mx-auto my-10 px-2">
         <div class="flex flex-col md:flex-row justify-between">
           <div class="flex-1 flex items-top md:mb-0">
