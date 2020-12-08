@@ -1,5 +1,5 @@
 <template>
-  <div id="default-layout" class="flex flex-col">
+  <div :style="style" class="flex flex-col min-h-screen">
     <AppTopbar v-show="isTopbarVisible()" />
     <div class="flex-1">
       <slot />
@@ -18,6 +18,13 @@ export default {
     isTopbarVisible() {
       const hideForRoutes = ["auth0Callback"];
       return !hideForRoutes.includes(this.$route.name);
+    },
+  },
+  computed: {
+    style() {
+      return {
+        background: `center / cover url("/illustrations/landscape-3.jpg")`,
+      };
     },
   },
 };

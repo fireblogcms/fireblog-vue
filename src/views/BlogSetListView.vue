@@ -4,12 +4,18 @@
       <div class="container mx-auto mt-10">
         <div class="">
           <!-- BLOGSET TITLE -->
-          <div v-for="blogSet in viewData.blogSets" :key="blogSet._id">
+          <div
+            class="bg-white shadow-2xl p-10 rounded-xl m-5"
+            v-for="blogSet in viewData.blogSets"
+            :key="blogSet._id"
+          >
             <div
-              class="flex flex-col md:flex-row justify-between px-5 items-center"
+              class="flex flex-col md:flex-row justify-between items-center mb-5"
             >
               <div>
-                <h1 class="md:text-2xl text-xl font-bold uppercase mb-4">
+                <h1
+                  class="md:text-2xl text-xl font-bold uppercase text-primary"
+                >
                   {{ $t("views.blogSetList.title") }}
                 </h1>
               </div>
@@ -27,7 +33,7 @@
               </div>
             </div>
 
-            <div class="bg-white shadow p-5 rounded m-5">
+            <div class="">
               <div
                 v-if="blogSet.blogs.length > 0"
                 class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5"
@@ -134,7 +140,7 @@ export default {
       if (response.data.blogSets[0].blogs.length === 0) {
         this.$router.replace({
           name: "blogCreate",
-          params: { blogSetId: response.data.blogSets[0]._id },
+          params: { spaceId: response.data.blogSets[0]._id },
           query: { first: 1 },
         });
       } else {
@@ -150,7 +156,7 @@ export default {
       ) {
         this.$router.push({
           name: "blogCreate",
-          params: { blogSetId: blogSet._id },
+          params: { spaceId: blogSet._id },
         });
       } else {
         this.$store.commit("modalShowing/open", "freeTrialEndedModal");

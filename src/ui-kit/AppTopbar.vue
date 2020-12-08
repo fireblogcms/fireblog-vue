@@ -1,6 +1,6 @@
 <template>
-  <div class="relative h-20 z-20 bg-white" :class="`route-${$route.name}`">
-    <div class="h-full flex justify-between px-3 py-4 container mx-auto">
+  <div class="relative z-20 bg-white" :class="`route-${$route.name}`">
+    <div class="h-full flex justify-between px-3 py-2 container mx-auto">
       <div class="flex items-center">
         <!--
         <img
@@ -70,7 +70,7 @@
               :key="edge.node._id"
               :to="{
                 name: 'postList',
-                params: { blogId: edge.node._id, blogSetId: edge.node.blogSet },
+                params: { blogId: edge.node._id, spaceId: edge.node.blogSet },
               }"
               class="px-4 py-2 hover:bg-gray-100"
             >
@@ -298,8 +298,8 @@ export default {
           this.me = response.data.me;
           // we can have only one blogset for now
           this.blogSet = response.data.blogSets[0];
-          const blogSetId = this.$route.params.blogSetId || this.blogSet._id;
-          this.blogSetApiUrl = `${process.env.VUE_APP_GRAPHQL_BLOGSET_BASE_URL}/${blogSetId}`;
+          const spaceId = this.$route.params.spaceId || this.blogSet._id;
+          this.blogSetApiUrl = `${process.env.VUE_APP_GRAPHQL_BLOGSET_BASE_URL}/${spaceId}`;
         })
         .catch(error => {
           toast(this, error, "error");
@@ -352,7 +352,7 @@ export default {
     onCheckOutPlansClick() {
       this.$router.push({
         name: "plans",
-        params: { blogSetId: this.$route.params.blogSetId || this.blogSet._id },
+        params: { spaceId: this.$route.params.spaceId || this.blogSet._id },
       });
       this.$store.commit("modalShowing/close", "freeTrialEndedModal");
     },

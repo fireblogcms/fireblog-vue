@@ -40,8 +40,8 @@ export default {
       this.$router.push({
         name: "postList",
         params: {
-          blogSetId: this.blogSet._id,
-          blogId: blog._id,
+          spaceId: this.blogSet._id,
+          podId: blog._id,
         },
       });
     },

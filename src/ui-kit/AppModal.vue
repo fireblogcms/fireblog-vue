@@ -1,12 +1,12 @@
 <template>
-  <div v-show="showing">
+  <div v-show="showing" class="">
     <div class="z-30 fixed inset-0 w-full h-screen bg-white opacity-90"></div>
     <div
       class="z-30 fixed inset-0 w-full h-screen flex items-center justify-center"
       @click.self="close"
     >
       <div
-        class="flex flex-col bg-white"
+        class="flex flex-col bg-white animate__animated animate__fadeInUpBig animate__faster"
         :class="{
           'w-11/12 md:w-1/2 max-h-9/10 shadow-around rounded-lg': !fullscreen,
           'w-full h-screen': fullscreen,

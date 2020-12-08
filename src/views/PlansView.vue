@@ -219,10 +219,10 @@ export default {
           ...(user.customerId && {
             customerId: user.customerId,
           }),
-          blogSetId: this.$route.params.blogSetId,
+          spaceId: this.$route.params.spaceId,
           planId: plan.id,
           successUrl: `${process.env.VUE_APP_BASE_URL}`,
-          cancelUrl: `${process.env.VUE_APP_BASE_URL}/blogset/${this.$route.params.blogSetId}/plans`,
+          cancelUrl: `${process.env.VUE_APP_BASE_URL}/blogset/${this.$route.params.spaceId}/plans`,
         });
         stripe
           .redirectToCheckout({
@@ -252,7 +252,7 @@ export default {
         .mutate({
           variables: {
             blogSet: {
-              _id: this.$route.params.blogSetId,
+              _id: this.$route.params.spaceId,
               subscription,
             },
           },
@@ -283,7 +283,7 @@ export default {
         .mutate({
           variables: {
             blogSet: {
-              _id: this.$route.params.blogSetId,
+              _id: this.$route.params.spaceId,
               subscription: this.blogSet.subscription,
             },
             deleteSubscription: true,
@@ -322,11 +322,11 @@ export default {
       apolloClient
         .query({
           variables: {
-            blogSetId: this.$route.params.blogSetId,
+            spaceId: this.$route.params.spaceId,
           },
           query: gql`
-            query blogSet($blogSetId: ID!) {
-              blogSet(_id: $blogSetId) {
+            query blogSet($spaceId: ID!) {
+              blogSet(_id: $spaceId) {
                 _id
                 name
                 subscription {

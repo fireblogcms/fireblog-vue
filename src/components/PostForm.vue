@@ -5,7 +5,7 @@
       <AppBreadcrumb
         :routerOptions="{
           name: 'postList',
-          params: { blogSetId: $route.params.blogSetId },
+          params: { spaceId: $route.params.spaceId },
         }"
         :name="$t('views.postForm.backToBlogLink')"
       />
@@ -119,7 +119,7 @@
     <div v-if="!loadingAsyncData">
       <div class="container mx-auto pt-10 pb-16 flex flex-col items-center">
         <div
-          class="w-full max-w-850 p-12 border border-gray-200 rounded bg-white"
+          class="p-16 w-full max-w-900 border border-gray-200 rounded bg-white"
         >
           <form @submit.prevent class="bg-white">
             <textarea-autosize
@@ -565,8 +565,8 @@ export default {
     },
     getSubscription() {
       const query = gql`
-        query blogSetQuery($blogSetId: ID!) {
-          blogSet(_id: $blogSetId) {
+        query blogSetQuery($spaceId: ID!) {
+          blogSet(_id: $spaceId) {
             subscription {
               id
               planId
@@ -580,7 +580,7 @@ export default {
         .query({
           query,
           variables: {
-            blogSetId: this.$route.params.blogSetId,
+            spaceId: this.$route.params.spaceId,
           },
         })
         .then(result => {
@@ -592,7 +592,7 @@ export default {
       return apolloClient
         .query({
           variables: {
-            blogSetId: this.$route.params.blogSetId,
+            spaceId: this.$route.params.spaceId,
             postId: id,
           },
           query: gql`

@@ -84,32 +84,32 @@ const router = new Router({
       },
     },
     {
-      path: "/blogset/:blogSetId/blog/create",
+      path: "/space/:spaceId/pod/create",
       name: "blogCreate",
       component: BlogCreateView,
     },
     {
-      path: "/blogset/:blogSetId/blog/:blogId",
+      path: "/space/:spaceId/pod/:podId",
       name: "postList",
       component: PostListView,
     },
     {
-      path: "/blogset/:blogSetId/blog/:blogId/settings",
+      path: "/space/:spaceId/pod/:podId/settings",
       name: "blogSettings",
       component: BlogSettingsView,
     },
     {
-      path: "/blogset/:blogSetId/blog/:blogId/post/create",
+      path: "/space/:spaceId/pod/:podId/post/create",
       name: "postCreate",
       component: PostFormView,
     },
     {
-      path: "/blogset/:blogSetId/blog/:blogId/post/:postId",
+      path: "/space/:spaceId/pod/:podId/post/:postId",
       name: "postUpdate",
       component: PostFormView,
     },
     {
-      path: "/blogset/:blogSetId/plans",
+      path: "/space/:spaceId/plans",
       name: "plans",
       component: PlansView,
     },

@@ -33,21 +33,21 @@
 
     <template v-if="posts.edges.length > 0">
       <div
-        class="py-4 md:py-6 flex flex-col md:flex-row cursor-pointer border-b border-gray-300 last:border-b-0"
+        class="py-4 md:py-6 flex flex-col md:flex-row cursor-pointer border-b border-gray-200 last:border-b-0"
         v-for="post in posts.edges"
         :key="post.node._id"
         @click="
           $router.push({
             name: 'postUpdate',
             params: {
-              blogSetId: $route.params.blogSetId,
+              spaceId: $route.params.spaceId,
               blogId: $route.params.blogId,
               postId: post.node._id,
             },
           })
         "
       >
-        <div class="flex flex-1 mr-2">
+        <div class="flex flex-1 md:mr-10">
           <div
             v-show="post.node.image"
             v-lazy:background-image="post.node.image"
@@ -58,14 +58,8 @@
               {{ post.node.title }}
             </p>
 
-            <p class="text-gray-700 mb-2">
-              {{
-                striptags(
-                  post.node.teaser.trim()
-                    ? post.node.teaser.substring(0, 100) + "..."
-                    : post.node.content.substring(0, 100) + "..."
-                )
-              }}
+            <p class="text-gray-700 mb-4">
+              {{ teaser(post) }}
             </p>
             <p class="text-xs uppercase" v-if="post.node.status === 'DRAFT'">
               <span class="text-indigo-700">
@@ -139,6 +133,13 @@ export default {
     this.striptags = striptags;
   },
   methods: {
+    teaser(post) {
+      return striptags(
+        post.node.teaser.trim()
+          ? post.node.teaser.substring(0, 250) + "..."
+          : post.node.content.substring(0, 250) + "..."
+      );
+    },
     publishedOnDate(item) {
       return formatDate(new Date(item.node.publishedAt), "ddMyyyyhhmm");
     },

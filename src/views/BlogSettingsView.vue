@@ -6,7 +6,7 @@
         image="/images/book.png"
         :routerOptions="{
           name: 'postList',
-          params: { blogSetId: $route.params.blogSetId },
+          params: { spaceId: $route.params.spaceId },
         }"
         :name="$t('views.postForm.backToBlogLink')"
       />

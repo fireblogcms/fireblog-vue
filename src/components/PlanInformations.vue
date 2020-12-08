@@ -45,7 +45,7 @@
       </div>
       <ResourcesUse
         v-if="plan"
-        :blogSetId="blogSet._id"
+        :spaceId="blogSet._id"
         :callsPerMonth="plan.metadata.API_CALLS_MONTH"
         :sizePerMonth="plan.metadata.STORAGE_GB"
         @onViewData="resourcesUseData = true"
@@ -58,7 +58,7 @@
         @click="
           $router.push({
             name: 'plans',
-            params: { blogSetId: blogSet._id },
+            params: { spaceId: blogSet._id },
           })
         "
       >

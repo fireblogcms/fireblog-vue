@@ -72,7 +72,7 @@ import { getBlogResourcesUseQuery } from "@/utils/queries";
 
 export default {
   props: {
-    blogSetId: {
+    spaceId: {
       type: String,
       required: true,
     },
@@ -105,7 +105,7 @@ export default {
         .query({
           query: getBlogResourcesUseQuery,
           variables: {
-            blogSet: this.blogSetId,
+            blogSet: this.spaceId,
             from,
             to,
           },

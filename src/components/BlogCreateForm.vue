@@ -9,23 +9,36 @@
       <label class="text-2xl font-bold">{{
         $t("views.blogCreate.fields.title.label")
       }}</label>
+      <!--
       <p class="mb-4 text-sm">{{ $t("views.blogCreate.fields.title.help") }}</p>
-      <AppFieldText
-        v-model="inputs.name"
-        :error="formErrors.name"
-        maxlength="250"
-        :placeholder="generate()"
-      />
+      -->
+      <div class="flex justify-between items-center">
+        <div class="flex-1">
+          <AppFieldText
+            v-model="inputs.name"
+            :error="formErrors.name"
+            maxlength="250"
+            :placeholder="generate()"
+          />
+        </div>
+        <div class="ml-2">
+          <AppButton @click="poeticName()">
+            🐣 Nom surprise
+          </AppButton>
+        </div>
+      </div>
     </div>
 
     <div class="mt-10 mb-16">
       <label class="text-2xl font-bold">{{
         $t("views.blogCreate.fields.description.label")
       }}</label>
+      <!--
       <p class="mb-4 text-sm">
         {{ $t("views.blogCreate.fields.description.help") }}
       </p>
-      <AppTextarea v-model="inputs.description" maxlength="250" />
+      -->
+      <AppTextarea class="mt-3" v-model="inputs.description" maxlength="250" />
     </div>
 
     <div class="flex flex-col md:flex-row items-center justify-center">
@@ -77,7 +90,7 @@ export default {
       user: null,
       languageList: null,
       inputs: {
-        name: "",
+        name: generate(),
         blogContentDefaultLocale: null,
       },
     };
@@ -88,6 +101,9 @@ export default {
     this.generate = generate;
   },
   methods: {
+    poeticName() {
+      this.inputs.name = generate();
+    },
     async initData() {
       getUser()
         .then(user => (this.user = user))
@@ -115,7 +131,7 @@ export default {
             blog: {
               name: this.inputs.name,
               description: this.inputs.description,
-              blogSet: this.$route.params.blogSetId,
+              blogSet: this.$route.params.spaceId,
             },
           },
         })

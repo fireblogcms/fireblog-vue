@@ -12,11 +12,16 @@
 
     <AppLoader v-if="viewDataState === 'PENDING'" />
 
-    <template v-if="viewDataState === 'FINISHED_OK'">
-      <div class="container mx-auto my-10 px-2">
+    <div
+      v-if="viewDataState === 'FINISHED_OK'"
+      class="bg-white container mx-auto rounded-xl my-10 p-10"
+    >
+      <div class="px-2">
         <div class="flex flex-col md:flex-row justify-between">
-          <div class="flex-1 flex items-top md:mb-0">
-            <h1 class="text-xl md:text-2xl font-bold uppercase mb-4">
+          <div class="flex-1 flex items-top md:mb-5">
+            <h1
+              class="text-xl md:text-2xl font-bold uppercase mb-4 text-primary"
+            >
               {{ viewData.blog.name }}
             </h1>
           </div>
@@ -29,7 +34,7 @@
                 $router.push({
                   name: 'blogSettings',
                   params: {
-                    blogSetId: $route.params.blogSetId,
+                    spaceId: $route.params.spaceId,
                     blogId: $route.params.blogId,
                   },
                 })
@@ -59,7 +64,7 @@
         </div>
       </div>
 
-      <AppPanel v-if="isFirstPost" class="mb-20 container mx-auto">
+      <div v-if="isFirstPost" class="my-20 container mx-auto">
         <h2 class="text-center text-3xl font-bold">
           {{ $t("views.postList.firstBlogSentence") }}
         </h2>
@@ -76,19 +81,19 @@
             {{ $t("views.postList.firstPostWriteButton").toUpperCase() }}
           </AppButton>
         </div>
-      </AppPanel>
+      </div>
 
       <template v-if="!isFirstPost">
-        <div class="container mx-auto px-2">
-          <ul class="flex">
+        <div class="">
+          <ul class="flex mt-10 md:mt-5">
             <li
-              class="rounded-t-lg cursor-pointer relative"
+              class="cursor-pointer relative rounded-2xl"
               @click="onStatusClick('PUBLISHED')"
               :class="{
-                'bg-white shadow': activeStatus == 'PUBLISHED',
+                'bg-gray-200': activeStatus == 'PUBLISHED',
               }"
             >
-              <div class="flex items-center py-4 px-4 md:px-10 text-xl">
+              <div class="flex items-center py-2 px-4 text-xl">
                 <span>{{ $t("views.postList.publishedTab") }}</span>
                 <div
                   class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-100 text-sm"
@@ -96,14 +101,13 @@
                   {{ viewData.postsPublished.totalCount }}
                 </div>
               </div>
-              <div class="shadow-mask" v-show="activeStatus == 'PUBLISHED'" />
             </li>
             <li
-              class="rounded-t-lg cursor-pointer relative"
+              class="cursor-pointer rounded-2xl relative"
               @click="onStatusClick('DRAFT')"
-              :class="{ 'bg-white shadow': activeStatus == 'DRAFT' }"
+              :class="{ 'bg-gray-200': activeStatus == 'DRAFT' }"
             >
-              <div class="flex items-center py-4 px-4 md:px-10 text-xl">
+              <div class="flex items-center py-2 px-4 text-xl">
                 <span>{{ $t("views.postList.draftTab") }}</span>
                 <div
                   class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-100 text-sm"
@@ -115,9 +119,7 @@
             </li>
           </ul>
 
-          <div
-            class="container mx-auto mb-20 py-6 px-4 md:px-10 bg-white shadow rounded-lg"
-          >
+          <div class="container mx-auto mb-20 px-2 mt-5">
             <PostList
               @onDeleteClick="onDeleteClick"
               v-show="activeStatus === 'PUBLISHED'"
@@ -131,7 +133,7 @@
           </div>
         </div>
       </template>
-    </template>
+    </div>
 
     <!-- DELETE POST MODAL -->
     <AppModal name="deletePostModal" v-if="deleteModal.post">
@@ -237,8 +239,8 @@ export default {
     fetchData() {
       this.viewDataState = "PENDING";
       viewDataQuery({
-        blogSetId: this.$route.params.blogSetId,
-        blogId: this.$route.params.blogId,
+        spaceId: this.$route.params.spaceId,
+        blogId: this.$route.params.podId,
       })
         .then(r => {
           this.viewData = r.data;
@@ -303,7 +305,7 @@ export default {
           name: "postCreate",
           params: {
             blogId: this.$route.params.blogId,
-            blogSetId: this.$route.params.blogSetId,
+            spaceId: this.$route.params.spaceId,
           },
         });
       } else {
@@ -313,15 +315,15 @@ export default {
   },
 };
 
-function viewDataQuery({ blogSetId, blogId }) {
+function viewDataQuery({ spaceId, blogId }) {
   return apolloClient.query({
     variables: {
-      blogSetId,
+      spaceId,
       blogId,
     },
     query: gql`
-      query postListViewQuery($blogSetId: ID!, $blogId: ID!) {
-        blogSet(_id: $blogSetId) {
+      query postListViewQuery($spaceId: ID!, $blogId: ID!) {
+        blogSet(_id: $spaceId) {
           subscription {
             id
             planId
@@ -398,14 +400,3 @@ function viewDataQuery({ blogSetId, blogId }) {
   });
 }
 </script>
-
-<style scoped>
-.shadow-mask {
-  width: 100%;
-  position: absolute;
-  bottom: -10px;
-  height: 10px;
-  display: block;
-  background-color: white;
-}
-</style>
