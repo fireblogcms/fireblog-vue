@@ -66,7 +66,7 @@ export default {
   "views.blogList.title": "Mes pods",
   "views.blogList.settingsButton": "Réglages",
   "views.blogSettings.dangerZone.title": "Zone dangereuse",
-  "views.blogSettings.dangerZone.deleteButton": "Supprimer ce blog",
+  "views.blogSettings.dangerZone.deleteButton": "Supprimer ce pod",
   "views.blogSettings.dangerZone.deleteModal.cancelButton": "Annuler",
   "views.blogSettings.dangerZone.deleteModal.content": "Veuillez entrer le nom du blog pour confirmer la suppression",
   "views.blogSettings.dangerZone.deleteModal.deleteButton": "Supprimer",

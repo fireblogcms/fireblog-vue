@@ -6,7 +6,7 @@ export default ({ blogId, slug, locale }) => [
     label: i18n.t("apiModal.getBlogInformations"),
     snippet: `
 {
-  blog(filter: {_id: { eq: "${blogId}" } }) {
+  pod(filter: {_id: { eq: "${blogId}" } }) {
     name
     description
     image {
@@ -21,11 +21,11 @@ export default ({ blogId, slug, locale }) => [
     label: i18n.t("apiModal.getAllPublishedPosts"),
     snippet: `
 {
-  postsCount(filter: { blog: { eq: "${blogId}" } })
-  posts(
+  articlesCount(filter: { pod: { eq: "${blogId}" } })
+  articles(
     limit: 20
     skip: 0
-    filter: { blog: { eq: "${blogId}" } }
+    filter: { pod: { eq: "${blogId}" } }
   ) {
     slug
     title
@@ -53,10 +53,10 @@ export default ({ blogId, slug, locale }) => [
     label: i18n.t("apiModal.getASinglePostBySlug"),
     snippet: `
   {
-    post(
+    article(
       filter: {
         slug: { eq: "${slug}" }
-        blog: { eq: "${blogId}" }
+        pod: { eq: "${blogId}" }
       }
     ) {
       slug
@@ -80,7 +80,7 @@ export default ({ blogId, slug, locale }) => [
     label: i18n.t("apiModal.getAllBlogsInformations"),
     snippet: `
 {
-  blogs(limit:20) {
+  pods(limit:20) {
     name
     description
     image {
