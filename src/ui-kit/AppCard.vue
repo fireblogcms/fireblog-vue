@@ -1,11 +1,6 @@
 <template>
   <div class="bg-white shadow rounded-lg overflow-hidden">
-    <div
-      style="height:270px"
-      class="bg-cover bg-center"
-      :style="background"
-      v-if="image"
-    >
+    <div class="h-320 bg-cover bg-center" :style="background" v-if="image">
       <slot />
     </div>
   </div>

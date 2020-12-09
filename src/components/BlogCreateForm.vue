@@ -9,9 +9,9 @@
       <label class="text-2xl font-bold">{{
         $t("views.blogCreate.fields.title.label")
       }}</label>
-      <!--
-      <p class="mb-4 text-sm">{{ $t("views.blogCreate.fields.title.help") }}</p>
-      -->
+
+      <p class="mb-4">{{ $t("views.blogCreate.fields.title.help") }}</p>
+
       <div class="flex justify-between items-center">
         <div class="flex-1">
           <AppFieldText
@@ -55,7 +55,7 @@
         color="primary"
         @click="onCreateClick"
       >
-        {{ $t("views.blogCreate.createButton").toUpperCase() }}
+        ✨ {{ $t("views.blogCreate.createButton").toUpperCase() }}
       </AppButton>
     </div>
   </div>
@@ -142,7 +142,7 @@ export default {
           this.$router
             .push({
               name: "postList",
-              params: { blogId: result.data.createBlog._id },
+              params: { podId: result.data.createBlog._id },
             })
             .then(() => (this.savingBlogState = REQUEST_STATE.FINISHED_OK));
         })

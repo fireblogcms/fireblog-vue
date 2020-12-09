@@ -56,7 +56,7 @@ export default {
   "views.blogCreate.fields.description.help": "Cette description apparaîtra dans les résultats des moteurs de recherche ou lors du partage du lien de votre blog sur les réseaux sociaux.",
   "views.blogCreate.fields.description.label": "De quoi parleront les articles de ce pod ?",
   "views.blogCreate.fields.title.label": "Quel est le nom de votre pod ?",
-  "views.blogCreate.fields.title.help": "Ce nom apparaîtra dans les résultats des moteurs de recherche ou lors du partage du lien de votre blog sur les réseaux sociaux.",
+  "views.blogCreate.fields.title.help": "Un pod est un conteneur qui contiendra vos articles. Vous pouvez créez autant de pods que vous voulez.",
   "views.blogCreate.fields.title.required": "Le nom est requis",
   "views.blogCreate.gladToSeeYouHere": "Ravi de vous voir ici",
   "views.blogSetList.title": "Mes pods",

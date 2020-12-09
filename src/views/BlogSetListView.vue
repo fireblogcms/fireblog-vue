@@ -1,49 +1,53 @@
 <template>
   <DefaultLayout>
     <template v-if="viewData">
-      <div class="my-12">
-        <!-- BLOGSET TITLE -->
-        <div
-          class="bg-white shadow-2xl rounded-xl m-5 max-w-1000 mx-auto p-10"
-          v-for="blogSet in viewData.blogSets"
-          :key="blogSet._id"
-        >
+      <div class="container mx-auto my-12">
+        <div class="">
+          <!-- BLOGSET TITLE -->
           <div
-            class="flex flex-col md:flex-row justify-between items-center mb-5"
+            class="bg-white shadow-2xl p-10 rounded-xl m-5"
+            v-for="blogSet in viewData.blogSets"
+            :key="blogSet._id"
           >
-            <div>
-              <h1 class="md:text-2xl text-xl font-bold uppercase text-primary">
-                {{ $t("views.blogSetList.title") }}
-              </h1>
-            </div>
-            <!-- BUTTONS -->
-            <div>
-              <AppButton
-                color="primary"
-                class="mb-2"
-                @click="onCreateNewBlogClick(blogSet)"
-              >
-                <span class="text-sm uppercase md:text-lg">{{
-                  $t("views.blogList.createNewBlogButton")
-                }}</span>
-              </AppButton>
-            </div>
-          </div>
-
-          <div class="mt-10">
             <div
-              v-if="blogSet.blogs.length > 0"
-              class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5"
+              class="flex flex-col md:flex-row justify-between items-center mb-5"
             >
-              <div :key="blog._id" v-for="blog in blogSet.blogs">
-                <BlogCard :blogSet="blogSet" :blog="blog" />
+              <div>
+                <h1
+                  class="md:text-2xl text-xl font-bold uppercase text-primary"
+                >
+                  {{ $t("views.blogSetList.title") }}
+                </h1>
               </div>
+              <!-- BUTTONS -->
+              <div>
+                <AppButton
+                  color="primary"
+                  class="mb-2"
+                  @click="onCreateNewBlogClick(blogSet)"
+                >
+                  <span class="text-sm uppercase md:text-lg">{{
+                    $t("views.blogList.createNewBlogButton")
+                  }}</span>
+                </AppButton>
+              </div>
+            </div>
+
+            <div class="mt-10">
               <div
-                class="cursor-pointer rounded-lg hover:bg-gray-300 bg-gray-200 text-center py-2"
-                @click="onCreateNewBlogClick(blogSet)"
+                v-if="blogSet.blogs.length > 0"
+                class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5"
               >
-                <div>
-                  <span style="font-size:200px">+</span>
+                <div :key="blog._id" v-for="blog in blogSet.blogs">
+                  <BlogCard :blogSet="blogSet" :blog="blog" />
+                </div>
+                <div
+                  class="cursor-pointer rounded-lg hover:bg-gray-300 bg-gray-200 text-center py-2"
+                  @click="onCreateNewBlogClick(blogSet)"
+                >
+                  <div>
+                    <span style="font-size:200px">+</span>
+                  </div>
                 </div>
               </div>
             </div>

@@ -1,5 +1,5 @@
 <template>
-  <div class="relative z-20 bg-white shadow-lg" :class="`route-${$route.name}`">
+  <div class="relative z-20 bg-white shadow" :class="`route-${$route.name}`">
     <div class="h-full flex justify-between px-3 py-2 container mx-auto">
       <div class="flex items-center">
         <!--
@@ -70,7 +70,7 @@
               :key="edge.node._id"
               :to="{
                 name: 'postList',
-                params: { blogId: edge.node._id, spaceId: edge.node.blogSet },
+                params: { podId: edge.node._id, spaceId: edge.node.blogSet },
               }"
               class="px-4 py-2 hover:bg-gray-100"
             >
@@ -169,23 +169,6 @@
             support@fireblogcms.com
           </a>
         </div>
-        <div class="flex items-center mt-2">
-          <span
-            @click.prevent="onChatSupportClick"
-            class="text-primary font-bold cursor-pointer"
-          >
-            {{ $t("contactModal.chatWithUs") }}
-          </span>
-        </div>
-        <div class="flex items-center mt-2">
-          <a
-            href="https://discord.gg/zuNUKNx3hH"
-            target="_blank"
-            class="text-primary font-bold cursor-pointer"
-          >
-            {{ $t("contactModal.discord") }}
-          </a>
-        </div>
       </div>
     </AppModal>
 
@@ -265,14 +248,6 @@ export default {
       window._paq.push(["trackGoal", 7]);
       window.open(this.blogSetApiUrl, "_blank");
     },
-    onChatSupportClick() {
-      // goal: try to contact support by tchat
-      window._paq.push(["trackGoal", 8]);
-      window._paq.push(["trackEvent", "Support", "Tchat", "Open"]);
-      if ($crisp) {
-        $crisp.push(["do", "chat:open"]);
-      }
-    },
     onMailSupportClick() {
       // goal: try to contact support by mail
       window._paq.push(["trackGoal", 9]);
@@ -336,12 +311,12 @@ export default {
         blogId: "{{INSERT_YOUR_BLOG_ID}}",
       };
       if (this.$route.name === "postList") {
-        const blog = await getBlog(this.$route.params.blogId);
+        const blog = await getBlog(this.$route.params.podId);
         context.blogId = blog._id;
       }
       if (this.$route.name === "postUpdate") {
         const [blog, post] = await Promise.all([
-          getBlog(this.$route.params.blogId),
+          getBlog(this.$route.params.podId),
           getPost(this.$route.params.postId),
         ]);
         context.blogId = blog._id;
