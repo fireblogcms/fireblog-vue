@@ -22,8 +22,9 @@ export default {
   },
   computed: {
     style() {
+      const backgroundImage = this.$store.state.global.backgroundImage;
       return {
-        background: `center / cover url("/illustrations/landscape-3.jpg")`,
+        background: `center / cover url("${backgroundImage}")`,
       };
     },
   },
