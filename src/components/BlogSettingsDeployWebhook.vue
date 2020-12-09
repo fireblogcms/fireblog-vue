@@ -240,7 +240,7 @@ export default {
       }
       const webhooks = this.prepareWebhooksValuesForSave();
       const update = {
-        _id: this.$route.params.blogId,
+        _id: this.$route.params.podId,
         webhooks,
         url: vuexFormGetValue(formId, "url"),
       };

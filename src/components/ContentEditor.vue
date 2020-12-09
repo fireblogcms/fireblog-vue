@@ -85,7 +85,7 @@ export default {
       },
       extraPlugins: [
         ckeditorS3UploadAdapterPlugin({
-          blogId: this.$route.params.blogId,
+          blogId: this.$route.params.podId,
           onRequestStateChange: ({ state, file }) => {},
         }),
       ],

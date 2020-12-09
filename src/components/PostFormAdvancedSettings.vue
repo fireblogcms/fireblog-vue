@@ -25,7 +25,7 @@
               {{ $t("views.postForm.fields.featuredImage.help") }}
             </p>
             <S3ImageUpload
-              :blogId="$route.params.blogId"
+              :blogId="$route.params.podId"
               @onUploadingStateChange="onUploadingStateChange"
               :initialImage="vuexFormGetValue(FORM_ID, 'image')"
               @onUploaded="onUploaded"
@@ -71,7 +71,7 @@
                     {{ $t("views.postForm.sectionTags.description") }}
                   </p>
                   <TagAutocomplete
-                    :blogId="$route.params.blogId"
+                    :blogId="$route.params.podId"
                     :formId="FORM_ID"
                   />
                 </div>
@@ -240,7 +240,7 @@ export default {
         return;
       }
       generateSlugFromServer({
-        blogId: this.$route.params.blogId,
+        blogId: this.$route.params.podId,
         source: value,
       }).then(response => {
         const slug = response.slug;

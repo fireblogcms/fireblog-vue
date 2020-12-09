@@ -46,7 +46,7 @@
           {{ $t("views.blogSettings.generalSettingsForm.fields.image.help") }}
         </p>
         <S3ImageUpload
-          :blogId="$route.params.blogId"
+          :blogId="$route.params.podId"
           @onUploadingStateChange="onUploadingStateChange"
           :initialImage="vuexFormGetValue(formId, 'image')"
           @onUploaded="onUploaded"
@@ -171,7 +171,7 @@ export default {
 
       this.savingState = REQUEST_STATE.PENDING;
       const blog = {
-        _id: this.$route.params.blogId,
+        _id: this.$route.params.podId,
         name: vuexFormGetValue(formId, "name"),
         description: vuexFormGetValue(formId, "description"),
         image: vuexFormGetValue(formId, "image"),

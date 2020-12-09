@@ -336,12 +336,12 @@ export default {
         blogId: "{{INSERT_YOUR_BLOG_ID}}",
       };
       if (this.$route.name === "postList") {
-        const blog = await getBlog(this.$route.params.blogId);
+        const blog = await getBlog(this.$route.params.podId);
         context.blogId = blog._id;
       }
       if (this.$route.name === "postUpdate") {
         const [blog, post] = await Promise.all([
-          getBlog(this.$route.params.blogId),
+          getBlog(this.$route.params.podId),
           getPost(this.$route.params.postId),
         ]);
         context.blogId = blog._id;

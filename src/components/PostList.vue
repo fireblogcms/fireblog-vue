@@ -1,27 +1,5 @@
 <template>
   <div class="min-h-10 flex flex-col">
-    <!--
-    <div v-if="postsRequestState === 'PENDING'">
-      <div
-        class="px-8 py-4 md:py-6 border-b border-gray-300 last:border-b-0"
-        v-for="(v, i) in [0, 1]"
-        :key="i"
-      >
-        <ContentLoader class="md:hidden" :height="200">
-          <rect x="0" y="0" rx="3" ry="3" width="25%" height="55%" />
-          <rect x="32%" y="10" rx="3" ry="3" width="45%" height="40" />
-          <rect x="32%" y="70" rx="3" ry="3" width="65%" height="15" />
-          <rect x="35%" y="75%" rx="3" ry="3" width="30%" height="40" />
-        </ContentLoader>
-        <ContentLoader class="hidden md:block" :height="25">
-          <rect x="0" y="0" rx="3" ry="3" width="15%" height="100%" />
-          <rect x="70" y="2" rx="3" ry="3" width="20%" height="10" />
-          <rect x="70" y="15" rx="3" ry="3" width="35%" height="5" />
-          <rect x="90%" y="5" rx="3" ry="3" width="10%" height="14" />
-        </ContentLoader>
-      </div>
-    </div>
-    -->
     <div
       v-if="posts.edges.length === 0"
       class="flex-1 flex items-center justify-center"
@@ -41,24 +19,25 @@
             name: 'postUpdate',
             params: {
               spaceId: $route.params.spaceId,
-              blogId: $route.params.blogId,
+              blogId: $route.params.podId,
               postId: post.node._id,
             },
           })
         "
       >
-        <div class="flex flex-1 md:mr-10">
+        <div class="flex flex-1 flex-col md:flex-row md:mr-10">
           <div
+            style="flex:0 0 200px"
             v-show="post.node.image"
             v-lazy:background-image="post.node.image"
-            class="w-40 mr-10 rounded bg-center bg-no-repeat bg-cover"
-          ></div>
+            class="md:mr-5 mb-5 md:mb-0 rounded bg-center bg-no-repeat bg-cover"
+          />
           <div>
             <p class="text-xl md:text-2xl font-bold text-gray-800">
               {{ post.node.title }}
             </p>
 
-            <p class="text-gray-700 mb-4">
+            <p class="text-gray-700 font-thin mb-4">
               {{ teaser(post) }}
             </p>
             <p class="text-xs uppercase" v-if="post.node.status === 'DRAFT'">
@@ -89,13 +68,13 @@
               </span>
             </p>
 
-            <div class="mt-3">
+            <div class="">
               <span
                 :key="tag.name"
                 v-for="tag in post.node.tags"
-                class="bg-gray-200 shadow-sm rounded text-current p-2 mr-1"
+                class="text-current text-sm mr-2 font-light text-gray-600"
               >
-                {{ tag.name }}
+                #{{ tag.name }}
               </span>
             </div>
           </div>
@@ -134,11 +113,17 @@ export default {
   },
   methods: {
     teaser(post) {
-      return striptags(
-        post.node.teaser.trim()
-          ? post.node.teaser.substring(0, 250) + "..."
-          : post.node.content.substring(0, 250) + "..."
-      );
+      const limit = 150;
+      let content;
+      if (post.node.teaser.trim()) {
+        content = striptags(post.node.teaser.trim());
+      } else {
+        content = post.node.content ? striptags(post.node.content.trim()) : "";
+      }
+      const contentLength = content.length;
+      const truncatedContent = content.substr(0, limit);
+      const ellipsis = contentLength > limit ? "..." : "";
+      return truncatedContent + ellipsis;
     },
     publishedOnDate(item) {
       return formatDate(new Date(item.node.publishedAt), "ddMyyyyhhmm");

@@ -48,7 +48,7 @@ export default {
   "global.retryLogin": "Retry to login",
   "global.chooseFile": "Choose file",
   "global.uploadImage": "Upload an image",
-  "topbar.accountMenu.myBlogs": "My blogs",
+  "topbar.accountMenu.myBlogs": "My pods",
   "topbar.accountMenu.myAccount": "My account",
   "topbar.accountMenu.logout": "Logout",
   "views.blogCreate.cancelButton": "Cancel",

@@ -54,7 +54,7 @@ class ckeditorGraphQLUploadAdapter {
           // put file in a folder named after the blog Id.
           variables: {
             file,
-            blogId: Router.currentRoute.params.blogId,
+            blogId: Router.currentRoute.params.podId,
           },
         })
         .then(async result => {

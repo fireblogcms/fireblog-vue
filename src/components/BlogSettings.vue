@@ -47,7 +47,7 @@ export default {
   methods: {
     initData() {
       this.initDataState = REQUEST_STATE.PENDING;
-      getBlog(this.$route.params.blogId)
+      getBlog(this.$route.params.podId)
         .then(blog => {
           this.blog = blog;
           this.initDataState = REQUEST_STATE.FINISHED_OK;

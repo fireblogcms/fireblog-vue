@@ -98,7 +98,7 @@ export default {
           .mutate({
             mutation: deleteBlogMutation,
             variables: {
-              _id: this.$route.params.blogId,
+              _id: this.$route.params.podId,
             },
           })
           .then(() => {

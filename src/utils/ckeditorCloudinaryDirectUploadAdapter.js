@@ -29,7 +29,7 @@ class ckeditorCloudinaryDirectUploadAdapter {
 
   // Starts the upload process.
   upload() {
-    const blogId = Router.currentRoute.params.blogId;
+    const blogId = Router.currentRoute.params.podId;
     if (!blogId) {
       // Each image is uploaded in a folder name after the blog Id, so
       // make sure we have a blogId param at this point.

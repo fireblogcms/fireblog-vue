@@ -514,7 +514,7 @@ export default {
           mutation: savePostMutation,
           variables: {
             post,
-            blog: this.$route.params.blogId,
+            blog: this.$route.params.podId,
           },
         })
         .then(async result => {
@@ -546,7 +546,7 @@ export default {
             this.$router.replace({
               name: "postUpdate",
               params: {
-                blogId: this.$route.params.blogId,
+                blogId: this.$route.params.podId,
                 postId: post._id,
               },
             });
@@ -718,7 +718,7 @@ export default {
         } else {
           if (vuexFormGetValue(FORM_ID, "slug").trim().length === 0) {
             generateSlugFromServer({
-              blogId: this.$route.params.blogId,
+              blogId: this.$route.params.podId,
               source: vuexFormGetValue(FORM_ID, "title").trim(),
             }).then(response => {
               vuexFormSetValue(FORM_ID, "slug", response.slug);

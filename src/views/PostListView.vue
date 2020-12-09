@@ -3,7 +3,6 @@
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
       <AppBreadcrumb
-        image="/images/books.png"
         :routerOptions="{ name: 'blogSetList' }"
         :name="$t('views.postList.backToBlogLink')"
       />
@@ -14,57 +13,53 @@
 
     <div
       v-if="viewDataState === 'FINISHED_OK'"
-      class="bg-white container mx-auto rounded-xl my-10 p-10"
+      class="bg-white max-w-1000 mx-auto rounded-xl my-12 p-10"
     >
-      <div class="px-2">
-        <div class="flex flex-col md:flex-row justify-between">
-          <div class="flex-1 flex items-top md:mb-5">
-            <h1
-              class="text-xl md:text-2xl font-bold uppercase mb-4 text-primary"
-            >
-              {{ viewData.blog.name }}
-            </h1>
-          </div>
-          <div
-            class="flex flex-row-reverse justify-end md:flex-row md:justify-end items-center"
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="">
+          <h1 class="text-xl md:text-2xl font-bold uppercase text-primary">
+            {{ viewData.blog.name }}
+          </h1>
+        </div>
+        <div
+          class="flex flex-row-reverse justify-end md:flex-row md:justify-end items-center"
+        >
+          <AppButton
+            class="mr-4"
+            @click="
+              $router.push({
+                name: 'blogSettings',
+                params: {
+                  spaceId: $route.params.spaceId,
+                  blogId: $route.params.podId,
+                },
+              })
+            "
           >
-            <AppButton
-              class="mr-4"
-              @click="
-                $router.push({
-                  name: 'blogSettings',
-                  params: {
-                    spaceId: $route.params.spaceId,
-                    blogId: $route.params.blogId,
-                  },
-                })
-              "
-            >
-              <!--
+            <!--
               <img
                 class="w-8 hidden md:inline"
                 src="/images/icon-settings.svg"
               />
               -->
-              <span class="text-sm md:text-xl">
-                {{ $t("views.blogList.settingsButton").toUpperCase() }}
-              </span>
-            </AppButton>
-            <AppButton
-              class="mr-4 md:mr-0"
-              v-if="!isFirstPost"
-              color="primary"
-              @click="onWriteNewPostClick"
-            >
-              <span class="text-sm md:text-xl">
-                {{ $t("views.postList.writeNewPostButton").toUpperCase() }}
-              </span>
-            </AppButton>
-          </div>
+            <span class="text-sm md:text-xl">
+              {{ $t("views.blogList.settingsButton").toUpperCase() }}
+            </span>
+          </AppButton>
+          <AppButton
+            class="mr-4 md:mr-0"
+            v-if="!isFirstPost"
+            color="primary"
+            @click="onWriteNewPostClick"
+          >
+            <span class="text-sm md:text-xl">
+              {{ $t("views.postList.writeNewPostButton").toUpperCase() }}
+            </span>
+          </AppButton>
         </div>
       </div>
 
-      <div v-if="isFirstPost" class="my-20 container mx-auto">
+      <div v-if="isFirstPost" class="my-20">
         <h2 class="text-center text-3xl font-bold">
           {{ $t("views.postList.firstBlogSentence") }}
         </h2>
@@ -74,7 +69,7 @@
             @click="
               $router.push({
                 name: 'postCreate',
-                params: { blogId: $route.params.blogId },
+                params: { blogId: $route.params.podId },
               })
             "
           >
@@ -85,7 +80,7 @@
 
       <template v-if="!isFirstPost">
         <div class="">
-          <ul class="flex mt-10 md:mt-5">
+          <ul class="flex mt-10">
             <li
               class="cursor-pointer relative rounded-2xl"
               @click="onStatusClick('PUBLISHED')"
@@ -119,7 +114,7 @@
             </li>
           </ul>
 
-          <div class="container mx-auto mb-20 px-2 mt-5">
+          <div class="mb-20 mt-5">
             <PostList
               @onDeleteClick="onDeleteClick"
               v-show="activeStatus === 'PUBLISHED'"
@@ -304,7 +299,7 @@ export default {
         this.$router.push({
           name: "postCreate",
           params: {
-            blogId: this.$route.params.blogId,
+            blogId: this.$route.params.podId,
             spaceId: this.$route.params.spaceId,
           },
         });
