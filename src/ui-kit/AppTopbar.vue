@@ -1,5 +1,5 @@
 <template>
-  <div class="relative z-20 bg-white" :class="`route-${$route.name}`">
+  <div class="relative z-20 bg-white shadow-lg" :class="`route-${$route.name}`">
     <div class="h-full flex justify-between px-3 py-2 container mx-auto">
       <div class="flex items-center">
         <!--
@@ -336,12 +336,12 @@ export default {
         blogId: "{{INSERT_YOUR_BLOG_ID}}",
       };
       if (this.$route.name === "postList") {
-        const blog = await getBlog(this.$route.params.podId);
+        const blog = await getBlog(this.$route.params.blogId);
         context.blogId = blog._id;
       }
       if (this.$route.name === "postUpdate") {
         const [blog, post] = await Promise.all([
-          getBlog(this.$route.params.podId),
+          getBlog(this.$route.params.blogId),
           getPost(this.$route.params.postId),
         ]);
         context.blogId = blog._id;
