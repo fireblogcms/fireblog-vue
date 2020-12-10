@@ -264,7 +264,7 @@ export default {
       // one webhook to be saved for now.
       const wehbooks = [
         {
-          name: vuexFormGetValue(formId, "webhookUrl").trim(),
+          name: "staticBuildNeeded",
           url: vuexFormGetValue(formId, "webhookUrl").trim(),
           method: vuexFormGetValue(formId, "webhookMethod").trim(),
           headers: vuexFormGetValue(formId, "webhookHeaders").trim(),
