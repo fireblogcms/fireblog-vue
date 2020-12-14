@@ -128,6 +128,13 @@
               v-show="activeStatus === 'DRAFT'"
               :posts="viewData.postsDraft"
             />
+            <div>
+              <AppPagination
+                routeName="postList"
+                :itemsTotal="viewData.allPostsCount"
+                :itemsPerPage="10"
+              />
+            </div>
           </div>
         </div>
       </template>
@@ -168,6 +175,7 @@
 
 <script>
 import AppBreadcrumb from "@/ui-kit/AppBreadcrumb";
+import AppPagination from "@/ui-kit/AppPagination";
 import AppButton from "@/ui-kit/AppButton";
 import AppLoader from "@/ui-kit/AppLoader";
 import AppModal from "@/ui-kit/AppModal";
@@ -193,6 +201,7 @@ export default {
     AppPanel,
     DefaultLayout,
     PostList,
+    AppPagination,
   },
   data() {
     return {
@@ -242,7 +251,7 @@ export default {
       })
         .then(r => {
           this.viewData = r.data;
-          this.isFirstPost = this.viewData.allPostCount === 0 ? true : false;
+          this.isFirstPost = this.viewData.allPostsCount === 0 ? true : false;
           this.viewDataState = "FINISHED_OK";
         })
         .catch(error => {
@@ -336,7 +345,7 @@ function viewDataQuery({ blogSetId, blogId }) {
           }
           deletedAt
         }
-        allPostCount: postsCount(
+        allPostsCount: postsCount(
           filter: { blog: $blogId, status: [PUBLISHED, DRAFT] }
         )
         postsPublishedCount: postsCount(
