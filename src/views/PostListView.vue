@@ -128,11 +128,11 @@
               v-show="activeStatus === 'DRAFT'"
               :posts="viewData.postsDraft"
             />
-            <div>
+            <div class="mt-10">
               <AppPagination
                 routeName="postList"
                 :itemsTotal="viewData.allPostsCount"
-                :itemsPerPage="10"
+                :itemsPerPage="ITEMS_PER_PAGE"
               />
             </div>
           </div>
@@ -192,6 +192,8 @@ import {
 import striptags from "striptags";
 import PostList from "@/components/PostList";
 
+const ITEMS_PER_PAGE = 10;
+
 export default {
   components: {
     AppBreadcrumb,
@@ -220,13 +222,16 @@ export default {
   },
   created() {
     this.striptags = striptags;
+    this.ITEMS_PER_PAGE = ITEMS_PER_PAGE;
   },
   mounted() {
-    this.fetchData();
+    this.fetchData({ skip: 0 });
   },
   watch: {
     $route: function(value) {
-      this.fetchData();
+      const currentPage = this.$route.query.page ? this.$route.query.page : 1;
+      const skip = (currentPage - 1) * ITEMS_PER_PAGE;
+      this.fetchData({ skip });
     },
   },
   beforeRouteEnter(to, from, next) {
@@ -243,11 +248,12 @@ export default {
     });
   },
   methods: {
-    fetchData() {
+    fetchData({ skip = 0 }) {
       this.viewDataState = "PENDING";
       viewDataQuery({
         blogSetId: this.$route.params.blogSetId,
         blogId: this.$route.params.blogId,
+        skip,
       })
         .then(r => {
           this.viewData = r.data;
@@ -321,14 +327,26 @@ export default {
   },
 };
 
-function viewDataQuery({ blogSetId, blogId }) {
+function viewDataQuery({
+  blogSetId,
+  blogId,
+  limit = ITEMS_PER_PAGE,
+  skip = 0,
+}) {
   return apolloClient.query({
     variables: {
       blogSetId,
       blogId,
+      limit,
+      skip,
     },
     query: gql`
-      query postListViewQuery($blogSetId: ID!, $blogId: ID!) {
+      query postListViewQuery(
+        $blogSetId: ID!
+        $blogId: ID!
+        $limit: Int!
+        $skip: Int!
+      ) {
         blogSet(_id: $blogSetId) {
           subscription {
             id
@@ -352,7 +370,8 @@ function viewDataQuery({ blogSetId, blogId }) {
           filter: { blog: $blogId, status: PUBLISHED }
         )
         postsPublished: posts(
-          limit: 50
+          limit: $limit
+          skip: $skip
           filter: { blog: $blogId, status: PUBLISHED }
         ) {
           _id
@@ -370,7 +389,11 @@ function viewDataQuery({ blogSetId, blogId }) {
           publishedAt
         }
         postsDraftCount: postsCount(filter: { blog: $blogId, status: DRAFT })
-        postsDraft: posts(limit: 50, filter: { blog: $blogId, status: DRAFT }) {
+        postsDraft: posts(
+          limit: $limit
+          skip: $skip
+          filter: { blog: $blogId, status: DRAFT }
+        ) {
           _id
           title
           teaser
