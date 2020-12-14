@@ -93,7 +93,7 @@
                 <div
                   class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-100 text-sm"
                 >
-                  {{ viewData.postsPublished.totalCount }}
+                  {{ viewData.postsPublishedCount }}
                 </div>
               </div>
               <div class="shadow-mask" v-show="activeStatus == 'PUBLISHED'" />
@@ -108,7 +108,7 @@
                 <div
                   class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-100 text-sm"
                 >
-                  {{ viewData.postsDraft.totalCount }}
+                  {{ viewData.postsDraftCount }}
                 </div>
               </div>
               <div class="shadow-mask" v-show="activeStatus == 'DRAFT'" />
@@ -242,8 +242,7 @@ export default {
       })
         .then(r => {
           this.viewData = r.data;
-          this.isFirstPost =
-            this.viewData.allPosts.totalCount === 0 ? true : false;
+          this.isFirstPost = this.viewData.allPostCount === 0 ? true : false;
           this.viewDataState = "FINISHED_OK";
         })
         .catch(error => {
@@ -337,61 +336,44 @@ function viewDataQuery({ blogSetId, blogId }) {
           }
           deletedAt
         }
-        allPosts: posts(blog: $blogId, filter: { status: [PUBLISHED, DRAFT] }) {
-          totalCount
-          edges {
-            node {
-              _id
-              title
-              teaser
-              image
-              wordCount
-              readingTime
-              status
-              tags {
-                name
-              }
-            }
+        allPostCount: postsCount(
+          filter: { blog: $blogId, status: [PUBLISHED, DRAFT] }
+        )
+        postsPublishedCount: postsCount(
+          filter: { blog: $blogId, status: PUBLISHED }
+        )
+        postsPublished: posts(
+          limit: 50
+          filter: { blog: $blogId, status: PUBLISHED }
+        ) {
+          _id
+          title
+          teaser
+          content
+          image
+          wordCount
+          readingTime
+          status
+          tags {
+            name
           }
+          updatedAt
+          publishedAt
         }
-        postsPublished: posts(blog: $blogId, filter: { status: PUBLISHED }) {
-          totalCount
-          edges {
-            node {
-              _id
-              title
-              teaser
-              content
-              image
-              wordCount
-              readingTime
-              status
-              tags {
-                name
-              }
-              updatedAt
-              publishedAt
-            }
+        postsDraftCount: postsCount(filter: { blog: $blogId, status: DRAFT })
+        postsDraft: posts(limit: 50, filter: { blog: $blogId, status: DRAFT }) {
+          _id
+          title
+          teaser
+          content
+          image
+          wordCount
+          readingTime
+          status
+          tags {
+            name
           }
-        }
-        postsDraft: posts(blog: $blogId, filter: { status: DRAFT }) {
-          totalCount
-          edges {
-            node {
-              _id
-              title
-              teaser
-              content
-              image
-              wordCount
-              readingTime
-              status
-              tags {
-                name
-              }
-              updatedAt
-            }
-          }
+          updatedAt
         }
       }
     `,

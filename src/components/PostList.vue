@@ -23,7 +23,7 @@
     </div>
     -->
     <div
-      v-if="posts.edges.length === 0"
+      v-if="posts.length === 0"
       class="flex-1 flex items-center justify-center"
     >
       <p class="text-center text-xl">
@@ -31,43 +31,43 @@
       </p>
     </div>
 
-    <template v-if="posts.edges.length > 0">
+    <template v-if="posts.length > 0">
       <div
         class="py-4 md:py-6 flex flex-col md:flex-row cursor-pointer border-b border-gray-300 last:border-b-0"
-        v-for="post in posts.edges"
-        :key="post.node._id"
+        v-for="post in posts"
+        :key="post._id"
         @click="
           $router.push({
             name: 'postUpdate',
             params: {
               blogSetId: $route.params.blogSetId,
               blogId: $route.params.blogId,
-              postId: post.node._id,
+              postId: post._id,
             },
           })
         "
       >
         <div class="flex flex-1 mr-2">
           <div
-            v-show="post.node.image"
-            v-lazy:background-image="post.node.image"
+            v-show="post.image"
+            v-lazy:background-image="post.image"
             class="w-40 mr-10 rounded bg-center bg-no-repeat bg-cover"
           ></div>
           <div>
             <p class="text-xl md:text-2xl font-bold text-gray-800">
-              {{ post.node.title }}
+              {{ post.title }}
             </p>
 
             <p class="text-gray-700 mb-2">
               {{
                 striptags(
-                  post.node.teaser.trim()
-                    ? post.node.teaser.substring(0, 100) + "..."
-                    : post.node.content.substring(0, 100) + "..."
+                  post.teaser.trim()
+                    ? post.teaser.substring(0, 100) + "..."
+                    : post.content.substring(0, 100) + "..."
                 )
               }}
             </p>
-            <p class="text-xs uppercase" v-if="post.node.status === 'DRAFT'">
+            <p class="text-xs uppercase" v-if="post.status === 'DRAFT'">
               <span class="text-indigo-700">
                 {{
                   $t("views.postList.updatedOn", {
@@ -77,28 +77,26 @@
               </span>
               -
               <span class="text-gray-600"
-                >{{ $t("views.postList.readingTime") }} :{{
-                  post.node.readingTime
-                }}
+                >{{ $t("views.postList.readingTime") }} :{{ post.readingTime }}
                 min
               </span>
             </p>
             <p
               class="text-xs uppercase text-indigo-600"
-              v-if="post.node.status === 'PUBLISHED'"
+              v-if="post.status === 'PUBLISHED'"
             >
               <span class="text-indigo-700"> {{ publishedOnDate(post) }}</span>
               -
               <span class="text-gray-600">
                 {{ $t("views.postList.readingTime") }} :
-                {{ post.node.readingTime }} min
+                {{ post.readingTime }} min
               </span>
             </p>
 
             <div class="mt-3">
               <span
                 :key="tag.name"
-                v-for="tag in post.node.tags"
+                v-for="tag in post.tags"
                 class="bg-gray-200 shadow-sm rounded text-current p-2 mr-1"
               >
                 {{ tag.name }}
@@ -110,7 +108,7 @@
           <AppButton
             size="small"
             class="mt-6 md:mt-0"
-            @click="onDeleteClick(post.node)"
+            @click="onDeleteClick(post)"
           >
             {{ $t("views.postList.deleteButton") }}
           </AppButton>
@@ -140,10 +138,10 @@ export default {
   },
   methods: {
     publishedOnDate(item) {
-      return formatDate(new Date(item.node.publishedAt), "ddMyyyyhhmm");
+      return formatDate(new Date(item.publishedAt), "ddMyyyyhhmm");
     },
     updatedOnDate(item) {
-      return formatDate(new Date(item.node.updatedAt), "long");
+      return formatDate(new Date(item.updatedAt), "long");
     },
     onDeleteClick(post) {
       this.$emit("onDeleteClick", post);
