@@ -3,7 +3,6 @@
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
       <AppBreadcrumb
-        image="/images/books.png"
         :routerOptions="{ name: 'blogSetList' }"
         :name="$t('views.postList.backToBlogLink')"
       />
@@ -93,7 +92,7 @@
                 <div
                   class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-100 text-sm"
                 >
-                  {{ viewData.postsPublishedCount }}
+                  {{ viewData.allPublishedPostsCount }}
                 </div>
               </div>
               <div class="shadow-mask" v-show="activeStatus == 'PUBLISHED'" />
@@ -108,7 +107,7 @@
                 <div
                   class="w-8 h-8 ml-4 flex items-center justify-center rounded-full bg-gray-100 text-sm"
                 >
-                  {{ viewData.postsDraftCount }}
+                  {{ viewData.allDraftPostsCount }}
                 </div>
               </div>
               <div class="shadow-mask" v-show="activeStatus == 'DRAFT'" />
@@ -119,19 +118,15 @@
             class="container mx-auto mb-20 py-6 px-4 md:px-10 bg-white shadow rounded-lg"
           >
             <PostList
+              class="min-h-screen"
+              :loading="getPostsState === 'PENDING'"
               @onDeleteClick="onDeleteClick"
-              v-show="activeStatus === 'PUBLISHED'"
-              :posts="viewData.postsPublished"
-            />
-            <PostList
-              @onDeleteClick="onDeleteClick"
-              v-show="activeStatus === 'DRAFT'"
-              :posts="viewData.postsDraft"
+              :posts="posts"
             />
             <div class="mt-10">
               <AppPagination
                 routeName="postList"
-                :itemsTotal="viewData.allPostsCount"
+                :itemsTotal="postsCount"
                 :itemsPerPage="ITEMS_PER_PAGE"
               />
             </div>
@@ -184,11 +179,7 @@ import apolloClient from "@/utils/apolloClient";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import gql from "graphql-tag";
 import { REQUEST_STATE, toast } from "@/utils/helpers";
-import {
-  getPostsQuery,
-  getBlogQuery,
-  deletePostMutation,
-} from "@/utils/queries";
+import { deletePostMutation } from "@/utils/queries";
 import striptags from "striptags";
 import PostList from "@/components/PostList";
 
@@ -208,7 +199,10 @@ export default {
   data() {
     return {
       viewData: null,
-      viewDataState: "NOT_STARTED",
+      posts: [],
+      postsCount: 0,
+      viewDataState: REQUEST_STATE.NOT_STARTED,
+      getPostsState: REQUEST_STATE.NOT_STARTED,
       deletePostRequestState: REQUEST_STATE.NOT_STARTED,
       deleteModal: {
         title: null,
@@ -225,13 +219,13 @@ export default {
     this.ITEMS_PER_PAGE = ITEMS_PER_PAGE;
   },
   mounted() {
-    this.fetchData({ skip: 0 });
+    this.initData();
   },
   watch: {
     $route: function(value) {
       const currentPage = this.$route.query.page ? this.$route.query.page : 1;
       const skip = (currentPage - 1) * ITEMS_PER_PAGE;
-      this.fetchData({ skip });
+      this.getPosts({ status: this.activeStatus, skip });
     },
   },
   beforeRouteEnter(to, from, next) {
@@ -248,23 +242,61 @@ export default {
     });
   },
   methods: {
-    fetchData({ skip = 0 }) {
-      this.viewDataState = "PENDING";
-      viewDataQuery({
+    initData() {
+      const result = Promise.all([
+        this.getViewData(),
+        this.getPosts({ status: this.activeStatus, skip: 0 }),
+      ]);
+      console.log("data", result);
+      return result;
+    },
+    getViewData() {
+      this.viewDataState = REQUEST_STATE.PENDING;
+      return viewDataQuery({
         blogSetId: this.$route.params.blogSetId,
         blogId: this.$route.params.blogId,
-        skip,
       })
-        .then(r => {
-          this.viewData = r.data;
-          this.isFirstPost = this.viewData.allPostsCount === 0 ? true : false;
-          this.viewDataState = "FINISHED_OK";
+        .then(response => {
+          this.viewData = response.data;
+          this.isFirstPost = response.data.allPostsCount === 0 ? true : false;
+          this.viewDataState = REQUEST_STATE.FINISHED_OK;
+          return response;
         })
         .catch(error => {
-          this.viewDataState = "FINISHED_ERROR";
+          this.viewDataState = REQUEST_STATE.FINISHED_ERROR;
           throw new Error(error);
         });
     },
+    getPosts({ status = "PUBLISHED", skip = 0 }) {
+      let filter;
+      let sort;
+      this.getPostsState = REQUEST_STATE.PENDING;
+      if (status === "DRAFT") {
+        filter = { blog: this.$route.params.blogId, status: "DRAFT" };
+        sort = { updatedAt: "desc" };
+      }
+      if (status === "PUBLISHED") {
+        filter = { blog: this.$route.params.blogId, status: "PUBLISHED" };
+        sort = { publishedAt: "desc" };
+      }
+      return getPostsQuery({
+        filter,
+        sort,
+        skip,
+        limit: ITEMS_PER_PAGE,
+      })
+        .then(response => {
+          this.posts = response.data.posts;
+          this.postsCount = response.data.postsCount;
+          this.getPostsState = REQUEST_STATE.FINISHED_OK;
+          return response;
+        })
+        .catch(error => {
+          this.getPostsState = REQUEST_STATE.FINISHED_ERROR;
+          throw new Error(error);
+        });
+    },
+
     /**
      * We need to run two requests, to know what user has to see;
      * - All existing post (is this user first post ?)
@@ -293,6 +325,9 @@ export default {
         });
     },
     onStatusClick(status) {
+      if (status !== this.activeStatus) {
+        this.getPosts({ status });
+      }
       this.activeStatus = status;
     },
     onDeleteClick(post) {
@@ -305,7 +340,7 @@ export default {
     onDeleteModalConfirmClick() {
       this.deletePost(this.deleteModal.post).then(() => {
         this.closeDeletePostModal();
-        this.fetchData();
+        this.viewData();
       });
     },
     onWriteNewPostClick() {
@@ -327,6 +362,44 @@ export default {
   },
 };
 
+function getPostsQuery({ filter, sort, limit, skip }) {
+  //const filter = { blog: $blogId, status: PUBLISHED };
+  // const sort = { publishedAt: desc }
+  return apolloClient.query({
+    variables: {
+      filter,
+      sort,
+      limit,
+      skip,
+    },
+    query: gql`
+      query getPostsQuery(
+        $filter: PostsFilter!
+        $sort: PostsSort!
+        $limit: Int!
+        $skip: Int!
+      ) {
+        postsCount(filter: $filter)
+        posts(limit: $limit, skip: $skip, filter: $filter, sort: $sort) {
+          _id
+          title
+          teaser
+          content
+          image
+          wordCount
+          readingTime
+          status
+          tags {
+            name
+          }
+          updatedAt
+          publishedAt
+        }
+      }
+    `,
+  });
+}
+
 function viewDataQuery({
   blogSetId,
   blogId,
@@ -341,12 +414,7 @@ function viewDataQuery({
       skip,
     },
     query: gql`
-      query postListViewQuery(
-        $blogSetId: ID!
-        $blogId: ID!
-        $limit: Int!
-        $skip: Int!
-      ) {
+      query viewDataQuery($blogSetId: ID!, $blogId: ID!) {
         blogSet(_id: $blogSetId) {
           subscription {
             id
@@ -366,47 +434,10 @@ function viewDataQuery({
         allPostsCount: postsCount(
           filter: { blog: $blogId, status: [PUBLISHED, DRAFT] }
         )
-        postsPublishedCount: postsCount(
+        allDraftPostsCount: postsCount(filter: { blog: $blogId, status: DRAFT })
+        allPublishedPostsCount: postsCount(
           filter: { blog: $blogId, status: PUBLISHED }
         )
-        postsPublished: posts(
-          limit: $limit
-          skip: $skip
-          filter: { blog: $blogId, status: PUBLISHED }
-        ) {
-          _id
-          title
-          teaser
-          content
-          image
-          wordCount
-          readingTime
-          status
-          tags {
-            name
-          }
-          updatedAt
-          publishedAt
-        }
-        postsDraftCount: postsCount(filter: { blog: $blogId, status: DRAFT })
-        postsDraft: posts(
-          limit: $limit
-          skip: $skip
-          filter: { blog: $blogId, status: DRAFT }
-        ) {
-          _id
-          title
-          teaser
-          content
-          image
-          wordCount
-          readingTime
-          status
-          tags {
-            name
-          }
-          updatedAt
-        }
       }
     `,
   });

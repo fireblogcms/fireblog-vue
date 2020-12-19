@@ -1,9 +1,8 @@
 <template>
   <div class="min-h-10 flex flex-col">
-    <!--
-    <div v-if="postsRequestState === 'PENDING'">
+    <div v-if="loading">
       <div
-        class="px-8 py-4 md:py-6 border-b border-gray-300 last:border-b-0"
+        class="px-8 py-4 md:py-6 border-b border-gray-200 last:border-b-0"
         v-for="(v, i) in [0, 1]"
         :key="i"
       >
@@ -21,7 +20,7 @@
         </ContentLoader>
       </div>
     </div>
-    -->
+
     <div
       v-if="posts.length === 0"
       class="flex-1 flex items-center justify-center"
@@ -31,7 +30,7 @@
       </p>
     </div>
 
-    <template v-if="posts.length > 0">
+    <template v-if="!loading && posts.length > 0">
       <div
         class="py-4 md:py-6 flex flex-col md:flex-row cursor-pointer border-b border-gray-300 last:border-b-0"
         v-for="post in posts"
@@ -122,14 +121,20 @@
 import AppButton from "@/ui-kit/AppButton";
 import striptags from "striptags";
 import { formatDate } from "@/utils/helpers";
+import { ContentLoader } from "vue-content-loader";
 
 export default {
   components: {
     AppButton,
+    ContentLoader,
   },
   props: {
     posts: {
       type: Array,
+      required: true,
+    },
+    loading: {
+      type: Boolean,
       required: true,
     },
   },

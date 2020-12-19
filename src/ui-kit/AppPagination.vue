@@ -32,11 +32,10 @@ export default {
   },
   computed: {
     pagesNumber() {
-      console.log("pagesNumber", this.itemsTotal, this.itemsPerPage);
       return Math.ceil(this.itemsTotal / this.itemsPerPage);
     },
     activePage() {
-      return this.$route.params.page ? parseInt(this.$route.params.page) : 1;
+      return this.$route.query.page ? parseInt(this.$route.query.page) : 1;
     },
   },
 };
