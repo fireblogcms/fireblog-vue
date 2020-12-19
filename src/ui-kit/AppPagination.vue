@@ -4,7 +4,7 @@
       <router-link
         v-for="i in pagesNumber"
         :key="i"
-        :to="{ name: 'postList', query: { page: i } }"
+        :to="{ name: 'postList', query: { ...$route.query, page: i } }"
         :class="{ 'border-t-2 border-indigo-500': i === activePage }"
         class="border-t-2 border-transparent pt-4 px-4 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
       >

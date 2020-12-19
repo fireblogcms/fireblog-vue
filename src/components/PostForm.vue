@@ -3,10 +3,7 @@
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
       <AppBreadcrumb
-        :routerOptions="{
-          name: 'postList',
-          params: { blogSetId: $route.params.blogSetId },
-        }"
+        :routerOptions="backToPostListRouterOptions"
         :name="$t('views.postForm.backToBlogLink')"
       />
     </portal>
@@ -381,6 +378,19 @@ export default {
       }
       return text;
     },
+    backToPostListRouterOptions() {
+      const query = {};
+      if (this.existingPost && this.existingPost.status) {
+        query.getPosts = JSON.stringify({
+          filter: { status: this.existingPost.status },
+        });
+      }
+      return {
+        name: "postList",
+        params: { blogSetId: this.$route.params.blogSetId },
+        query,
+      };
+    },
   },
   methods: {
     onWordCountUpdate(stats) {
@@ -659,11 +669,6 @@ export default {
     },
     saveAsDraft() {
       return this.savePost("DRAFT");
-    },
-    onBackToPostClick() {
-      this.$router.push({
-        name: "postList",
-      });
     },
     publish(scheduled = false) {
       // If article is published (or re-published) from draft, we display a "Hurrah modal".

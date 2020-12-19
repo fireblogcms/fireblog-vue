@@ -118,7 +118,6 @@
             class="container mx-auto mb-20 py-6 px-4 md:px-10 bg-white shadow rounded-lg"
           >
             <PostList
-              class="min-h-screen"
               :loading="getPostsState === 'PENDING'"
               @onDeleteClick="onDeleteClick"
               :posts="posts"
@@ -183,7 +182,22 @@ import { deletePostMutation } from "@/utils/queries";
 import striptags from "striptags";
 import PostList from "@/components/PostList";
 
-const ITEMS_PER_PAGE = 30;
+const ITEMS_PER_PAGE = 10;
+
+// if no filters are specified in the url,
+// use those default filters to fetch post
+const getPostsDefaultVariables = () => {
+  return {
+    skip: 0,
+    limit: ITEMS_PER_PAGE,
+    sort: {
+      publishedAt: "desc",
+    },
+    filter: {
+      status: "PUBLISHED",
+    },
+  };
+};
 
 export default {
   components: {
@@ -209,7 +223,7 @@ export default {
         data: null,
         post: null,
       },
-      activeStatus: "PUBLISHED",
+      activeStatus: this.getPostsQueryVariables().filter.status,
       // will be true or false, once we have counted all existing posts
       isFirstPost: null,
     };
@@ -222,30 +236,19 @@ export default {
     this.initData();
   },
   watch: {
+    // update the view from params in urls
     $route: function(value) {
       const currentPage = this.$route.query.page ? this.$route.query.page : 1;
       const skip = (currentPage - 1) * ITEMS_PER_PAGE;
-      this.getPosts({ status: this.activeStatus, skip });
+      this.activeStatus = this.getPostsQueryVariables().filter.status;
+      this.getPosts({ ...this.getPostsQueryVariables(), skip });
     },
-  },
-  beforeRouteEnter(to, from, next) {
-    // if use is coming from a draft post, set "DRAFT" tab by default.
-    next(vm => {
-      if (from.name === "postUpdate" || from.name === "postCreate") {
-        if (
-          vm.$store.state.global.lastVisitedPost &&
-          vm.$store.state.global.lastVisitedPost.status === "DRAFT"
-        ) {
-          vm.activeStatus = "DRAFT";
-        }
-      }
-    });
   },
   methods: {
     initData() {
       const result = Promise.all([
         this.getViewData(),
-        this.getPosts({ status: this.activeStatus, skip: 0 }),
+        this.getPosts(this.getPostsQueryVariables()),
       ]);
       return result;
     },
@@ -266,27 +269,25 @@ export default {
           throw new Error(error);
         });
     },
-    getPosts({ status = "PUBLISHED", skip = 0, additionalsFilter = {} }) {
-      let sort;
-      let filter = {
-        ...additionalsFilter,
-        status,
-        blog: this.$route.params.blogId,
+    getPostsQueryVariables() {
+      return {
+        ...getPostsDefaultVariables(),
+        ...this.getPostsUrlVariables(),
       };
-      if (status === "DRAFT") {
-        sort = { updatedAt: "desc" };
-      }
-      if (status === "PUBLISHED") {
-        sort = { publishedAt: "desc" };
+    },
+    getPostsUrlVariables() {
+      return this.$route.query.getPosts
+        ? JSON.parse(this.$route.query.getPosts)
+        : {};
+    },
+    getPosts(variables) {
+      variables.filter.blog = this.$route.params.blogId;
+      if (variables.filter.status === "DRAFT") {
+        variables.sort = { updatedAt: "desc" };
       }
 
       this.getPostsState = REQUEST_STATE.PENDING;
-      return getPostsQuery({
-        filter,
-        sort,
-        skip,
-        limit: ITEMS_PER_PAGE,
-      })
+      return getPostsQuery(variables)
         .then(response => {
           this.posts = response.data.posts;
           this.postsCount = response.data.postsCount;
@@ -326,16 +327,14 @@ export default {
         });
     },
     onStatusClick(status) {
-      if (status !== this.activeStatus) {
-        this.getPosts({ status });
-        if (this.$route.query.page && this.$route.query.page > 1) {
-          this.$router.replace({
-            path: this.$router.currentRoute.path,
-            query: {},
-          });
-        }
-      }
-      this.activeStatus = status;
+      const query = {
+        getPosts: JSON.stringify({ filter: { status } }),
+        page: 1,
+      };
+      this.$router.push({
+        path: this.$router.currentRoute.path,
+        query,
+      });
     },
     onDeleteClick(post) {
       this.deleteModal.post = post;
