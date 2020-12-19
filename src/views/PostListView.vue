@@ -266,18 +266,21 @@ export default {
           throw new Error(error);
         });
     },
-    getPosts({ status = "PUBLISHED", skip = 0 }) {
-      let filter;
+    getPosts({ status = "PUBLISHED", skip = 0, additionalsFilter = {} }) {
       let sort;
-      this.getPostsState = REQUEST_STATE.PENDING;
+      let filter = {
+        ...additionalsFilter,
+        status,
+        blog: this.$route.params.blogId,
+      };
       if (status === "DRAFT") {
-        filter = { blog: this.$route.params.blogId, status: "DRAFT" };
         sort = { updatedAt: "desc" };
       }
       if (status === "PUBLISHED") {
-        filter = { blog: this.$route.params.blogId, status: "PUBLISHED" };
         sort = { publishedAt: "desc" };
       }
+
+      this.getPostsState = REQUEST_STATE.PENDING;
       return getPostsQuery({
         filter,
         sort,
@@ -295,7 +298,6 @@ export default {
           throw new Error(error);
         });
     },
-
     /**
      * We need to run two requests, to know what user has to see;
      * - All existing post (is this user first post ?)
