@@ -327,6 +327,10 @@ export default {
     onStatusClick(status) {
       if (status !== this.activeStatus) {
         this.getPosts({ status });
+        this.$router.replace({
+          path: this.$router.currentRoute.path,
+          query: { page: 1 },
+        });
       }
       this.activeStatus = status;
     },

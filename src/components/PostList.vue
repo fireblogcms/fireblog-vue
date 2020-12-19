@@ -3,7 +3,7 @@
     <div v-if="loading">
       <div
         class="px-8 py-4 md:py-6 border-b border-gray-200 last:border-b-0"
-        v-for="(v, i) in [0, 1]"
+        v-for="(v, i) in new Array(5)"
         :key="i"
       >
         <ContentLoader class="md:hidden" :height="200">
