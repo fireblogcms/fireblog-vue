@@ -1,5 +1,8 @@
 <template>
-  <nav class=" px-4 flex items-center justify-between sm:px-0">
+  <nav
+    class="flex items-center justify-between sm:px-0"
+    v-show="pagesNumber > 1"
+  >
     <div class="mx-auto">
       <router-link
         v-for="i in pagesNumber"

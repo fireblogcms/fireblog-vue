@@ -182,7 +182,7 @@ import { deletePostMutation } from "@/utils/queries";
 import striptags from "striptags";
 import PostList from "@/components/PostList";
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 20;
 
 // if no filters are specified in the url,
 // use those default filters to fetch post
@@ -346,7 +346,7 @@ export default {
     onDeleteModalConfirmClick() {
       this.deletePost(this.deleteModal.post).then(() => {
         this.closeDeletePostModal();
-        this.viewData();
+        this.initData();
       });
     },
     onWriteNewPostClick() {
