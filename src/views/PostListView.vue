@@ -247,7 +247,6 @@ export default {
         this.getViewData(),
         this.getPosts({ status: this.activeStatus, skip: 0 }),
       ]);
-      console.log("data", result);
       return result;
     },
     getViewData() {
@@ -327,10 +326,12 @@ export default {
     onStatusClick(status) {
       if (status !== this.activeStatus) {
         this.getPosts({ status });
-        this.$router.replace({
-          path: this.$router.currentRoute.path,
-          query: { page: 1 },
-        });
+        if (this.$route.query.page && this.$route.query.page > 1) {
+          this.$router.replace({
+            path: this.$router.currentRoute.path,
+            query: {},
+          });
+        }
       }
       this.activeStatus = status;
     },
@@ -367,8 +368,6 @@ export default {
 };
 
 function getPostsQuery({ filter, sort, limit, skip }) {
-  //const filter = { blog: $blogId, status: PUBLISHED };
-  // const sort = { publishedAt: desc }
   return apolloClient.query({
     variables: {
       filter,
