@@ -46,12 +46,13 @@
           })
         "
       >
-        <div class="flex flex-1 mr-2">
+        <div class="flex flex-1 flex-col md:flex-row md:mr-10">
           <div
+            style="flex:0 0 200px"
             v-show="post.image"
             v-lazy:background-image="post.image"
-            class="w-40 mr-10 rounded bg-center bg-no-repeat bg-cover"
-          ></div>
+            class="md:mr-5 mb-5 md:mb-0 rounded bg-center bg-no-repeat bg-cover"
+          />
           <div>
             <p class="text-xl md:text-2xl font-bold text-gray-800">
               {{ post.title }}
@@ -92,11 +93,11 @@
               </span>
             </p>
 
-            <div class="mt-3">
+            <div class="mt-4">
               <span
                 :key="tag.name"
                 v-for="tag in post.tags"
-                class="bg-gray-200 shadow-sm rounded text-current p-2 mr-1"
+                class="bg-gray-200 text-gray-700 shadow-sm rounded text-current p-2 mr-2"
               >
                 {{ tag.name }}
               </span>
@@ -142,6 +143,19 @@ export default {
     this.striptags = striptags;
   },
   methods: {
+    teaser(post) {
+      const limit = 150;
+      let content;
+      if (post.node.teaser.trim()) {
+        content = striptags(post.node.teaser.trim());
+      } else {
+        content = post.node.content ? striptags(post.node.content.trim()) : "";
+      }
+      const contentLength = content.length;
+      const truncatedContent = content.substr(0, limit);
+      const ellipsis = contentLength > limit ? "..." : "";
+      return truncatedContent + ellipsis;
+    },
     publishedOnDate(item) {
       return formatDate(new Date(item.publishedAt), "ddMyyyyhhmm");
     },

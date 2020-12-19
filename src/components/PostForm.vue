@@ -116,7 +116,7 @@
     <div v-if="!loadingAsyncData">
       <div class="container mx-auto pt-10 pb-16 flex flex-col items-center">
         <div
-          class="w-full max-w-850 p-12 border border-gray-200 rounded bg-white"
+          class="p-16 w-full max-w-900 border border-gray-200 rounded bg-white"
         >
           <form @submit.prevent class="bg-white">
             <textarea-autosize

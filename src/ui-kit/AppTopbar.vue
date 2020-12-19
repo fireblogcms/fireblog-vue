@@ -1,6 +1,6 @@
 <template>
-  <div class="relative h-20 z-20 bg-white" :class="`route-${$route.name}`">
-    <div class="h-full flex justify-between px-3 py-4 container mx-auto">
+  <div class="relative z-20 bg-white shadow" :class="`route-${$route.name}`">
+    <div class="h-full flex justify-between px-3 py-2 container mx-auto">
       <div class="flex items-center">
         <!--
         <img
@@ -169,23 +169,6 @@
             support@fireblogcms.com
           </a>
         </div>
-        <div class="flex items-center mt-2">
-          <span
-            @click.prevent="onChatSupportClick"
-            class="text-primary font-bold cursor-pointer"
-          >
-            {{ $t("contactModal.chatWithUs") }}
-          </span>
-        </div>
-        <div class="flex items-center mt-2">
-          <a
-            href="https://discord.gg/zuNUKNx3hH"
-            target="_blank"
-            class="text-primary font-bold cursor-pointer"
-          >
-            {{ $t("contactModal.discord") }}
-          </a>
-        </div>
       </div>
     </AppModal>
 
@@ -264,14 +247,6 @@ export default {
       // goal: open GraphQL Explorer
       window._paq.push(["trackGoal", 7]);
       window.open(this.blogSetApiUrl, "_blank");
-    },
-    onChatSupportClick() {
-      // goal: try to contact support by tchat
-      window._paq.push(["trackGoal", 8]);
-      window._paq.push(["trackEvent", "Support", "Tchat", "Open"]);
-      if ($crisp) {
-        $crisp.push(["do", "chat:open"]);
-      }
     },
     onMailSupportClick() {
       // goal: try to contact support by mail

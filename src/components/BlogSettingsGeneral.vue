@@ -26,11 +26,13 @@
             )
           }}
         </label>
+        <!--
         <p class="mb-4 text-sm">
           {{
             $t("views.blogSettings.generalSettingsForm.fields.description.help")
           }}
         </p>
+        -->
         <AppTextarea
           :value="vuexFormGetValue(formId, 'description')"
           @input="vuexFormSetValue(formId, 'description', $event)"
@@ -42,9 +44,11 @@
         <label class="text-md font-bold">
           {{ $t("views.blogSettings.generalSettingsForm.fields.image.label") }}
         </label>
+        <!--
         <p class="mb-4 text-sm">
           {{ $t("views.blogSettings.generalSettingsForm.fields.image.help") }}
         </p>
+        -->
         <S3ImageUpload
           :blogId="$route.params.blogId"
           @onUploadingStateChange="onUploadingStateChange"
