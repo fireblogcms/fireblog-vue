@@ -183,7 +183,7 @@ import { deletePostMutation } from "@/utils/queries";
 import striptags from "striptags";
 import PostList from "@/components/PostList";
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 30;
 
 export default {
   components: {
