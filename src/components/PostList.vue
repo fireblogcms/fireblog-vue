@@ -107,19 +107,46 @@
               </div>
             </div>
             <div class="flex justify-end">
-              <div
-                @click.stop="onMoreActionsClick(post)"
-                class="py-4 px-6 flex items-center"
-              >
-                <img width="25" src="/images/icon-three-dots.svg" />
-              </div>
+              <AppButton size="sm" @click="onDeleteClick(post)">
+                <span class="">
+                  <img width="20" src="/images/icon-delete.svg" />
+                </span>
+              </AppButton>
             </div>
           </div>
         </div>
       </div>
     </template>
 
-    <!-- MORE ACTIONS MODAL -->
+    <!-- DELETE POST MODAL -->
+    <AppModal width="sm" name="deletePostModal" v-if="deleteModal.post">
+      <div class="text-2xl font-bold" slot="header">
+        {{ deleteModal.title }}
+      </div>
+      <div class="flex flex-col items-center" slot="body">
+        <p class="text-xl">
+          {{
+            $t("views.postList.deleteModal.content", {
+              postTitle: deleteModal.post.title,
+            })
+          }}
+        </p>
+        <div class="flex items-center justify-center mt-10">
+          <AppButton class="mr-2" @click="closeDeletePostModal">
+            {{ $t("global.cancel").toUpperCase() }}
+          </AppButton>
+          <AppButton
+            :loading="deletePostRequestState === 'PENDING'"
+            color="danger"
+            @click="onDeleteModalConfirmClick"
+          >
+            {{ $t("views.postList.deleteModal.confirmButton").toUpperCase() }}
+          </AppButton>
+        </div>
+      </div>
+    </AppModal>
+
+    <!-- MORE ACTIONS MODAL
     <AppModal name="moreActionsModal" width="sm" v-if="moreActionsModal.post">
       <div class="text-2xl font-bold" slot="header">
         {{ moreActionsModal.post.title }}
@@ -136,7 +163,6 @@
               {{ $t("views.postList.deleteButton") }}
             </AppButton>
 
-            <!--
             <AppButton
               v-if="moreActionsModal.post.status === 'DRAFT'"
               class="mt-3"
@@ -147,9 +173,7 @@
             >
               {{ $t("views.postForm.publishButton") }}
             </AppButton>
-            -->
 
-            <!--
             <AppButton
               v-if="moreActionsModal.post.status === 'PUBLISHED'"
               class="mt-3"
@@ -159,42 +183,12 @@
             >
               {{ $t("views.postForm.unpublishButton") }}
             </AppButton>
-            -->
+
           </div>
         </div>
       </div>
     </AppModal>
-
-    <!-- DELETE POST MODAL -->
-    <AppModal width="sm" name="deletePostModal" v-if="deleteModal.post">
-      <div class="text-2xl font-bold" slot="header">
-        {{ deleteModal.title }}
-      </div>
-      <div class="flex flex-col items-center" slot="body">
-        <p class="text-xl">
-          {{
-            $t("views.postList.deleteModal.content", {
-              postTitle: deleteModal.post.title,
-            })
-          }}
-        </p>
-        <div
-          class="flex flex-col md:flex-row items-center justify-center mt-10"
-        >
-          <AppButton class="mx-4" @click="closeDeletePostModal">
-            {{ $t("global.cancel") }}
-          </AppButton>
-          <AppButton
-            :loading="deletePostRequestState === 'PENDING'"
-            class="mt-4 md:mt-0 mx-4"
-            color="danger"
-            @click="onDeleteModalConfirmClick"
-          >
-            {{ $t("views.postList.deleteModal.confirmButton") }}
-          </AppButton>
-        </div>
-      </div>
-    </AppModal>
+    -->
   </div>
 </template>
 

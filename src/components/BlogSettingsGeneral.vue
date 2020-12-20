@@ -58,6 +58,7 @@
       </div>
 
       <div>
+        <!--
         <label class="text-2xl font-bold">{{
           $t("views.blogCreate.fields.ambiance.label")
         }}</label>
@@ -78,6 +79,7 @@
           :value="vuexFormGetValue(formId, 'backgroundImage')"
           @change="onBackgroundImageChange"
         />
+        -->
       </div>
 
       <AppButton

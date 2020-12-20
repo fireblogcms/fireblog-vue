@@ -13,17 +13,15 @@
 
     <div
       v-if="viewDataState === 'FINISHED_OK'"
-      class="bg-white max-w-1000 mx-auto rounded-xl my-12 p-10"
+      class="bg-white max-w-1000 mx-auto shadow rounded-xl my-12 p-10"
     >
       <div class="flex flex-col md:flex-row justify-between items-center">
-        <div class="">
+        <div>
           <h1 class="text-xl md:text-2xl font-bold uppercase text-primary">
             {{ viewData.blog.name }}
           </h1>
         </div>
-        <div
-          class="flex flex-row-reverse justify-end md:flex-row md:justify-end items-center"
-        >
+        <div class="mt-5 md:mt-0 flex md:flex-row md:justify-end items-center">
           <AppButton
             class="mr-4"
             @click="
@@ -82,7 +80,7 @@
         <div class="">
           <ul class="flex mt-10">
             <li
-              class="cursor-pointer relative rounded-2xl"
+              class="cursor-pointer relative rounded-xl"
               @click="onStatusClick('PUBLISHED')"
               :class="{
                 'bg-gray-200': activeStatus == 'PUBLISHED',
@@ -98,7 +96,7 @@
               </div>
             </li>
             <li
-              class="cursor-pointer rounded-2xl relative"
+              class="cursor-pointer rounded-xl relative"
               @click="onStatusClick('DRAFT')"
               :class="{ 'bg-gray-200': activeStatus == 'DRAFT' }"
             >
@@ -113,7 +111,7 @@
               <div class="shadow-mask" v-show="activeStatus == 'DRAFT'" />
             </li>
           </ul>
-          <div class="mb-20 mt-5">
+          <div class="mb-20 mt-10">
             <PostList
               :loading="getPostsState === 'PENDING'"
               @onPostDelete="onPostDelete"

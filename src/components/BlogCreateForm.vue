@@ -41,6 +41,7 @@
       <AppTextarea class="mt-3" v-model="inputs.description" maxlength="250" />
     </div>
 
+    <!--
     <div class="mt-10">
       <label class="text-2xl font-bold">{{
         $t("views.blogCreate.fields.ambiance.label")
@@ -57,6 +58,7 @@
         @change="onBackgroundImageChange"
       />
     </div>
+    -->
 
     <div class="flex flex-col md:flex-row items-center justify-center mt-10">
       <AppButton

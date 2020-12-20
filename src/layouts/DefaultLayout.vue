@@ -27,6 +27,7 @@ export default {
       return !hideForRoutes.includes(this.$route.name);
     },
   },
+  /*
   watch: {
     $route: {
       handler: function(value) {
@@ -46,5 +47,6 @@ export default {
       immediate: true,
     },
   },
+  */
 };
 </script>

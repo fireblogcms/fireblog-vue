@@ -5,7 +5,7 @@
         <div class="">
           <!-- BLOGSET TITLE -->
           <div
-            class="bg-white shadow-2xl p-10 rounded-xl m-5"
+            class="bg-white shadow p-10 rounded-xl m-5"
             v-for="blogSet in viewData.blogSets"
             :key="blogSet._id"
           >
@@ -23,12 +23,12 @@
               <div>
                 <AppButton
                   color="primary"
-                  class="mb-2"
+                  class="mt-4 md:mt-0"
                   @click="onCreateNewBlogClick(blogSet)"
                 >
-                  <span class="text-sm uppercase md:text-lg">{{
-                    $t("views.blogList.createNewBlogButton")
-                  }}</span>
+                  <span class="text-sm uppercase md:text-lg">
+                    {{ $t("views.blogList.createNewBlogButton") }}
+                  </span>
                 </AppButton>
               </div>
             </div>

@@ -15,7 +15,7 @@
         <AppButton
           class="lg:hidden mx-1"
           color="primary-outlined"
-          size="small"
+          size="sm"
           @click="isActionsVisibleOnMobile = !isActionsVisibleOnMobile"
         >
           <img class="w-6" src="/images/pencil.svg" />
@@ -35,7 +35,7 @@
             "
             :disabled="savingPost.state === 'PENDING'"
             class="mb-4 lg:mb-0 lg:mr-4"
-            size="small"
+            size="sm"
             @click="saveAsDraft"
           >
             <span class="text-sm md:text-md">
@@ -48,7 +48,7 @@
             v-if="existingPost && existingPost.status === 'PUBLISHED'"
             :disabled="savingPost.state === 'PENDING'"
             class="mb-4 lg:mb-0 lg:mr-4"
-            size="small"
+            size="sm"
             @click="showAdvancedSettings"
           >
             <span class="text-sm md:text-md">
@@ -66,7 +66,7 @@
             :disabled="savingPost.state === 'PENDING'"
             class="lg:mr-4"
             color="primary-outlined"
-            size="small"
+            size="sm"
             @click="showAdvancedSettings"
           >
             <span class="text-sm md:text-md">
@@ -82,7 +82,7 @@
             "
             :disabled="savingPost.state === 'PENDING'"
             class="mb-4 lg:mb-0 lg:mr-4"
-            size="small"
+            size="sm"
             @click="onUnpublishClick"
           >
             <span class="text-sm md:text-md">
@@ -100,7 +100,7 @@
             :disabled="savingPost.state === 'PENDING'"
             class="lg:mr-4"
             color="primary-outlined"
-            size="small"
+            size="sm"
             @click="publish"
           >
             <span class="text-sm md:text-md">
@@ -157,12 +157,18 @@
             -
             {{
               $t("views.postForm.savedAt {time}", {
-                time: formatDate(new Date(existingPost.updatedAt), "long"),
+                time: formatDate(
+                  new Date(existingPost.updatedAt),
+                  "shortWithTime"
+                ),
               })
             }}
           </span>
         </div>
-        <div ref="wordcount" class="post-form__document-infos__word-count" />
+        <div
+          ref="wordcount"
+          class="hidden md:visible post-form__document-infos__word-count"
+        />
       </div>
     </footer>
 
@@ -181,7 +187,7 @@
           <AppButton
             class="mr-4"
             @click="closePublishingOptionsModal"
-            size="small"
+            size="sm"
           >
             <span class="uppercase">
               {{ $t("views.postForm.publicationCancel") }}
@@ -189,7 +195,7 @@
           </AppButton>
           <AppButton
             color="primary"
-            size="small"
+            size="sm"
             :loading="
               savingPost.state === 'PENDING' &&
                 savingPost.status === 'PUBLISHED'
@@ -218,7 +224,7 @@
         {{ $t("views.postForm.firstPublicationHurralModal.title") }}
       </div>
       <div class="flex flex-col items-center" slot="body">
-        <img class="h-64 mb-10 rounded" :src="getRandomHurrahGif()" />
+        <img class="rounded" :src="getRandomHurrahGif()" />
       </div>
     </AppModal>
 

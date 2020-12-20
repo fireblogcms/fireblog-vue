@@ -1,5 +1,5 @@
 <template>
-  <div class="relative z-20 bg-white shadow" :class="`route-${$route.name}`">
+  <div class="relative z-20 bg-white shadow-xs" :class="`route-${$route.name}`">
     <div class="h-full flex justify-between px-3 py-2 container mx-auto">
       <div class="flex items-center">
         <!--
@@ -25,7 +25,7 @@
           -->
         </portal-target>
 
-        <AppButton size="small" v-if="isApiHelpVisible()" @click="onApiClick">
+        <AppButton size="sm" v-if="isApiHelpVisible()" @click="onApiClick">
           <img class="w-6 md:mr-2" src="/images/graphql.svg" />
           <span class="text-sm md:text-md">
             <span class="hidden md:inline">API</span>
@@ -33,7 +33,7 @@
         </AppButton>
 
         <AppButton
-          size="small"
+          size="sm"
           class="ml-2"
           v-if="isContactVisible()"
           @click="onContactClick"
