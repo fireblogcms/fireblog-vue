@@ -61,6 +61,7 @@ export default {
   "views.blogCreate.fields.description.help": "This description will appear in search engine results or when sharing blog's link on social networks.",
   "views.blogCreate.gladToSeeYouHere": "Glad to see you here",
   "views.blogSetList.title": "My blogs",
+  "views.blogCreate.surpriseName": "Surprise name",
   "views.blogSetList.paymentSuccess": "Congratulations, you successfully subscribed to Fireblog!",
   "views.blogSetList.unsubscribeSuccess": "You successfully unsubscribed from Fireblog...",
   "views.blogList.createNewBlogButton": "New blog",

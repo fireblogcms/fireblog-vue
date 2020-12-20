@@ -25,11 +25,12 @@
       v-if="posts.length === 0"
       class="flex-1 flex items-center justify-center"
     >
-      <p class="text-center text-xl">
-        <span v-if="context.activeStatus === 'PUBLISHED'">
+      <p class="text">
+        <img width="150" class="mx-auto" src="/images/desert.svg" />
+        <span class="text-gray-600" v-if="context.activeStatus === 'PUBLISHED'">
           {{ $t("views.postList.noPublishedPostFound") }}
         </span>
-        <span v-if="context.activeStatus === 'DRAFT'">
+        <span class="text-gray-600" v-if="context.activeStatus === 'DRAFT'">
           {{ $t("views.postList.noDraftPostFound") }}
         </span>
       </p>

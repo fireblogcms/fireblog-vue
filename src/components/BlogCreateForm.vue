@@ -23,7 +23,7 @@
         </div>
         <div class="ml-2">
           <AppButton @click="poeticName()">
-            🐣 Nom surprise
+            🐣 {{ $t("views.blogCreate.surpriseName").toUpperCase() }}
           </AppButton>
         </div>
       </div>
@@ -60,17 +60,13 @@
     </div>
     -->
 
-    <div class="flex flex-col md:flex-row items-center justify-center mt-10">
-      <AppButton
-        v-if="!isFirstBlog"
-        class="mb-4 md:mb-0 mx-4"
-        @click="$router.push('/')"
-      >
+    <div class="flex items-center justify-center mt-10">
+      <AppButton v-if="!isFirstBlog" class="mr-4" @click="$router.push('/')">
         {{ $t("views.blogCreate.cancelButton").toUpperCase() }}
       </AppButton>
       <AppButton
         :loading="savingBlogState === 'PENDING'"
-        class="mx-4"
+        class=""
         color="primary"
         @click="onCreateClick"
       >

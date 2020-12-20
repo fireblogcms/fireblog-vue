@@ -60,6 +60,7 @@ export default {
   "views.blogCreate.fields.title.help": "Un blog est un conteneur qui contiendra vos articles. Vous pouvez créez autant de blogs que vous voulez.",
   "views.blogCreate.fields.title.required": "Le nom est requis",
   "views.blogCreate.gladToSeeYouHere": "Ravi de vous voir ici",
+  "views.blogCreate.surpriseName": "Nom surprise",
   "views.blogSetList.title": "Mes blogs",
   "views.blogSetList.paymentSuccess": "Félicitations, vous vous êtes abonné à Fireblog avec succès !",
   "views.blogSetList.unsubscribeSuccess": "Vous vous êtes désabonné de Fireblog avec succès...",

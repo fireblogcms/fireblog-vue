@@ -4,7 +4,7 @@
       {{ label }}
     </label>
     <select
-      class="p-4 bg-gray-100 text-xl shadow-sm border rounded w-full text-current focus:outline-none focus:shadow-outline"
+      class="p-3 bg-gray-100 text-xl shadow-sm border rounded w-full text-current focus:outline-none focus:shadow-outline"
       :value="value"
       @change="$emit('change', $event.target.value)"
     >

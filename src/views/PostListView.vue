@@ -58,7 +58,7 @@
       </div>
 
       <div v-if="isFirstPost" class="my-20">
-        <h2 class="text-center text-3xl font-bold">
+        <h2 class="text-center text-gray-800 text-2xl">
           {{ $t("views.postList.firstBlogSentence") }}
         </h2>
         <div class="mt-8 flex justify-center">
@@ -73,6 +73,9 @@
           >
             {{ $t("views.postList.firstPostWriteButton").toUpperCase() }}
           </AppButton>
+        </div>
+        <div>
+          <img width="300" class="mx-auto" src="/images/woman-writing.png" />
         </div>
       </div>
 

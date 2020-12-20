@@ -17,7 +17,6 @@ export default {
   },
   data() {
     return {
-      style: {},
       blog: null,
     };
   },
@@ -25,6 +24,13 @@ export default {
     isTopbarVisible() {
       const hideForRoutes = ["auth0Callback"];
       return !hideForRoutes.includes(this.$route.name);
+    },
+  },
+  computed: {
+    style() {
+      return {
+        background: `center / cover url("/wallpapers/wallpaper-4.jpg")`,
+      };
     },
   },
   /*
