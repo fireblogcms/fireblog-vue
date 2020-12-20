@@ -141,7 +141,7 @@ export default {
   "views.postList.deleteModal.content": "Attention ! Cette action est irréversible. {postTitle} sera effacé définitivement.",
   "views.postList.draftTab": "Brouillons",
   "views.postList.firstBlogSentence": "Il est temps d'écrire le premier article de ce blog !",
-  "views.postList.firstPostWriteButton": "✨ Écrire",
+  "views.postList.firstPostWriteButton": "Écrire",
   "views.postList.noPostFound": "Aucun article trouvé pour le moment",
   "views.postList.noPublishedPostFound": "Aucun article publié pour le moment.",
   "views.postList.noDraftPostFound": "Aucun brouillon trouvé pour le moment.",

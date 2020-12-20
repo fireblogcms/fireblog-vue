@@ -26,7 +26,12 @@
       class="flex-1 flex items-center justify-center"
     >
       <p class="text-center text-xl">
-        {{ $t("views.postList.noPostFound") }}
+        <span v-if="context.activeStatus === 'PUBLISHED'">
+          {{ $t("views.postList.noPublishedPostFound") }}
+        </span>
+        <span v-if="context.activeStatus === 'DRAFT'">
+          {{ $t("views.postList.noDraftPostFound") }}
+        </span>
       </p>
     </div>
 
@@ -216,6 +221,10 @@ export default {
     },
     loading: {
       type: Boolean,
+      required: true,
+    },
+    context: {
+      type: Object,
       required: true,
     },
   },

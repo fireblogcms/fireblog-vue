@@ -119,6 +119,7 @@
               @onPostDelete="onPostDelete"
               @onPostPublicationStatusChange="onPostPublicationStatusChange"
               :posts="posts"
+              :context="{ activeStatus }"
             />
             <div class="mt-10">
               <AppPagination

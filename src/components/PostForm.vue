@@ -219,9 +219,6 @@
       </div>
       <div class="flex flex-col items-center" slot="body">
         <img class="h-64 mb-10 rounded" :src="getRandomHurrahGif()" />
-        <AppButton color="primary" @click="closePublishingSuccessModal">
-          {{ $t("global.okayButton") }}
-        </AppButton>
       </div>
     </AppModal>
 
@@ -232,9 +229,6 @@
       </div>
       <div class="flex flex-col items-center" slot="body">
         <img class="h-64 mb-10 rounded" :src="getRandomHurrahGif()" />
-        <AppButton color="primary" @click="closePublishingChangesSuccessModal">
-          {{ $t("global.okayButton") }}
-        </AppButton>
       </div>
     </AppModal>
   </div>
