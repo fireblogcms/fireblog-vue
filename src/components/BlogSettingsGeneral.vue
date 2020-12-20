@@ -57,6 +57,29 @@
         />
       </div>
 
+      <div>
+        <label class="text-2xl font-bold">{{
+          $t("views.blogCreate.fields.ambiance.label")
+        }}</label>
+        <AppFieldSelect
+          class="mb-6"
+          :options="[
+            { value: '__NONE__', label: 'Aucune' },
+            {
+              value: '/illustrations/landscape-1.jpg',
+              label: 'Village and forest',
+            },
+            { value: '/illustrations/landscape-2.jpg', label: 'Blue moutains' },
+            {
+              value: '/illustrations/landscape-3.jpg',
+              label: 'Aurore',
+            },
+          ]"
+          :value="vuexFormGetValue(formId, 'backgroundImage')"
+          @change="onBackgroundImageChange"
+        />
+      </div>
+
       <AppButton
         type="submit"
         color="primary-outlined"
@@ -74,6 +97,7 @@ import AppButton from "@/ui-kit/AppButton";
 import AppFieldText from "@/ui-kit/AppFieldText";
 import AppPanel from "@/ui-kit/AppPanel";
 import AppTextarea from "@/ui-kit/AppTextarea";
+import AppFieldSelect from "@/ui-kit/AppFieldSelect";
 import { getBlog, REQUEST_STATE, toast } from "@/utils/helpers";
 import {
   vuexFormInit,
@@ -96,6 +120,7 @@ function initialFormValues(blog) {
     name: blog.name ? blog.name : "",
     description: blog.description ? blog.description : "",
     image: blog.image ? blog.image.url : null,
+    backgroundImage: blog.backgroundImage ? blog.backgroundImage : null,
   };
   return values;
 }
@@ -107,6 +132,7 @@ export default {
     AppPanel,
     AppTextarea,
     S3ImageUpload,
+    AppFieldSelect,
   },
   props: {
     blog: {
@@ -130,6 +156,13 @@ export default {
     });
   },
   methods: {
+    onBackgroundImageChange(value) {
+      if (value === "__NONE__") {
+        value = null;
+      }
+      vuexFormSetValue(formId, "backgroundImage", value);
+      this.$store.commit("backgroundImage", value);
+    },
     onUploadingStateChange(state) {
       this.uploadBlogImageState = state;
     },
@@ -179,6 +212,7 @@ export default {
         name: vuexFormGetValue(formId, "name"),
         description: vuexFormGetValue(formId, "description"),
         image: vuexFormGetValue(formId, "image"),
+        backgroundImage: vuexFormGetValue(formId, "backgroundImage"),
       };
       this.updateBlog(blog)
         .then(updatedBlog => {
