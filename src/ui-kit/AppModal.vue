@@ -15,15 +15,15 @@
           'w-full h-screen': width === 'fullscreen',
         }"
       >
-        <div class="p-6 flex items-center justify-between container mx-auto">
-          <div class="flex-grow text-center">
+        <div class="p-6 flex justify-between container mx-auto items-start">
+          <div class="flex-grow">
             <slot name="header" />
           </div>
 
           <div
             v-if="width !== 'fullscreen'"
             @click="close"
-            class="font-bold cursor-pointer"
+            class="font-bold cursor-pointer bg-gray-200 rounded-full p-3 align-self"
           >
             <img width="15" src="/images/icon-close.png" />
           </div>

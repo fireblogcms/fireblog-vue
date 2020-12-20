@@ -113,7 +113,7 @@
         <input
           type="text"
           disabled
-          class="bg-gray-100 rounded-md w-full px-2 overflow-x-auto"
+          class="bg-gray-100 rounded-md w-full px-2 py-3 text-lg overflow-x-auto"
           :value="blogSetApiUrl"
         />
 
@@ -153,12 +153,12 @@
     </AppModal>
 
     <!-- CONTACT -->
-    <AppModal name="contactModal">
-      <div class="text-2xl font-bold" slot="header">
+    <AppModal width="sm" name="contactModal">
+      <div class="text-2xl font-bold leading-7" slot="header">
         {{ $t("contactModal.title") }}
       </div>
       <div class="flex flex-col items-center" slot="body">
-        <img v-if="supportGif" class="h-64 mb-4 rounded" :src="supportGif" />
+        <img v-if="supportGif" class="mb-4 rounded" :src="supportGif" />
         <p>{{ $t("contactModal.content") }}</p>
         <div class="flex items-center mt-2">
           <a

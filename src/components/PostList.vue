@@ -114,7 +114,7 @@
       </div>
     </template>
 
-    <!-- DELETE POST MODAL -->
+    <!-- MORE ACTIONS MODAL -->
     <AppModal name="moreActionsModal" width="sm" v-if="moreActionsModal.post">
       <div class="text-2xl font-bold" slot="header">
         {{ moreActionsModal.post.title }}
@@ -166,15 +166,48 @@
         </div>
       </div>
     </AppModal>
+
+    <!-- DELETE POST MODAL -->
+    <AppModal width="md" name="deletePostModal" v-if="deleteModal.post">
+      <div class="text-2xl font-bold" slot="header">
+        {{ deleteModal.title }}
+      </div>
+      <div class="flex flex-col items-center" slot="body">
+        <p class="text-xl">
+          {{
+            $t("views.postList.deleteModal.content", {
+              postTitle: deleteModal.post.title,
+            })
+          }}
+        </p>
+        <div
+          class="flex flex-col md:flex-row items-center justify-center mt-10"
+        >
+          <AppButton class="mx-4" @click="closeDeletePostModal">
+            {{ $t("global.cancel") }}
+          </AppButton>
+          <AppButton
+            :loading="deletePostRequestState === 'PENDING'"
+            class="mt-4 md:mt-0 mx-4"
+            color="danger"
+            @click="onDeleteModalConfirmClick"
+          >
+            {{ $t("views.postList.deleteModal.confirmButton") }}
+          </AppButton>
+        </div>
+      </div>
+    </AppModal>
   </div>
 </template>
 
 <script>
 import AppButton from "@/ui-kit/AppButton";
 import striptags from "striptags";
-import { formatDate } from "@/utils/helpers";
+import { formatDate, REQUEST_STATE } from "@/utils/helpers";
 import { ContentLoader } from "vue-content-loader";
 import AppModal from "@/ui-kit/AppModal";
+import apolloClient from "@/utils/apolloClient";
+import { deletePostMutation } from "@/utils/queries";
 
 export default {
   components: {
@@ -194,7 +227,13 @@ export default {
   },
   data() {
     return {
+      deletePostRequestState: REQUEST_STATE.NOT_STARTED,
       moreActionsModal: {
+        post: null,
+      },
+      deleteModal: {
+        title: null,
+        data: null,
         post: null,
       },
     };
@@ -222,9 +261,6 @@ export default {
     updatedOnDate(item) {
       return formatDate(new Date(item.updatedAt), "long");
     },
-    onDeleteClick(post) {
-      this.$emit("onDeleteClick", post);
-    },
     onMoreActionsClick(post) {
       this.moreActionsModal.post = post;
       this.$store.commit("modalShowing/open", "moreActionsModal");
@@ -232,6 +268,41 @@ export default {
     closeMoreActionsModal() {
       this.moreActionsModal.post = null;
       this.$store.commit("modalShowing/close", "moreActionsModal");
+    },
+    onDeleteClick(post) {
+      this.deleteModal.post = post;
+      this.deleteModal.title = this.$t("views.postList.deleteModal.title", {
+        postTitle: post.title,
+      });
+      this.$store.commit("modalShowing/open", "deletePostModal");
+    },
+    onDeleteModalConfirmClick() {
+      this.deletePost(this.deleteModal.post).then(() => {
+        this.closeDeletePostModal();
+      });
+    },
+    closeDeletePostModal() {
+      this.$store.commit("modalShowing/close", "deletePostModal");
+    },
+    deletePost(post) {
+      this.deletePostRequestState = REQUEST_STATE.PENDING;
+      return apolloClient
+        .mutate({
+          mutation: deletePostMutation,
+          variables: { id: post._id },
+        })
+        .then(async result => {
+          this.deletePostRequestState = REQUEST_STATE.FINISHED_OK;
+          const post = result.data.deletePost;
+          this.$emit("onPostDelete", post);
+          return result;
+        })
+        .catch(error => {
+          this.deletePostRequestState = REQUEST_STATE.FINISHED_ERROR;
+          toast(this, "Sorry, an error occured while fetching posts", "error");
+          this.closeDeletePostModal();
+          throw new Error(error);
+        });
     },
     onUnpublishClick() {
       alert("unpublish");

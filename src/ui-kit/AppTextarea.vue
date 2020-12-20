@@ -5,7 +5,7 @@
     </label>
     <div>
       <textarea
-        class="min-h-10 bg-gray-100 border border-gray-200 text-xl shadow-sm appearance-none rounded-lg w-full p-3 text-current focus:outline-none focus:shadow-outline"
+        class="min-h-10 bg-gray-100 border border-gray-200 text-lg shadow-sm appearance-none rounded-lg w-full p-3 text-current focus:outline-none focus:shadow-outline"
         :class="{ 'border-red-500': error }"
         :value="value"
         @input="$emit('input', $event.target.value)"

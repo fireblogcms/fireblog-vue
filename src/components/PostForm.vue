@@ -213,7 +213,7 @@
     </AppModal>
 
     <!-- SUCCESS MODAL FOR FIRST PUBLICATION -->
-    <AppModal name="publishingSuccessModal">
+    <AppModal width="sm" name="publishingSuccessModal">
       <div class="text-2xl font-bold" slot="header">
         {{ $t("views.postForm.firstPublicationHurralModal.title") }}
       </div>
@@ -226,7 +226,7 @@
     </AppModal>
 
     <!-- SUCCESS MODAL WHEN PUBLISHING CHANGES ON ALREADY PUBLISHED POST -->
-    <AppModal name="publishingChangesSuccessModal">
+    <AppModal width="sm" name="publishingChangesSuccessModal">
       <div class="text-xl font-bold" slot="header">
         {{ $t("views.postForm.publishChangesHurralModal.title") }}
       </div>
