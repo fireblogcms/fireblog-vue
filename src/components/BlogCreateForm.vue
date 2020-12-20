@@ -1,5 +1,5 @@
 <template>
-  <div class="text-center">
+  <div>
     <!-- special text if this is the very first blog :) -->
     <p v-if="isFirstBlog && user" class="mb-12 text-3xl font-bold">
       {{ $t("views.blogCreate.gladToSeeYouHere") }}, {{ user.name }} 🤗
@@ -10,7 +10,7 @@
         $t("views.blogCreate.fields.title.label")
       }}</label>
 
-      <p class="mb-4">{{ $t("views.blogCreate.fields.title.help") }}</p>
+      <!--<p class="mb-4">{{ $t("views.blogCreate.fields.title.help") }}</p>-->
 
       <div class="flex justify-between items-center">
         <div class="flex-1">
@@ -29,7 +29,7 @@
       </div>
     </div>
 
-    <div class="mt-10 mb-16">
+    <div class="mt-10">
       <label class="text-2xl font-bold">{{
         $t("views.blogCreate.fields.description.label")
       }}</label>
@@ -40,7 +40,8 @@
       -->
       <AppTextarea class="mt-3" v-model="inputs.description" maxlength="250" />
     </div>
-    <div>
+    <!--
+    <div class="mt-10">
       <label class="text-2xl font-bold">{{
         $t("views.blogCreate.fields.ambiance.label")
       }}</label>
@@ -56,8 +57,9 @@
         @change="onBackgroundImageChange"
       />
     </div>
+    -->
 
-    <div class="flex flex-col md:flex-row items-center justify-center">
+    <div class="flex flex-col md:flex-row items-center justify-center mt-10">
       <AppButton
         v-if="!isFirstBlog"
         class="mb-4 md:mb-0 mx-4"
@@ -71,7 +73,7 @@
         color="primary"
         @click="onCreateClick"
       >
-        ✨ {{ $t("views.blogCreate.createButton").toUpperCase() }}
+        {{ $t("views.blogCreate.createButton").toUpperCase() }}
       </AppButton>
     </div>
   </div>

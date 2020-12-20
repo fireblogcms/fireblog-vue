@@ -170,7 +170,7 @@
     <AppModal
       v-if="!loadingAsyncData"
       name="publishingOptionsModal"
-      :fullscreen="true"
+      width="fullscreen"
     >
       <div
         class="flex flex-col md:flex-row items-center justify-end flex-1"

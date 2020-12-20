@@ -32,7 +32,7 @@
 
     <template v-if="!loading && posts.length > 0">
       <div
-        class="py-4 md:py-6 flex flex-col md:flex-row cursor-pointer border-b border-gray-300 last:border-b-0"
+        class="md:py-3 flex flex-col md:flex-row cursor-pointer border-b border-gray-200 last:border-b-0"
         v-for="post in posts"
         :key="post._id"
         @click="
@@ -46,75 +46,126 @@
           })
         "
       >
-        <div class="flex flex-1 flex-col md:flex-row md:mr-10">
+        <div class="flex flex-1 flex-col md:flex-row">
           <div
             style="flex:0 0 200px"
             v-show="post.image"
             v-lazy:background-image="post.image"
             class="md:mr-5 mb-5 md:mb-0 rounded bg-center bg-no-repeat bg-cover"
           />
-          <div>
-            <p class="text-xl md:text-2xl font-bold text-gray-800">
-              {{ post.title }}
-            </p>
+          <div class="flex flex-1 justify-between items-center">
+            <div class="flex-1">
+              <p class="text-xl md:text-2xl font-bold text-gray-800">
+                {{ post.title }}
+              </p>
 
-            <p class="text-gray-700 mb-2">
-              {{
-                striptags(
-                  post.teaser.trim()
-                    ? post.teaser.substring(0, 100) + "..."
-                    : post.content.substring(0, 100) + "..."
-                )
-              }}
-            </p>
-            <p class="text-xs uppercase" v-if="post.status === 'DRAFT'">
-              <span class="text-indigo-700">
-                {{
-                  $t("views.postList.updatedOn", {
-                    date: updatedOnDate(post),
-                  })
-                }}
-              </span>
-              -
-              <span class="text-gray-600"
-                >{{ $t("views.postList.readingTime") }} :{{ post.readingTime }}
-                min
-              </span>
-            </p>
-            <p
-              class="text-xs uppercase text-indigo-600"
-              v-if="post.status === 'PUBLISHED'"
-            >
-              <span class="text-indigo-700"> {{ publishedOnDate(post) }}</span>
-              -
-              <span class="text-gray-600">
-                {{ $t("views.postList.readingTime") }} :
-                {{ post.readingTime }} min
-              </span>
-            </p>
-
-            <div class="mt-4">
-              <span
-                :key="tag.name"
-                v-for="tag in post.tags"
-                class="bg-gray-200 text-gray-700 shadow-sm rounded text-current p-2 mr-2"
+              <p class="text-gray-700 mb-2">
+                {{ teaser(post) }}
+              </p>
+              <p class="text-xs uppercase" v-if="post.status === 'DRAFT'">
+                <span class="text-indigo-700">
+                  {{
+                    $t("views.postList.updatedOn", {
+                      date: updatedOnDate(post),
+                    })
+                  }}
+                </span>
+                <span class="text-gray-600 ml-2"
+                  >{{ $t("views.postList.readingTime") }} :{{
+                    post.readingTime
+                  }}
+                  min
+                </span>
+              </p>
+              <p
+                class="text-xs uppercase text-indigo-600"
+                v-if="post.status === 'PUBLISHED'"
               >
-                {{ tag.name }}
-              </span>
+                <span class="text-indigo-700">
+                  {{ publishedOnDate(post) }}</span
+                >
+                -
+                <span class="text-gray-600">
+                  {{ $t("views.postList.readingTime") }} :
+                  {{ post.readingTime }} min
+                </span>
+              </p>
+
+              <div class="mt-4">
+                <span
+                  :key="tag.name"
+                  v-for="tag in post.tags"
+                  class="bg-gray-200 text-gray-700 shadow-sm rounded text-current p-2 mr-2"
+                >
+                  {{ tag.name }}
+                </span>
+              </div>
+            </div>
+            <div class="flex justify-end">
+              <div
+                @click.stop="onMoreActionsClick(post)"
+                class="p-4 flex items-center"
+              >
+                <img width="25" src="/images/icon-three-dots.svg" />
+              </div>
             </div>
           </div>
         </div>
-        <div class="flex justify-end">
-          <AppButton
-            size="small"
-            class="mt-6 md:mt-0"
-            @click="onDeleteClick(post)"
-          >
-            {{ $t("views.postList.deleteButton") }}
-          </AppButton>
-        </div>
       </div>
     </template>
+
+    <!-- DELETE POST MODAL -->
+    <AppModal name="moreActionsModal" width="sm" v-if="moreActionsModal.post">
+      <div class="text-2xl font-bold" slot="header">
+        {{ moreActionsModal.post.title }}
+      </div>
+      <div slot="body">
+        <div class="flex items-center w-full max-w-md mx-auto">
+          <div class="rounded w-full py-4 uppercase">
+            <AppButton
+              buttonClass="text-center"
+              :fullWidth="true"
+              color="danger"
+              @click="onDeleteClick(moreActionsModal.post)"
+            >
+              {{ $t("views.postList.deleteButton") }}
+            </AppButton>
+
+            <AppButton
+              v-if="moreActionsModal.post.status === 'DRAFT'"
+              class="mt-3"
+              buttonClass="text-center"
+              color="primary"
+              :fullWidth="true"
+              @click="onUnpublishClick(moreActionsModal.post)"
+            >
+              {{ $t("views.postForm.publishButton") }}
+            </AppButton>
+
+            <AppButton
+              v-if="moreActionsModal.post.status === 'PUBLISHED'"
+              class="mt-3"
+              buttonClass="text-center"
+              :fullWidth="true"
+              @click="onUnpublishClick(moreActionsModal.post)"
+            >
+              {{ $t("views.postForm.unpublishButton") }}
+            </AppButton>
+          </div>
+
+          <!--
+          <AppButton
+            :loading="deletePostRequestState === 'PENDING'"
+            class="mt-4 md:mt-0 mx-4"
+            color="danger"
+            @click="onDeleteModalConfirmClick"
+          >
+            {{ $t("views.postList.moreActionsModal.confirmButton") }}
+          </AppButton>
+          -->
+        </div>
+      </div>
+    </AppModal>
   </div>
 </template>
 
@@ -123,11 +174,13 @@ import AppButton from "@/ui-kit/AppButton";
 import striptags from "striptags";
 import { formatDate } from "@/utils/helpers";
 import { ContentLoader } from "vue-content-loader";
+import AppModal from "@/ui-kit/AppModal";
 
 export default {
   components: {
     AppButton,
     ContentLoader,
+    AppModal,
   },
   props: {
     posts: {
@@ -139,6 +192,13 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      moreActionsModal: {
+        post: null,
+      },
+    };
+  },
   created() {
     this.striptags = striptags;
   },
@@ -146,10 +206,10 @@ export default {
     teaser(post) {
       const limit = 150;
       let content;
-      if (post.node.teaser.trim()) {
-        content = striptags(post.node.teaser.trim());
+      if (post.teaser.trim()) {
+        content = striptags(post.teaser.trim());
       } else {
-        content = post.node.content ? striptags(post.node.content.trim()) : "";
+        content = post.content ? striptags(post.content.trim()) : "";
       }
       const contentLength = content.length;
       const truncatedContent = content.substr(0, limit);
@@ -164,6 +224,17 @@ export default {
     },
     onDeleteClick(post) {
       this.$emit("onDeleteClick", post);
+    },
+    onMoreActionsClick(post) {
+      this.moreActionsModal.post = post;
+      this.$store.commit("modalShowing/open", "moreActionsModal");
+    },
+    closeMoreActionsModal() {
+      this.moreActionsModal.post = null;
+      this.$store.commit("modalShowing/close", "moreActionsModal");
+    },
+    onUnpublishClick() {
+      alert("unpublish");
     },
   },
 };

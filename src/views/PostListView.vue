@@ -132,7 +132,7 @@
     </div>
 
     <!-- DELETE POST MODAL -->
-    <AppModal name="deletePostModal" v-if="deleteModal.post">
+    <AppModal width="md" name="deletePostModal" v-if="deleteModal.post">
       <div class="text-2xl font-bold" slot="header">
         {{ deleteModal.title }}
       </div>

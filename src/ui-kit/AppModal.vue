@@ -8,8 +8,11 @@
       <div
         class="flex flex-col bg-white animate__animated animate__fadeInUpBig animate__faster"
         :class="{
-          'w-11/12 md:w-1/2 max-h-9/10 shadow-around rounded-lg': !fullscreen,
-          'w-full h-screen': fullscreen,
+          'w-11/12 max-w-md max-h-9/10 shadow-around rounded-lg':
+            width === 'sm',
+          'w-11/12 md:max-w-900 max-h-9/10 shadow-around rounded-lg':
+            width === 'md',
+          'w-full h-screen': width === 'fullscreen',
         }"
       >
         <div class="p-6 flex items-center justify-between container mx-auto">
@@ -18,7 +21,7 @@
           </div>
 
           <div
-            v-if="!fullscreen"
+            v-if="width !== 'fullscreen'"
             @click="close"
             class="font-bold cursor-pointer"
           >
@@ -36,9 +39,10 @@
 <script>
 export default {
   props: {
-    fullscreen: {
-      type: Boolean,
-      default: false,
+    width: {
+      type: String,
+      // "fullscreen", "md", "sm"
+      default: "md",
     },
     name: {
       type: String,
