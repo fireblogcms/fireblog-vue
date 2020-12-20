@@ -104,7 +104,7 @@
             <div class="flex justify-end">
               <div
                 @click.stop="onMoreActionsClick(post)"
-                class="p-4 flex items-center"
+                class="py-4 px-6 flex items-center"
               >
                 <img width="25" src="/images/icon-three-dots.svg" />
               </div>
@@ -131,6 +131,7 @@
               {{ $t("views.postList.deleteButton") }}
             </AppButton>
 
+            <!--
             <AppButton
               v-if="moreActionsModal.post.status === 'DRAFT'"
               class="mt-3"
@@ -141,34 +142,26 @@
             >
               {{ $t("views.postForm.publishButton") }}
             </AppButton>
+            -->
 
+            <!--
             <AppButton
               v-if="moreActionsModal.post.status === 'PUBLISHED'"
               class="mt-3"
               buttonClass="text-center"
               :fullWidth="true"
-              @click="onUnpublishClick(moreActionsModal.post)"
+              @click="onPublishClick(moreActionsModal.post)"
             >
               {{ $t("views.postForm.unpublishButton") }}
             </AppButton>
+            -->
           </div>
-
-          <!--
-          <AppButton
-            :loading="deletePostRequestState === 'PENDING'"
-            class="mt-4 md:mt-0 mx-4"
-            color="danger"
-            @click="onDeleteModalConfirmClick"
-          >
-            {{ $t("views.postList.moreActionsModal.confirmButton") }}
-          </AppButton>
-          -->
         </div>
       </div>
     </AppModal>
 
     <!-- DELETE POST MODAL -->
-    <AppModal width="md" name="deletePostModal" v-if="deleteModal.post">
+    <AppModal width="sm" name="deletePostModal" v-if="deleteModal.post">
       <div class="text-2xl font-bold" slot="header">
         {{ deleteModal.title }}
       </div>
@@ -203,11 +196,12 @@
 <script>
 import AppButton from "@/ui-kit/AppButton";
 import striptags from "striptags";
-import { formatDate, REQUEST_STATE } from "@/utils/helpers";
+import { formatDate, REQUEST_STATE, toast } from "@/utils/helpers";
 import { ContentLoader } from "vue-content-loader";
 import AppModal from "@/ui-kit/AppModal";
 import apolloClient from "@/utils/apolloClient";
 import { deletePostMutation } from "@/utils/queries";
+import gql from "graphql-tag";
 
 export default {
   components: {
@@ -228,6 +222,8 @@ export default {
   data() {
     return {
       deletePostRequestState: REQUEST_STATE.NOT_STARTED,
+      changePostPublicationState: REQUEST_STATE.NOT_STARTED,
+      unchangePostPublicationState: REQUEST_STATE.NOT_STARTED,
       moreActionsModal: {
         post: null,
       },
@@ -299,13 +295,50 @@ export default {
         })
         .catch(error => {
           this.deletePostRequestState = REQUEST_STATE.FINISHED_ERROR;
-          toast(this, "Sorry, an error occured while fetching posts", "error");
+          toast(this, "Sorry, an error occured while deleting post", "error");
           this.closeDeletePostModal();
           throw new Error(error);
         });
     },
-    onUnpublishClick() {
-      alert("unpublish");
+    onUnpublishClick(post) {
+      this.changePostPublicationStatus({ post, status: "DRAFT" });
+    },
+    onPublishClick(post) {
+      this.changePostPublicationStatus({ post, status: "PUBLISHED" });
+    },
+    changePostPublicationStatus({ post, status }) {
+      return apolloClient
+        .mutate({
+          mutation: gql`
+            mutation changePostPublicationStatus(
+              $blogId: ID!
+              $postId: ID!
+              $status: PostPublicationStatus
+            ) {
+              savePost(blog: $blogId, post: { _id: $postId, status: $status }) {
+                _id
+                title
+              }
+            }
+          `,
+          variables: {
+            blogId: this.$route.params.blogId,
+            postId: post._id,
+            status: status,
+          },
+        })
+        .then(async result => {
+          this.changePostPublicationState = REQUEST_STATE.FINISHED_OK;
+          const post = result.data.savePost;
+          this.$emit("onPostPublicationStatusChange", post);
+          return result;
+        })
+        .catch(error => {
+          this.changePostPublicationState = REQUEST_STATE.FINISHED_ERROR;
+          toast(this, "Sorry, an error occured while publishing post", "error");
+          this.$store.commit("modalShowing/close", "moreActionsModal");
+          throw new Error(error);
+        });
     },
   },
 };

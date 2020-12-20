@@ -117,6 +117,7 @@
             <PostList
               :loading="getPostsState === 'PENDING'"
               @onPostDelete="onPostDelete"
+              @onPostPublicationStatusChange="onPostPublicationStatusChange"
               :posts="posts"
             />
             <div class="mt-10">
@@ -138,7 +139,6 @@ import AppBreadcrumb from "@/ui-kit/AppBreadcrumb";
 import AppPagination from "@/ui-kit/AppPagination";
 import AppButton from "@/ui-kit/AppButton";
 import AppLoader from "@/ui-kit/AppLoader";
-import AppModal from "@/ui-kit/AppModal";
 import apolloClient from "@/utils/apolloClient";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import gql from "graphql-tag";
@@ -169,7 +169,6 @@ export default {
     AppBreadcrumb,
     AppButton,
     AppLoader,
-    AppModal,
     DefaultLayout,
     PostList,
     AppPagination,
@@ -258,6 +257,9 @@ export default {
         });
     },
     onPostDelete() {
+      this.initData();
+    },
+    onPostPublicationStatusChange() {
       this.initData();
     },
     onStatusClick(status) {
