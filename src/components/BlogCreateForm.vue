@@ -41,24 +41,17 @@
       <AppTextarea class="mt-3" v-model="inputs.description" maxlength="250" />
     </div>
 
-    <!--
     <div class="mt-10">
       <label class="text-2xl font-bold">{{
         $t("views.blogCreate.fields.ambiance.label")
       }}</label>
       <AppFieldSelect
         class="mb-6"
-        :options="[
-          { value: '__NONE__', label: 'Aucune' },
-          { value: '/illustrations/landscape-1.jpg', label: 'Landscape 1' },
-          { value: '/illustrations/landscape-2.jpg', label: 'Landscape 2' },
-          { value: '/illustrations/landscape-3.jpg', label: 'Landscape 3' },
-        ]"
-        :value="inputs.backgroundImage"
-        @change="onBackgroundImageChange"
+        :options="wallpapersSelectOptions"
+        :value="inputs.wallpaper"
+        @change="onWallPaperChange"
       />
     </div>
-    -->
 
     <div class="flex items-center justify-center mt-10">
       <AppButton v-if="!isFirstBlog" class="mr-4" @click="$router.push('/')">
@@ -90,6 +83,7 @@ import {
   getUserQuery,
   createBlogMutation,
 } from "@/utils/queries";
+import { wallpapersSelectOptions } from "@/config.js";
 
 export default {
   components: {
@@ -109,7 +103,7 @@ export default {
       inputs: {
         name: generate(),
         blogContentDefaultLocale: null,
-        backgroundImage: this.$store.state.global.backgroundImage,
+        wallpaper: this.$store.state.global.wallpaper,
       },
     };
   },
@@ -117,16 +111,17 @@ export default {
     this.initData();
     this.isFirstBlog = this.$route.query.first === "1";
     this.generate = generate;
+    this.wallpapersSelectOptions = wallpapersSelectOptions;
   },
   methods: {
     poeticName() {
       this.inputs.name = generate();
     },
-    onBackgroundImageChange(value) {
+    onWallPaperChange(value) {
       if (value === "__NONE__") {
         value = null;
       }
-      this.$store.commit("backgroundImage", value);
+      this.$store.commit("wallpaper", value);
     },
     async initData() {
       getUser()
@@ -153,7 +148,7 @@ export default {
           mutation: createBlogMutation,
           variables: {
             blog: {
-              backgroundImage: this.inputs.backgroundImage,
+              wallpaper: this.inputs.wallpaper,
               name: this.inputs.name,
               description: this.inputs.description,
               blogSet: this.$route.params.blogSetId,

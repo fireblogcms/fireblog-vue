@@ -70,7 +70,7 @@
       </AppButton>
 
       <AppButton
-        color="primary-outlined"
+        color="primary"
         :loading="savingState === 'PENDING'"
         @click="onSave"
       >

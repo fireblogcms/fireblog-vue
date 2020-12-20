@@ -223,8 +223,8 @@
       <div class="text-2xl font-bold" slot="header">
         {{ $t("views.postForm.firstPublicationHurralModal.title") }}
       </div>
-      <div class="flex flex-col items-center" slot="body">
-        <img class="rounded" :src="getRandomHurrahGif()" />
+      <div slot="body">
+        <img width="100%" class="rounded" :src="getRandomHurrahGif()" />
       </div>
     </AppModal>
 
@@ -234,7 +234,7 @@
         {{ $t("views.postForm.publishChangesHurralModal.title") }}
       </div>
       <div class="flex flex-col items-center" slot="body">
-        <img class="h-64 mb-10 rounded" :src="getRandomHurrahGif()" />
+        <img width="100%" class="rounded" :src="getRandomHurrahGif()" />
       </div>
     </AppModal>
   </div>

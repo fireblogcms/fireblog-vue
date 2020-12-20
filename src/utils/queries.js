@@ -58,7 +58,7 @@ export const FullBlogFragment = gql`
     name
     updatedAt
     createdAt
-    backgroundImage
+    wallpaper
     webhooks {
       name
       onEvents

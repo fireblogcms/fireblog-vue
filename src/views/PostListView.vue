@@ -114,7 +114,7 @@
               <div class="shadow-mask" v-show="activeStatus == 'DRAFT'" />
             </li>
           </ul>
-          <div class="mb-20 mt-10">
+          <div class="my-10">
             <PostList
               :loading="getPostsState === 'PENDING'"
               @onPostDelete="onPostDelete"
@@ -149,7 +149,7 @@ import { deletePostMutation } from "@/utils/queries";
 import striptags from "striptags";
 import PostList from "@/components/PostList";
 
-const ITEMS_PER_PAGE = 20;
+const ITEMS_PER_PAGE = 30;
 
 // if no filters are specified in the url,
 // use those default filters to fetch post

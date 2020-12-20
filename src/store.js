@@ -6,14 +6,14 @@ Vue.use(Vuex);
 
 const global = {
   state: {
-    backgroundImage: "/illustrations/landscape-3.jpg",
+    wallpaper: "/wallpaper/wallpaper-1.jpg",
     postJustPublished: null, // will be a postId
     // full post object for last edited post
     lastVisitedPost: null,
   },
   mutations: {
-    backgroundImage(state, value) {
-      state.backgroundImage = value;
+    wallpaper(state, value) {
+      state.wallpaper = value;
     },
     lastVisitedPost(state, post) {
       state.lastVisitedPost = post;

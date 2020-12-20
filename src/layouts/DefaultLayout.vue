@@ -39,10 +39,10 @@ export default {
       handler: function(value) {
         if (this.$route.params.blogId) {
           getBlog(this.$route.params.blogId).then(blog => {
-            this.blog = blog.backgroundImage;
-            if (this.backgroundImage != blog.backgroundImage) {
+            this.blog = blog.wallpaper;
+            if (this.wallpaper != blog.wallpaper) {
               this.style = {
-                background: `center / cover url("${blog.backgroundImage}")`,
+                background: `center / cover url("${blog.wallpaper}")`,
               };
             }
           });
