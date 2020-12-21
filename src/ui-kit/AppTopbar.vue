@@ -25,23 +25,24 @@
           -->
         </portal-target>
 
-        <AppButton size="sm" v-if="isApiHelpVisible()" @click="onApiClick">
-          <img class="w-6 md:mr-2" src="/images/graphql.svg" />
-          <span class="text-sm md:text-md">
-            <span class="hidden md:inline">API</span>
-          </span>
+        <AppButton size="sm" v-if="isContactVisible()" @click="onContactClick">
+          <img class="w-6 md:mr-2" src="/images/icon-chat.svg" />
+          <span class="hidden md:inline text-sm md:text-md uppercase"
+            >SUPPORT</span
+          >
         </AppButton>
 
         <AppButton
+          class="ml-3"
+          color="primary-outlined"
           size="sm"
-          class="ml-2"
-          v-if="isContactVisible()"
-          @click="onContactClick"
+          v-if="isApiHelpVisible()"
+          @click="onApiClick"
         >
-          <img class="w-6 md:mr-2" src="/images/contact.svg" />
-          <span class="hidden md:inline text-sm md:text-md uppercase"
-            >Help</span
-          >
+          <img class="w-6 md:mr-2" src="/images/graphql.svg" />
+          <span class="text-sm md:text-md">
+            <span class="hidden md:inline">API HELP</span>
+          </span>
         </AppButton>
 
         <div v-if="me" class="relative cursor-pointer ml-4 md:ml-6">
@@ -157,18 +158,34 @@
       <div class="text-2xl font-bold leading-7" slot="header">
         {{ $t("contactModal.title") }}
       </div>
-      <div class="flex flex-col items-center" slot="body">
-        <img v-if="supportGif" class="mb-4 rounded" :src="supportGif" />
+      <div slot="body">
         <p>{{ $t("contactModal.content") }}</p>
-        <div class="flex items-center mt-2">
-          <a
-            @click="onMailSupportClick"
-            class="text-primary font-bold"
-            href="mailto:support@fireblogcms.com"
-          >
-            support@fireblogcms.com
-          </a>
+        <div class="mt-2">
+          <div class="flex border-gray-200 py-3 border-b">
+            <img width="20" src="/images/icon-email.svg" class="mr-2" />
+            <a
+              @click="onMailSupportClick"
+              class="text-primary font-bold"
+              href="mailto:support@fireblogcms.com"
+            >
+              support@fireblogcms.com
+            </a>
+          </div>
+          <div class="flex border-gray-200 py-3">
+            <img width="20" src="/images/icon-chat-2.svg" class="mr-2" />
+            <a
+              class="text-primary font-bold"
+              target="_blank"
+              href="https://discord.gg/zuNUKNx3hH"
+            >
+              {{ $t("contactModal.discord") }}
+            </a>
+          </div>
         </div>
+        <img
+          class="my-4 rounded h-56 mx-auto"
+          src="/images/illustration-support.png"
+        />
       </div>
     </AppModal>
 

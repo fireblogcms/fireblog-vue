@@ -9,7 +9,7 @@ export default {
   "apiModal.tryItButton": "Essayer",
   "contactModal.chatWithUs": "Tchattez avec nous",
   "contactModal.title": "Nous sommes là pour vous aider",
-  "contactModal.content": "Un problème, une question, une suggestion ? N'hésitez pas à nous contacter, nous sommes à votre service et nous vous répondrons aussi vite que possible.",
+  "contactModal.content": "Un problème, une question, une suggestion ? Contactez nous !",
   "contactModal.discord": "Communauté Discord",
   "freeTrialEndedModal.title": "Votre période d'essai est terminée",
   "freeTrialEndedModal.body": "Certaines fonctionnalités ne sont plus disponibles car votre période d'essai est terminée. Pour de nouveau y avoir accès, vous devez vous abonner à un de nos plans.",
