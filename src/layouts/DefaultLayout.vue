@@ -40,6 +40,8 @@ export default {
           getBlog(this.$route.params.blogId).then(blog => {
             this.$store.commit("wallpaper", blog.wallpaper);
           });
+        } else {
+          this.$store.commit("wallpaper", "/wallpapers/wallpaper-1.jpg");
         }
       },
       immediate: true,
