@@ -25,23 +25,22 @@
           -->
         </portal-target>
 
-        <AppButton size="sm" v-if="isContactVisible()" @click="onContactClick">
+        <AppButton
+          size="sm"
+          v-if="isContactVisible()"
+          @click="onContactClick"
+          class="mr-3"
+        >
           <img class="w-6 md:mr-2" src="/images/icon-chat.svg" />
           <span class="hidden md:inline text-sm md:text-md uppercase"
             >SUPPORT</span
           >
         </AppButton>
 
-        <AppButton
-          class="ml-3"
-          color="primary-outlined"
-          size="sm"
-          v-if="isApiHelpVisible()"
-          @click="onApiClick"
-        >
+        <AppButton size="sm" v-if="isApiHelpVisible()" @click="onApiClick">
           <img class="w-6 md:mr-2" src="/images/graphql.svg" />
           <span class="text-sm md:text-md">
-            <span class="hidden md:inline">API HELP</span>
+            <span class="hidden md:inline">API</span>
           </span>
         </AppButton>
 
@@ -143,7 +142,7 @@
                 </span>
               </a>
             </div>
-            <div class="px-5 bg-gray-100 rounded-md text-xs shadow-sm">
+            <div class="px-6 bg-gray-100 rounded-md text-xs">
               <pre>
                 <code class="language-graphql">{{ example.snippet }}</code>
               </pre>
