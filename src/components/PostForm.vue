@@ -417,7 +417,6 @@ export default {
         this.existingPost = await this.getExistingPost(
           this.$route.params.postId
         );
-        this.$store.commit("lastVisitedPost", this.existingPost);
         this.loadingAsyncData = false;
         initFormValues(this.existingPost);
       }
@@ -539,7 +538,6 @@ export default {
           };
           // update form values, some of theme are dependant from current post values.
           initFormValues(post);
-          this.$store.commit("lastVisitedPost", post);
           this.savingPost = {
             state: REQUEST_STATE.FINISHED_OK,
             status,

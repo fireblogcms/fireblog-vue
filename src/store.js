@@ -7,20 +7,10 @@ Vue.use(Vuex);
 const global = {
   state: {
     wallpaper: "/wallpaper/wallpaper-1.jpg",
-    postJustPublished: null, // will be a postId
-    // full post object for last edited post
-    lastVisitedPost: null,
   },
   mutations: {
     wallpaper(state, value) {
       state.wallpaper = value;
-    },
-    lastVisitedPost(state, post) {
-      state.lastVisitedPost = post;
-    },
-    // we display a special message the first a post is published.
-    postJustPublished(state, postId) {
-      state.postJustPublished = postId;
     },
   },
 };
