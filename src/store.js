@@ -6,7 +6,7 @@ Vue.use(Vuex);
 
 const global = {
   state: {
-    wallpaper: "/wallpapers/wallpaper-1.jpg",
+    wallpaper: null,
   },
   mutations: {
     wallpaper(state, value) {

@@ -28,9 +28,11 @@ export default {
   },
   computed: {
     style() {
-      return {
-        background: `url("${this.$store.state.global.wallpaper}")  no-repeat center / cover`,
-      };
+      const style = {};
+      if (this.$store.state.global.wallpaper) {
+        style.background = `url("${this.$store.state.global.wallpaper}")  no-repeat center / cover`;
+      }
+      return style;
     },
   },
   watch: {
@@ -41,7 +43,7 @@ export default {
             this.$store.commit("wallpaper", blog.wallpaper);
           });
         } else {
-          // this.$store.commit("wallpaper", "/wallpapers/wallpaper-1.jpg");
+          this.$store.commit("wallpaper", null);
         }
       },
       immediate: true,
