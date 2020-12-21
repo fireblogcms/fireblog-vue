@@ -41,7 +41,7 @@ export default {
             this.$store.commit("wallpaper", blog.wallpaper);
           });
         } else {
-          this.$store.commit("wallpaper", "/wallpapers/wallpaper-1.jpg");
+          // this.$store.commit("wallpaper", "/wallpapers/wallpaper-1.jpg");
         }
       },
       immediate: true,
