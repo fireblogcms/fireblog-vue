@@ -114,7 +114,7 @@
         <input
           type="text"
           disabled
-          class="bg-gray-100 rounded-md w-full px-2 py-3 text-lg overflow-x-auto"
+          class="bg-gray-100 rounded-md w-full px-2 text overflow-x-auto"
           :value="blogSetApiUrl"
         />
 
@@ -143,7 +143,7 @@
                 </span>
               </a>
             </div>
-            <div class="px-6 bg-gray-100 rounded-md text-xs">
+            <div class="px-5 bg-gray-100 rounded-md text-xs shadow-sm">
               <pre>
                 <code class="language-graphql">{{ example.snippet }}</code>
               </pre>

@@ -8,14 +8,14 @@
       <div
         class="flex flex-col bg-white animate__animated animate__fadeInUpBig animate__faster"
         :class="{
-          'w-11/12 max-w-md max-h-9/10 shadow-around rounded-lg p-6':
+          'w-11/12 max-w-md max-h-9/10 shadow-around rounded-lg':
             width === 'sm',
-          'w-11/12 md:max-w-900 max-h-9/10 shadow-around rounded-lg p-6':
+          'w-11/12 max-w-3xl max-h-9/10 shadow-around rounded-lg':
             width === 'md',
-          'w-full h-screen p-6': width === 'fullscreen',
+          'w-full h-screen': width === 'fullscreen',
         }"
       >
-        <div class="flex justify-between container mx-auto items-start">
+        <div class="flex justify-between container mx-auto items-start p-6">
           <div class="flex-grow">
             <slot name="header" />
           </div>
@@ -28,7 +28,7 @@
             <img width="15" src="/images/icon-close.png" />
           </div>
         </div>
-        <div class="pt-6 overflow-y-auto">
+        <div class="p-6 overflow-y-auto">
           <slot name="body" />
         </div>
       </div>
