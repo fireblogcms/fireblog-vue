@@ -38,7 +38,7 @@ export const Fullscreen = () => ({
   store,
   template: `<div>
       <AppButton color="primary" @click="$store.commit('modalShowing/open', 'storyModal')">Open modal</AppButton>
-      <AppModal name="storyModal" :fullscreen="true">
+      <AppModal name="storyModal" width="fullscreen">
         <div class="text-2xl font-bold" slot="header">
           Title of the modal
         </div>

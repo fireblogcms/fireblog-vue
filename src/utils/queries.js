@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 
-import { postsPerPage } from "@/config";
+import { maxItemsPerPage } from "@/config";
 
 export const FullPostFragment = gql`
   fragment FullPostFragment on Post {
@@ -58,6 +58,7 @@ export const FullBlogFragment = gql`
     name
     updatedAt
     createdAt
+    wallpaper
     webhooks {
       name
       onEvents
@@ -93,7 +94,7 @@ export const getUserQuery = gql`
         resourceId
         roles
       }
-      blogs(last: ${postsPerPage}) {
+      blogs(last: ${maxItemsPerPage}) {
         edges {
           node {
             _id
@@ -115,7 +116,7 @@ export const getMyBlogsQuery = gql`
     me {
       _id
       name
-      blogs(last: ${postsPerPage}) {
+      blogs(last: ${maxItemsPerPage}) {
         edges {
           node {
             ...FullBlogFragment
@@ -150,7 +151,7 @@ export const getPostQuery = gql`
 export const getPostsQuery = gql`
   ${PostListFragment}
   query getPostsQuery($blog: ID!, $status: [PostPublicationStatus]!) {
-    posts(blog: $blog, last: ${postsPerPage}, filter: { status: $status }) {
+    posts(blog: $blog, last: ${maxItemsPerPage}, filter: { status: $status }) {
       totalCount
       edges {
         cursor

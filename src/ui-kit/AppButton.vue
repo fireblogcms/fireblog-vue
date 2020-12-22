@@ -1,11 +1,11 @@
 <template>
-  <span class="relative inline-block">
+  <span class="relative inline-block" :class="{ 'w-full': fullWidth }">
     <!-- Click stop is important for the post list for example so the parent's click is not triggered -->
     <button
       class="flex items-center border rounded whitespace-no-wrap focus:outline-none focus:shadow-outline"
       :class="{
-        'py-3 px-6 text-xl': size === '',
-        'py-2 px-4 text-xl': size === 'small',
+        'py-2 px-2 text-sm md:text-lg': size === 'sm',
+        'py-4 px-6 text-sm md:text-lg': size === 'md',
         'bg-white border-gray-200': color === '',
         'bg-primary border-primary text-white active:bg-primary-dark active:border-primary-dark':
           color === 'primary',
@@ -25,6 +25,8 @@
         'hover:bg-danger-darker hover:border-danger-darker':
           color === 'danger' && !$attrs.disabled,
         'cursor-default opacity-50': $attrs.disabled,
+        'w-full': fullWidth,
+        [buttonClass]: buttonClass ? buttonClass : '',
       }"
       v-bind="$attrs"
       @click.stop="onClick"
@@ -58,6 +60,14 @@ export default {
       default: false,
     },
     size: {
+      type: String,
+      default: "md",
+    },
+    fullWidth: {
+      type: Boolean,
+      default: false,
+    },
+    buttonClass: {
       type: String,
       default: "",
     },

@@ -3,10 +3,7 @@
     <!-- TOPBAR LEFT BUTTONS -->
     <portal to="topbar-left">
       <AppBreadcrumb
-        :routerOptions="{
-          name: 'postList',
-          params: { blogSetId: $route.params.blogSetId },
-        }"
+        :routerOptions="backToPostListRouterOptions"
         :name="$t('views.postForm.backToBlogLink')"
       />
     </portal>
@@ -18,7 +15,7 @@
         <AppButton
           class="lg:hidden mx-1"
           color="primary-outlined"
-          size="small"
+          size="sm"
           @click="isActionsVisibleOnMobile = !isActionsVisibleOnMobile"
         >
           <img class="w-6" src="/images/pencil.svg" />
@@ -38,7 +35,7 @@
             "
             :disabled="savingPost.state === 'PENDING'"
             class="mb-4 lg:mb-0 lg:mr-4"
-            size="small"
+            size="sm"
             @click="saveAsDraft"
           >
             <span class="text-sm md:text-md">
@@ -51,7 +48,7 @@
             v-if="existingPost && existingPost.status === 'PUBLISHED'"
             :disabled="savingPost.state === 'PENDING'"
             class="mb-4 lg:mb-0 lg:mr-4"
-            size="small"
+            size="sm"
             @click="showAdvancedSettings"
           >
             <span class="text-sm md:text-md">
@@ -69,7 +66,7 @@
             :disabled="savingPost.state === 'PENDING'"
             class="lg:mr-4"
             color="primary-outlined"
-            size="small"
+            size="sm"
             @click="showAdvancedSettings"
           >
             <span class="text-sm md:text-md">
@@ -85,7 +82,7 @@
             "
             :disabled="savingPost.state === 'PENDING'"
             class="mb-4 lg:mb-0 lg:mr-4"
-            size="small"
+            size="sm"
             @click="onUnpublishClick"
           >
             <span class="text-sm md:text-md">
@@ -103,7 +100,7 @@
             :disabled="savingPost.state === 'PENDING'"
             class="lg:mr-4"
             color="primary-outlined"
-            size="small"
+            size="sm"
             @click="publish"
           >
             <span class="text-sm md:text-md">
@@ -119,7 +116,7 @@
     <div v-if="!loadingAsyncData">
       <div class="container mx-auto pt-10 pb-16 flex flex-col items-center">
         <div
-          class="w-full max-w-850 p-12 border border-gray-200 rounded bg-white"
+          class="p-16 w-full max-w-900 border border-gray-200 rounded bg-white"
         >
           <form @submit.prevent class="bg-white">
             <textarea-autosize
@@ -160,12 +157,18 @@
             -
             {{
               $t("views.postForm.savedAt {time}", {
-                time: formatDate(new Date(existingPost.updatedAt), "long"),
+                time: formatDate(
+                  new Date(existingPost.updatedAt),
+                  "shortWithTime"
+                ),
               })
             }}
           </span>
         </div>
-        <div ref="wordcount" class="post-form__document-infos__word-count" />
+        <div
+          ref="wordcount"
+          class="hidden md:visible post-form__document-infos__word-count"
+        />
       </div>
     </footer>
 
@@ -173,7 +176,7 @@
     <AppModal
       v-if="!loadingAsyncData"
       name="publishingOptionsModal"
-      :fullscreen="true"
+      width="fullscreen"
     >
       <div
         class="flex flex-col md:flex-row items-center justify-end flex-1"
@@ -184,7 +187,7 @@
           <AppButton
             class="mr-4"
             @click="closePublishingOptionsModal"
-            size="small"
+            size="sm"
           >
             <span class="uppercase">
               {{ $t("views.postForm.publicationCancel") }}
@@ -192,7 +195,7 @@
           </AppButton>
           <AppButton
             color="primary"
-            size="small"
+            size="sm"
             :loading="
               savingPost.state === 'PENDING' &&
                 savingPost.status === 'PUBLISHED'
@@ -216,28 +219,22 @@
     </AppModal>
 
     <!-- SUCCESS MODAL FOR FIRST PUBLICATION -->
-    <AppModal name="publishingSuccessModal">
+    <AppModal width="sm" name="publishingSuccessModal">
       <div class="text-2xl font-bold" slot="header">
         {{ $t("views.postForm.firstPublicationHurralModal.title") }}
       </div>
-      <div class="flex flex-col items-center" slot="body">
-        <img class="h-64 mb-10 rounded" :src="getRandomHurrahGif()" />
-        <AppButton color="primary" @click="closePublishingSuccessModal">
-          {{ $t("global.okayButton") }}
-        </AppButton>
+      <div slot="body">
+        <img width="100%" class="rounded" :src="getRandomHurrahGif()" />
       </div>
     </AppModal>
 
     <!-- SUCCESS MODAL WHEN PUBLISHING CHANGES ON ALREADY PUBLISHED POST -->
-    <AppModal name="publishingChangesSuccessModal">
+    <AppModal width="sm" name="publishingChangesSuccessModal">
       <div class="text-xl font-bold" slot="header">
         {{ $t("views.postForm.publishChangesHurralModal.title") }}
       </div>
       <div class="flex flex-col items-center" slot="body">
-        <img class="h-64 mb-10 rounded" :src="getRandomHurrahGif()" />
-        <AppButton color="primary" @click="closePublishingChangesSuccessModal">
-          {{ $t("global.okayButton") }}
-        </AppButton>
+        <img width="100%" class="rounded" :src="getRandomHurrahGif()" />
       </div>
     </AppModal>
   </div>
@@ -381,6 +378,19 @@ export default {
       }
       return text;
     },
+    backToPostListRouterOptions() {
+      const query = {};
+      if (this.existingPost && this.existingPost.status) {
+        query.getPosts = JSON.stringify({
+          filter: { status: this.existingPost.status },
+        });
+      }
+      return {
+        name: "postList",
+        params: { blogSetId: this.$route.params.blogSetId },
+        query,
+      };
+    },
   },
   methods: {
     onWordCountUpdate(stats) {
@@ -407,7 +417,6 @@ export default {
         this.existingPost = await this.getExistingPost(
           this.$route.params.postId
         );
-        this.$store.commit("lastVisitedPost", this.existingPost);
         this.loadingAsyncData = false;
         initFormValues(this.existingPost);
       }
@@ -529,7 +538,6 @@ export default {
           };
           // update form values, some of theme are dependant from current post values.
           initFormValues(post);
-          this.$store.commit("lastVisitedPost", post);
           this.savingPost = {
             state: REQUEST_STATE.FINISHED_OK,
             status,
@@ -659,11 +667,6 @@ export default {
     },
     saveAsDraft() {
       return this.savePost("DRAFT");
-    },
-    onBackToPostClick() {
-      this.$router.push({
-        name: "postList",
-      });
     },
     publish(scheduled = false) {
       // If article is published (or re-published) from draft, we display a "Hurrah modal".

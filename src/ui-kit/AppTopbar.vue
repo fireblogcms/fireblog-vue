@@ -1,6 +1,6 @@
 <template>
-  <div class="relative h-20 z-20 bg-white" :class="`route-${$route.name}`">
-    <div class="h-full flex justify-between px-3 py-4 container mx-auto">
+  <div class="relative z-20 bg-white shadow-xs" :class="`route-${$route.name}`">
+    <div class="h-full flex justify-between px-3 py-2 container mx-auto">
       <div class="flex items-center">
         <!--
         <img
@@ -25,23 +25,23 @@
           -->
         </portal-target>
 
-        <AppButton size="small" v-if="isApiHelpVisible()" @click="onApiClick">
+        <AppButton
+          size="sm"
+          v-if="isContactVisible()"
+          @click="onContactClick"
+          class="mr-3"
+        >
+          <img class="w-6 md:mr-2" src="/images/icon-chat.svg" />
+          <span class="hidden md:inline text-sm md:text-md uppercase"
+            >SUPPORT</span
+          >
+        </AppButton>
+
+        <AppButton size="sm" v-if="isApiHelpVisible()" @click="onApiClick">
           <img class="w-6 md:mr-2" src="/images/graphql.svg" />
           <span class="text-sm md:text-md">
             <span class="hidden md:inline">API</span>
           </span>
-        </AppButton>
-
-        <AppButton
-          size="small"
-          class="ml-2"
-          v-if="isContactVisible()"
-          @click="onContactClick"
-        >
-          <img class="w-6 md:mr-2" src="/images/contact.svg" />
-          <span class="hidden md:inline text-sm md:text-md uppercase"
-            >Help</span
-          >
         </AppButton>
 
         <div v-if="me" class="relative cursor-pointer ml-4 md:ml-6">
@@ -113,7 +113,7 @@
         <input
           type="text"
           disabled
-          class="bg-gray-100 rounded-md w-full px-2 overflow-x-auto"
+          class="bg-gray-100 rounded-md w-full px-2 text overflow-x-auto"
           :value="blogSetApiUrl"
         />
 
@@ -153,39 +153,38 @@
     </AppModal>
 
     <!-- CONTACT -->
-    <AppModal name="contactModal">
-      <div class="text-2xl font-bold" slot="header">
+    <AppModal width="sm" name="contactModal">
+      <div class="text-2xl font-bold leading-7" slot="header">
         {{ $t("contactModal.title") }}
       </div>
-      <div class="flex flex-col items-center" slot="body">
-        <img v-if="supportGif" class="h-64 mb-4 rounded" :src="supportGif" />
+      <div slot="body">
         <p>{{ $t("contactModal.content") }}</p>
-        <div class="flex items-center mt-2">
-          <a
-            @click="onMailSupportClick"
-            class="text-primary font-bold"
-            href="mailto:support@fireblogcms.com"
-          >
-            support@fireblogcms.com
-          </a>
+        <div class="mt-2">
+          <div class="flex border-gray-200 py-3 border-b">
+            <img width="20" src="/images/icon-email.svg" class="mr-2" />
+            <a
+              @click="onMailSupportClick"
+              class="text-primary font-bold"
+              href="mailto:support@fireblogcms.com"
+            >
+              support@fireblogcms.com
+            </a>
+          </div>
+          <div class="flex border-gray-200 py-3">
+            <img width="20" src="/images/icon-chat-2.svg" class="mr-2" />
+            <a
+              class="text-primary font-bold"
+              target="_blank"
+              href="https://discord.gg/zuNUKNx3hH"
+            >
+              {{ $t("contactModal.discord") }}
+            </a>
+          </div>
         </div>
-        <div class="flex items-center mt-2">
-          <span
-            @click.prevent="onChatSupportClick"
-            class="text-primary font-bold cursor-pointer"
-          >
-            {{ $t("contactModal.chatWithUs") }}
-          </span>
-        </div>
-        <div class="flex items-center mt-2">
-          <a
-            href="https://discord.gg/zuNUKNx3hH"
-            target="_blank"
-            class="text-primary font-bold cursor-pointer"
-          >
-            {{ $t("contactModal.discord") }}
-          </a>
-        </div>
+        <img
+          class="my-4 rounded h-56 mx-auto"
+          src="/images/illustration-support.png"
+        />
       </div>
     </AppModal>
 
@@ -264,14 +263,6 @@ export default {
       // goal: open GraphQL Explorer
       window._paq.push(["trackGoal", 7]);
       window.open(this.blogSetApiUrl, "_blank");
-    },
-    onChatSupportClick() {
-      // goal: try to contact support by tchat
-      window._paq.push(["trackGoal", 8]);
-      window._paq.push(["trackEvent", "Support", "Tchat", "Open"]);
-      if ($crisp) {
-        $crisp.push(["do", "chat:open"]);
-      }
     },
     onMailSupportClick() {
       // goal: try to contact support by mail

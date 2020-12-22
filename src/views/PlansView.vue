@@ -70,7 +70,7 @@
             v-if="isPlanSubscribed(plan.id)"
             @click="$store.commit('modalShowing/open', 'unsubscribeModal')"
             color="primary-outlined"
-            size="small"
+            size="sm"
           >
             {{ $t("global.unsubscribeButton") }}
           </AppButton>
@@ -82,7 +82,7 @@
             "
             @click="onSubscribeClick(plan)"
             color="primary"
-            size="small"
+            size="sm"
           >
             {{ $t("global.subscribeButton") }}
           </AppButton>

@@ -1,5 +1,5 @@
 <template>
-  <div class="text-center">
+  <div>
     <!-- special text if this is the very first blog :) -->
     <p v-if="isFirstBlog && user" class="mb-12 text-3xl font-bold">
       {{ $t("views.blogCreate.gladToSeeYouHere") }}, {{ user.name }} 🤗
@@ -9,36 +9,57 @@
       <label class="text-2xl font-bold">{{
         $t("views.blogCreate.fields.title.label")
       }}</label>
-      <p class="mb-4 text-sm">{{ $t("views.blogCreate.fields.title.help") }}</p>
-      <AppFieldText
-        v-model="inputs.name"
-        :error="formErrors.name"
-        maxlength="250"
-        :placeholder="generate()"
-      />
+
+      <!--<p class="mb-4">{{ $t("views.blogCreate.fields.title.help") }}</p>-->
+
+      <div class="flex justify-between items-center">
+        <div class="flex-1">
+          <AppFieldText
+            v-model="inputs.name"
+            :error="formErrors.name"
+            maxlength="250"
+            :placeholder="generate()"
+          />
+        </div>
+        <div class="ml-2">
+          <AppButton @click="poeticName()">
+            🐣 {{ $t("views.blogCreate.surpriseName").toUpperCase() }}
+          </AppButton>
+        </div>
+      </div>
     </div>
 
-    <div class="mt-10 mb-16">
+    <div class="mt-10">
       <label class="text-2xl font-bold">{{
         $t("views.blogCreate.fields.description.label")
       }}</label>
+      <!--
       <p class="mb-4 text-sm">
         {{ $t("views.blogCreate.fields.description.help") }}
       </p>
-      <AppTextarea v-model="inputs.description" maxlength="250" />
+      -->
+      <AppTextarea class="mt-3" v-model="inputs.description" maxlength="250" />
     </div>
 
-    <div class="flex flex-col md:flex-row items-center justify-center">
-      <AppButton
-        v-if="!isFirstBlog"
-        class="mb-4 md:mb-0 mx-4"
-        @click="$router.push('/')"
-      >
+    <div class="mt-10">
+      <label class="text-2xl font-bold">{{
+        $t("views.blogCreate.fields.ambiance.label")
+      }}</label>
+      <AppFieldSelect
+        class="mb-6"
+        :options="wallpapersSelectOptions"
+        :value="inputs.wallpaper"
+        @change="onWallPaperChange"
+      />
+    </div>
+
+    <div class="flex items-center justify-center mt-10">
+      <AppButton v-if="!isFirstBlog" class="mr-4" @click="$router.push('/')">
         {{ $t("views.blogCreate.cancelButton").toUpperCase() }}
       </AppButton>
       <AppButton
         :loading="savingBlogState === 'PENDING'"
-        class="mx-4"
+        class=""
         color="primary"
         @click="onCreateClick"
       >
@@ -52,6 +73,7 @@
 import AppButton from "@/ui-kit/AppButton";
 import AppFieldText from "@/ui-kit/AppFieldText";
 import AppTextarea from "@/ui-kit/AppTextarea";
+import AppFieldSelect from "@/ui-kit/AppFieldSelect";
 import { generate } from "@/utils/fantasyName.js";
 import apolloClient from "@/utils/apolloClient";
 import { getUser, REQUEST_STATE, toast } from "@/utils/helpers";
@@ -61,12 +83,14 @@ import {
   getUserQuery,
   createBlogMutation,
 } from "@/utils/queries";
+import { wallpapersSelectOptions } from "@/config.js";
 
 export default {
   components: {
     AppButton,
     AppFieldText,
     AppTextarea,
+    AppFieldSelect,
   },
   data() {
     return {
@@ -77,8 +101,9 @@ export default {
       user: null,
       languageList: null,
       inputs: {
-        name: "",
+        name: generate(),
         blogContentDefaultLocale: null,
+        wallpaper: this.$store.state.global.wallpaper,
       },
     };
   },
@@ -86,8 +111,18 @@ export default {
     this.initData();
     this.isFirstBlog = this.$route.query.first === "1";
     this.generate = generate;
+    this.wallpapersSelectOptions = wallpapersSelectOptions;
   },
   methods: {
+    poeticName() {
+      this.inputs.name = generate();
+    },
+    onWallPaperChange(value) {
+      if (value === "__NONE__") {
+        value = null;
+      }
+      this.$store.commit("wallpaper", value);
+    },
     async initData() {
       getUser()
         .then(user => (this.user = user))
@@ -113,6 +148,7 @@ export default {
           mutation: createBlogMutation,
           variables: {
             blog: {
+              wallpaper: this.inputs.wallpaper,
               name: this.inputs.name,
               description: this.inputs.description,
               blogSet: this.$route.params.blogSetId,

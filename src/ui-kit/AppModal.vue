@@ -1,26 +1,29 @@
 <template>
-  <div v-show="showing">
+  <div v-show="showing" class="">
     <div class="z-30 fixed inset-0 w-full h-screen bg-white opacity-90"></div>
     <div
       class="z-30 fixed inset-0 w-full h-screen flex items-center justify-center"
       @click.self="close"
     >
       <div
-        class="flex flex-col bg-white"
+        class="flex flex-col bg-white animate__animated animate__fadeInUpBig animate__faster"
         :class="{
-          'w-11/12 md:w-1/2 max-h-9/10 shadow-around rounded-lg': !fullscreen,
-          'w-full h-screen': fullscreen,
+          'w-11/12 max-w-md max-h-9/10 shadow-around rounded-lg':
+            width === 'sm',
+          'w-11/12 max-w-3xl max-h-9/10 shadow-around rounded-lg':
+            width === 'md',
+          'w-full h-screen': width === 'fullscreen',
         }"
       >
-        <div class="p-6 flex items-center justify-between container mx-auto">
-          <div class="flex-grow text-center">
+        <div class="flex justify-between container mx-auto items-start p-6">
+          <div class="flex-grow">
             <slot name="header" />
           </div>
 
           <div
-            v-if="!fullscreen"
+            v-if="width !== 'fullscreen'"
             @click="close"
-            class="font-bold cursor-pointer"
+            class="font-bold cursor-pointer bg-gray-200 rounded-full p-3 align-self"
           >
             <img width="15" src="/images/icon-close.png" />
           </div>
@@ -36,9 +39,10 @@
 <script>
 export default {
   props: {
-    fullscreen: {
-      type: Boolean,
-      default: false,
+    width: {
+      type: String,
+      // "fullscreen", "md", "sm"
+      default: "md",
     },
     name: {
       type: String,

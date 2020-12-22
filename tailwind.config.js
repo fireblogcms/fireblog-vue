@@ -42,6 +42,8 @@ module.exports = {
       },
       maxWidth: {
         "850": "850px",
+        "900": "900px",
+        "1000": "1000px",
       },
       opacity: {
         "90": ".9",

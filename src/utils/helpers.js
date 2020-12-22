@@ -366,6 +366,15 @@ export function formatDate(date, type) {
       minute: "2-digit",
     });
   }
+  if (type === "shortWithTime") {
+    return date.toLocaleDateString(undefined, {
+      day: "numeric",
+      month: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
 }
 
 export function createStripeCheckoutSession({

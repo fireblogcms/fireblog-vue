@@ -26,11 +26,13 @@
             )
           }}
         </label>
+        <!--
         <p class="mb-4 text-sm">
           {{
             $t("views.blogSettings.generalSettingsForm.fields.description.help")
           }}
         </p>
+        -->
         <AppTextarea
           :value="vuexFormGetValue(formId, 'description')"
           @input="vuexFormSetValue(formId, 'description', $event)"
@@ -42,9 +44,11 @@
         <label class="text-md font-bold">
           {{ $t("views.blogSettings.generalSettingsForm.fields.image.label") }}
         </label>
+        <!--
         <p class="mb-4 text-sm">
           {{ $t("views.blogSettings.generalSettingsForm.fields.image.help") }}
         </p>
+        -->
         <S3ImageUpload
           :blogId="$route.params.blogId"
           @onUploadingStateChange="onUploadingStateChange"
@@ -53,9 +57,21 @@
         />
       </div>
 
+      <div>
+        <label class="text-2xl font-bold">{{
+          $t("views.blogCreate.fields.ambiance.label")
+        }}</label>
+        <AppFieldSelect
+          class="mb-6"
+          :options="wallpapersSelectOptions"
+          :value="vuexFormGetValue(formId, 'wallpaper')"
+          @change="onWallPaperChange"
+        />
+      </div>
+
       <AppButton
         type="submit"
-        color="primary-outlined"
+        color="primary"
         :loading="savingState === 'PENDING'"
         :disabled="uploadBlogImageState === 'PENDING'"
       >
@@ -70,7 +86,9 @@ import AppButton from "@/ui-kit/AppButton";
 import AppFieldText from "@/ui-kit/AppFieldText";
 import AppPanel from "@/ui-kit/AppPanel";
 import AppTextarea from "@/ui-kit/AppTextarea";
+import AppFieldSelect from "@/ui-kit/AppFieldSelect";
 import { getBlog, REQUEST_STATE, toast } from "@/utils/helpers";
+import { wallpapersSelectOptions } from "@/config.js";
 import {
   vuexFormInit,
   vuexFormSetValue,
@@ -92,6 +110,7 @@ function initialFormValues(blog) {
     name: blog.name ? blog.name : "",
     description: blog.description ? blog.description : "",
     image: blog.image ? blog.image.url : null,
+    wallpaper: blog.wallpaper ? blog.wallpaper : null,
   };
   return values;
 }
@@ -103,6 +122,7 @@ export default {
     AppPanel,
     AppTextarea,
     S3ImageUpload,
+    AppFieldSelect,
   },
   props: {
     blog: {
@@ -124,8 +144,16 @@ export default {
     vuexFormInit(formId, {
       initialValues: initialFormValues(this.blog),
     });
+    this.wallpapersSelectOptions = wallpapersSelectOptions;
   },
   methods: {
+    onWallPaperChange(value) {
+      if (value === "__NONE__") {
+        value = null;
+      }
+      vuexFormSetValue(formId, "wallpaper", value);
+      this.$store.commit("wallpaper", value);
+    },
     onUploadingStateChange(state) {
       this.uploadBlogImageState = state;
     },
@@ -175,6 +203,7 @@ export default {
         name: vuexFormGetValue(formId, "name"),
         description: vuexFormGetValue(formId, "description"),
         image: vuexFormGetValue(formId, "image"),
+        wallpaper: vuexFormGetValue(formId, "wallpaper"),
       };
       this.updateBlog(blog)
         .then(updatedBlog => {
