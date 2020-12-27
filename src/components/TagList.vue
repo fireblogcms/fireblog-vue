@@ -36,12 +36,16 @@
               {{ tag.node.name }}
             </p>
             <p class="mt-4">
-              {{ striptags(tag.node.description || '') }}
+              {{ striptags(tag.node.description || "") }}
             </p>
 
             <div class="mt-3 flex flex-wrap">
-              <span :key="tag.name" v-for="tag in tag.node.tags" class="bg-gray-200 shadow-sm rounded text-current p-2 mr-2 mb-2">
-                {{ tag.name }} 
+              <span
+                :key="tag.name"
+                v-for="tag in tag.node.tags"
+                class="bg-gray-200 shadow-sm rounded text-current p-2 mr-2 mb-2"
+              >
+                {{ tag.name }}
               </span>
             </div>
           </div>
@@ -51,7 +55,7 @@
           class="self-center mt-6 md:mt-0"
           @click="onDeleteClick(tag.node)"
         >
-          {{ $t("views.postList.deleteButton") }}
+          <img width="20" src="/images/icon-delete.svg" />
         </AppButton>
       </div>
     </template>

@@ -4,16 +4,39 @@
     <portal to="topbar-left">
       <AppBreadcrumb
         image="/images/books.png"
-        :routerOptions="{ name: 'blogSetList' }"
+        :routerOptions="{
+          name: 'blogSettings',
+          params: {
+            blogId: $route.params.blogId,
+            blogSetId: $route.params.blogSetId,
+          },
+        }"
         :name="$t('views.TagList.backToBlogLink')"
       />
     </portal>
     <!-- END TOPBAR LEFT BUTTONS -->
 
     <AppLoader v-if="viewDataLoading" />
-
+    <!-- -->
     <template v-if="viewData">
-      <div class="container mx-auto my-10">
+      <div class="bg-white max-w-1000 mx-auto shadow rounded-xl my-12 p-10">
+        <div
+          class="flex flex-col md:flex-row justify-between items-center mb-6"
+        >
+          <div>
+            <h1 class="text-xl md:text-2xl font-bold uppercase text-primary">
+              TAGS -
+              <span class="text-indigo-500">{{ viewData.blog.name }}</span>
+            </h1>
+          </div>
+          <div
+            class="mt-5 md:mt-0 flex md:flex-row md:justify-end items-center"
+          >
+            <!-- no buttons here for now -->
+          </div>
+        </div>
+        <TagList @onDeleteClick="onDeleteClick" :tags="viewData.tags" />
+        <!--
         <div class="flex flex-col md:flex-row justify-between">
           <div class="flex-1 flex items-center mb-8 md:mb-0">
             <h1 class="text-2xl md:text-4xl font-bold uppercase">
@@ -31,37 +54,8 @@
             </AppButton>
           </div>
         </div>
+        -->
       </div>
-
-      <AppPanel v-if="isFirstPost" class="mb-20">
-        <h2 class="text-center text-3xl font-bold">
-          {{ $t("views.tagList.firstBlogSentence") }}
-        </h2>
-        <div class="mt-8 flex justify-center">
-          <AppButton
-            color="primary"
-            @click="
-              $router.push({
-                name: 'postCreate',
-                params: { blogId: $route.params.blogId },
-              })
-            "
-          >
-            {{ $t("views.TagList.firstPostWriteButton").toUpperCase() }}
-          </AppButton>
-        </div>
-      </AppPanel>
-
-      <template v-if="!isFirstPost">
-        <div
-          class="container mx-auto mb-20 py-6 px-4 md:px-10 bg-white shadow-md rounded-lg"
-        >
-          <TagList
-            @onDeleteClick="onDeleteClick"
-            :tags="viewData.tags"
-          />
-        </div>
-      </template>
     </template>
 
     <!-- DELETE POST MODAL -->
@@ -169,9 +163,9 @@ export default {
     fetchData() {
       this.viewDataLoading = true;
       viewDataQuery({
-          blogSetId: this.$route.params.blogSetId,
-          blogId: this.$route.params.blogId,
-        })
+        blogSetId: this.$route.params.blogSetId,
+        blogId: this.$route.params.blogId,
+      })
         .then(result => {
           this.viewData = result.data;
           this.viewDataLoading = false;
@@ -225,7 +219,10 @@ export default {
       });
     },
     onWriteNewPostClick() {
-      if (this.viewData.blogSet.subscription.status === "TRIAL" || this.viewData.blogSet.subscription.status === "ACTIVE") {
+      if (
+        this.viewData.blogSet.subscription.status === "TRIAL" ||
+        this.viewData.blogSet.subscription.status === "ACTIVE"
+      ) {
         this.$router.push({
           name: "postCreate",
           params: {
@@ -247,23 +244,23 @@ function viewDataQuery({ blogSetId, blogId }) {
       blogId,
     },
     query: gql`
-        query blogTagsQuery($blogId: ID!) {
-            blog(_id: $blogId) {
-              _id
-              name
-              deletedAt
-            }
-            tags(blog: $blogId) {
-                edges {
-                    node {
-                        _id
-                        slug
-                        name
-                        description
-                    } 
-                }
-            }
+      query blogTagsQuery($blogId: ID!) {
+        blog(_id: $blogId) {
+          _id
+          name
+          deletedAt
         }
+        tags(blog: $blogId) {
+          edges {
+            node {
+              _id
+              slug
+              name
+              description
+            }
+          }
+        }
+      }
     `,
   });
 }
