@@ -1,8 +1,11 @@
 <template>
-  <div :style="style" class="flex flex-col min-h-screen">
-    <AppTopbar v-show="isTopbarVisible()" />
-    <div class="flex-1">
-      <slot />
+  <div>
+    <div :style="style" class="h-screen w-screen fixed border-gray-100"></div>
+    <div class="flex flex-col min-h-screen relative">
+      <AppTopbar v-show="isTopbarVisible()" />
+      <div class="flex-1">
+        <slot />
+      </div>
     </div>
   </div>
 </template>
