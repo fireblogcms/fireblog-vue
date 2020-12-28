@@ -1,4 +1,4 @@
-export const maxItemsPerPage = 150;
+export const maxItemsPerPage = 100;
 export const wallpapersSelectOptions = [
   { value: "__NONE__", label: "Aucune" },
   {

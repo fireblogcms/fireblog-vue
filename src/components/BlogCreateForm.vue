@@ -121,6 +121,7 @@ export default {
       if (value === "__NONE__") {
         value = null;
       }
+      this.inputs.wallpaper = value;
       this.$store.commit("wallpaper", value);
     },
     async initData() {
