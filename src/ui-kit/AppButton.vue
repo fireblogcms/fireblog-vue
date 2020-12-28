@@ -7,6 +7,8 @@
         'py-2 px-2 text-sm md:text-lg': size === 'sm',
         'py-4 px-6 text-sm md:text-lg': size === 'md',
         'bg-white border-gray-200': color === '',
+        'primary-gradient border-primary text-white active:bg-primary-dark active:border-primary-dark':
+          color === 'primary-gradient',
         'bg-primary border-primary text-white active:bg-primary-dark active:border-primary-dark':
           color === 'primary',
         'bg-white border-primary text-primary active:bg-primary-darker active:border-primary-darker active:text-white':
@@ -51,6 +53,7 @@
 <script>
 export default {
   props: {
+    // primary, primary-outlined, danger, secondary, primary-gradient
     color: {
       type: String,
       default: "",
@@ -92,3 +95,10 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.primary-gradient {
+  background: rgb(109, 58, 180);
+  background: linear-gradient(90deg, #5522fa, #0074e4);
+}
+</style>
