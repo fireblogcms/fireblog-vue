@@ -17,7 +17,6 @@
 import AppLoader from "@/ui-kit/AppLoader";
 import { getBlog, REQUEST_STATE, toast } from "@/utils/helpers";
 import { vuexFormInitData } from "@/utils/vuexForm";
-import apolloClient from "@/utils/apolloClient";
 import BlogSettingsGeneral from "@/components/BlogSettingsGeneral";
 import BlogSettingsDeployWebhook from "@/components/BlogSettingsDeployWebhook";
 import BlogSettingsTags from "@/components/BlogSettingsTags";

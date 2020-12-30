@@ -4,13 +4,15 @@
       {{ $t("views.blogSettings.tagsSettingsForm.title") }}
     </h2>
     <label class="text-md font-bold">
-      {{
-        $t("views.blogSettings.tagsSettingsForm.label")
-      }}
+      {{ $t("views.blogSettings.tagsSettingsForm.label") }}
     </label>
     <div class="flex flex-wrap my-4">
-      <span :key="tag.name" v-for="tag in tags" class="bg-gray-200 shadow-sm rounded text-current p-2 mr-2 mb-2">
-        {{ tag.name }} 
+      <span
+        :key="tag.name"
+        v-for="tag in tags"
+        class="bg-gray-200 shadow-sm rounded text-current p-2 mr-2 mb-2"
+      >
+        {{ tag.name }}
       </span>
     </div>
     <AppButton
@@ -51,23 +53,23 @@ export default {
   async created() {
     console.log(this.blog);
     const query = gql`
-        query blogTagsQuery($blogId: ID!) {
-            tags(blog: $blogId) {
-                edges {
-                    node {
-                        _id
-                        slug
-                        name
-                    } 
-                }
+      query blogTagsQuery($blogId: ID!) {
+        tags(blog: $blogId) {
+          edges {
+            node {
+              _id
+              slug
+              name
             }
+          }
         }
-    `
+      }
+    `;
     const result = await apolloClient.query({
-        query,
-        variables: {
-            blogId: this.blog._id,
-        }
+      query,
+      variables: {
+        blogId: this.blog._id,
+      },
     });
     this.tags = (result.data.tags.edges || []).map(e => e.node);
   },
