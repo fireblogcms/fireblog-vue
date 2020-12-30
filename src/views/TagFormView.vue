@@ -5,7 +5,10 @@
       <AppBreadcrumb
         :routerOptions="{
           name: 'blogSettings',
-          params: { blogId: $route.params.blogId },
+          params: {
+            blogId: $route.params.blogId,
+            blogSetId: $route.params.blogSetId,
+          },
         }"
         :name="$t('views.tagForm.backToBlogLink')"
       />
