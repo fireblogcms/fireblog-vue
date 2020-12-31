@@ -76,6 +76,9 @@ export const FullTagFragment = gql`
     name
     slug
     description
+    metaDescription
+    metaTitle
+    color
   }
 `;
 

@@ -96,7 +96,6 @@ import AppBreadcrumb from "@/ui-kit/AppBreadcrumb";
 import AppButton from "@/ui-kit/AppButton";
 import AppLoader from "@/ui-kit/AppLoader";
 import AppModal from "@/ui-kit/AppModal";
-import AppPanel from "@/ui-kit/AppPanel";
 import apolloClient from "@/utils/apolloClient";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import gql from "graphql-tag";
@@ -115,7 +114,6 @@ export default {
     AppButton,
     AppLoader,
     AppModal,
-    AppPanel,
     DefaultLayout,
     TagList,
   },

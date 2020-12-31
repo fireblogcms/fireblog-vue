@@ -32,6 +32,8 @@ import AppBreadcrumb from "@/ui-kit/AppBreadcrumb";
 import AppLoader from "@/ui-kit/AppLoader";
 import apolloClient from "@/utils/apolloClient";
 import gql from "graphql-tag";
+import { FullTagFragment } from "@/utils/queries";
+import { toast } from "@/utils/helpers";
 
 export default {
   components: {
@@ -53,12 +55,10 @@ export default {
     initData() {
       this.initDataState = "PENDING";
       const query = gql`
-        query blogTagsQuery($tagId: ID!) {
+        ${FullTagFragment}
+        query tagQuery($tagId: ID!) {
           tag(filter: { _id: { eq: $tagId } }) {
-            _id
-            name
-            description
-            slug
+            ...FullTagFragment
           }
         }
       `;
