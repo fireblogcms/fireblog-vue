@@ -32,6 +32,9 @@
           <div
             class="mt-5 md:mt-0 flex md:flex-row md:justify-end items-center"
           >
+            <AppButton @click="onCreateTagClick" color="primary"
+              >CREATE TAG</AppButton
+            >
             <!-- no buttons here for now -->
           </div>
         </div>
@@ -231,6 +234,15 @@ export default {
       } else {
         this.$store.commit("modalShowing/open", "freeTrialEndedModal");
       }
+    },
+    onCreateTagClick() {
+      this.$router.push({
+        name: "tagCreate",
+        params: {
+          blogId: this.$route.params.blogId,
+          blogSetId: this.$route.params.blogSetId,
+        },
+      });
     },
   },
 };

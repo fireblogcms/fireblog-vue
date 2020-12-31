@@ -4,7 +4,7 @@
     <portal to="topbar-left">
       <AppBreadcrumb
         :routerOptions="{
-          name: 'blogSettings',
+          name: 'tagList',
           params: {
             blogId: $route.params.blogId,
             blogSetId: $route.params.blogSetId,
@@ -53,31 +53,37 @@ export default {
   },
   methods: {
     initData() {
-      this.initDataState = "PENDING";
-      const query = gql`
-        ${FullTagFragment}
-        query tagQuery($tagId: ID!) {
-          tag(filter: { _id: { eq: $tagId } }) {
-            ...FullTagFragment
+      alert(this.$route.name);
+      if (this.$route.name === "tagCreate") {
+        this.initDataState = "FINISHED_OK";
+      }
+      if (this.$route.name === "tagUpdate") {
+        this.initDataState = "PENDING";
+        const query = gql`
+          ${FullTagFragment}
+          query tagQuery($tagId: ID!) {
+            tag(filter: { _id: { eq: $tagId } }) {
+              ...FullTagFragment
+            }
           }
-        }
-      `;
-      return apolloClient
-        .query({
-          query,
-          variables: {
-            tagId: this.$route.params.tagId,
-          },
-        })
-        .then(response => {
-          this.tag = response.data.tag;
-          this.initDataState = "FINISHED_OK";
-        })
-        .catch(e => {
-          toast(this, e, "error");
-          throw new Error(e);
-          this.initDataState = "FINISHED_ERROR";
-        });
+        `;
+        return apolloClient
+          .query({
+            query,
+            variables: {
+              tagId: this.$route.params.tagId,
+            },
+          })
+          .then(response => {
+            this.tag = response.data.tag;
+            this.initDataState = "FINISHED_OK";
+          })
+          .catch(e => {
+            toast(this, e, "error");
+            throw new Error(e);
+            this.initDataState = "FINISHED_ERROR";
+          });
+      }
     },
   },
 };

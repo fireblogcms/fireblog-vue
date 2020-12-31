@@ -27,11 +27,17 @@
       v-model="formValues.metaDescription"
       class="mt-5"
     />
+    <div class="font-bold mt-5">Image</div>
+    <S3ImageUpload
+      label="Image"
+      :blogId="$route.params.blogId"
+      :initialImage="formValues.image"
+    />
     <div class="flex justify-end mt-10">
       <AppButton @click="onBackClick">Back</AppButton>
-      <AppButton @click="onSubmitClick" class="ml-5" color="primary"
-        >Save</AppButton
-      >
+      <AppButton @click="onSubmitClick" class="ml-5" color="primary">{{
+        tag ? "Save" : "Create"
+      }}</AppButton>
     </div>
   </div>
 </template>
@@ -39,6 +45,7 @@
 <script>
 import AppFieldText from "@/ui-kit/AppFieldText";
 import AppTextarea from "@/ui-kit/AppTextarea";
+import S3ImageUpload from "@/ui-kit/S3ImageUpload";
 import AppButton from "@/ui-kit/AppButton";
 import AppFieldColor from "@/ui-kit/AppFieldColor";
 import { toast } from "@/utils/helpers";
@@ -47,14 +54,14 @@ import gql from "graphql-tag";
 
 function initFormValues({ tag, $route }) {
   const form = {
-    _id: tag._id || "",
+    _id: (tag && tag._id) || "",
     blog: $route.params.blogId || "",
-    name: tag.name || "",
-    color: tag.color || "",
-    description: tag.description || "",
-    slug: tag.slug || "",
-    metaTitle: tag.metaTitle || "",
-    metaDescription: tag.metaDescription || "",
+    name: (tag && tag.name) || "",
+    color: (tag && tag.color) || "",
+    description: (tag && tag.description) || "",
+    slug: (tag && tag.slug) || "",
+    metaTitle: (tag && tag.metaTitle) || "",
+    metaDescription: (tag && tag.metaDescription) || "",
   };
   return form;
 }
@@ -65,6 +72,7 @@ export default {
     AppTextarea,
     AppButton,
     AppFieldColor,
+    S3ImageUpload,
   },
   props: {
     tag: {
@@ -81,7 +89,7 @@ export default {
   methods: {
     onBackClick() {
       this.$router.push({
-        name: "blogSettings",
+        name: "tagList",
         params: {
           blogId: this.$route.params.blogId,
           blogSetId: this.$route.params.blogSetId,

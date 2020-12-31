@@ -150,7 +150,7 @@
 <script>
 import AppTextarea from "@/ui-kit/AppTextarea";
 import AppFieldText from "@/ui-kit/AppFieldText";
-import S3ImageUpload from "./S3ImageUpload";
+import S3ImageUpload from "@/ui-kit/S3ImageUpload";
 import TagAutocomplete from "./TagAutocomplete";
 import { REQUEST_STATE, generateSlugFromServer } from "@/utils/helpers";
 import {

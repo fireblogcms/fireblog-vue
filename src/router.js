@@ -118,8 +118,13 @@ const router = new Router({
       component: TagListView,
     },
     {
-      path: "/blogset/:blogSetId/blog/:blogId/tag/:tagId",
+      path: "/blogset/:blogSetId/blog/:blogId/tag/:tagId/edit",
       name: "tagUpdate",
+      component: TagFormView,
+    },
+    {
+      path: "/blogset/:blogSetId/blog/:blogId/tag/create",
+      name: "tagCreate",
       component: TagFormView,
     },
     {

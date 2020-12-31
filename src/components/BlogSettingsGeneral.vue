@@ -100,7 +100,7 @@ import {
 } from "@/utils/vuexForm";
 import apolloClient from "@/utils/apolloClient";
 import gql from "graphql-tag";
-import S3ImageUpload from "./S3ImageUpload";
+import S3ImageUpload from "@/ui-kit/S3ImageUpload";
 import { updateBlogMutation } from "@/utils/queries";
 
 const formId = "blogSettingsGeneral";
