@@ -59,17 +59,52 @@
         </AppButton>
       </div>
     </template>
+
+    <!-- DELETE POST MODAL -->
+    <AppModal name="deleteTagModal" v-if="deleteModal.tag">
+      <div class="text-4xl font-bold" slot="header">
+        {{ deleteModal.title }}
+      </div>
+      <div class="flex flex-col items-center" slot="body">
+        <p class="text-xl">
+          {{
+            $t("views.tagList.deleteModal.content", {
+              tagName: deleteModal.tag.name,
+            })
+          }}
+        </p>
+        <div
+          class="flex flex-col md:flex-row items-center justify-center mt-10"
+        >
+          <AppButton class="mx-4" @click="closeDeleteTagModal">
+            {{ $t("global.cancel") }}
+          </AppButton>
+          <AppButton
+            :loading="deleteTagRequestState === 'PENDING'"
+            class="mt-4 md:mt-0 mx-4"
+            color="danger"
+            @click="onDeleteModalConfirmClick"
+          >
+            {{ $t("views.TagList.deleteModal.confirmButton") }}
+          </AppButton>
+        </div>
+      </div>
+    </AppModal>
   </div>
 </template>
 
 <script>
 import AppButton from "@/ui-kit/AppButton";
 import striptags from "striptags";
-import { formatDate } from "@/utils/helpers";
+import { formatDate, REQUEST_STATE } from "@/utils/helpers";
+import AppModal from "@/ui-kit/AppModal";
+import apolloClient from "@/utils/apolloClient";
+import { deleteTagMutation } from "@/utils/queries";
 
 export default {
   components: {
     AppButton,
+    AppModal,
   },
   props: {
     tags: {
@@ -77,12 +112,53 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      deleteModal: {
+        title: null,
+        data: null,
+        tag: null,
+      },
+      deleteTagRequestState: REQUEST_STATE.NOT_STARTED,
+    };
+  },
   created() {
     this.striptags = striptags;
   },
   methods: {
-    onDeleteClick(post) {
-      this.$emit("onDeleteClick", post);
+    closeDeleteTagModal() {
+      this.$store.commit("modalShowing/close", "deleteTagModal");
+    },
+    deleteTag(tag) {
+      this.deleteTagRequestState = REQUEST_STATE.PENDING;
+      return apolloClient
+        .mutate({
+          mutation: deleteTagMutation,
+          variables: { id: tag._id },
+        })
+        .then(async result => {
+          this.deleteTagRequestState = REQUEST_STATE.FINISHED_OK;
+          this.$emit("tagDeleted", result.data.deleteTag);
+          const post = result.data.deleteTag;
+        })
+        .catch(error => {
+          this.deleteTagRequestState = REQUEST_STATE.FINISHED_ERROR;
+          toast(this, "Sorry, an error occured while fetching posts", "error");
+          this.closeDeleteTagModal();
+          throw new Error(error);
+        });
+    },
+    onDeleteClick(tag) {
+      this.deleteModal.tag = tag;
+      this.deleteModal.title = this.$t("views.tagList.deleteModal.title", {
+        tagName: tag.name,
+      });
+      this.$store.commit("modalShowing/open", "deleteTagModal");
+    },
+    onDeleteModalConfirmClick() {
+      this.deleteTag(this.deleteModal.tag).then(() => {
+        this.closeDeleteTagModal();
+      });
     },
   },
 };
