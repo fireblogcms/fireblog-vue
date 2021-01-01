@@ -11,7 +11,6 @@
           @input="$emit('input', $event.target.value)"
         />
       </div>
-      <div v-if="showValue" class="ml-3 text-gray-700">{{ value }}</div>
     </div>
   </div>
 </template>

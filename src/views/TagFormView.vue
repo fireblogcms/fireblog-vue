@@ -20,7 +20,11 @@
       v-if="initDataState === 'FINISHED_OK'"
       class="bg-white shadow max-w-900 mt-10 mx-auto p-10 rounded"
     >
-      <TagForm :tag="tag" />
+      <TagForm
+        :operation="operation()"
+        :blogId="$route.params.blogId"
+        :tag="tag"
+      />
     </div>
   </DefaultLayout>
 </template>
@@ -52,12 +56,14 @@ export default {
     this.initData();
   },
   methods: {
+    operation() {
+      return this.$route.name === "tagCreate" ? "CREATE" : "UPDATE";
+    },
     initData() {
-      alert(this.$route.name);
-      if (this.$route.name === "tagCreate") {
+      if (this.operation() === "CREATE") {
         this.initDataState = "FINISHED_OK";
       }
-      if (this.$route.name === "tagUpdate") {
+      if (this.operation() === "UPDATE") {
         this.initDataState = "PENDING";
         const query = gql`
           ${FullTagFragment}

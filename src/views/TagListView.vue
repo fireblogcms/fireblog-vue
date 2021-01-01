@@ -18,7 +18,7 @@
 
     <AppLoader v-if="viewDataLoading" />
     <!-- -->
-    <template v-if="viewData">
+    <template v-if="!viewDataLoading">
       <div class="bg-white max-w-1000 mx-auto shadow rounded-xl my-12 p-10">
         <div
           class="flex flex-col md:flex-row justify-between items-center mb-6"
@@ -62,26 +62,26 @@
     </template>
 
     <!-- DELETE POST MODAL -->
-    <AppModal name="deletePostModal" v-if="deleteModal.post">
+    <AppModal name="deleteTagModal" v-if="deleteModal.tag">
       <div class="text-4xl font-bold" slot="header">
         {{ deleteModal.title }}
       </div>
       <div class="flex flex-col items-center" slot="body">
         <p class="text-xl">
           {{
-            $t("views.TagList.deleteModal.content", {
-              postTitle: deleteModal.post.title,
+            $t("views.tagList.deleteModal.content", {
+              tagName: deleteModal.tag.name,
             })
           }}
         </p>
         <div
           class="flex flex-col md:flex-row items-center justify-center mt-10"
         >
-          <AppButton class="mx-4" @click="closeDeletePostModal">
+          <AppButton class="mx-4" @click="closeDeleteTagModal">
             {{ $t("global.cancel") }}
           </AppButton>
           <AppButton
-            :loading="deletePostRequestState === 'PENDING'"
+            :loading="deleteTagRequestState === 'PENDING'"
             class="mt-4 md:mt-0 mx-4"
             color="danger"
             @click="onDeleteModalConfirmClick"
@@ -106,7 +106,7 @@ import { REQUEST_STATE, toast } from "@/utils/helpers";
 import {
   getPostsQuery,
   getBlogQuery,
-  deletePostMutation,
+  deleteTagMutation,
 } from "@/utils/queries";
 import striptags from "striptags";
 import TagList from "@/components/TagList";
@@ -124,15 +124,12 @@ export default {
     return {
       viewData: null,
       viewDataLoading: false,
-      deletePostRequestState: REQUEST_STATE.NOT_STARTED,
+      deleteTagRequestState: REQUEST_STATE.NOT_STARTED,
       deleteModal: {
         title: null,
         data: null,
-        post: null,
+        tag: null,
       },
-      activeStatus: "PUBLISHED",
-      // will be true or false, once we have counted all existing posts
-      isFirstPost: null,
     };
   },
   created() {
@@ -146,19 +143,6 @@ export default {
     $route: function(value) {
       viewData();
     },
-  },
-  beforeRouteEnter(to, from, next) {
-    // if use is coming from a draft post, set "DRAFT" tab by default.
-    next(vm => {
-      if (from.name === "postUpdate" || from.name === "postCreate") {
-        if (
-          vm.$store.state.global.lastVisitedPost &&
-          vm.$store.state.global.lastVisitedPost.status === "DRAFT"
-        ) {
-          vm.activeStatus = "DRAFT";
-        }
-      }
-    });
   },
   methods: {
     fetchData() {
@@ -176,46 +160,40 @@ export default {
           throw new Error(error);
         });
     },
-    /**
-     * We need to run two requests, to know what user has to see;
-     * - All existing post (is this user first post ?)
-     * - All published post (displayed in the "published" tab)
-     * We will display a loader until this two requests are finished
-     */
-    closeDeletePostModal() {
-      this.$store.commit("modalShowing/close", "deletePostModal");
+    closeDeleteTagModal() {
+      this.$store.commit("modalShowing/close", "deleteTagModal");
     },
-    deletePost(post) {
-      this.deletePostRequestState = REQUEST_STATE.PENDING;
+    deleteTag(tag) {
+      this.deleteTagRequestState = REQUEST_STATE.PENDING;
       return apolloClient
         .mutate({
-          mutation: deletePostMutation,
-          variables: { id: post._id },
+          mutation: deleteTagMutation,
+          variables: { id: tag._id },
         })
         .then(async result => {
-          this.deletePostRequestState = REQUEST_STATE.FINISHED_OK;
-          const post = result.data.deletePost;
+          this.deleteTagRequestState = REQUEST_STATE.FINISHED_OK;
+          const post = result.data.deleteTag;
         })
         .catch(error => {
-          this.deletePostRequestState = REQUEST_STATE.FINISHED_ERROR;
+          this.deleteTagRequestState = REQUEST_STATE.FINISHED_ERROR;
           toast(this, "Sorry, an error occured while fetching posts", "error");
-          this.closeDeletePostModal();
+          this.closeDeleteTagModal();
           throw new Error(error);
         });
     },
     onStatusClick(status) {
       this.activeStatus = status;
     },
-    onDeleteClick(post) {
-      this.deleteModal.post = post;
-      this.deleteModal.title = this.$t("views.TagList.deleteModal.title", {
-        postTitle: post.title,
+    onDeleteClick(tag) {
+      this.deleteModal.tag = tag;
+      this.deleteModal.title = this.$t("views.tagList.deleteModal.title", {
+        tagName: tag.name,
       });
-      this.$store.commit("modalShowing/open", "deletePostModal");
+      this.$store.commit("modalShowing/open", "deleteTagModal");
     },
     onDeleteModalConfirmClick() {
-      this.deletePost(this.deleteModal.post).then(() => {
-        this.closeDeletePostModal();
+      this.deleteTag(this.deleteModal.tag).then(() => {
+        this.closeDeleteTagModal();
         this.fetchData();
       });
     },

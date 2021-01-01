@@ -35,9 +35,9 @@
     />
     <div class="flex justify-end mt-10">
       <AppButton @click="onBackClick">Back</AppButton>
-      <AppButton @click="onSubmitClick" class="ml-5" color="primary">{{
-        tag ? "Save" : "Create"
-      }}</AppButton>
+      <AppButton @click="onSubmitClick" class="ml-5" color="primary">
+        {{ operation === "UPDATE" ? "Save" : "Create" }}
+      </AppButton>
     </div>
   </div>
 </template>
@@ -52,17 +52,25 @@ import { toast } from "@/utils/helpers";
 import apolloClient from "@/utils/apolloClient";
 import gql from "graphql-tag";
 
-function initFormValues({ tag, $route }) {
+/**
+ * @todo
+ * - create a real slug field, with slug generation on server side
+ * - check if upload image is working
+ */
+
+function initFormValues({ tag, blogId }) {
   const form = {
     _id: (tag && tag._id) || "",
-    blog: $route.params.blogId || "",
+    blog: blogId,
     name: (tag && tag.name) || "",
     color: (tag && tag.color) || "",
+    image: (tag && tag.image) || "",
     description: (tag && tag.description) || "",
     slug: (tag && tag.slug) || "",
     metaTitle: (tag && tag.metaTitle) || "",
     metaDescription: (tag && tag.metaDescription) || "",
   };
+  console.log("form", form);
   return form;
 }
 
@@ -75,13 +83,22 @@ export default {
     S3ImageUpload,
   },
   props: {
+    // CREATE or UPDATE
+    operation: {
+      type: String,
+      required: true,
+    },
+    blogId: {
+      type: String,
+      required: true,
+    },
     tag: {
       type: [Object, null],
     },
   },
   data() {
     return {
-      formValues: initFormValues({ tag: this.tag, $route: this.$route }),
+      formValues: initFormValues({ tag: this.tag, blogId: this.blogId }),
       formErrors: {},
       saveTagState: "NOT_STARTED",
     };
@@ -100,7 +117,7 @@ export default {
       this.formErrors = {};
       if (!this.formValues.name.trim()) {
         const message = "Field name is required";
-        this.formErrorxs.name = message;
+        this.formErrors.name = message;
         toast(this, message, "error");
       }
       if (!this.formValues.slug.trim()) {
@@ -113,13 +130,54 @@ export default {
       const tag = {
         ...this.formValues,
       };
+      if (this.operation === "CREATE") {
+        delete tag._id;
+      }
       return tag;
     },
     onSubmitClick() {
       this.validateForm();
       if (Object.keys(this.formErrors).length === 0) {
-        this.updateTag();
+        if (this.operation === "UPDATE") {
+          this.updateTag();
+        }
+        if (this.operation === "CREATE") {
+          this.createTag();
+        }
       }
+    },
+    createTag() {
+      this.saveTagState = "PENDING";
+      return apolloClient
+        .mutate({
+          mutation: gql`
+            mutation createTag($tag: TagCreate!) {
+              createTag(tag: $tag) {
+                _id
+                name
+                slug
+                description
+                color
+                metaTitle
+                metaDescription
+                image
+              }
+            }
+          `,
+          variables: {
+            tag: this.prepareFormValuesForSave(this.tag),
+          },
+        })
+        .then(response => {
+          this.saveTagState = "FINISHED_OK";
+          this.$emit("createdTag", response.data.createTag);
+          return response;
+        })
+        .catch(e => {
+          this.saveTagState = "FINISHED_ERROR";
+          toast(this, e, "error");
+          throw new Error(e);
+        });
     },
     updateTag() {
       this.saveTagState = "PENDING";
@@ -135,10 +193,7 @@ export default {
                 color
                 metaTitle
                 metaDescription
-                blog {
-                  _id
-                  name
-                }
+                image
               }
             }
           `,
@@ -148,7 +203,7 @@ export default {
         })
         .then(response => {
           this.saveTagState = "FINISHED_OK";
-          this.tag = response.data.tag;
+          this.$emit("updatedTag", response.data.updateTag);
         })
         .catch(e => {
           this.saveTagState = "FINISHED_ERROR";

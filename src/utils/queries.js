@@ -175,6 +175,15 @@ export const deletePostMutation = gql`
   }
 `;
 
+export const deleteTagMutation = gql`
+  ${FullTagFragment}
+  mutation deleteTag($id: ID!) {
+    deleteTag(_id: $id) {
+      ...FullTagFragment
+    }
+  }
+`;
+
 export const createBlogMutation = gql`
   ${FullBlogFragment}
   mutation createBlogMutation($blog: CreateBlogInput!) {
