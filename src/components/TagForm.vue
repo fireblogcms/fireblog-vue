@@ -35,7 +35,12 @@
     />
     <div class="flex justify-end mt-10">
       <AppButton @click="onBackClick">Back</AppButton>
-      <AppButton @click="onSubmitClick" class="ml-5" color="primary">
+      <AppButton
+        @click="onSubmitClick"
+        class="ml-5"
+        color="primary"
+        :loading="saveTagState === 'PENDING'"
+      >
         {{ operation === "UPDATE" ? "Save" : "Create" }}
       </AppButton>
     </div>
@@ -135,14 +140,28 @@ export default {
       }
       return tag;
     },
-    onSubmitClick() {
+    async onSubmitClick() {
       this.validateForm();
       if (Object.keys(this.formErrors).length === 0) {
         if (this.operation === "UPDATE") {
-          this.updateTag();
+          await this.updateTag();
+          this.$router.push({
+            name: "tagList",
+            params: {
+              blogId: this.$route.params.blogId,
+              blogSetId: this.$route.params.blogSetId,
+            },
+          });
         }
         if (this.operation === "CREATE") {
-          this.createTag();
+          await this.createTag();
+          this.$router.push({
+            name: "tagList",
+            params: {
+              blogId: this.$route.params.blogId,
+              blogSetId: this.$route.params.blogSetId,
+            },
+          });
         }
       }
     },
@@ -204,6 +223,7 @@ export default {
         .then(response => {
           this.saveTagState = "FINISHED_OK";
           this.$emit("updatedTag", response.data.updateTag);
+          return response;
         })
         .catch(e => {
           this.saveTagState = "FINISHED_ERROR";

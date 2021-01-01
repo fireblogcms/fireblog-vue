@@ -4,8 +4,11 @@
       v-if="tags.edges.length === 0"
       class="flex-1 flex items-center justify-center"
     >
-      <p class="text-center text-xl">
-        {{ $t("views.postList.noTagFound") }}
+      <p class="text">
+        <img width="150" class="mx-auto" src="/images/desert.svg" />
+        <span class="text-gray-600">
+          {{ $t("views.tagList.noResult") }}
+        </span>
       </p>
     </div>
 
