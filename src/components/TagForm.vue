@@ -15,6 +15,7 @@
       label="description"
       v-model="formValues.description"
       class="mt-5"
+      maxlength="250"
     />
     <AppFieldColor label="Color" v-model="formValues.color" class="mt-5" />
     <AppFieldText

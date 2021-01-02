@@ -106,7 +106,7 @@ export function createSlug(value, options = {}) {
   });
 }
 
-export function generateSlugFromServer({ blogId, source }) {
+export function generatePostSlugFromServer({ blogId, source }) {
   return apolloClient
     .mutate({
       variables: {

@@ -30,13 +30,22 @@
       >
         <div class="flex flex-1 mr-2">
           <div
+            style="flex:0 0 120px"
             v-show="tag.node.image"
             v-lazy:background-image="tag.node.image"
             class="w-40 mr-10 rounded bg-center bg-no-repeat bg-cover"
           ></div>
           <div>
-            <p class="text-3xl font-bold">
-              {{ tag.node.name }} {{ tag.node.description }}
+            <p class="text-3xl font-bold flex items-center">
+              <span>
+                {{ tag.node.name }}
+              </span>
+              <span
+                v-show="tag.node.color"
+                class="ml-2 h-6 w-6 rounded-full shadow-md"
+                :style="{ backgroundColor: tag.node.color }"
+              >
+              </span>
             </p>
             <p class="mt-4">
               {{ striptags(tag.node.description || "") }}
@@ -54,11 +63,11 @@
           </div>
         </div>
         <AppButton
-          size="small"
+          size="sm"
           class="self-center mt-6 md:mt-0"
           @click="onDeleteClick(tag.node)"
         >
-          <img width="20" src="/images/icon-delete.svg" />
+          <img class="" width="20" src="/images/icon-delete.svg" />
         </AppButton>
       </div>
     </template>

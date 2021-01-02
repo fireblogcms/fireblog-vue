@@ -7,13 +7,19 @@
       {{ $t("views.blogSettings.tagsSettingsForm.label") }}
     </label>
     <div class="flex flex-wrap my-4">
-      <span
-        :key="tag.name"
+      <div
         v-for="tag in tags"
-        class="bg-gray-200 shadow-sm rounded text-current p-2 mr-2 mb-2"
+        :key="tag._id"
+        class="flex items-center bg-gray-200 p-2 mr-2 mb-2 rounded"
       >
-        {{ tag.name }}
-      </span>
+        <span class="shadow-sm rounded text-current"> {{ tag.name }} </span>
+        <span
+          v-show="tag.color"
+          class="ml-2 h-6 w-6 rounded-full shadow-md"
+          :style="{ backgroundColor: tag.color }"
+        >
+        </span>
+      </div>
     </div>
     <AppButton
       color="primary-outlined"
@@ -60,6 +66,7 @@ export default {
               _id
               slug
               name
+              color
             }
           }
         }

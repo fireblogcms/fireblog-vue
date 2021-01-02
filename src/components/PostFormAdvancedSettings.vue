@@ -152,14 +152,14 @@ import AppTextarea from "@/ui-kit/AppTextarea";
 import AppFieldText from "@/ui-kit/AppFieldText";
 import S3ImageUpload from "@/ui-kit/S3ImageUpload";
 import TagAutocomplete from "./TagAutocomplete";
-import { REQUEST_STATE, generateSlugFromServer } from "@/utils/helpers";
+import { REQUEST_STATE, generatePostSlugFromServer } from "@/utils/helpers";
 import {
   vuexFormGetValue,
   vuexFormGetError,
   vuexFormSetValue,
   vuexFormSetError,
 } from "@/utils/vuexForm";
-import SlugField from "./SlugField";
+import SlugField from "@/ui-kit/SlugField";
 import FeatureField from "./FeatureField";
 import PostFormSchedulePublication from "./PostFormSchedulePublication";
 import PreviewGoogleResult from "./PreviewGoogleResult";
@@ -239,7 +239,7 @@ export default {
       if (value.length === 0) {
         return;
       }
-      generateSlugFromServer({
+      generatePostSlugFromServer({
         blogId: this.$route.params.blogId,
         source: value,
       }).then(response => {
