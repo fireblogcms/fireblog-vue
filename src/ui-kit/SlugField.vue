@@ -21,7 +21,7 @@
         }}
       </AppButton>
     </div>
-    <p v-if="computedHelp" v-html="computedHelp" class="text-sm italic mt-2" />
+    <p v-if="help" v-html="help" class="text-sm italic mt-2" />
 
     <AppModal name="unlockConfirmModal">
       <div class="text-xl font-bold" slot="header">
@@ -117,7 +117,6 @@ export default {
       this.$emit("onSlugChange", value);
     },
     onSlugInput(event) {
-      //this.slug = createSlug(event);
       this.$emit("input", this.slug);
     },
     onButtonClick() {

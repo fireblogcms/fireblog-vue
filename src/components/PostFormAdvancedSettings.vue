@@ -105,6 +105,7 @@
               @onSlugChange="onSlugChange"
               @onUnlock="onSlugUnlock"
               @onLock="onSlugLock"
+              :help="slugHelp"
             />
 
             <AppFieldText
@@ -203,6 +204,14 @@ export default {
       return {
         to: d,
       };
+    },
+    slugHelp() {
+      return this.$t("components.slugField.help", {
+        exampleUrl: `https://example.com/post/<mark class="font-bold bg-indigo-200 text-current">${vuexFormGetValue(
+          FORM_ID,
+          "slug"
+        )}</mark>`,
+      });
     },
   },
   methods: {

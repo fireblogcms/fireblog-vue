@@ -95,17 +95,6 @@ export function cloudinaryUploadImage({ file, folder, options = {} }) {
   });
 }
 
-/**
- * Wrapper around slugify to ensure options consistance
- */
-export function createSlug(value, options = {}) {
-  return slug(value, {
-    replacement: "-",
-    lower: true,
-    ...options,
-  });
-}
-
 export function generatePostSlugFromServer({ blogId, source }) {
   return apolloClient
     .mutate({
@@ -130,6 +119,34 @@ export function generatePostSlugFromServer({ blogId, source }) {
     })
     .then(response => {
       return response.data.generateBlogPostSlug;
+    });
+}
+
+export function generateTagSlugFromServer({ blogId, source }) {
+  return apolloClient
+    .mutate({
+      variables: {
+        blogId,
+        source,
+      },
+      mutation: gql`
+        mutation generateBlogTagSlug($source: String!, $blogId: ID!) {
+          generateBlogTagSlug(blogId: $blogId, source: $source) {
+            source
+            slug
+            alreadyExists
+            existingTag {
+              _id
+              name
+              color
+              description
+            }
+          }
+        }
+      `,
+    })
+    .then(response => {
+      return response.data.generateBlogTagSlug;
     });
 }
 

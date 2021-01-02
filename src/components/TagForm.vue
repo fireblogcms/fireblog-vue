@@ -5,17 +5,7 @@
       v-model="formValues.name"
       :error="formErrors.name"
     />
-    <!-- SLUG FIELD -->
-    <SlugField
-      class="mt-4"
-      :value="formValues.slug"
-      :error="formErrors.slug"
-      :showToggleLockButton="true"
-      :locked="slugIsLocked"
-      @onSlugChange="onSlugChange"
-      @onUnlock="slugIsLocked = false"
-      @onLock="slugIsLocked = true"
-    />
+
     <AppTextarea
       label="description"
       v-model="formValues.description"
@@ -23,16 +13,6 @@
       maxlength="250"
     />
     <AppFieldColor label="Color" v-model="formValues.color" class="mt-5" />
-    <AppFieldText
-      label="SEO meta title"
-      v-model="formValues.metaTitle"
-      class="mt-5"
-    />
-    <AppFieldText
-      label="SEO meta description"
-      v-model="formValues.metaDescription"
-      class="mt-5"
-    />
     <div class="font-bold mt-5">Image</div>
     <S3ImageUpload
       label="Image"
@@ -40,9 +20,54 @@
       :initialImage="formValues.image"
       @onUploaded="onUploaded"
     />
+
+    <h3 class="text-2xl font-bold flex items-center mt-10 mb-8">
+      <div>
+        <img width="30" src="/images/icon-seo.png" class="inline mr-5" />
+      </div>
+      <div class="text-xl md:text-2xl">
+        Optimisations pour les moteurs de recherche
+      </div>
+    </h3>
+    <!-- SLUG FIELD -->
+    <SlugField
+      class="mt-4"
+      :value="formValues.slug"
+      :error="formErrors.slug"
+      :help="slugHelp"
+      :showToggleLockButton="true"
+      :locked="slugIsLocked"
+      @onSlugChange="onSlugChange"
+      @onUnlock="slugIsLocked = false"
+      @onLock="slugIsLocked = true"
+    />
+
+    <AppFieldText
+      label="SEO meta title"
+      v-model="formValues.metaTitle"
+      class="mt-5"
+    />
+    <AppTextarea
+      maxlength="250"
+      label="SEO meta description"
+      v-model="formValues.metaDescription"
+      class="mt-5"
+    />
+    <p class="mb-4 font-bold mt-10">
+      {{ $t("views.postForm.advancedSettingsModal.previewGoogle") }}
+    </p>
+    <div class="p-6 bg-white shadow-around rounded-lg">
+      <PreviewGoogleResult
+        :title="previewGoogleValues().title"
+        :description="previewGoogleValues().description"
+        :url="`https://example.com/tag/${formValues.slug}`"
+      />
+    </div>
+
     <div class="flex justify-end mt-10">
       <AppButton @click="onBackClick">Back</AppButton>
       <AppButton
+        :disabled="Object.keys(formErrors).length > 0"
         @click="onSubmitClick"
         class="ml-5"
         color="primary"
@@ -60,10 +85,11 @@ import AppTextarea from "@/ui-kit/AppTextarea";
 import S3ImageUpload from "@/ui-kit/S3ImageUpload";
 import AppButton from "@/ui-kit/AppButton";
 import AppFieldColor from "@/ui-kit/AppFieldColor";
-import { toast } from "@/utils/helpers";
+import { toast, generateTagSlugFromServer } from "@/utils/helpers";
 import apolloClient from "@/utils/apolloClient";
 import gql from "graphql-tag";
 import SlugField from "@/ui-kit/SlugField";
+import PreviewGoogleResult from "./PreviewGoogleResult";
 
 /**
  * @todo
@@ -83,7 +109,6 @@ function initFormValues({ tag, blogId }) {
     metaTitle: (tag && tag.metaTitle) || "",
     metaDescription: (tag && tag.metaDescription) || "",
   };
-  console.log("form", form);
   return form;
 }
 
@@ -95,6 +120,7 @@ export default {
     AppFieldColor,
     S3ImageUpload,
     SlugField,
+    PreviewGoogleResult,
   },
   props: {
     // CREATE or UPDATE
@@ -116,7 +142,15 @@ export default {
       formErrors: {},
       saveTagState: "NOT_STARTED",
       slugIsLocked: this.operation === "UPDATE",
+      slugError: null,
     };
+  },
+  computed: {
+    slugHelp() {
+      return this.$t("components.slugFieldTag.help", {
+        exampleUrl: `https://example.com/tag/<mark class="font-bold bg-indigo-200 text-current">${this.slug}</mark>`,
+      });
+    },
   },
   methods: {
     onBackClick() {
@@ -130,6 +164,30 @@ export default {
     },
     onUploaded(value) {
       this.formValues.image = value;
+    },
+    onSlugChange(value) {
+      if (value.length === 0) {
+        return;
+      }
+      generateTagSlugFromServer({
+        blogId: this.$route.params.blogId,
+        source: value,
+      }).then(response => {
+        const slug = response.slug;
+        this.formValues.slug = slug;
+
+        if (
+          response.existingTag &&
+          response.existingTag._id !== this.$route.params.tagId
+        ) {
+          this.formErrors = {
+            ...this.formErrors,
+            slug: `This slug is already used by tag: ${response.existingTag.name}`,
+          };
+        } else {
+          this.$delete(this.formErrors, "slug");
+        }
+      });
     },
     validateForm() {
       this.formErrors = {};
@@ -243,6 +301,20 @@ export default {
           toast(this, e, "error");
           throw new Error(e);
         });
+    },
+    previewGoogleValues() {
+      let title = this.formValues.name;
+      let description = this.formValues.description;
+      if (this.formValues.metaTitle.trim()) {
+        title = this.formValues.metaTitle.trim();
+      }
+      if (this.formValues.metaDescription.trim()) {
+        description = this.formValues.metaDescription.trim();
+      }
+      return {
+        title,
+        description,
+      };
     },
   },
 };
