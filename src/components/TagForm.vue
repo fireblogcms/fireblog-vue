@@ -5,11 +5,16 @@
       v-model="formValues.name"
       :error="formErrors.name"
     />
-    <AppFieldText
-      label="slug"
-      v-model="formValues.slug"
+    <!-- SLUG FIELD -->
+    <SlugField
+      class="mt-4"
+      :value="formValues.slug"
       :error="formErrors.slug"
-      class="mt-5"
+      :showToggleLockButton="true"
+      :locked="slugIsLocked"
+      @onSlugChange="onSlugChange"
+      @onUnlock="slugIsLocked = false"
+      @onLock="slugIsLocked = true"
     />
     <AppTextarea
       label="description"
@@ -58,6 +63,7 @@ import AppFieldColor from "@/ui-kit/AppFieldColor";
 import { toast } from "@/utils/helpers";
 import apolloClient from "@/utils/apolloClient";
 import gql from "graphql-tag";
+import SlugField from "@/ui-kit/SlugField";
 
 /**
  * @todo
@@ -88,6 +94,7 @@ export default {
     AppButton,
     AppFieldColor,
     S3ImageUpload,
+    SlugField,
   },
   props: {
     // CREATE or UPDATE
@@ -108,6 +115,7 @@ export default {
       formValues: initFormValues({ tag: this.tag, blogId: this.blogId }),
       formErrors: {},
       saveTagState: "NOT_STARTED",
+      slugIsLocked: this.operation === "UPDATE",
     };
   },
   methods: {
