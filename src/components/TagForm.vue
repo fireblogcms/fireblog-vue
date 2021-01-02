@@ -32,6 +32,7 @@
       label="Image"
       :blogId="$route.params.blogId"
       :initialImage="formValues.image"
+      @onUploaded="onUploaded"
     />
     <div class="flex justify-end mt-10">
       <AppButton @click="onBackClick">Back</AppButton>
@@ -118,6 +119,9 @@ export default {
         },
       });
     },
+    onUploaded(value) {
+      this.formValues.image = value;
+    },
     validateForm() {
       this.formErrors = {};
       if (!this.formValues.name.trim()) {
@@ -184,7 +188,7 @@ export default {
             }
           `,
           variables: {
-            tag: this.prepareFormValuesForSave(this.tag),
+            tag: this.prepareFormValuesForSave(),
           },
         })
         .then(response => {
@@ -217,7 +221,7 @@ export default {
             }
           `,
           variables: {
-            tag: this.prepareFormValuesForSave(this.tag),
+            tag: this.prepareFormValuesForSave(),
           },
         })
         .then(response => {

@@ -72,7 +72,6 @@ import gql from "graphql-tag";
 import { REQUEST_STATE, toast } from "@/utils/helpers";
 import striptags from "striptags";
 import TagList from "@/components/TagList";
-import { ContentLoader } from "vue-content-loader";
 
 export default {
   components: {
@@ -81,7 +80,6 @@ export default {
     AppLoader,
     DefaultLayout,
     TagList,
-    ContentLoader,
   },
   data() {
     return {

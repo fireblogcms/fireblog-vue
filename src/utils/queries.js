@@ -74,6 +74,7 @@ export const FullTagFragment = gql`
   fragment FullTagFragment on Tag {
     _id
     name
+    image
     slug
     description
     metaDescription

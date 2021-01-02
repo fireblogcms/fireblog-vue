@@ -36,7 +36,7 @@
           ></div>
           <div>
             <p class="text-3xl font-bold">
-              {{ tag.node.name }}
+              {{ tag.node.name }} {{ tag.node.description }}
             </p>
             <p class="mt-4">
               {{ striptags(tag.node.description || "") }}
