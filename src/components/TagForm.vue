@@ -4,6 +4,7 @@
       label="name"
       v-model="formValues.name"
       :error="formErrors.name"
+      @change="onNameChange"
     />
 
     <AppTextarea
@@ -153,6 +154,18 @@ export default {
     },
   },
   methods: {
+    async onNameChange(name) {
+      if (
+        this.operation === "CREATE" &&
+        this.formValues.slug.trim().length === 0
+      ) {
+        const response = await generateTagSlugFromServer({
+          blogId: this.$route.params.blogId,
+          source: name,
+        });
+        this.formValues.slug = response.slug;
+      }
+    },
     onBackClick() {
       this.$router.push({
         name: "tagList",

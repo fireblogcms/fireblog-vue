@@ -12,6 +12,7 @@
       :value="value"
       @input="$emit('input', $event.target.value)"
       @change="$emit('change', $event.target.value)"
+      @blur="$emit('blur', $event.target.value)"
       v-debounce="onDebounce"
       v-bind="$attrs"
     />
