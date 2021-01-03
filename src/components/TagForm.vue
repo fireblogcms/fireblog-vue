@@ -21,7 +21,7 @@
       @onUploaded="onUploaded"
     />
 
-    <h3 class="text-2xl font-bold flex items-center mt-10 mb-8">
+    <h3 class="text-2xl font-bold flex items-center mt-16 mb-8">
       <div>
         <img width="30" src="/images/icon-seo.png" class="inline mr-5" />
       </div>
