@@ -1,6 +1,8 @@
 <template>
   <div v-show="showing" class="">
-    <div class="z-30 fixed inset-0 w-full h-screen bg-white opacity-90"></div>
+    <div
+      class="z-30 fixed inset-0 w-full h-screen bg-gray-900 opacity-50"
+    ></div>
     <div
       class="z-30 fixed inset-0 w-full h-screen flex items-center justify-center"
       @click.self="close"
@@ -23,6 +25,7 @@
           <div
             v-if="width !== 'fullscreen'"
             @click="close"
+            style="flex: 0 0 35px"
             class="font-bold cursor-pointer bg-gray-200 rounded-full p-3 align-self"
           >
             <img width="15" src="/images/icon-close.png" />

@@ -44,8 +44,7 @@
                 v-show="tag.node.color"
                 class="ml-2 h-6 w-6 rounded-full shadow-md"
                 :style="{ backgroundColor: tag.node.color }"
-              >
-              </span>
+              />
             </p>
             <p class="mt-4">
               {{ striptags(tag.node.description || "") }}

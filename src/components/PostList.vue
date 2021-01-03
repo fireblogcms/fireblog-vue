@@ -119,13 +119,15 @@
         {{ deleteModal.title }}
       </div>
       <div class="flex flex-col items-center" slot="body">
-        <p class="text-xl">
-          {{
-            $t("views.postList.deleteModal.content", {
+        <p
+          class="text-xl"
+          v-html="
+            $t('views.postList.deleteModal.content', {
               postTitle: deleteModal.post.title,
             })
-          }}
-        </p>
+          "
+        />
+
         <div class="flex items-center justify-center mt-10">
           <AppButton class="mr-2" @click="closeDeletePostModal">
             {{ $t("global.cancel").toUpperCase() }}
@@ -267,9 +269,7 @@ export default {
     },
     onDeleteClick(post) {
       this.deleteModal.post = post;
-      this.deleteModal.title = this.$t("views.postList.deleteModal.title", {
-        postTitle: post.title,
-      });
+      this.deleteModal.title = this.$t("views.postList.deleteModal.title");
       this.$store.commit("modalShowing/open", "deletePostModal");
     },
     onDeleteModalConfirmClick() {
