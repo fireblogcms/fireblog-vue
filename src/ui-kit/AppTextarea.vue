@@ -14,7 +14,7 @@
         @input="$emit('input', $event.target.value)"
         v-bind="$attrs"
       />
-      <p v-if="error" class="mt-2 text-sm text-red-600">
+      <p v-if="error" class="text-sm text-red-600">
         {{ error }}
       </p>
     </div>

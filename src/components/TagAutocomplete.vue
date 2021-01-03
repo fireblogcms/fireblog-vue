@@ -11,6 +11,7 @@
         @before-deleting-tag="beforeDeleteTag"
       />
     </div>
+    <!--
     <div>
       <div
         class="cursor-pointer text-primary underline mt-3 flex justify-end"
@@ -19,6 +20,7 @@
         Manage your tags
       </div>
     </div>
+    -->
   </div>
 </template>
 
