@@ -70,7 +70,6 @@ export default {
       this.tags = this.getTagsLabels(
         vuexFormGetValue(this.FORM_ID, "tags")
       ).map(tag => ({ text: tag }));
-      // console.log(this.tags);
     },
     getTagsLabels(tags) {
       return tags.map(tag => tag.name);
@@ -141,7 +140,7 @@ export default {
 }
 
 .tag-auto-complete .vue-tags-input .ti-tag {
-  @apply bg-primary p-2 rounded;
+  @apply bg-gray-200 p-2 rounded text-gray-800;
 }
 
 .tag-auto-complete .vue-tags-input .ti-new-tag-input {
@@ -149,7 +148,7 @@ export default {
 }
 
 .tag-auto-complete .vue-tags-input .ti-autocomplete {
-  @apply border-gray-200 rounded-b shadow-sm;
+  @apply border-gray-300 rounded-b shadow-sm;
 }
 
 .tag-auto-complete .vue-tags-input .ti-item {
