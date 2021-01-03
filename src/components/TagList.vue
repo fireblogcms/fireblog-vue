@@ -108,7 +108,7 @@
 <script>
 import AppButton from "@/ui-kit/AppButton";
 import striptags from "striptags";
-import { formatDate, REQUEST_STATE } from "@/utils/helpers";
+import { formatDate, REQUEST_STATE, toast } from "@/utils/helpers";
 import AppModal from "@/ui-kit/AppModal";
 import apolloClient from "@/utils/apolloClient";
 import { deleteTagMutation } from "@/utils/queries";
