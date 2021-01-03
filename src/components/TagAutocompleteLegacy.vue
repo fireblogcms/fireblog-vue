@@ -54,6 +54,7 @@ export default {
   },
   computed: {
     filteredItems() {
+      // console.log(this.blogTags)
       return this.getTagsLabels(this.blogTags)
         .filter(tag => {
           return tag.toLowerCase().indexOf(this.tag.toLowerCase()) !== -1;
@@ -84,7 +85,6 @@ export default {
                 _id
                 slug
                 name
-                color
               }
             }
           }
@@ -103,8 +103,33 @@ export default {
     beforeAddTag(obj) {
       const newTagLabel = obj.tag.text;
       const existingTag = this.blogTags.find(t => t.name === newTagLabel);
-      // from auto-complete
-      if (existingTag) {
+      if (!existingTag) {
+        // new tag not from autocomplete : create remote tag
+        apolloClient
+          .mutate({
+            mutation: createTagMutation,
+            variables: {
+              tag: {
+                name: newTagLabel,
+              },
+              blog: this.blogId,
+            },
+          })
+          .then(async result => {
+            // console.log('add tag', obj);
+            const tag = result.data.createTag;
+            vuexFormSetValue(this.FORM_ID, "tags", [
+              ...vuexFormGetValue(this.FORM_ID, "tags"),
+              tag,
+            ]);
+            obj.addTag();
+          })
+          .catch(error => {
+            toast(this, error, "error");
+          });
+      } else {
+        // from auto-complete
+        // console.log('add tag', existingTag._id);
         vuexFormSetValue(this.FORM_ID, "tags", [
           ...vuexFormGetValue(this.FORM_ID, "tags"),
           existingTag,
