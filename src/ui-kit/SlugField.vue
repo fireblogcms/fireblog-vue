@@ -139,7 +139,7 @@ export default {
   computed: {
     computedHelp() {
       return this.$t("components.slugField.help", {
-        exampleUrl: `https://example.com/post/<mark class="font-bold bg-indigo-200 text-current">${this.slug}</mark>`,
+        exampleUrl: `https://example.com/post/<span class="font-bold text-primary">${this.slug}</span>`,
       });
     },
   },

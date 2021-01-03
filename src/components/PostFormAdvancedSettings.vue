@@ -95,6 +95,7 @@
           <div class="w-full md:w-1/2 md:mr-8">
             <!-- SLUG FIELD -->
             <SlugField
+              :loading="generateSlugState === 'PENDING'"
               class="mt-4"
               :value="vuexFormGetValue(FORM_ID, 'slug')"
               :error="vuexFormGetError(FORM_ID, 'slug')"
@@ -188,6 +189,7 @@ export default {
     const data = {
       uploadingState: null,
       file: null,
+      generateSlugState: REQUEST_STATE.NOT_STARTED,
     };
     return data;
   },
@@ -245,25 +247,34 @@ export default {
       vuexFormSetValue(FORM_ID, "featured", value);
     },
     onSlugChange(value) {
-      if (value.length === 0) {
+      if (value.trim().length === 0) {
+        vuexFormSetValue(FORM_ID, "slug", "");
         return;
       }
+      this.generateSlugState = REQUEST_STATE.PENDING;
       generatePostSlugFromServer({
         blogId: this.$route.params.blogId,
         source: value,
-      }).then(response => {
-        const slug = response.slug;
-        vuexFormSetValue(FORM_ID, "slug", slug);
-        if (
-          response.alreadyExists === true &&
-          response.usedByPost._id !== this.$route.params.postId
-        ) {
-          const slugError = `This slug is already used by this post: ${response.usedByPost.title}`;
-          vuexFormSetError(FORM_ID, "slug", slugError);
-        } else {
-          vuexFormSetError(FORM_ID, "slug", null);
-        }
-      });
+      })
+        .then(response => {
+          this.generateSlugState = REQUEST_STATE.FINISHED_OK;
+          const slug = response.slug;
+          vuexFormSetValue(FORM_ID, "slug", slug);
+          if (
+            response.alreadyExists === true &&
+            response.usedByPost._id !== this.$route.params.postId
+          ) {
+            const slugError = `This slug is already used by this post: ${response.usedByPost.title}`;
+            vuexFormSetError(FORM_ID, "slug", slugError);
+          } else {
+            vuexFormSetError(FORM_ID, "slug", null);
+          }
+        })
+        .catch(e => {
+          this.generateSlugState = REQUEST_STATE.FINISHED_ERROR;
+          throw new Error(e);
+          toast(this, e, "error");
+        });
     },
     onSlugInput(event) {
       vuexFormSetValue(FORM_ID, "slug", event);

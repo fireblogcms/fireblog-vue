@@ -1,14 +1,24 @@
 <template>
-  <div class="tag-auto-complete">
-    <vue-tags-input
-      v-model="tag"
-      :tags="tags"
-      :autocomplete-items="filteredItems"
-      :placeholder="placeholderComputed"
-      @tags-changed="newTags => (tags = newTags)"
-      @before-adding-tag="beforeAddTag"
-      @before-deleting-tag="beforeDeleteTag"
-    />
+  <div>
+    <div class="tag-auto-complete">
+      <vue-tags-input
+        v-model="tag"
+        :tags="tags"
+        :autocomplete-items="filteredItems"
+        :placeholder="placeholderComputed"
+        @tags-changed="newTags => (tags = newTags)"
+        @before-adding-tag="beforeAddTag"
+        @before-deleting-tag="beforeDeleteTag"
+      />
+    </div>
+    <div>
+      <div
+        class="cursor-pointer text-primary underline mt-3 flex justify-start"
+        @click="onManageTagsClick"
+      >
+        Manage your tags
+      </div>
+    </div>
   </div>
 </template>
 
@@ -70,6 +80,16 @@ export default {
       this.tags = this.getTagsLabels(
         vuexFormGetValue(this.FORM_ID, "tags")
       ).map(tag => ({ text: tag }));
+    },
+    onManageTagsClick() {
+      let routeData = this.$router.resolve({
+        name: "tagList",
+        params: {
+          blogSetId: this.$route.params.blogSetId,
+          blogId: this.$route.params.blogId,
+        },
+      });
+      window.open(routeData.href, "_blank");
     },
     getTagsLabels(tags) {
       return tags.map(tag => tag.name);
