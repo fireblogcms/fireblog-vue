@@ -7,7 +7,7 @@
       {{ $t("views.blogSettings.tagsSettingsForm.label") }}
     </label>
     <div class="flex flex-wrap my-4">
-      <TagBadge v-for="tag in tags" :tag="tag" :key="tag._id" />
+      <TagBadgeList :tags="tags" />
     </div>
     <AppButton
       color="primary-outlined"
@@ -29,7 +29,7 @@
 <script>
 import AppButton from "@/ui-kit/AppButton";
 import AppPanel from "@/ui-kit/AppPanel";
-import TagBadge from "@/ui-kit/TagBadge";
+import TagBadgeList from "@/ui-kit/TagBadgeList";
 import { REQUEST_STATE, toast } from "@/utils/helpers";
 import apolloClient from "@/utils/apolloClient";
 import gql from "graphql-tag";
@@ -38,7 +38,7 @@ export default {
   components: {
     AppButton,
     AppPanel,
-    TagBadge,
+    TagBadgeList,
   },
   props: {
     blog: {

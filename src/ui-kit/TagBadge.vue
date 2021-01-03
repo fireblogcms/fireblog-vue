@@ -1,9 +1,9 @@
 <template>
-  <div class="flex items-center bg-gray-200 p-2 mr-2 mb-2 rounded">
-    <span class="shadow-sm rounded text-current"> {{ tag.name }} </span>
+  <div class="flex items-center bg-gray-200 px-2 py-1 rounded">
+    <span class="shadow-sm rounded text-gray-700"> {{ tag.name }} </span>
     <span
       v-show="tag.color"
-      class="ml-2 h-6 w-6 rounded-full shadow-md"
+      class="ml-2 h-5 w-5 rounded-full shadow-md"
       :style="{ backgroundColor: tag.color }"
     >
     </span>

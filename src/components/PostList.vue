@@ -98,13 +98,7 @@
               </p>
 
               <div class="mt-4">
-                <span
-                  :key="tag.name"
-                  v-for="tag in post.tags"
-                  class="bg-gray-200 text-gray-700 shadow-sm rounded text-current p-2 mr-2"
-                >
-                  {{ tag.name }}
-                </span>
+                <TagBadgeList :tags="post.tags" />
               </div>
             </div>
             <div class="flex justify-end">
@@ -202,12 +196,14 @@ import AppModal from "@/ui-kit/AppModal";
 import apolloClient from "@/utils/apolloClient";
 import { deletePostMutation } from "@/utils/queries";
 import gql from "graphql-tag";
+import TagBadgeList from "@/ui-kit/TagBadgeList";
 
 export default {
   components: {
     AppButton,
     ContentLoader,
     AppModal,
+    TagBadgeList,
   },
   props: {
     posts: {
