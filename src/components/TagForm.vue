@@ -32,6 +32,7 @@
     </h3>
     <!-- SLUG FIELD -->
     <SlugField
+      :loading="generateSlugState === 'PENDING'"
       class="mt-4"
       :value="formValues.slug"
       :error="formErrors.slug"
@@ -68,7 +69,7 @@
     <div class="flex justify-end mt-10">
       <AppButton @click="onBackClick">Back</AppButton>
       <AppButton
-        :disabled="Object.keys(formErrors).length > 0"
+        :disabled="saveTagState === 'PENDING'"
         @click="onSubmitClick"
         class="ml-5"
         color="primary"
@@ -144,6 +145,7 @@ export default {
       saveTagState: "NOT_STARTED",
       slugIsLocked: this.operation === "UPDATE",
       slugError: null,
+      generateSlugState: "NOT_STARTED",
     };
   },
   computed: {
@@ -159,11 +161,7 @@ export default {
         this.operation === "CREATE" &&
         this.formValues.slug.trim().length === 0
       ) {
-        const response = await generateTagSlugFromServer({
-          blogId: this.$route.params.blogId,
-          source: name,
-        });
-        this.formValues.slug = response.slug;
+        this.generateTagSlug(name);
       }
     },
     onBackClick() {
@@ -178,17 +176,63 @@ export default {
     onUploaded(value) {
       this.formValues.image = value;
     },
-    onSlugChange(value) {
-      if (value.length === 0) {
+    generateTagSlug(value) {
+      if (value.trim().length === 0) {
         return;
       }
-      generateTagSlugFromServer({
+      this.generateSlugState = "PENDING";
+      return generateTagSlugFromServer({
         blogId: this.$route.params.blogId,
         source: value,
-      }).then(response => {
-        const slug = response.slug;
-        this.formValues.slug = slug;
-
+      })
+        .then(response => {
+          this.generateSlugState = "FINISHED_OK";
+          const slug = response.slug;
+          this.formValues.slug = slug;
+          if (
+            response.existingTag &&
+            response.existingTag._id !== this.$route.params.tagId
+          ) {
+            this.formErrors = {
+              ...this.formErrors,
+              slug: `This slug is already used by tag: ${response.existingTag.name}`,
+            };
+          } else {
+            this.$delete(this.formErrors, "slug");
+          }
+          return response;
+        })
+        .catch(e => {
+          throw new Error(e);
+          toast(this, message, "error");
+          this.generateSlugState = "FINISHED_ERROR";
+        });
+    },
+    onSlugChange(value) {
+      this.formValues.slug = value;
+      this.generateTagSlug(value);
+    },
+    async validateForm() {
+      this.formErrors = {};
+      // name is required
+      if (!this.formValues.name.trim()) {
+        const message = "Field name is required";
+        this.formErrors.name = message;
+        toast(this, message, "error");
+      }
+      // slug is required
+      if (!this.formValues.slug.trim()) {
+        const message = "Field slug is required";
+        this.formErrors.slug = message;
+        toast(this, message, "error");
+      }
+      // validate slug is uniq for this blog
+      this.generateSlugState = "PENDING";
+      try {
+        const response = await generateTagSlugFromServer({
+          blogId: this.$route.params.blogId,
+          source: this.formValues.slug,
+        });
         if (
           response.existingTag &&
           response.existingTag._id !== this.$route.params.tagId
@@ -200,19 +244,10 @@ export default {
         } else {
           this.$delete(this.formErrors, "slug");
         }
-      });
-    },
-    validateForm() {
-      this.formErrors = {};
-      if (!this.formValues.name.trim()) {
-        const message = "Field name is required";
-        this.formErrors.name = message;
+      } catch (e) {
+        throw new Error(e);
         toast(this, message, "error");
-      }
-      if (!this.formValues.slug.trim()) {
-        const message = "Field slug is required";
-        this.formErrors.slug = message;
-        toast(this, message, "error");
+        this.generateSlugState = "FINISHED_ERROR";
       }
     },
     prepareFormValuesForSave() {
@@ -225,7 +260,7 @@ export default {
       return tag;
     },
     async onSubmitClick() {
-      this.validateForm();
+      await this.validateForm();
       if (Object.keys(this.formErrors).length === 0) {
         if (this.operation === "UPDATE") {
           await this.updateTag();

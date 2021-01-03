@@ -11,6 +11,7 @@
         @debounce="onSlugChange"
         :disabled="locked"
         :error="error"
+        :loading="loading"
         placeholder="slug"
       />
       <AppButton v-show="showToggleLockButton" @click="onButtonClick">
@@ -97,6 +98,10 @@ export default {
     showToggleLockButton: {
       type: Boolean,
       default: true,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
