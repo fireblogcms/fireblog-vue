@@ -103,7 +103,7 @@
                 vuexFormGetValue(FORM_ID, 'slugShowToggleLockButton')
               "
               :locked="vuexFormGetValue(FORM_ID, 'slugIsLocked')"
-              @onSlugChange="onSlugChange"
+              @inputDebounced="onSlugChange"
               @onUnlock="onSlugUnlock"
               @onLock="onSlugLock"
               :help="slugHelp"
@@ -247,8 +247,8 @@ export default {
       vuexFormSetValue(FORM_ID, "featured", value);
     },
     onSlugChange(value) {
+      vuexFormSetValue(FORM_ID, "slug", value);
       if (value.trim().length === 0) {
-        vuexFormSetValue(FORM_ID, "slug", "");
         return;
       }
       this.generateSlugState = REQUEST_STATE.PENDING;

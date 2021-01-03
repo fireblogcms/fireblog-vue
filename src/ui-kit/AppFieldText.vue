@@ -19,10 +19,9 @@
         }"
         type="text"
         :value="value"
-        @input="$emit('input', $event.target.value)"
+        @input="onInput"
         @change="$emit('change', $event.target.value)"
         @blur="$emit('blur', $event.target.value)"
-        v-debounce="onDebounce"
         v-bind="$attrs"
       />
     </div>
@@ -33,6 +32,8 @@
 </template>
 
 <script>
+import debounce from "lodash.debounce";
+
 export default {
   props: {
     error: {
@@ -47,18 +48,25 @@ export default {
     help: {
       type: String,
     },
-    debounce: {
-      type: Function,
-      default: () => {},
-    },
     loading: {
       type: Boolean,
       default: false,
     },
   },
+  created() {
+    this.debounce = null;
+  },
   methods: {
-    onDebounce(value) {
-      this.$emit("debounce", value);
+    onInput(event) {
+      this.$emit("input", event.target.value);
+      if (this.debounce) {
+        clearTimeout(this.debounce);
+      }
+      this.debounce = setTimeout(() => {
+        this.typing = null;
+        this.message = event.target.value;
+        this.$emit("inputDebounced", event.target.value);
+      }, 1000);
     },
   },
 };

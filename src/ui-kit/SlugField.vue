@@ -8,7 +8,9 @@
       <AppFieldText
         class="flex-1 mr-1"
         :value="value"
-        @debounce="onSlugChange"
+        @change="onSlugChange"
+        @input="$emit('input', value)"
+        @inputDebounced="onInputDebounced"
         :disabled="locked"
         :error="error"
         :loading="loading"
@@ -118,8 +120,11 @@ export default {
     closeUnlockConfirmModal() {
       this.$store.commit("modalShowing/close", "unlockConfirmModal");
     },
+    onInputDebounced(value) {
+      this.$emit("inputDebounced", value);
+    },
     onSlugChange(value) {
-      this.$emit("onSlugChange", value);
+      this.$emit("change", value);
     },
     onSlugInput(event) {
       this.$emit("input", this.slug);

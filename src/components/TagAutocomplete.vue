@@ -13,7 +13,7 @@
     </div>
     <div>
       <div
-        class="cursor-pointer text-primary underline mt-3 flex justify-start"
+        class="cursor-pointer text-primary underline mt-3 flex justify-end"
         @click="onManageTagsClick"
       >
         Manage your tags

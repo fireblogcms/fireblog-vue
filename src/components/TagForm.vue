@@ -39,7 +39,7 @@
       :help="slugHelp"
       :showToggleLockButton="true"
       :locked="slugIsLocked"
-      @onSlugChange="onSlugChange"
+      @inputDebounced="onSlugChange"
       @onUnlock="slugIsLocked = false"
       @onLock="slugIsLocked = true"
     />
