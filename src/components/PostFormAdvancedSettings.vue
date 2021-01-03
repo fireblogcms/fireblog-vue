@@ -43,6 +43,7 @@
             <AppTextarea
               :value="vuexFormGetValue(FORM_ID, 'teaser')"
               @input="onTeaserInput"
+              :error="vuexFormGetError(FORM_ID, 'teaser')"
               placeholder="Teaser"
               maxlength="250"
             />
