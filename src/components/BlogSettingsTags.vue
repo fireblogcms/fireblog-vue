@@ -7,19 +7,7 @@
       {{ $t("views.blogSettings.tagsSettingsForm.label") }}
     </label>
     <div class="flex flex-wrap my-4">
-      <div
-        v-for="tag in tags"
-        :key="tag._id"
-        class="flex items-center bg-gray-200 p-2 mr-2 mb-2 rounded"
-      >
-        <span class="shadow-sm rounded text-current"> {{ tag.name }} </span>
-        <span
-          v-show="tag.color"
-          class="ml-2 h-6 w-6 rounded-full shadow-md"
-          :style="{ backgroundColor: tag.color }"
-        >
-        </span>
-      </div>
+      <TagBadge v-for="tag in tags" :tag="tag" :key="tag._id" />
     </div>
     <AppButton
       color="primary-outlined"
@@ -41,6 +29,7 @@
 <script>
 import AppButton from "@/ui-kit/AppButton";
 import AppPanel from "@/ui-kit/AppPanel";
+import TagBadge from "@/ui-kit/TagBadge";
 import { REQUEST_STATE, toast } from "@/utils/helpers";
 import apolloClient from "@/utils/apolloClient";
 import gql from "graphql-tag";
@@ -49,6 +38,7 @@ export default {
   components: {
     AppButton,
     AppPanel,
+    TagBadge,
   },
   props: {
     blog: {
