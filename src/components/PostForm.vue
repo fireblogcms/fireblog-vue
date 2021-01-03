@@ -258,7 +258,7 @@ import {
   validateSlug,
   toast,
   formatDate,
-  generateSlugFromServer,
+  generatePostSlugFromServer,
   getRandomGif,
   getTimeFromDateString,
   combineDateAndTime,
@@ -720,7 +720,7 @@ export default {
           this.showMediaCurrentlyLoadingModal();
         } else {
           if (vuexFormGetValue(FORM_ID, "slug").trim().length === 0) {
-            generateSlugFromServer({
+            generatePostSlugFromServer({
               blogId: this.$route.params.blogId,
               source: vuexFormGetValue(FORM_ID, "title").trim(),
             }).then(response => {

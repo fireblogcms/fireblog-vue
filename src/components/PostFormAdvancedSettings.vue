@@ -95,6 +95,7 @@
           <div class="w-full md:w-1/2 md:mr-8">
             <!-- SLUG FIELD -->
             <SlugField
+              :loading="generateSlugState === 'PENDING'"
               class="mt-4"
               :value="vuexFormGetValue(FORM_ID, 'slug')"
               :error="vuexFormGetError(FORM_ID, 'slug')"
@@ -102,9 +103,10 @@
                 vuexFormGetValue(FORM_ID, 'slugShowToggleLockButton')
               "
               :locked="vuexFormGetValue(FORM_ID, 'slugIsLocked')"
-              @onSlugChange="onSlugChange"
+              @inputDebounced="onSlugChange"
               @onUnlock="onSlugUnlock"
               @onLock="onSlugLock"
+              :help="slugHelp"
             />
 
             <AppFieldText
@@ -150,16 +152,16 @@
 <script>
 import AppTextarea from "@/ui-kit/AppTextarea";
 import AppFieldText from "@/ui-kit/AppFieldText";
-import S3ImageUpload from "./S3ImageUpload";
+import S3ImageUpload from "@/ui-kit/S3ImageUpload";
 import TagAutocomplete from "./TagAutocomplete";
-import { REQUEST_STATE, generateSlugFromServer } from "@/utils/helpers";
+import { REQUEST_STATE, generatePostSlugFromServer } from "@/utils/helpers";
 import {
   vuexFormGetValue,
   vuexFormGetError,
   vuexFormSetValue,
   vuexFormSetError,
 } from "@/utils/vuexForm";
-import SlugField from "./SlugField";
+import SlugField from "@/ui-kit/SlugField";
 import FeatureField from "./FeatureField";
 import PostFormSchedulePublication from "./PostFormSchedulePublication";
 import PreviewGoogleResult from "./PreviewGoogleResult";
@@ -187,6 +189,7 @@ export default {
     const data = {
       uploadingState: null,
       file: null,
+      generateSlugState: REQUEST_STATE.NOT_STARTED,
     };
     return data;
   },
@@ -203,6 +206,14 @@ export default {
       return {
         to: d,
       };
+    },
+    slugHelp() {
+      return this.$t("components.slugField.help", {
+        exampleUrl: `https://example.com/post/<mark class="font-bold bg-indigo-200 text-current">${vuexFormGetValue(
+          FORM_ID,
+          "slug"
+        )}</mark>`,
+      });
     },
   },
   methods: {
@@ -236,25 +247,34 @@ export default {
       vuexFormSetValue(FORM_ID, "featured", value);
     },
     onSlugChange(value) {
-      if (value.length === 0) {
+      vuexFormSetValue(FORM_ID, "slug", value);
+      if (value.trim().length === 0) {
         return;
       }
-      generateSlugFromServer({
+      this.generateSlugState = REQUEST_STATE.PENDING;
+      generatePostSlugFromServer({
         blogId: this.$route.params.blogId,
         source: value,
-      }).then(response => {
-        const slug = response.slug;
-        vuexFormSetValue(FORM_ID, "slug", slug);
-        if (
-          response.alreadyExists === true &&
-          response.usedByPost._id !== this.$route.params.postId
-        ) {
-          const slugError = `This slug is already used by this post: ${response.usedByPost.title}`;
-          vuexFormSetError(FORM_ID, "slug", slugError);
-        } else {
-          vuexFormSetError(FORM_ID, "slug", null);
-        }
-      });
+      })
+        .then(response => {
+          this.generateSlugState = REQUEST_STATE.FINISHED_OK;
+          const slug = response.slug;
+          vuexFormSetValue(FORM_ID, "slug", slug);
+          if (
+            response.alreadyExists === true &&
+            response.usedByPost._id !== this.$route.params.postId
+          ) {
+            const slugError = `This slug is already used by this post: ${response.usedByPost.title}`;
+            vuexFormSetError(FORM_ID, "slug", slugError);
+          } else {
+            vuexFormSetError(FORM_ID, "slug", null);
+          }
+        })
+        .catch(e => {
+          this.generateSlugState = REQUEST_STATE.FINISHED_ERROR;
+          throw new Error(e);
+          toast(this, e, "error");
+        });
     },
     onSlugInput(event) {
       vuexFormSetValue(FORM_ID, "slug", event);

@@ -1,24 +1,14 @@
 <template>
-  <div>
-    <div class="tag-auto-complete">
-      <vue-tags-input
-        v-model="tag"
-        :tags="tags"
-        :autocomplete-items="filteredItems"
-        :placeholder="placeholderComputed"
-        @tags-changed="newTags => (tags = newTags)"
-        @before-adding-tag="beforeAddTag"
-        @before-deleting-tag="beforeDeleteTag"
-      />
-    </div>
-    <div>
-      <div
-        class="cursor-pointer text-primary underline mt-3 flex justify-end"
-        @click="onManageTagsClick"
-      >
-        Manage your tags
-      </div>
-    </div>
+  <div class="tag-auto-complete">
+    <vue-tags-input
+      v-model="tag"
+      :tags="tags"
+      :autocomplete-items="filteredItems"
+      :placeholder="placeholderComputed"
+      @tags-changed="newTags => (tags = newTags)"
+      @before-adding-tag="beforeAddTag"
+      @before-deleting-tag="beforeDeleteTag"
+    />
   </div>
 </template>
 
@@ -64,6 +54,7 @@ export default {
   },
   computed: {
     filteredItems() {
+      // console.log(this.blogTags)
       return this.getTagsLabels(this.blogTags)
         .filter(tag => {
           return tag.toLowerCase().indexOf(this.tag.toLowerCase()) !== -1;
@@ -80,16 +71,7 @@ export default {
       this.tags = this.getTagsLabels(
         vuexFormGetValue(this.FORM_ID, "tags")
       ).map(tag => ({ text: tag }));
-    },
-    onManageTagsClick() {
-      let routeData = this.$router.resolve({
-        name: "tagList",
-        params: {
-          blogSetId: this.$route.params.blogSetId,
-          blogId: this.$route.params.blogId,
-        },
-      });
-      window.open(routeData.href, "_blank");
+      // console.log(this.tags);
     },
     getTagsLabels(tags) {
       return tags.map(tag => tag.name);
@@ -103,7 +85,6 @@ export default {
                 _id
                 slug
                 name
-                color
               }
             }
           }
@@ -122,8 +103,33 @@ export default {
     beforeAddTag(obj) {
       const newTagLabel = obj.tag.text;
       const existingTag = this.blogTags.find(t => t.name === newTagLabel);
-      // from auto-complete
-      if (existingTag) {
+      if (!existingTag) {
+        // new tag not from autocomplete : create remote tag
+        apolloClient
+          .mutate({
+            mutation: createTagMutation,
+            variables: {
+              tag: {
+                name: newTagLabel,
+              },
+              blog: this.blogId,
+            },
+          })
+          .then(async result => {
+            // console.log('add tag', obj);
+            const tag = result.data.createTag;
+            vuexFormSetValue(this.FORM_ID, "tags", [
+              ...vuexFormGetValue(this.FORM_ID, "tags"),
+              tag,
+            ]);
+            obj.addTag();
+          })
+          .catch(error => {
+            toast(this, error, "error");
+          });
+      } else {
+        // from auto-complete
+        // console.log('add tag', existingTag._id);
         vuexFormSetValue(this.FORM_ID, "tags", [
           ...vuexFormGetValue(this.FORM_ID, "tags"),
           existingTag,
@@ -160,7 +166,7 @@ export default {
 }
 
 .tag-auto-complete .vue-tags-input .ti-tag {
-  @apply bg-gray-200 p-2 rounded text-gray-800;
+  @apply bg-primary p-2 rounded;
 }
 
 .tag-auto-complete .vue-tags-input .ti-new-tag-input {
@@ -168,7 +174,7 @@ export default {
 }
 
 .tag-auto-complete .vue-tags-input .ti-autocomplete {
-  @apply border-gray-300 rounded-b shadow-sm;
+  @apply border-gray-200 rounded-b shadow-sm;
 }
 
 .tag-auto-complete .vue-tags-input .ti-item {

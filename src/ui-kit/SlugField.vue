@@ -8,9 +8,12 @@
       <AppFieldText
         class="flex-1 mr-1"
         :value="value"
-        @debounce="onSlugChange"
+        @change="onSlugChange"
+        @input="$emit('input', value)"
+        @inputDebounced="onInputDebounced"
         :disabled="locked"
         :error="error"
+        :loading="loading"
         placeholder="slug"
       />
       <AppButton v-show="showToggleLockButton" @click="onButtonClick">
@@ -21,7 +24,7 @@
         }}
       </AppButton>
     </div>
-    <p v-if="computedHelp" v-html="computedHelp" class="text-sm italic mt-2" />
+    <p v-if="help" v-html="help" class="text-sm italic mt-2" />
 
     <AppModal name="unlockConfirmModal">
       <div class="text-xl font-bold" slot="header">
@@ -98,6 +101,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -113,11 +120,13 @@ export default {
     closeUnlockConfirmModal() {
       this.$store.commit("modalShowing/close", "unlockConfirmModal");
     },
+    onInputDebounced(value) {
+      this.$emit("inputDebounced", value);
+    },
     onSlugChange(value) {
-      this.$emit("onSlugChange", value);
+      this.$emit("change", value);
     },
     onSlugInput(event) {
-      //this.slug = createSlug(event);
       this.$emit("input", this.slug);
     },
     onButtonClick() {
@@ -135,7 +144,7 @@ export default {
   computed: {
     computedHelp() {
       return this.$t("components.slugField.help", {
-        exampleUrl: `https://example.com/post/<mark class="font-bold bg-indigo-200 text-current">${this.slug}</mark>`,
+        exampleUrl: `https://example.com/post/<span class="font-bold text-primary">${this.slug}</span>`,
       });
     },
   },

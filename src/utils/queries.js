@@ -74,8 +74,12 @@ export const FullTagFragment = gql`
   fragment FullTagFragment on Tag {
     _id
     name
+    image
     slug
     description
+    metaDescription
+    metaTitle
+    color
   }
 `;
 
@@ -168,6 +172,15 @@ export const deletePostMutation = gql`
   mutation deletePostMutation($id: ID!) {
     deletePost(_id: $id) {
       ...FullPostFragment
+    }
+  }
+`;
+
+export const deleteTagMutation = gql`
+  ${FullTagFragment}
+  mutation deleteTag($id: ID!) {
+    deleteTag(_id: $id) {
+      ...FullTagFragment
     }
   }
 `;

@@ -15,6 +15,10 @@ const BlogSetListView = () =>
   import(/* webpackChunkName: "BlogSetListView" */ "./views/BlogSetListView");
 const BlogSettingsView = () =>
   import(/* webpackChunkName: "BlogSettingsView" */ "./views/BlogSettingsView");
+const TagListView = () =>
+  import(/* webpackChunkName: "TagListView" */ "./views/TagListView");
+const TagFormView = () =>
+  import(/* webpackChunkName: "TagFormView" */ "./views/TagFormView");
 const PostListView = () =>
   import(/* webpackChunkName: "PostListView" */ "./views/PostListView");
 const NotFoundView = () =>
@@ -107,6 +111,21 @@ const router = new Router({
       path: "/blogset/:blogSetId/blog/:blogId/post/:postId",
       name: "postUpdate",
       component: PostFormView,
+    },
+    {
+      path: "/blogset/:blogSetId/blog/:blogId/tags",
+      name: "tagList",
+      component: TagListView,
+    },
+    {
+      path: "/blogset/:blogSetId/blog/:blogId/tag/:tagId/edit",
+      name: "tagUpdate",
+      component: TagFormView,
+    },
+    {
+      path: "/blogset/:blogSetId/blog/:blogId/tag/create",
+      name: "tagCreate",
+      component: TagFormView,
     },
     {
       path: "/blogset/:blogSetId/plans",

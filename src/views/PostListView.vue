@@ -319,7 +319,9 @@ function getPostsQuery({ filter, sort, limit, skip }) {
           readingTime
           status
           tags {
+            _id
             name
+            color
           }
           updatedAt
           publishedAt
