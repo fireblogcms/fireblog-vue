@@ -50,6 +50,7 @@
 
     <AppFieldText
       label="SEO meta title"
+      maxlength="100"
       v-model="formValues.metaTitle"
       class="mt-5"
     />

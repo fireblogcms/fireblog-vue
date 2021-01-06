@@ -77,13 +77,14 @@
         {{ deleteModal.title }}
       </div>
       <div class="flex flex-col items-center" slot="body">
-        <p class="text-xl">
-          {{
-            $t("views.tagList.deleteModal.content", {
+        <p
+          class="text-xl"
+          v-html="
+            $t('views.tagList.deleteModal.content', {
               tagName: deleteModal.tag.name,
             })
-          }}
-        </p>
+          "
+        />
         <div
           class="flex flex-col md:flex-row items-center justify-center mt-10"
         >
@@ -96,7 +97,7 @@
             color="danger"
             @click="onDeleteModalConfirmClick"
           >
-            {{ $t("views.TagList.deleteModal.confirmButton") }}
+            {{ $t("views.tagList.deleteModal.confirmButton") }}
           </AppButton>
         </div>
       </div>

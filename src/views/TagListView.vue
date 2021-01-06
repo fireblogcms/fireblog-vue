@@ -31,7 +31,7 @@
         </div>
         <div class="mt-5 md:mt-0 flex md:flex-row md:justify-end items-center">
           <AppButton @click="onCreateTagClick" color="primary">
-            CREATE TAG
+            {{ $t("views.tagList.createTag").toUpperCase() }}
           </AppButton>
         </div>
       </div>

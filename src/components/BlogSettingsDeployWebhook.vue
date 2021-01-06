@@ -39,7 +39,6 @@
             label="Headers (JSON Format)"
             :value="vuexFormGetValue(formId, 'webhookHeaders')"
             @input="onHeadersInput"
-            maxlength="250"
             placeholder='{"Authorization": "token abcdefghijklmnopqrstuvwxyz"}'
             :error="webhookHeadersJSONError"
           />
@@ -47,7 +46,6 @@
             label="Body"
             :value="vuexFormGetValue(formId, 'webhookBody')"
             @input="vuexFormSetValue(formId, 'webhookBody', $event)"
-            maxlength="250"
             placeholder=""
           />
           <div class="mt-6">
