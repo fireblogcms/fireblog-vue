@@ -1,6 +1,6 @@
 <template>
   <AppPanel>
-    <h2 class="text-xl md:text-2xl font-bold uppercase">
+    <h2 class="text-xl md:text-2xl font-bold">
       {{ $t("views.blogSettings.generalSettingsForm.title") }}
     </h2>
     <form @submit.prevent="onFormSubmit">

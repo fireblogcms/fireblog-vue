@@ -11,7 +11,7 @@
             blogSetId: $route.params.blogSetId,
           },
         }"
-        :name="$t('views.TagList.backToBlogLink')"
+        :name="$t('views.tagList.backToBlogLink')"
       />
     </portal>
     <!-- END TOPBAR LEFT BUTTONS -->

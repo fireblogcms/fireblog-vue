@@ -14,7 +14,7 @@
         :disabled="locked"
         :error="error"
         :loading="loading"
-        placeholder="slug"
+        placeholder="url"
       />
       <AppButton v-show="showToggleLockButton" @click="onButtonClick">
         {{

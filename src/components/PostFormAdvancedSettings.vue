@@ -115,7 +115,7 @@
               class="mt-10"
               :value="vuexFormGetValue(FORM_ID, 'metaTitle')"
               @input="onMetaTitleInput"
-              placeholder="Seo title"
+              placeholder="Seo meta title"
               maxlength="250"
             />
             <AppFieldText
@@ -123,7 +123,7 @@
               label="Meta description"
               :value="vuexFormGetValue(FORM_ID, 'metaDescription')"
               @input="onMetaDescriptionInput"
-              placeholder="Seo description"
+              placeholder="Seo meta description"
               maxlength="250"
             />
           </div>
@@ -210,10 +210,10 @@ export default {
     },
     slugHelp() {
       return this.$t("components.slugField.help", {
-        exampleUrl: `https://example.com/post/<mark class="font-bold bg-indigo-200 text-current">${vuexFormGetValue(
+        exampleUrl: `https://example.com/post/<span class="font-bold text-primary">${vuexFormGetValue(
           FORM_ID,
           "slug"
-        )}</mark>`,
+        )}</span>`,
       });
     },
   },

@@ -1,10 +1,10 @@
 <template>
   <AppPanel class="pt-0">
-    <h2 class="text-4xl font-bold">
+    <h2 class="text-xl md:text-2xl font-bold mb-2">
       {{ $t("views.blogSettings.tagsSettingsForm.title") }}
     </h2>
-    <label class="text-md font-bold">
-      {{ $t("views.blogSettings.tagsSettingsForm.label") }}
+    <label class="text-md">
+      {{ $t("views.blogSettings.tagsSettingsForm.help") }}
     </label>
     <div class="flex flex-wrap my-4">
       <TagBadgeList :tags="tags" />

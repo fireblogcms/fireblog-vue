@@ -1,19 +1,23 @@
 <template>
   <div>
     <AppFieldText
-      label="name"
+      :label="$t('views.tagForm.fieldName')"
       v-model="formValues.name"
       :error="formErrors.name"
       @change="onNameChange"
     />
 
     <AppTextarea
-      label="description"
+      :label="$t('views.tagForm.fieldDescription')"
       v-model="formValues.description"
       class="mt-5"
       maxlength="250"
     />
-    <AppFieldColor label="Color" v-model="formValues.color" class="mt-5" />
+    <AppFieldColor
+      :label="$t('views.tagForm.fieldColor')"
+      v-model="formValues.color"
+      class="mt-5"
+    />
     <div class="font-bold mt-5">Image</div>
     <S3ImageUpload
       label="Image"
@@ -27,7 +31,7 @@
         <img width="30" src="/images/icon-seo.png" class="inline mr-5" />
       </div>
       <div class="text-xl md:text-2xl">
-        Optimisations pour les moteurs de recherche
+        {{ $t("views.postForm.seoOptimizations") }}
       </div>
     </h3>
     <!-- SLUG FIELD -->
@@ -150,8 +154,8 @@ export default {
   },
   computed: {
     slugHelp() {
-      return this.$t("components.slugFieldTag.help", {
-        exampleUrl: `https://example.com/tag/<mark class="font-bold bg-indigo-200 text-current">${this.slug}</mark>`,
+      return this.$t("components.slugField.help", {
+        exampleUrl: `https://example.com/tag/<span class="font-bold text-primary">${this.formValues.slug}</span>`,
       });
     },
   },
