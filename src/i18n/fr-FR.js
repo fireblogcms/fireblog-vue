@@ -42,6 +42,7 @@ export default {
   "global.changePlanButton": "Changer de plan",
   "global.seePlans": "Voir nos plans",
   "global.contactUsButton": "Contactez-nous",
+  "global.charactersLeft": "caractères restant",
   "global.label.name": "Nom :",
   "global.label.email": "Adresse e-mail :",
   "global.pageNotFound": "Page non trouvée",

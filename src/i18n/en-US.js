@@ -41,6 +41,7 @@ export default {
   "global.subscribeButton": "Subscribe",
   "global.unsubscribeButton": "Unsubscribe",
   "global.changePlanButton": "Change plan",
+  "global.charactersLeft": "characters left",
   "global.contactUsButton": "Contact us",
   "global.label.name": "Name:",
   "global.label.email": "Email address:",
