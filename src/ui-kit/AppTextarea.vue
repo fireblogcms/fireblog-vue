@@ -19,7 +19,7 @@
 
         <div
           v-if="maxlength"
-          class="bottom-0 right-0 font-100 text-14 flex justify-end"
+          class="bottom-0 right-0 text-gray-700 font-100 text-sm flex justify-end"
         >
           {{ value.length }} / {{ maxlength }}
         </div>
