@@ -25,7 +25,7 @@
       <div class="flex flex-col md:flex-row justify-between items-center mb-6">
         <div>
           <h1 class="text-xl md:text-2xl font-bold uppercase text-primary">
-            TAGS -
+            {{ $t("views.tagListView.title") }} -
             <span class="text-indigo-500">{{ viewData.blog.name }}</span>
           </h1>
         </div>

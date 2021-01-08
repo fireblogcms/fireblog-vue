@@ -183,6 +183,7 @@ export default {
   "views.tagForm.fieldName": "Nom",
   "views.tagForm.fieldColor": "Couleur",
   "views.tagList.backToBlogLink": "Réglages du blog",
+  "views.tagListView.title": "Catégories",
   "views.tagList.createTag": "Créer une catégorie",
   "views.tagList.noResult": "Aucune catégorie pour le moment",
   "views.tagList.deleteModal.confirmButton": "Supprimer",

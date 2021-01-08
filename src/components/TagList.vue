@@ -36,15 +36,13 @@
             class="w-40 mr-10 rounded bg-center bg-no-repeat bg-cover"
           ></div>
           <div>
-            <p class="text-3xl font-bold flex items-center">
-              <span>
-                {{ tag.node.name }}
-              </span>
+            <p class="text-3xl font-bold">
               <span
                 v-show="tag.node.color"
-                class="ml-2 h-6 w-6 rounded-full shadow-md"
+                class="h-6 w-6 rounded-full shadow-md inline-block"
                 :style="{ backgroundColor: tag.node.color }"
               />
+              {{ tag.node.name }}
             </p>
             <p class="mt-4">
               {{ striptags(tag.node.description || "") }}

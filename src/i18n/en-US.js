@@ -183,6 +183,7 @@ export default {
   "views.tagList.deleteModal.title": "Delete a category",
   "views.tagList.deleteModal.content": "Warning! <strong>\"{tagName}\"</strong> will be deleted permanently.",
   "views.tagList.noResult": "No category found for now",
+  "views.tagListView.title": "Categories",
   "views.tagForm.fieldColor": "Color",
   "views.tagForm.fieldName": "Name",
   "views.tagForm.fieldDescription": "Short description",

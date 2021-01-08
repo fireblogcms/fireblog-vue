@@ -1,12 +1,12 @@
 <template>
-  <div class="flex items-center bg-gray-200 px-2 py-1 rounded">
-    <span class="shadow-sm rounded text-gray-700"> {{ tag.name }} </span>
+  <div class="bg-gray-200 px-2 py-1 rounded">
     <span
       v-show="tag.color"
-      class="ml-2 h-5 w-5 rounded-full shadow-md"
-      :style="{ backgroundColor: tag.color }"
+      class="mr-1 h-5 w-5 rounded-full shadow-md inline-block"
+      :style="{ backgroundColor: tag.color, position: 'relative', top: '3px' }"
     >
     </span>
+    {{ tag.name }}
   </div>
 </template>
 
