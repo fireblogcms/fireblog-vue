@@ -40,6 +40,7 @@ export default {
     },
     value: {
       type: String,
+      default: "",
     },
     maxlength: {
       type: String,
