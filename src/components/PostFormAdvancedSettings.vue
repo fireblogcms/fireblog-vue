@@ -68,9 +68,11 @@
                   <h3 class="font-bold">
                     {{ $t("views.postForm.sectionTags.title") }}
                   </h3>
+                  <!--
                   <p class="text-sm italic mb-2">
                     {{ $t("views.postForm.sectionTags.description") }}
                   </p>
+                  -->
                   <TagAutocomplete
                     :blogId="$route.params.blogId"
                     :formId="FORM_ID"

@@ -134,7 +134,7 @@ export default {
   "views.postForm.saveDraft": "Save draft",
   "views.postForm.sectionSeo.title": "Customize your SEO metadatas",
   "views.postForm.sectionSeo.description": "Fireblog uses your title and teaser by default, but you can customize your metadatas if needed.",
-  "views.postForm.sectionTags.title": "Tags",
+  "views.postForm.sectionTags.title": "Category",
   "views.postForm.sectionTags.description": "Categorizes your post",
   "views.postForm.sectionTags.addLabel": "Add",
   "views.postForm.seoOptimizations":"Search engines optimizations",
