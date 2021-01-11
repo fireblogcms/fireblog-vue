@@ -102,7 +102,7 @@
               </div>
             </div>
             <div class="flex justify-end">
-              <AppButton size="sm" @click="onDeleteClick(post)">
+              <AppButton class="ml-3" size="sm" @click="onDeleteClick(post)">
                 <span class="">
                   <img width="20" src="/images/icon-delete.svg" />
                 </span>
